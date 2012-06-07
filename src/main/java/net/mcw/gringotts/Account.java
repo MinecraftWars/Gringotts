@@ -50,7 +50,7 @@ public class Account {
 			if (remaining <= 0) break;
 		}
 		
-		// TODO full: spawn at random chests
+		// TODO full: spawn items at random chest
 		
 		return remaining;
 	}
@@ -67,24 +67,5 @@ public class Account {
 		// remove items from storage by stack, count removed
 		return 0;
 	}
-	
-	/**
-	 * Attempts to transfer an amount from this account to another account.
-	 * @param value amount to transfer
-	 * @param other Account to transfer to
-	 * @return true if transfer was successful, false if funds on this account were insufficient.
-	 */
-	public boolean transfer(long value, Account other) {
-		if (this.balance() >= value) {
-			// TODO:
-			// remove value from balance
-			if(false) { // amount removed successfully
-				other.add(value);
-			} else {
-				// rollback
-			}
-		}
-		
-		return false;
-	}
+
 }
