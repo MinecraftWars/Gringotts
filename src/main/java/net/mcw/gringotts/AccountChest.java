@@ -22,6 +22,7 @@ public class AccountChest {
 	public AccountChest(Chest chest, Account account) {
 		this.chest = chest;
 		this.account = account;
+		account.addChest(this);
 	}
 	
 	
