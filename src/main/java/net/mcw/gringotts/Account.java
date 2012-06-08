@@ -5,7 +5,7 @@ import java.util.Set;
 
 public class Account {
 	
-	private Set<Chest> storage = new HashSet<Chest>();
+	private Set<AccountChest> storage = new HashSet<AccountChest>();
 	private final AccountHolder owner;
 	
 	public Account(AccountHolder owner) {
@@ -17,13 +17,12 @@ public class Account {
 	 * @param chest chest to add to storage
 	 * @return new amount of chests in storage
 	 */
-	public int addChest(Chest chest) {
+	public int addChest(AccountChest chest) {
 		this.storage.add(chest);
-		chest.setAccount(this);
 		return storage.size();
 	}
 
-	public void removeChest(Chest chest) {
+	public void removeChest(AccountChest chest) {
 		storage.remove(chest);		
 	}
 
@@ -45,7 +44,7 @@ public class Account {
 	public long add(long value) {
 		
 		long remaining = value;
-		for (Chest chest : storage) {
+		for (AccountChest chest : storage) {
 			remaining -= chest.add(remaining);
 			if (remaining <= 0) break;
 		}
