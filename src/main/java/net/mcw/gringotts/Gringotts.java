@@ -12,12 +12,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 
 public class Gringotts extends JavaPlugin {
-
 	PluginManager pluginmanager;
 	Logger log = Bukkit.getServer().getLogger();
 	
 	/** Manager of accounts, listener of events. */
-	static Accounting accounting;
+	public static Accounting accounting;
+	private gCommand gcommand;
 	
 	public static final ItemStack currency =  
 			new ItemStack(Material.INK_SACK, 1, (short) 0, DyeColor.BLUE.getData());
@@ -25,9 +25,15 @@ public class Gringotts extends JavaPlugin {
 	public Gringotts() {
 	}
 	
+	@Override
 	public void onEnable() {
 		pluginmanager = getServer().getPluginManager();
+		
+		gcommand = new gCommand(this);
+		getCommand("balance").setExecutor(gcommand);
+		
 		registerEvents();
+		
 		log.info("Gringotts enabled");
 	}
 	
