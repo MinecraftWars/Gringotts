@@ -1,21 +1,23 @@
 package net.mcw.gringotts;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.java.JavaPlugin;
 
 
 public class Gringotts extends JavaPlugin {
 
+	PluginManager pluginmanager;
 	Logger log = Bukkit.getServer().getLogger();
-	Map<AccountHolder, Account> accounts = new HashMap<AccountHolder, Account>();
+	
+	/** Manager of accounts, listener of events. */
+	static Accounting accounting;
 	
 	public static final ItemStack currency =  
 			new ItemStack(Material.INK_SACK, 1, (short) 0, DyeColor.BLUE.getData());
@@ -24,14 +26,22 @@ public class Gringotts extends JavaPlugin {
 	}
 	
 	public void onEnable() {
-		PluginManager pm = getServer().getPluginManager();
-		pm.registerEvents(new Accounting(), this);
+		pluginmanager = getServer().getPluginManager();
+		registerEvents();
 		log.info("Gringotts enabled");
 	}
 	
 	public void onDisable() {
 		log.info("Gringotts disabled");
 	}
+	
+    private void registerEvents() {
+		registerEvent(new Accounting());
+    }
+    
+    public void registerEvent(Listener listener) {
+    	pluginmanager.registerEvents(listener, this);
+    }
 	
 	// TODO add optional dependency to factions. how?
 	// TODO add support to vault

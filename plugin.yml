@@ -2,3 +2,9 @@ name: Gringotts
 author: jastice, squidicuz
 version: 0.1
 main: net.mcw.gringotts.Gringotts
+
+commands:
+  balance:
+    aliases: [balance]
+    description: Shows your vault balance
+    usage: /<command>
