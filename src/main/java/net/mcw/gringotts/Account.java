@@ -5,8 +5,8 @@ import java.util.Set;
 
 public class Account {
 	
-	private Set<AccountChest> storage = new HashSet<AccountChest>();
-	private final AccountHolder owner;
+	private final Set<AccountChest> storage = new HashSet<AccountChest>();
+	public final AccountHolder owner;
 	
 	public Account(AccountHolder owner) {
 		this.owner = owner;

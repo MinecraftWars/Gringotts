@@ -9,9 +9,11 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 
 /**
@@ -21,10 +23,11 @@ import org.bukkit.event.block.SignChangeEvent;
  */
 public class Accounting implements Listener {
 	
-	Logger log = Bukkit.getServer().getLogger();
+	private Logger log = Bukkit.getServer().getLogger();
 	
-	public Map<AccountHolder, Account> accounts = new HashMap<AccountHolder, Account>();
-	public Map<AccountHolder, AccountChest> chests = new HashMap<AccountHolder, AccountChest>();
+	// TODO persistence of account chest data
+	private Map<AccountHolder, Account> accounts = new HashMap<AccountHolder, Account>();
+	private Map<Block, AccountChest> blockAccountChest = new HashMap<Block, AccountChest>();
 
 	/**
 	 * Create an account chest by adding a sign marker over it.
@@ -32,36 +35,57 @@ public class Accounting implements Listener {
 	 * @param event Event data.
 	 */
 	@EventHandler
-	public void createAccountChest(SignChangeEvent event) {
+	public void createVault(SignChangeEvent event) {
 		Player player = event.getPlayer();
-		String[] lines = event.getLines();
 		
-		if (lines.length == 0) return; //nothing to do!
-		
+		String line0 = event.getLine(0);
 		AccountHolder chestOwner;
-		if (lines[0].equals("[vault]")) {
+		if (line0.equals("[vault]")) {
 			chestOwner = new PlayerAccountHolder(player);
-		} else if (lines[0].equals("[faction vault]")) {
+			event.setLine(1, player.getName());
+		} else if (line0.equals("[faction vault]")) {
 			chestOwner = new FactionAccountHolder();
 			// TODO faction vault creation
 		} else return; // not for us!
 		
-		log.info("Vault created");
+		event.setLine(2, chestOwner.getName());
 		
-		Block chestBlock = event.getBlock().getRelative(BlockFace.DOWN);
+		Block signBlock = event.getBlock();
+		Block chestBlock = signBlock.getRelative(BlockFace.DOWN);
 		if (chestBlock.getType() == Material.CHEST) {
 			
-			Account account = getOrCreateAccount(chestOwner);
+			Account account = getAccount(chestOwner);
 			
 			// create account chest
 			Chest chest = (Chest)chestBlock.getState();
-			AccountChest accountChest = new AccountChest(chest, account);
-			chests.put(chestOwner, accountChest);
+			AccountChest accountChest = new AccountChest(chest, (Sign)signBlock.getState(), account);
+			
+			// add to tracking
+			blockAccountChest.put(signBlock, accountChest);
+			blockAccountChest.put(chestBlock, accountChest);
+			
+			log.info("Vault created by " + player.getName());
+			player.sendMessage("Created a vault for your account. New balance is " + account.balance());			
+			
 			//FIXME this will probably not work correctly with double chests yet
 		}
 	}
 	
-	private Account getOrCreateAccount(AccountHolder owner) {
+	@EventHandler
+	public void vaultBroken(BlockBreakEvent event) {
+		Block block = event.getBlock();
+		AccountChest accountChest = blockAccountChest.get(block);
+		if (accountChest != null) {
+			Account account = accountChest.account;
+			accountChest.destroy();
+			blockAccountChest.remove(accountChest.chest);
+			blockAccountChest.remove(accountChest.sign);
+			
+			account.owner.sendMessage("Vault broken. New balance is " + account.balance());
+		}
+	}
+	
+	public Account getAccount(AccountHolder owner) {
 		Account account = accounts.get(owner);
 		if (account == null) {
 			account =  new Account(owner);
@@ -70,4 +94,5 @@ public class Accounting implements Listener {
 		
 		return account;
 	}
+	
 }
