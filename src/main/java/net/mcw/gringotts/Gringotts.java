@@ -35,13 +35,13 @@ public class Gringotts extends JavaPlugin {
 		log.info("Gringotts disabled");
 	}
 	
-    private void registerEvents() {
+	private void registerEvents() {
 		registerEvent(new Accounting());
-    }
+	}
     
-    public void registerEvent(Listener listener) {
-    	pluginmanager.registerEvents(listener, this);
-    }
+	public void registerEvent(Listener listener) {
+		pluginmanager.registerEvents(listener, this);
+	}
 	
 	// TODO add optional dependency to factions. how?
 	// TODO add support to vault
