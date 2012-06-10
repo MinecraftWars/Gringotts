@@ -2,6 +2,7 @@ package net.mcw.gringotts;
 
 import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -135,5 +136,5 @@ public class AccountChest {
 		account.removeChest(this);
 		sign.getBlock().breakNaturally();
 		// TODO implement 
-	}
+	}	
 }

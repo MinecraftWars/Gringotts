@@ -5,6 +5,5 @@ main: net.mcw.gringotts.Gringotts
 
 commands:
   balance:
-    aliases: [balance]
     description: Shows your vault balance
     usage: /<command>
