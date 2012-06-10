@@ -16,8 +16,8 @@ public class Gringotts extends JavaPlugin {
 	Logger log = Bukkit.getServer().getLogger();
 	
 	/** Manager of accounts, listener of events. */
-	public static Accounting accounting;
-	private gCommand gcommand;
+	public final Accounting accounting = new Accounting();
+	private final Commands gcommand = new Commands(this);
 	
 	public static final ItemStack currency =  
 			new ItemStack(Material.INK_SACK, 1, (short) 0, DyeColor.BLUE.getData());
@@ -29,7 +29,6 @@ public class Gringotts extends JavaPlugin {
 	public void onEnable() {
 		pluginmanager = getServer().getPluginManager();
 		
-		gcommand = new gCommand(this);
 		getCommand("balance").setExecutor(gcommand);
 		
 		registerEvents();
