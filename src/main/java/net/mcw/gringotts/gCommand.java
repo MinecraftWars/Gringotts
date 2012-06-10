@@ -28,6 +28,7 @@ class gCommand implements CommandExecutor  {
 			accountOwner.sendMessage("Your current balance: " + account.balance());
 			return true;
 		} //If this has happened the function will break and return true. if this hasn't happened the a value of false will be returned.
+		
 		return false; 
 	}
 }
