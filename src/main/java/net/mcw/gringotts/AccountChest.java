@@ -1,7 +1,11 @@
 package net.mcw.gringotts;
 
+import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -11,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
  * @author jast
  *
  */
-public class AccountChest {
+public class AccountChest implements Listener {
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
@@ -130,10 +134,21 @@ public class AccountChest {
 	
 	/**
 	 * Triggered on destruction of physical chest or sign
+	 * @return Blocks belonging to this account chest.
 	 */
 	public void destroy() {
 		account.removeChest(this);
 		sign.getBlock().breakNaturally();
-		// TODO implement 
 	}
+	
+	@EventHandler
+	public void vaultBroken(BlockBreakEvent event) {
+		Block blockBroken = event.getBlock();
+		if (blockBroken.equals(chest.getBlock()) || blockBroken.equals(sign.getBlock())) {
+			this.destroy();
+			
+			account.owner.sendMessage("Vault broken. New balance is " + account.balance());
+		}
+	}
+	
 }

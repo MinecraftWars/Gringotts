@@ -30,6 +30,7 @@ public class Gringotts extends JavaPlugin {
 		pluginmanager = getServer().getPluginManager();
 		
 		getCommand("balance").setExecutor(gcommand);
+		getCommand("money").setExecutor(gcommand);
 		
 		registerEvents();
 		

@@ -19,7 +19,7 @@ public class Commands implements CommandExecutor  {
 	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-		log.info("Command Received");
+		log.info("Command Received: " + cmd);
 
 		Player player;
 		if (sender instanceof Player) {
@@ -28,16 +28,43 @@ public class Commands implements CommandExecutor  {
 			sender.sendMessage("This command can only be run by a player.");
 			return false; // for now, no console commands
 		}
+		
+		AccountHolder accountOwner = new PlayerAccountHolder(player);
+		Accounting accounting = plugin.accounting;
+		Account account = accounting.getAccount(accountOwner);
 
 		if(cmd.getName().equalsIgnoreCase("balance")){
-			AccountHolder accountOwner = new PlayerAccountHolder(player);
-			Accounting accounting = plugin.accounting;
-			Account account = accounting.getAccount(accountOwner);
-			accountOwner.sendMessage("Your current balance: " + account.balance());
+			balance(account, accountOwner);
+			return true;
+		} else if(cmd.getName().equalsIgnoreCase("money")){
+			if (args.length == 0) {
+				// same as balance
+				balance(account, accountOwner);
+			} else if (args.length == 2) {
+				Long value;
+				try {
+					value = Long.parseLong(args[1]);
+				} catch (NumberFormatException e) {
+					return false;
+				}
+				
+				if (args[0].equals("add")) {
+					long add = account.add(value);
+					accountOwner.sendMessage("added to your account: " + add);
+				} else if (args[0].equals("remove")) {
+					long rm = account.remove(value);
+					accountOwner.sendMessage("removed from your account: " + rm);
+				} else return false;
+			} else return false;
+			
 			return true;
 		}
 		
 		return false; 
+	}
+	
+	private void balance(Account account, AccountHolder owner) {
+		owner.sendMessage("Your current balance: " + account.balance());
 	}
 
 }
