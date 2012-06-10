@@ -6,4 +6,8 @@ main: net.mcw.gringotts.Gringotts
 commands:
   balance:
     description: Shows your vault balance
-    usage: /<command>
+    usage: /balance
+  money:
+    aliases: [money]
+    description: Money actions
+    usage: /money [add|remove]

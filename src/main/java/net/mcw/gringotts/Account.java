@@ -31,8 +31,11 @@ public class Account {
 	 * @return
 	 */
 	public long balance() {
-		// TODO implement
-		return 0;
+		long balance = 0;
+		for (AccountChest chest : storage)
+			balance += chest.balance();
+		
+		return balance;
 	}
 	
 	/**
@@ -51,7 +54,7 @@ public class Account {
 		
 		// TODO full: spawn items at random chest
 		
-		return remaining;
+		return value - remaining;
 	}
 	
 	/**
@@ -61,10 +64,31 @@ public class Account {
 	 * @param value
 	 * @return amount actually removed.
 	 */
-	public long remove(int value) {
-		// TODO:
-		// remove items from storage by stack, count removed
-		return 0;
+	public long remove(long value) {
+		long remaining = value;
+		for (AccountChest chest : storage) {
+			remaining -= chest.remove(value);
+			if (remaining <= 0) break;
+		}
+		return value - remaining;
+	}
+	
+	/**
+	 * Attempt to transfer an amount of currency to another account. 
+	 * If the transfer fails because of insufficient funds, both accounts remain at previous
+	 * balance, and false is returned.
+	 * @param value amount to transfer
+	 * @param other account to transfer funds to.
+	 * @return false if this account had insufficient funds.
+	 */
+	public boolean transfer(long value, Account other) {
+		long removed = this.remove(value); 
+		if (removed == value) {
+			return other.add(value) >= 0; // TODO fail if cannot transfer all?			
+		} else {
+			this.add(value);
+			return false;
+		}
 	}
 
 }
