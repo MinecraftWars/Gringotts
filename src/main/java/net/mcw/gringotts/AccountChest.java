@@ -79,7 +79,7 @@ public class AccountChest implements Listener {
 	 */
 	public long balance() {
 		
-		long count = 0;		
+		long count = 0;	
 		for (ItemStack stack : chest.getInventory()) {
 			if (stack.getData().equals(Gringotts.currency.getData()))
 				count += stack.getAmount();
