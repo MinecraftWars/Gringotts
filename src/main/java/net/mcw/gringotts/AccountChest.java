@@ -1,5 +1,6 @@
 package net.mcw.gringotts;
 
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
@@ -8,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 
 /**
  * Represents a storage unit for an account.
@@ -81,7 +83,13 @@ public class AccountChest implements Listener {
 		
 		long count = 0;		
 		for (ItemStack stack : chest.getInventory()) {
-			if (stack.getData().equals(Gringotts.currency.getData()))
+			Material material = Gringotts.currency.getType();
+			if (material != stack.getType())
+				continue;
+			
+			MaterialData currencyData = Gringotts.currency.getData();
+			MaterialData stackData = stack.getData();
+			if (currencyData == null || currencyData.equals(stackData))
 				count += stack.getAmount();
 		}
 		
