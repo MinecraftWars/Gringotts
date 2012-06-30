@@ -88,7 +88,7 @@ public class Accounting implements Listener {
 	public Account getAccount(AccountHolder owner) {
 		Account account = accounts.get(owner);
 		if (account == null) {
-			account =  new Account(owner);
+			account = new Account(owner);
 			accounts.put(owner,account);
 		}
 		
