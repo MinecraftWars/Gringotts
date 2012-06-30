@@ -84,7 +84,7 @@ public class AccountChest implements Listener {
 		long count = 0;	
 		for (ItemStack stack : chest.getInventory()) {
 			Material material = Gringotts.currency.getType();
-			if (material != stack.getType())
+			if (stack == null || material != stack.getType())
 				continue;
 			
 			MaterialData currencyData = Gringotts.currency.getData();
