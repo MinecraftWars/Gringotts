@@ -19,11 +19,10 @@ public class Gringotts extends JavaPlugin {
 	public final Accounting accounting = new Accounting();
 	private final Commands gcommand = new Commands(this);
 	
+	
 	public static final ItemStack currency =  
 			new ItemStack(Material.INK_SACK, 1, (short) 0, DyeColor.BLUE.getData());
 	
-	public Gringotts() {
-	}
 	
 	@Override
 	public void onEnable() {
@@ -42,7 +41,7 @@ public class Gringotts extends JavaPlugin {
 	}
 	
 	private void registerEvents() {
-		registerEvent(new Accounting());
+		registerEvent(new AccountListener(this));
 	}
     
 	public void registerEvent(Listener listener) {
