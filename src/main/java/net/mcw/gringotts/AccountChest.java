@@ -89,8 +89,10 @@ public class AccountChest implements Listener {
 			
 			MaterialData currencyData = Gringotts.currency.getData();
 			MaterialData stackData = stack.getData();
-			if (currencyData == null || currencyData.equals(stackData))
+			if (currencyData == null || currencyData.getData() == stackData.getData()) {
 				count += stack.getAmount();
+			}
+				
 		}
 		
 		return count;
