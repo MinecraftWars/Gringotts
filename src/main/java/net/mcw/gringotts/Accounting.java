@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.block.Block;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 
 /**
  * Manages accounts.
@@ -11,11 +13,29 @@ import org.bukkit.block.Block;
  * @author jast
  *
  */
-public class Accounting {
+public class Accounting implements ConfigurationSerializable {
+	
+	static {
+		ConfigurationSerialization.registerClass(Accounting.class);
+	}
 		
-	// TODO persistence of account chest data
-	private Map<AccountHolder, Account> accounts = new HashMap<AccountHolder, Account>();
+	private final Map<AccountHolder, Account> accounts;
 	private Map<Block, AccountChest> blockAccountChest = new HashMap<Block, AccountChest>();
+
+	/**
+	 * Loads account data from a config file
+	 * @param configMap
+	 */
+	public Accounting(Map<String, Object> configMap) {
+		
+		this.accounts = (Map<AccountHolder, Account>) configMap.get("accounts");
+		
+		// reconstruct the block -> chest mapping from accounts
+		for (Account account : accounts.values())
+			for (AccountChest chest : account.getStorage())
+				for (Block block : chest.getBlocks())
+					blockAccountChest.put(block, chest);
+	}
 
 	/**
 	 * Get the account associated with an account holder.
@@ -54,4 +74,11 @@ public class Accounting {
 		for (Block block : blocks)
 			blockAccountChest.remove(block);
 	}
+
+	public Map<String, Object> serialize() {
+		Map<String, Object> configMap = new HashMap<String, Object>(2);
+		configMap.put("accounts", accounts);
+		return configMap;
+	}
+	
 }
