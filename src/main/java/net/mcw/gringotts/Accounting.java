@@ -19,9 +19,13 @@ public class Accounting implements ConfigurationSerializable {
 		ConfigurationSerialization.registerClass(Accounting.class);
 	}
 		
-	private final Map<AccountHolder, Account> accounts;
+	private Map<AccountHolder, Account> accounts;
 	private Map<Block, AccountChest> blockAccountChest = new HashMap<Block, AccountChest>();
 
+	public Accounting(){
+		this.accounts = new HashMap<AccountHolder, Account>();
+	}
+	
 	/**
 	 * Loads account data from a config file
 	 * @param configMap
