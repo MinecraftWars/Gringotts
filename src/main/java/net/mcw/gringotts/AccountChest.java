@@ -1,15 +1,22 @@
 package net.mcw.gringotts;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
+import org.bukkit.util.BlockVector;
 
 /**
  * Represents a storage unit for an account.
@@ -17,7 +24,11 @@ import org.bukkit.material.MaterialData;
  * @author jast
  *
  */
-public class AccountChest implements Listener {
+public class AccountChest implements ConfigurationSerializable {
+	
+	static {
+		ConfigurationSerialization.registerClass(AccountChest.class);
+	}
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
@@ -74,6 +85,22 @@ public class AccountChest implements Listener {
 		account.addChest(this);
 	}
 	
+	/**
+	 * Deserialization ctor.
+	 * @param serialized
+	 */
+	public AccountChest(Map<String,Object> serialized) {
+		String worldName = (String) serialized.get("world");
+		World world = Bukkit.getWorld(worldName);
+		
+		BlockVector chestBV = (BlockVector) serialized.get("chest");
+		this.chest = (Chest) chestBV.toLocation(world).getBlock().getState();
+		
+		BlockVector signBV = (BlockVector) serialized.get("sign");
+		this.sign = (Sign) signBV.toLocation(world).getBlock().getState();
+		
+		this.account = (Account) serialized.get("account");
+	}
 	
 	/**
 	 * Return balance of this chest.
@@ -151,13 +178,26 @@ public class AccountChest implements Listener {
 		sign.getBlock().breakNaturally();
 	}
 	
-	@EventHandler
-	public void vaultBroken(BlockBreakEvent event) {
-		Block blockBroken = event.getBlock();
-		if (blockBroken.equals(chest.getBlock()) || blockBroken.equals(sign.getBlock())) {
-			this.destroy();
-			
-			account.owner.sendMessage("Vault broken. New balance is " + account.balance());
-		}
+	/**
+	 * Get Blocks belonging to this AccountChest-
+	 * @return Blocks belonging to this AccountChest-
+	 */
+	public Set<Block> getBlocks() {
+		Set<Block> blocks = new HashSet<Block>();
+		blocks.add(chest.getBlock());
+		blocks.add(sign.getBlock());
+		
+		return blocks;
 	}
+
+
+	public Map<String, Object> serialize() {
+		Map<String, Object> serialized = new HashMap<String, Object>();
+		serialized.put("world", chest.getBlock().getWorld().getName());
+		serialized.put("chest", chest.getBlock().getLocation().toVector().toBlockVector());
+		serialized.put("sign", chest.getBlock().getLocation().toVector().toBlockVector());
+		serialized.put("account", account);
+		return serialized;
+	}
+	
 }

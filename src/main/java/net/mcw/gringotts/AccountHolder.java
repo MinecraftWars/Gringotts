@@ -1,5 +1,6 @@
 package net.mcw.gringotts;
 
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 
 /**
@@ -7,7 +8,7 @@ package net.mcw.gringotts;
  * @author jast
  *
  */
-abstract public class AccountHolder {
+abstract public class AccountHolder implements ConfigurationSerializable {
 
 	/** 
 	 * Return name of the account holder.

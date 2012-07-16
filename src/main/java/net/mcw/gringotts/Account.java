@@ -1,14 +1,34 @@
 package net.mcw.gringotts;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
-public class Account {
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
+
+public class Account implements ConfigurationSerializable {
 	
-	private final Set<AccountChest> storage = new HashSet<AccountChest>();
+	private final Set<AccountChest> storage;
 	public final AccountHolder owner;
 	
+	static {
+		ConfigurationSerialization.registerClass(Account.class);
+	}
+	
+	/**
+	 * Deserialization ctor.
+	 * @param serialized
+	 */
+	@SuppressWarnings("unchecked")
+	public Account(Map<String,Object> serialized) {
+		this.storage = (Set<AccountChest>)serialized.get("storage");
+		this.owner = (AccountHolder)serialized.get("owner");
+	}
+	
 	public Account(AccountHolder owner) {
+		this.storage = new HashSet<AccountChest>();
 		this.owner = owner;
 	}
 	
@@ -74,6 +94,16 @@ public class Account {
 	}
 	
 	/**
+	 * Return representation of current state of storage. 
+	 * Changes to this Set will not affect the Account, 
+	 * but changes to the contained elements will.
+	 * @return representation of current state of storage.
+	 */
+	public Set<AccountChest> getStorage() {
+		return new HashSet<AccountChest>(storage);
+	}
+	
+	/**
 	 * Attempt to transfer an amount of currency to another account. 
 	 * If the transfer fails because of insufficient funds, both accounts remain at previous
 	 * balance, and false is returned.
@@ -89,6 +119,13 @@ public class Account {
 			this.add(value);
 			return false;
 		}
+	}
+
+	public Map<String, Object> serialize() {
+		Map<String, Object> serialized = new HashMap<String, Object>();
+		serialized.put("storage", storage);
+		serialized.put("owner", owner);
+		return serialized;
 	}
 
 }
