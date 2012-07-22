@@ -61,7 +61,6 @@ public class Gringotts extends JavaPlugin {
 	}
 	
     private FileConfiguration getData() {
-    	
     	new File(directory).mkdir();
     	
         if (!dataFile.exists())
@@ -75,15 +74,13 @@ public class Gringotts extends JavaPlugin {
 	
 	private void saveData(FileConfiguration config) {
 		try {
-			log.info("[Gringotts] Saving to file..." + dataFile.getAbsolutePath());
+			log.info("[Gringotts] Saving to file... " + dataFile.getAbsolutePath());
 			config.save(dataFile);
 		} catch (IOException e) {
 			log.severe("Could not save Gringotts data.");
 		}
 	}
 
-	
-	
 	private void registerEvents() {
 		registerEvent(new AccountListener(this));
 	}
