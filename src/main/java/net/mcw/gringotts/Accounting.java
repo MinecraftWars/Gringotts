@@ -2,10 +2,11 @@ package net.mcw.gringotts;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
+import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
 
 /**
  * Manages accounts.
@@ -14,9 +15,12 @@ import org.bukkit.configuration.serialization.ConfigurationSerialization;
  *
  */
 public class Accounting implements ConfigurationSerializable {
+	
+	private final Logger log = Bukkit.getServer().getLogger(); 
 		
 	private final Map<AccountHolder, Account> accounts;
 	private final Map<Block, AccountChest> blockAccountChest = new HashMap<Block, AccountChest>();
+	private final Map<AccountChest, Account> accountChestAccount = new HashMap<AccountChest, Account>();
 
 	public Accounting() {
 		this.accounts = new HashMap<AccountHolder, Account>();
@@ -28,16 +32,19 @@ public class Accounting implements ConfigurationSerializable {
 	 */
 	@SuppressWarnings("unchecked")
 	public Accounting(Map<String, Object> configMap) {
+		log.info("[Gringotts] deserializing Accounting");
 		
 		Map<AccountHolder, Account> configAccounts = (Map<AccountHolder, Account>) configMap.get("accounts");
 		this.accounts = configAccounts != null? configAccounts : new HashMap<AccountHolder, Account>();
-		
-		
-		// reconstruct the block -> chest mapping from accounts
+				
+		// reconstruct block -> chest mapping from accounts
+		// reconstruct chest -> account mapping from accounts
 		for (Account account : accounts.values())
-			for (AccountChest chest : account.getStorage())
+			for (AccountChest chest : account.getStorage()) {
+				accountChestAccount.put(chest, account);
 				for (Block block : chest.getBlocks())
 					blockAccountChest.put(block, chest);
+			}
 	}
 
 	/**
@@ -68,13 +75,17 @@ public class Accounting implements ConfigurationSerializable {
 	 * Associa
 	 * @param blocks
 	 */
-	public void addChest(AccountChest chest, Block... blocks) {
+	public void addChest(Account account, AccountChest chest, Block... blocks) {
+		accountChestAccount.put(chest, account);
 		for (Block block : blocks)
 			blockAccountChest.put(block, chest);
 	}
 
-	public void removeChest(Block... blocks) {
-		for (Block block : blocks)
+	public void removeChest(AccountChest chest) {
+		Account account = accountChestAccount.get(chest);
+		account.removeChest(chest);
+		accountChestAccount.remove(chest);		
+		for (Block block : chest.getBlocks())
 			blockAccountChest.remove(block);
 	}
 
@@ -82,6 +93,10 @@ public class Accounting implements ConfigurationSerializable {
 		Map<String, Object> configMap = new HashMap<String, Object>(2);
 		configMap.put("accounts", accounts);
 		return configMap;
+	}
+
+	public Account accountFor(AccountChest accountChest) {
+		return accountChestAccount.get(accountChest);
 	}
 	
 }

@@ -4,18 +4,17 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
 
 public class Account implements ConfigurationSerializable {
 	
+	private final Logger log = Bukkit.getLogger();
+	
 	private final Set<AccountChest> storage;
 	public final AccountHolder owner;
-	
-	static {
-		ConfigurationSerialization.registerClass(Account.class);
-	}
 	
 	/**
 	 * Deserialization ctor.
@@ -23,6 +22,8 @@ public class Account implements ConfigurationSerializable {
 	 */
 	@SuppressWarnings("unchecked")
 	public Account(Map<String,Object> serialized) {
+		log.info("[Gringotts] deserializing Account");
+		
 		this.storage = (Set<AccountChest>)serialized.get("storage");
 		this.owner = (AccountHolder)serialized.get("owner");
 	}
@@ -123,7 +124,8 @@ public class Account implements ConfigurationSerializable {
 
 	public Map<String, Object> serialize() {
 		Map<String, Object> serialized = new HashMap<String, Object>();
-		serialized.put("storage", storage);
+		
+		serialized.put("storage",storage);
 		serialized.put("owner", owner);
 		return serialized;
 	}

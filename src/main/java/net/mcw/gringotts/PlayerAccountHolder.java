@@ -6,8 +6,6 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
-import org.bukkit.entity.Player;
 
 
 
@@ -22,6 +20,8 @@ public class PlayerAccountHolder extends AccountHolder {
 	}
 	
 	public PlayerAccountHolder(OfflinePlayer player) {
+		log.info("[Gringotts] deserializing PlayerAccountHolder");
+		
 		if (player != null)
 			this.accountHolder = player;
 		else throw new NullPointerException("Attempted to create account holder with null player.");
@@ -76,8 +76,11 @@ public class PlayerAccountHolder extends AccountHolder {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
+		
 		PlayerAccountHolder other = (PlayerAccountHolder) obj;
 		if (accountHolder == null) {
+			if (other.accountHolder == null)
+				return true;
 			if (other.accountHolder.getName() != null)
 				return false;
 		} else if (!accountHolder.getName().equals(other.accountHolder.getName()))

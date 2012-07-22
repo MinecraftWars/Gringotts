@@ -17,6 +17,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class Gringotts extends JavaPlugin {
 	
 	static {
+		ConfigurationSerialization.registerClass(Account.class);
 		ConfigurationSerialization.registerClass(Accounting.class);
 		ConfigurationSerialization.registerClass(AccountChest.class);
 		ConfigurationSerialization.registerClass(PlayerAccountHolder.class);
@@ -58,6 +59,8 @@ public class Gringotts extends JavaPlugin {
 			accounting = new Accounting();
 		}
 		
+		data.set("accounting", accounting);
+		
 		registerEvents();
 		
 		log.info("[Gringotts] enabled");
@@ -65,7 +68,6 @@ public class Gringotts extends JavaPlugin {
 	
 	@Override
 	public void onDisable() {
-		data.set("accounting", accounting);
 		saveData(data);
 		log.info("[Gringotts] disabled");
 	}
