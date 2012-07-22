@@ -108,7 +108,7 @@ public class AccountChest implements ConfigurationSerializable {
 	 */
 	public long balance() {
 		
-		long count = 0;		
+		long count = 0;	
 		for (ItemStack stack : chest.getInventory()) {
 			Material material = Gringotts.currency.getType();
 			if (stack == null || material != stack.getType())
