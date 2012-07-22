@@ -22,6 +22,10 @@ public class Accounting implements ConfigurationSerializable {
 	private final Map<AccountHolder, Account> accounts;
 	private Map<Block, AccountChest> blockAccountChest = new HashMap<Block, AccountChest>();
 
+	public Accounting() {
+		accounts = new HashMap<AccountHolder, Account>();
+	}
+	
 	/**
 	 * Loads account data from a config file
 	 * @param configMap

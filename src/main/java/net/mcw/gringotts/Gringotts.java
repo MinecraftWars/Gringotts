@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import javax.management.RuntimeErrorException;
+
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -38,13 +40,14 @@ public class Gringotts extends JavaPlugin {
 		getCommand("balance").setExecutor(gcommand);
 		getCommand("money").setExecutor(gcommand);
 		
-		registerEvents();
-	
 		// TODO do something useful with this later, like set currency item
 		FileConfiguration config = getConfig();
 		
 		data = getData();
 		accounting = (Accounting)data.get("accounting");
+		if (accounting == null) accounting = new Accounting();
+		
+		registerEvents();
 		
 		log.info("Gringotts enabled");
 	}
@@ -55,6 +58,12 @@ public class Gringotts extends JavaPlugin {
 	}
 	
 	private FileConfiguration getData() {
+		if (!dataFile.exists())
+			try {
+				dataFile.createNewFile();
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
 		return YamlConfiguration.loadConfiguration(dataFile);
 	}
 	
