@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -12,7 +13,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
@@ -26,59 +26,20 @@ import org.bukkit.util.BlockVector;
  */
 public class AccountChest implements ConfigurationSerializable {
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		// FIXME probably need to manually implement hashCode based on block location
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((chest == null) ? 0 : chest.getBlock().hashCode());
-		result = prime * result + ((sign == null) ? 0 : sign.getBlock().hashCode());
-		return result;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		// FIXME probably need to manually implement based on block locations
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		AccountChest other = (AccountChest) obj;
-		if (chest == null) {
-			if (other.chest != null)
-				return false;
-		} else if (!chest.equals(other.chest))
-			return false;
-		if (sign == null) {
-			if (other.sign != null)
-				return false;
-		} else if (!sign.equals(other.sign))
-			return false;
-		return true;
-	}
-
+	private final Logger log = Bukkit.getLogger();
+	
 	/** Physical chest backing this chest representation. */
 	public final Chest chest;
 	/** Sign marking the chest as an account chest. */
 	public final Sign sign;
 	
 	/** Account that this chest belongs to. */
-	public final Account account;
+//	public final Account account;
 	
-	public AccountChest(Chest chest, Sign sign, Account account) {
+	public AccountChest(Chest chest, Sign sign) {
 		this.chest = chest;
 		this.sign = sign;
-		this.account = account;
-		account.addChest(this);
+//		this.account = account;
 	}
 	
 	/**
@@ -86,6 +47,8 @@ public class AccountChest implements ConfigurationSerializable {
 	 * @param serialized
 	 */
 	public AccountChest(Map<String,Object> serialized) {
+		log.finest("[Gringotts] deserializing AccountChest");
+		
 		String worldName = (String) serialized.get("world");
 		World world = Bukkit.getWorld(worldName);
 		
@@ -95,7 +58,7 @@ public class AccountChest implements ConfigurationSerializable {
 		BlockVector signBV = (BlockVector) serialized.get("sign");
 		this.sign = (Sign) signBV.toLocation(world).getBlock().getState();
 		
-		this.account = (Account) serialized.get("account");
+//		this.account = (Account) serialized.get("account");
 	}
 	
 	/**
@@ -170,7 +133,7 @@ public class AccountChest implements ConfigurationSerializable {
 	 * @return Blocks belonging to this account chest.
 	 */
 	public void destroy() {
-		account.removeChest(this);
+//		account.removeChest(this);
 		sign.getBlock().breakNaturally();
 	}
 	
@@ -191,9 +154,50 @@ public class AccountChest implements ConfigurationSerializable {
 		Map<String, Object> serialized = new HashMap<String, Object>();
 		serialized.put("world", chest.getBlock().getWorld().getName());
 		serialized.put("chest", chest.getBlock().getLocation().toVector().toBlockVector());
-		serialized.put("sign", chest.getBlock().getLocation().toVector().toBlockVector());
-		serialized.put("account", account);
+		serialized.put("sign", sign.getBlock().getLocation().toVector().toBlockVector());
+//		serialized.put("account", account);
 		return serialized;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		// FIXME probably need to manually implement hashCode based on block location
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((chest == null) ? 0 : chest.getBlock().hashCode());
+		result = prime * result + ((sign == null) ? 0 : sign.getBlock().hashCode());
+		return result;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		// FIXME probably need to manually implement based on block locations
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		AccountChest other = (AccountChest) obj;
+		if (chest == null) {
+			if (other.chest != null)
+				return false;
+		} else if (!chest.equals(other.chest))
+			return false;
+		if (sign == null) {
+			if (other.sign != null)
+				return false;
+		} else if (!sign.equals(other.sign))
+			return false;
+		return true;
 	}
 	
 }
