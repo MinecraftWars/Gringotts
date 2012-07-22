@@ -42,7 +42,6 @@ public class AccountListener implements Listener {
 		AccountHolder chestOwner;
 		if (line0.equals("[vault]")) {
 			chestOwner = new PlayerAccountHolder(player);
-			event.setLine(1, player.getName());
 		} else if (line0.equals("[faction vault]")) {
 			chestOwner = new FactionAccountHolder();
 			// TODO faction vault creation

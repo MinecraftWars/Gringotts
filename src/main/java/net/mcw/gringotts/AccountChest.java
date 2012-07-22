@@ -26,10 +26,6 @@ import org.bukkit.util.BlockVector;
  */
 public class AccountChest implements ConfigurationSerializable {
 	
-	static {
-		ConfigurationSerialization.registerClass(AccountChest.class);
-	}
-	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */

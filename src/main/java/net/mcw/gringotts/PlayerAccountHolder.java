@@ -2,8 +2,10 @@ package net.mcw.gringotts;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 
@@ -11,22 +13,22 @@ import org.bukkit.entity.Player;
 
 public class PlayerAccountHolder extends AccountHolder {
 	
-	static {
-		ConfigurationSerialization.registerClass(PlayerAccountHolder.class);
-	}
+	private final Logger log = Bukkit.getServer().getLogger();
 
-	public final Player accountHolder;
+	public final OfflinePlayer accountHolder;
 	
 	public PlayerAccountHolder(Map<String,Object> serialized) {
-		this((String)serialized.get("owner"));
+		this((OfflinePlayer)serialized.get("owner"));
 	}
 	
-	public PlayerAccountHolder(Player player) {
-		this.accountHolder = player;
+	public PlayerAccountHolder(OfflinePlayer player) {
+		if (player != null)
+			this.accountHolder = player;
+		else throw new NullPointerException("Attempted to create account holder with null player.");
 	}
 
 	public PlayerAccountHolder(String name) {
-		this.accountHolder = Bukkit.getPlayer(name);
+		this.accountHolder = Bukkit.getOfflinePlayer(name);
 		if (accountHolder == null)
 			throw new NullPointerException("Could not retrieve player for name: " + name);
 	}
@@ -38,19 +40,18 @@ public class PlayerAccountHolder extends AccountHolder {
 
 	@Override
 	public void sendMessage(String message) {
-		accountHolder.sendMessage(message);
+		if (accountHolder.isOnline()) {
+			accountHolder.getPlayer().sendMessage(message);
+		}
 		
 	}
 
 	public Map<String, Object> serialize() {
 		Map<String, Object> serialized = new HashMap<String, Object>();
-		serialized.put("owner", accountHolder.getName()); // TODO is the uuid really persistent?
+		serialized.put("owner", accountHolder);
 		return serialized;
 	}
-	
-	public static PlayerAccountHolder deserialize(Map<String,Object> serialized) {
-		return new PlayerAccountHolder(serialized);
-	}
+
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
