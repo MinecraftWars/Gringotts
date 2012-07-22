@@ -14,25 +14,24 @@ import org.bukkit.configuration.serialization.ConfigurationSerialization;
  *
  */
 public class Accounting implements ConfigurationSerializable {
-	
-	static {
-		ConfigurationSerialization.registerClass(Accounting.class);
-	}
 		
-	private Map<AccountHolder, Account> accounts;
-	private Map<Block, AccountChest> blockAccountChest = new HashMap<Block, AccountChest>();
+	private final Map<AccountHolder, Account> accounts;
+	private final Map<Block, AccountChest> blockAccountChest = new HashMap<Block, AccountChest>();
 
-	public Accounting(){
+	public Accounting() {
 		this.accounts = new HashMap<AccountHolder, Account>();
 	}
 	
 	/**
-	 * Loads account data from a config file
+	 * Deserialization ctor.
 	 * @param configMap
 	 */
+	@SuppressWarnings("unchecked")
 	public Accounting(Map<String, Object> configMap) {
 		
-		this.accounts = (Map<AccountHolder, Account>) configMap.get("accounts");
+		Map<AccountHolder, Account> configAccounts = (Map<AccountHolder, Account>) configMap.get("accounts");
+		this.accounts = configAccounts != null? configAccounts : new HashMap<AccountHolder, Account>();
+		
 		
 		// reconstruct the block -> chest mapping from accounts
 		for (Account account : accounts.values())
