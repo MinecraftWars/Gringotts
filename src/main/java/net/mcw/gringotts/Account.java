@@ -60,6 +60,18 @@ public class Account implements ConfigurationSerializable {
 	}
 	
 	/**
+	 * Maximum capacity of this account.
+	 * @return maximum capacity of account
+	 */
+	public long capacity() {
+		long capacity = 0;
+		for (AccountChest chest: storage)
+			capacity += chest.capacity();
+		
+		return capacity;
+	}
+	
+	/**
 	 * Add an amount to this account. If the storage of this account is not large enough,
 	 * extraneous value is dropped in front of random chests.
 	 * @param value
