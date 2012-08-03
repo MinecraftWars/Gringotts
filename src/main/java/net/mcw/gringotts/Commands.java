@@ -41,19 +41,24 @@ public class Commands implements CommandExecutor  {
 				// same as balance
 				balance(account, accountOwner);
 			} else if (args.length == 2) {
-				Long value;
+				double value;
 				try {
-					value = Long.parseLong(args[1]);
+					value = Double.parseDouble(args[1]);
 				} catch (NumberFormatException e) {
 					return false;
 				}
 				
 				if (args[0].equals("add")) {
-					long add = account.add(value);
-					accountOwner.sendMessage("added to your account: " + add);
+					if (account.add(value))
+						accountOwner.sendMessage("added to your account: " + value);
+					else
+						accountOwner.sendMessage("could not add " + value + " to your account.");
+					
 				} else if (args[0].equals("remove")) {
-					long rm = account.remove(value);
-					accountOwner.sendMessage("removed from your account: " + rm);
+					if (account.remove(value))
+						accountOwner.sendMessage("removed from your account: " + value);
+					else
+						accountOwner.sendMessage("could not remove " + value + " from your account.");
 				} else return false;
 			} else return false;
 			
