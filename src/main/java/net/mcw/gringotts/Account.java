@@ -190,6 +190,7 @@ public class Account implements ConfigurationSerializable {
 		
 		serialized.put("storage",storage);
 		serialized.put("owner", owner);
+		serialized.put("fraction", fraction);
 		return serialized;
 	}
 
