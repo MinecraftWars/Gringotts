@@ -9,7 +9,7 @@ public final class Util {
 	}
 	
 	static double ToEmeralds( long cents ) { 
-		return cents / 100;
+		return (double)(cents) / 100.0;
 	}
 	
 }
