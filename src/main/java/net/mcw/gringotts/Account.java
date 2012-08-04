@@ -16,8 +16,8 @@ public class Account implements ConfigurationSerializable {
 	private final Set<AccountChest> storage;
 	public final AccountHolder owner;
 	
-	//Stores any fractional amount that cannot be stored physically
-	private double fraction;
+	//Stores any cents that cannot be stored physically
+	private long cents;
 	
 	/**
 	 * Deserialization ctor.
@@ -29,13 +29,13 @@ public class Account implements ConfigurationSerializable {
 		
 		this.storage = (Set<AccountChest>)serialized.get("storage");
 		this.owner = (AccountHolder)serialized.get("owner");
-		this.fraction = (Double)serialized.get("fraction");
+		this.cents = (Long)serialized.get("cents");
 	}
 	
 	public Account(AccountHolder owner) {
 		this.storage = new HashSet<AccountChest>();
 		this.owner = owner;
-		this.fraction = 0;
+		this.cents = 0;
 	}
 	
 	/**
@@ -51,61 +51,116 @@ public class Account implements ConfigurationSerializable {
 	public void removeChest(AccountChest chest) {
 		storage.remove(chest);		
 	}
+	
+	/**
+	 * Current balance of this account in cents
+	 * @return
+	 */
+	public long balanceCents() {
+		long balance = 0;
+		for (AccountChest chest : storage)
+			balance += chest.balance();
+		
+		//Convert to cents
+		balance *= 100;
+		
+		return balance + cents;
+	}
 
 	/**
 	 * Current balance of this account.
 	 * @return
 	 */
 	public double balance() {
-		long balance = 0;
-		for (AccountChest chest : storage)
-			balance += chest.balance();
+		return Util.ToEmeralds( balanceCents() );
+	}
+	
+	/**
+	 * Maximum capacity of this account in cents
+	 * @return maximum capacity of account in cents
+	 */
+	public long capacityCents() {
+		long capacity = 0;
+		for (AccountChest chest: storage)
+			capacity += chest.capacity();
 		
-		return balance + fraction;
+		return capacity * 100;
 	}
 	
 	/**
 	 * Maximum capacity of this account.
 	 * @return maximum capacity of account
 	 */
-	public long capacity() {
-		long capacity = 0;
-		for (AccountChest chest: storage)
-			capacity += chest.capacity();
+	public double capacity() {
+		return Util.ToEmeralds(capacityCents());
+	}
+	
+	/**
+	 * Add an amount in cents to this account if able to.
+	 * @param amount
+	 * @return Whether amount successfully added
+	 */
+	public boolean addCents(long amount) {
 		
-		return capacity;
+		//Is there space?
+		if(balanceCents() + amount > capacityCents())
+			return false;
+
+		//Add the cents
+		this.cents += cents;
+		
+		//Convert excess cents into emeralds		
+		long remainingEmeralds = 0;
+
+		while(this.cents >= 100) {
+			this.cents -= 100;
+			remainingEmeralds += 1;
+		}
+
+		for (AccountChest chest : storage) {
+			remainingEmeralds -= chest.add(remainingEmeralds);
+			if (remainingEmeralds <= 0) break;
+		}
+		
+		return true;
 	}
 	
 	/**
 	 * Add an amount to this account if able to.
-	 * @param value
+	 * @param amount
 	 * @return Whether amount successfully added
 	 */
-	public boolean add(double value) {
+	public boolean add(double amount) {
+		return addCents(Util.ToCents(amount));
+	}
+	
+	/**
+	 * Attempt to remove an amount in cents from this account. 
+	 * If the account contains less than the specified amount, returns false
+	 * @param amount
+	 * @return amount actually removed.
+	 */
+	public boolean removeCents(long amount) {
 		
-		//Is there space?
-		if(balance() + value > capacity())
+		//Make sure we have enough to remove
+		if(balanceCents() < amount)
 			return false;
 		
-		//Get the fractional amount to add
-		double fractionDiff = value % 1;
+		//Remove the cents
+		this.cents -= amount;
 		
-		//Get integral amount to add to chests
-		long remaining = (long)(value - fractionDiff);
-		
-		//Add to the fractional amount
-		this.fraction += fractionDiff;
-		
-		//Reduce the fractional amount down to < 1, add to physical amount to store as needed
-		while(this.fraction > 1) {
-			this.fraction -= 1;
-			remaining += 1;
+		//Now lets get our amount of cents positive again, and count how many emeralds need removing
+		long remainingEmeralds = 0;
+
+		while(this.cents < 0) {
+			this.cents += 100;
+			remainingEmeralds += 1;
 		}
 		
-
+		//Now remove the physical amount left
 		for (AccountChest chest : storage) {
-			remaining -= chest.add(remaining);
-			if (remaining <= 0) break;
+			remainingEmeralds -= chest.remove(remainingEmeralds);
+			if (remainingEmeralds <= 0) break;
 		}
 		
 		return true;
@@ -114,37 +169,11 @@ public class Account implements ConfigurationSerializable {
 	/**
 	 * Attempt to remove an amount from this account. 
 	 * If the account contains less than the specified amount, returns false
-	 * @param value
+	 * @param amount
 	 * @return amount actually removed.
 	 */
-	public boolean remove(double value) {
-		
-		//Make sure we have enough to remove
-		if(balance() < value)
-			return false;
-		
-		//Get the fractional amount to remove
-		double fractionDiff = value % 1;
-		
-		//Work out how much we need to remove physically
-		long remaining = (long)(value - fractionDiff);
-		
-		//First remove fractional amount
-		this.fraction -= fractionDiff;
-		
-		//If we've removed more than our fractional amount, increase physical amount to remove and add to fraction
-		while(this.fraction < 0) {
-			this.fraction += 1;
-			remaining += 1;
-		}
-		
-		//Now remove the physical amount left
-		for (AccountChest chest : storage) {
-			remaining -= chest.remove(remaining);
-			if (remaining <= 0) break;
-		}
-		
-		return true;
+	public boolean remove(double amount) {
+		return removeCents(Util.ToCents(amount));
 	}
 	
 	/**
@@ -190,7 +219,7 @@ public class Account implements ConfigurationSerializable {
 		
 		serialized.put("storage",storage);
 		serialized.put("owner", owner);
-		serialized.put("fraction", fraction);
+		serialized.put("cents", cents);
 		return serialized;
 	}
 

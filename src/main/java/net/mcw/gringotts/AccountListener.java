@@ -47,12 +47,10 @@ public class AccountListener implements Listener {
 			// TODO faction vault creation
 		} else return; // not for us!
 		
-		event.setLine(2, chestOwner.getName());
-		
 		Block signBlock = event.getBlock();
 		Block chestBlock = signBlock.getRelative(BlockFace.DOWN);
 		if (chestBlock.getType() == Material.CHEST) {
-			
+			event.setLine(2, chestOwner.getName());
 			Account account = accounting.getAccount(chestOwner);
 			
 			// create account chest
@@ -65,8 +63,6 @@ public class AccountListener implements Listener {
 			
 			log.info("Vault created by " + player.getName());
 			player.sendMessage("Created a vault for your account. New balance is " + account.balance());			
-			
-			//FIXME this will probably not work correctly with double chests yet
 		}
 	}
 	

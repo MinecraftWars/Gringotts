@@ -122,17 +122,17 @@ public class AccountChest implements ConfigurationSerializable {
 		// fill up incomplete stacks
 		while (remaining > 0) {
 			ItemStack stack = new ItemStack(Gringotts.currency);
-			if (remaining > stacksize)
-				stack.setAmount(stacksize);
-			else
-				stack.setAmount((int)remaining);
+			stack.setAmount(remaining > stacksize? stacksize : (int)remaining);
 			
 			int returned = 0;
 			for (ItemStack leftover : inv.addItem(stack).values())
 				returned += leftover.getAmount();
 				
-			remaining = returned + stack.getAmount();
-			if (returned > 0) break;
+			// reduce remaining amount by whatever was deposited
+			remaining -= stacksize-returned;
+			
+			// stuff returned means no more space, leave this place
+			if (returned > 0) break; 
 		}
 
 		return value - remaining;
@@ -143,12 +143,30 @@ public class AccountChest implements ConfigurationSerializable {
 	 * If the amount is larger than available items, everything is removed and the number of
 	 * removed items returned.
 	 * @param value
-	 * @return
+	 * @return amount actually removed from this chest
 	 */
 	public long remove(long value) {
-		long count = 0;
-		// TODO: remove items stack by stack, count progress
-		return count;
+
+		int stacksize = Gringotts.currency.getMaxStackSize();
+		Inventory inv = chest.getInventory();
+		long remaining = value;
+		
+		while (remaining > 0) {
+			ItemStack stack = new ItemStack(Gringotts.currency);
+			stack.setAmount(remaining > stacksize? stacksize : (int)remaining);
+			
+			int returned = 0;
+			for (ItemStack leftover : inv.removeItem(stack).values())
+				returned += leftover.getAmount();
+				
+			// reduce remaining amount by whatever was deposited
+			remaining -= stacksize-returned;
+			
+			// stuff returned means no more space, leave this place
+			if (returned > 0) break; 
+		}
+
+		return value - remaining;
 	}
 	
 	/**
@@ -156,7 +174,6 @@ public class AccountChest implements ConfigurationSerializable {
 	 * @return Blocks belonging to this account chest.
 	 */
 	public void destroy() {
-//		account.removeChest(this);
 		sign.getBlock().breakNaturally();
 	}
 	

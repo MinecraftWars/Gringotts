@@ -19,9 +19,7 @@ public class PlayerAccountHolder extends AccountHolder {
 		this((OfflinePlayer)serialized.get("owner"));
 	}
 	
-	public PlayerAccountHolder(OfflinePlayer player) {
-		log.info("[Gringotts] deserializing PlayerAccountHolder");
-		
+	public PlayerAccountHolder(OfflinePlayer player) {		
 		if (player != null)
 			this.accountHolder = player;
 		else throw new NullPointerException("Attempted to create account holder with null player.");
