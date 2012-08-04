@@ -1,6 +1,7 @@
 name: Gringotts
 author: jastice, squidicuz
 version: 0.1
+depend: []
 main: net.mcw.gringotts.Gringotts
 
 commands:
