@@ -37,7 +37,7 @@ public class Gringotts extends JavaPlugin {
 	private FileConfiguration data;
 	
 	public static final ItemStack currency =  
-			new ItemStack(Material.INK_SACK, 1, (short)	0, (byte)4);
+			new ItemStack(Material.EMERALD, 1, (short)	0, (byte)0);
 	
 	
 	@Override
