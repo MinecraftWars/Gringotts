@@ -10,11 +10,9 @@ import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
-import org.bukkit.event.block.BlockDamageEvent;
 
 /**
  * Listens for chest creation and destruction events.
@@ -71,8 +69,8 @@ public class AccountListener implements Listener {
 			//FIXME this will probably not work correctly with double chests yet
 		}
 	}
-
-	@EventHandler(priority = EventPriority.MONITOR)
+	
+	@EventHandler
 	public void vaultBroken(BlockBreakEvent event) {
 		Block block = event.getBlock();
 		AccountChest accountChest = accounting.chestAt(block);

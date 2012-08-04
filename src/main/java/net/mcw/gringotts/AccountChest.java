@@ -85,6 +85,29 @@ public class AccountChest implements ConfigurationSerializable {
 	}
 	
 	/**
+	 * Return the capacity of this chest.
+	 * @return capacity of this chest
+	 */
+	public long capacity() {
+		
+		long count = 0;
+		for (ItemStack stack : chest.getInventory()) {
+			Material currency = Gringotts.currency.getType();
+			
+
+			//If it's air or our currency material we can store a stack of it
+			if( stack == null )
+				count += currency.getMaxStackSize();
+			else if( stack.getType() == currency )
+				count += currency.getMaxStackSize();
+			
+			//If not, the slot is blocked by something else so we can't store anything.
+			
+		}
+		return count;
+	}
+	
+	/**
 	 * Attempts to add given amount to this chest. 
 	 * If the amount is larger than available space, the space is filled and the actually
 	 * added amount returned.

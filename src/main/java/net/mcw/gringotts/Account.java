@@ -16,6 +16,9 @@ public class Account implements ConfigurationSerializable {
 	private final Set<AccountChest> storage;
 	public final AccountHolder owner;
 	
+	//Stores any fractional amount that cannot be stored physically
+	private double fraction;
+	
 	/**
 	 * Deserialization ctor.
 	 * @param serialized
@@ -26,11 +29,13 @@ public class Account implements ConfigurationSerializable {
 		
 		this.storage = (Set<AccountChest>)serialized.get("storage");
 		this.owner = (AccountHolder)serialized.get("owner");
+		this.fraction = (Double)serialized.get("fraction");
 	}
 	
 	public Account(AccountHolder owner) {
 		this.storage = new HashSet<AccountChest>();
 		this.owner = owner;
+		this.fraction = 0;
 	}
 	
 	/**
@@ -51,47 +56,95 @@ public class Account implements ConfigurationSerializable {
 	 * Current balance of this account.
 	 * @return
 	 */
-	public long balance() {
+	public double balance() {
 		long balance = 0;
 		for (AccountChest chest : storage)
 			balance += chest.balance();
 		
-		return balance;
+		return balance + fraction;
 	}
 	
 	/**
-	 * Add an amount to this account. If the storage of this account is not large enough,
-	 * extraneous value is dropped in front of random chests.
-	 * @param value
-	 * @return amount actually added
+	 * Maximum capacity of this account.
+	 * @return maximum capacity of account
 	 */
-	public long add(long value) {
+	public long capacity() {
+		long capacity = 0;
+		for (AccountChest chest: storage)
+			capacity += chest.capacity();
 		
-		long remaining = value;
+		return capacity;
+	}
+	
+	/**
+	 * Add an amount to this account if able to.
+	 * @param value
+	 * @return Whether amount successfully added
+	 */
+	public boolean add(double value) {
+		
+		//Is there space?
+		if(balance() + value > capacity())
+			return false;
+		
+		//Get the fractional amount to add
+		double fractionDiff = value % 1;
+		
+		//Get integral amount to add to chests
+		long remaining = (long)(value - fractionDiff);
+		
+		//Add to the fractional amount
+		this.fraction += fractionDiff;
+		
+		//Reduce the fractional amount down to < 1, add to physical amount to store as needed
+		while(this.fraction > 1) {
+			this.fraction -= 1;
+			remaining += 1;
+		}
+		
+
 		for (AccountChest chest : storage) {
 			remaining -= chest.add(remaining);
 			if (remaining <= 0) break;
 		}
 		
-		// TODO full: spawn items at random chest
-		
-		return value - remaining;
+		return true;
 	}
 	
 	/**
 	 * Attempt to remove an amount from this account. 
-	 * If the account contains less than the specified amount, everything is removed
-	 * and the actual removed amount returned.
+	 * If the account contains less than the specified amount, returns false
 	 * @param value
 	 * @return amount actually removed.
 	 */
-	public long remove(long value) {
-		long remaining = value;
+	public boolean remove(double value) {
+		
+		//Make sure we have enough to remove
+		if(balance() < value)
+			return false;
+		
+		//Get the fractional amount to remove
+		double fractionDiff = value % 1;
+		
+		//Work out how much we need to remove physically
+		long remaining = (long)(value - fractionDiff);
+		
+		//First remove fractional amount
+		this.fraction -= fractionDiff;
+		
+		//If we've removed more than our fractional amount, increase physical amount to remove and add to fraction
+		while(this.fraction < 0) {
+			this.fraction += 1;
+			remaining += 1;
+		}
+		
+		//Now remove the physical amount left
 		for (AccountChest chest : storage) {
-			remaining -= chest.remove(value);
+			remaining -= chest.remove(remaining);
 			if (remaining <= 0) break;
 		}
-		return value - remaining;
+		
+		return true;
 	}
 	
 	/**
@@ -112,14 +165,24 @@ public class Account implements ConfigurationSerializable {
 	 * @param other account to transfer funds to.
 	 * @return false if this account had insufficient funds.
 	 */
-	public boolean transfer(long value, Account other) {
-		long removed = this.remove(value); 
-		if (removed == value) {
-			return other.add(value) >= 0; // TODO fail if cannot transfer all?			
-		} else {
-			this.add(value);
-			return false;
+	public boolean transfer(double value, Account other) {
+		
+		//First try to deduct the amount from this account
+		if(this.remove(value)) {
+			//Okay, now lets send it to the other account
+			if(other.add(value)) {
+				//Success, yay
+				return true;
+			} else {
+				//Oops, failed, better refund this account
+				this.add(value);
+			}
+		
 		}
+		
+		//We must have failed if execution made it here.
+		return false;
+
 	}
 
 	public Map<String, Object> serialize() {
@@ -127,6 +190,7 @@ public class Account implements ConfigurationSerializable {
 		
 		serialized.put("storage",storage);
 		serialized.put("owner", owner);
+		serialized.put("fraction", fraction);
 		return serialized;
 	}
 

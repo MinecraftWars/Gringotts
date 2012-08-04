@@ -43,35 +43,35 @@ public class Gringotts extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		pluginmanager = getServer().getPluginManager();
-
+		
 		getCommand("balance").setExecutor(gcommand);
 		getCommand("money").setExecutor(gcommand);
-
+		
 		// TODO do something useful with this later, like set currency item
 		FileConfiguration config = getConfig();
-
+		
 		data = getData();
 		accounting = (Accounting)data.get("accounting");
 		if (accounting == null) accounting = new Accounting();
-
+		
 		if (accounting == null){
 			log.info("Accounting is null");
 			accounting = new Accounting();
 		}
-
+		
 		data.set("accounting", accounting);
-
+		
 		registerEvents();
-
+		
 		log.info("[Gringotts] enabled");
 	}
-
+	
 	@Override
 	public void onDisable() {
 		saveData(data);
 		log.info("[Gringotts] disabled");
 	}
-
+	
     private FileConfiguration getData() {
     	
     	new File(directory).mkdir();
@@ -83,7 +83,7 @@ public class Gringotts extends JavaPlugin {
         }
         return YamlConfiguration.loadConfiguration(dataFile);
     }
-
+	
 	private void saveData(FileConfiguration config) {
 		try {
 			log.info("[Gringotts] Saving to file..." + dataFile.getAbsolutePath());
@@ -93,6 +93,8 @@ public class Gringotts extends JavaPlugin {
 		}
 	}
 
+	
+	
 	private void registerEvents() {
 		pluginmanager.registerEvents(new AccountListener(this), this);
 	}
