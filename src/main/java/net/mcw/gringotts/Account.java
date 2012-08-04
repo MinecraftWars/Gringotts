@@ -29,7 +29,7 @@ public class Account implements ConfigurationSerializable {
 		
 		this.storage = (Set<AccountChest>)serialized.get("storage");
 		this.owner = (AccountHolder)serialized.get("owner");
-		this.fraction = (double)serialized.get("fraction");
+		this.fraction = (Double)serialized.get("fraction");
 	}
 	
 	public Account(AccountHolder owner) {
@@ -101,7 +101,6 @@ public class Account implements ConfigurationSerializable {
 			this.fraction -= 1;
 			remaining += 1;
 		}
-		
 
 		for (AccountChest chest : storage) {
 			remaining -= chest.add(remaining);
@@ -132,7 +131,7 @@ public class Account implements ConfigurationSerializable {
 		//First remove fractional amount
 		this.fraction -= fractionDiff;
 		
-		//If we've removed more than our fractional amount, increase physical amount to remove and add to fraction
+		 //If we've removed more than our fractional amount, increase physical amount to remove and add to fraction
 		while(this.fraction < 0) {
 			this.fraction += 1;
 			remaining += 1;
