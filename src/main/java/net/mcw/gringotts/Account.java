@@ -102,6 +102,10 @@ public class Account implements ConfigurationSerializable {
 	 */
 	public boolean addCents(long amount) {
 		
+		//Cannot add negative amount
+		if(amount < 0)
+			return false;
+		
 		//Is there space?
 		if(balanceCents() + amount > capacityCents())
 			return false;
@@ -141,6 +145,10 @@ public class Account implements ConfigurationSerializable {
 	 * @return amount actually removed.
 	 */
 	public boolean removeCents(long amount) {
+		
+		//Cannot remove negative amount
+		if(amount < 0)
+			return false;
 		
 		//Make sure we have enough to remove
 		if(balanceCents() < amount)
