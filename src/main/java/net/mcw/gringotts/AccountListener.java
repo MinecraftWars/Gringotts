@@ -16,7 +16,6 @@ import org.bukkit.event.block.SignChangeEvent;
 
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
-import com.massivecraft.factions.Factions;
 
 /**
  * Listens for chest creation and destruction events.
