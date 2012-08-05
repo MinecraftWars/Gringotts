@@ -17,7 +17,7 @@ public class Account implements ConfigurationSerializable {
 	public final AccountHolder owner;
 	
 	//Stores any cents that cannot be stored physically
-	private long cents;
+	private Long cents;
 	
 	/**
 	 * Deserialization ctor.
@@ -29,15 +29,15 @@ public class Account implements ConfigurationSerializable {
 		
 		this.storage = (Set<AccountChest>)serialized.get("storage");
 		this.owner = (AccountHolder)serialized.get("owner");
-		this.cents = (Long)serialized.get("cents");
+		this.cents = new Long((Integer)serialized.get("cents"));
 	}
 	
 	public Account(AccountHolder owner) {
 		this.storage = new HashSet<AccountChest>();
 		this.owner = owner;
-		this.cents = 0;
+		this.cents = new Long(0);
 	}
-	
+
 	/**
 	 * Add a chest to the storage.
 	 * @param chest chest to add to storage
@@ -102,12 +102,16 @@ public class Account implements ConfigurationSerializable {
 	 */
 	public boolean addCents(long amount) {
 		
+		//Cannot add negative amount
+		if(amount < 0)
+			return false;
+		
 		//Is there space?
 		if(balanceCents() + amount > capacityCents())
 			return false;
 
 		//Add the cents
-		this.cents += cents;
+		this.cents += amount;
 		
 		//Convert excess cents into emeralds		
 		long remainingEmeralds = 0;
@@ -141,6 +145,10 @@ public class Account implements ConfigurationSerializable {
 	 * @return amount actually removed.
 	 */
 	public boolean removeCents(long amount) {
+		
+		//Cannot remove negative amount
+		if(amount < 0)
+			return false;
 		
 		//Make sure we have enough to remove
 		if(balanceCents() < amount)
