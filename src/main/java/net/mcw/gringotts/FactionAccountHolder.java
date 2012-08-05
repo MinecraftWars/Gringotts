@@ -42,12 +42,20 @@ public class FactionAccountHolder extends AccountHolder {
 		else throw new NullPointerException("Attempted to create account holder with null faction.");
 	}
 	
+	public FactionAccountHolder(String Id) {
+		Faction faction = Factions.i.get(Id);
+		
+		if (faction != null)
+			this.accountHolder = faction;
+		else throw new NullPointerException("Attempted to create account holder with null faction.");
+	}
+	
 	/**
 	 * Deserialization ctor.
 	 * @param serialized
 	 */
 	public FactionAccountHolder(Map<String,Object> serialized) {
-		this((Faction)serialized.get("fowner"));
+		this((String)serialized.get("fowner"));
 	}
 	
 	@Override
@@ -92,7 +100,7 @@ public class FactionAccountHolder extends AccountHolder {
 
 	public Map<String, Object> serialize() {
 		Map<String, Object> serialized = new HashMap<String, Object>();
-		serialized.put("fowner", accountHolder);
+		serialized.put("fowner", accountHolder.getId());
 		return serialized;
 	}
 	
