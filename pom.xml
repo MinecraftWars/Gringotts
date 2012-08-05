@@ -50,13 +50,13 @@
   </properties>
   
   <scm>
-    <url>https://github.com/jastice/Gringotts</url>
-    <connection>scm:git:git://github.com:jastice/Gringotts.git</connection>
-    <developerConnection>scm:git:git@github.com:jastice/Gringotts.git</developerConnection>
+    <url>https://github.com/MinecraftWars/Gringotts</url>
+    <connection>scm:git:git://github.com:MinecraftWars/Gringotts.git</connection>
+    <developerConnection>scm:git:git@github.com:MinecraftWars/Gringotts.git</developerConnection>
   </scm>
   <issueManagement>
     <system>GitHub</system>
-    <url>https://github.com/jastice/Gringotts/issues</url>
+    <url>https://github.com/MinecraftWars/Gringotts/issues</url>
   </issueManagement>
   <repositories>
     <repository>
