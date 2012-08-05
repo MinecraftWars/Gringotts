@@ -57,8 +57,7 @@ public class FactionAccountHolder extends AccountHolder {
 
 	@Override
 	public void sendMessage(String message) {
-		// TODO Auto-generated method stub
-		
+		accountHolder.sendMessage(message);
 	}
 
 	@Override
