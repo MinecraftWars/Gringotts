@@ -49,12 +49,24 @@ public class Commands implements CommandExecutor  {
 				}
 				
 				if (args[0].equals("add")) {
+					
+					if(player.hasPermission("gringotts.admin")) {
+						sender.sendMessage("You do not have permission to do that.");
+						return true;
+					}
+					
 					if (account.add(value))
 						accountOwner.sendMessage("added to your account: " + value);
 					else
 						accountOwner.sendMessage("could not add " + value + " to your account.");
 					
 				} else if (args[0].equals("remove")) {
+					
+					if(player.hasPermission("gringotts.admin")) {
+						sender.sendMessage("You do not have permission to do that.");
+						return true;
+					}
+					
 					if (account.remove(value))
 						accountOwner.sendMessage("removed from your account: " + value);
 					else
