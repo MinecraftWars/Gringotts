@@ -14,5 +14,4 @@ commands:
     usage: /money [add|remove]
     
 permissions:
-	gringotts.admin: false
-		
+    gringotts.admin: false
