@@ -21,15 +21,11 @@ public class FactionAccountHolder extends AccountHolder {
 
 	public final Faction accountHolder;
 	
-	//static {
-	//	ConfigurationSerialization.registerClass(FactionAccountHolder.class);
-	//}
-
 	/**
 	 * Default ctor.
 	 */
 	public FactionAccountHolder(Faction faction) {
-		if (faction.getId() != null)
+		if (faction != null)
 			this.accountHolder = faction;
 		else throw new NullPointerException("Attempted to create account holder with null faction.");
 	}
@@ -37,7 +33,7 @@ public class FactionAccountHolder extends AccountHolder {
 	public FactionAccountHolder(FPlayer player) {
 		Faction faction = player.getFaction();
 		
-		if (faction.getId() != null)
+		if (faction != null)
 			this.accountHolder = faction;
 		else throw new NullPointerException("Attempted to create account holder with null faction.");
 	}
