@@ -5,11 +5,10 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -17,6 +16,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class Gringotts extends JavaPlugin {
 	
 	static {
+		// register serializable classes sp serialization works
 		ConfigurationSerialization.registerClass(Account.class);
 		ConfigurationSerialization.registerClass(Accounting.class);
 		ConfigurationSerialization.registerClass(AccountChest.class);
@@ -36,9 +36,6 @@ public class Gringotts extends JavaPlugin {
 	public Accounting accounting;
 	private FileConfiguration data;
 	
-	public static final ItemStack currency =  
-			new ItemStack(Material.EMERALD, 1, (short)	0, (byte)0);
-	
 	
 	@Override
 	public void onEnable() {
@@ -47,9 +44,20 @@ public class Gringotts extends JavaPlugin {
 		getCommand("balance").setExecutor(gcommand);
 		getCommand("money").setExecutor(gcommand);
 		
-		// TODO do something useful with this later, like set currency item
-		FileConfiguration config = getConfig();
+		Configuration config = Configuration.config;
 		
+		// load and setup configuration
+		FileConfiguration savedConfig = getConfig();
+		
+		int currencyType = savedConfig.getInt("currency.type", -1);
+		byte currencyDataValue = (byte)savedConfig.getInt("currency.datavalue", 0);
+		if (currencyType >=0)
+			config.currency.setData(new MaterialData(currencyType, currencyDataValue));
+		
+		config.transactionTaxFlat = savedConfig.getDouble("transactiontax.flat", 0);
+		config.transactionTaxRate = savedConfig.getDouble("transactiontax.rate", 0);
+		
+		// load saved account data
 		data = getData();
 		accounting = (Accounting)data.get("accounting");
 		if (accounting == null) accounting = new Accounting();
@@ -94,18 +102,10 @@ public class Gringotts extends JavaPlugin {
 	}
 
 	
-	
 	private void registerEvents() {
 		pluginmanager.registerEvents(new AccountListener(this), this);
 	}
     
 	
 	// TODO add optional dependency to factions. how?
-	// TODO add support to vault
-	// 
-	/*
-	 * TODO various items
-	 * do we need permissions?
-	 * multiworld?
-	 */
 }
