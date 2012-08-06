@@ -28,6 +28,8 @@ public class AccountChest implements ConfigurationSerializable {
 	
 	private final Logger log = Bukkit.getLogger();
 	
+	private final Configuration config = Configuration.config; 
+	
 	/** Physical chest backing this chest representation. */
 	public final Chest chest;
 	/** Sign marking the chest as an account chest. */
@@ -69,11 +71,11 @@ public class AccountChest implements ConfigurationSerializable {
 		
 		long count = 0;	
 		for (ItemStack stack : chest.getInventory()) {
-			Material material = Gringotts.currency.getType();
+			Material material = config.currency.getType();
 			if (stack == null || material != stack.getType())
 				continue;
 			
-			MaterialData currencyData = Gringotts.currency.getData();
+			MaterialData currencyData = config.currency.getData();
 			MaterialData stackData = stack.getData();
 			if (currencyData == null || currencyData.getData() == stackData.getData()) {
 				count += stack.getAmount();
@@ -92,7 +94,7 @@ public class AccountChest implements ConfigurationSerializable {
 		
 		long count = 0;
 		for (ItemStack stack : chest.getInventory()) {
-			Material currency = Gringotts.currency.getType();
+			Material currency = config.currency.getType();
 			
 
 			//If it's air or our currency material we can store a stack of it
@@ -115,13 +117,13 @@ public class AccountChest implements ConfigurationSerializable {
 	 */
 	public long add(long value) {
 		
-		int stacksize = Gringotts.currency.getMaxStackSize();
+		int stacksize = config.currency.getMaxStackSize();
 		Inventory inv = chest.getInventory();
 		long remaining = value;		
 		
 		// fill up incomplete stacks
 		while (remaining > 0) {
-			ItemStack stack = new ItemStack(Gringotts.currency);
+			ItemStack stack = new ItemStack(config.currency);
 			stack.setAmount(remaining > stacksize? stacksize : (int)remaining);
 			
 			int returned = 0;
@@ -147,12 +149,12 @@ public class AccountChest implements ConfigurationSerializable {
 	 */
 	public long remove(long value) {
 
-		int stacksize = Gringotts.currency.getMaxStackSize();
+		int stacksize = config.currency.getMaxStackSize();
 		Inventory inv = chest.getInventory();
 		long remaining = value;
 		
 		while (remaining > 0) {
-			ItemStack stack = new ItemStack(Gringotts.currency);
+			ItemStack stack = new ItemStack(config.currency);
 			stack.setAmount(remaining > stacksize? stacksize : (int)remaining);
 			
 			int returned = 0;
