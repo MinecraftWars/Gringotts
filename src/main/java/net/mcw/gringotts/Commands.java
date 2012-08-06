@@ -93,9 +93,11 @@ public class Commands implements CommandExecutor  {
 					double tax = conf.transactionTaxFlat + value * conf.transactionTaxRate;
 					
 					double balance = account.balance();
-					if (balance < value + tax) {
+					double valueAdded = value + tax;
+					if (balance < valueAdded) {
 						accountOwner.sendMessage(
-								"Your account has insufficient balance. Current balance: " + balance + " " + numName(balance));
+								"Your account has insufficient balance. Current balance: " + balance + " " + numName(balance) 
+								+ ". Required: " + (valueAdded) + " " + numName(valueAdded));
 						return true;
 					}
 					if (recipientAccount.capacity() < value) {
