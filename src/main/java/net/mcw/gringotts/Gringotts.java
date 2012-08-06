@@ -66,19 +66,21 @@ public class Gringotts extends JavaPlugin {
 	
 	@Override
 	public void onDisable() {
+		Configuration.config.saveConfig(getConfig());
+		saveConfig();
+		
 		saveData(data);
 		log.info("[Gringotts] disabled");
 	}
 	
+	/**
+	 * Get the saved account data.
+	 * @return
+	 */
     private FileConfiguration getData() {
-    	
     	new File(directory).mkdir();
-
-        try {
-            dataFile.createNewFile();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        try { dataFile.createNewFile(); } 
+        catch (IOException e) { throw new RuntimeException(e); }
         return YamlConfiguration.loadConfiguration(dataFile);
     }
 	

@@ -46,5 +46,14 @@ public enum Configuration {
 		config.transactionTaxFlat = savedConfig.getDouble("transactiontax.flat", 0);
 		config.transactionTaxRate = savedConfig.getDouble("transactiontax.rate", 0);
 	}
+	
+	public void saveConfig(FileConfiguration savedConfig) {
+		savedConfig.set("currency.type", config.currency.getTypeId());
+		savedConfig.set("currency.datavalue", config.currency.getData().getData());
+		savedConfig.set("currency.name.singular", config.currencyNameSingular);
+		savedConfig.set("currency.name.plural", config.currencyNamePlural);
+		savedConfig.set("transactiontax.flat", config.transactionTaxFlat);
+		savedConfig.set("transactiontax.rate", config.transactionTaxRate);
+	}
 
 }

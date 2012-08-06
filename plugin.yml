@@ -1,5 +1,6 @@
 name: Gringotts
-author: jastice, squidicuz, eXeC64
+author: jasticE
+authors: [jasticE, squidicuz, eXeC64]
 version: 0.1
 depend: []
 main: net.mcw.gringotts.Gringotts
@@ -11,7 +12,10 @@ commands:
   money:
     aliases: [money]
     description: Money actions
-    usage: /money [add|remove]
+    usage: |
+        /money [add|remove] <amount>
+        /money pay <amount> <player>
     
 permissions:
-    gringotts.admin: false
+    gringotts.admin:
+        default: false

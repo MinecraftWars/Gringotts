@@ -19,7 +19,6 @@ public class Commands implements CommandExecutor  {
 	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-		log.info("Command Received: " + cmd);
 
 		Player player;
 		if (sender instanceof Player) {
@@ -40,6 +39,7 @@ public class Commands implements CommandExecutor  {
 			if (args.length == 0) {
 				// same as balance
 				balance(account, accountOwner);
+				return true;
 			} 
 			
 			String command = "";
@@ -96,6 +96,7 @@ public class Commands implements CommandExecutor  {
 					if (balance < value + tax) {
 						accountOwner.sendMessage(
 								"Your account has insufficient balance. Current balance: " + balance + " " + numName(balance));
+						return true;
 					}
 					if (recipientAccount.capacity() < value) {
 						accountOwner.sendMessage(recipientName + " has insufficient storage space for this amount");
@@ -111,9 +112,7 @@ public class Commands implements CommandExecutor  {
 						}
 					}
 				}
-			} else return false;
-			
-			return true;
+			}
 		}
 		
 		return false; 
