@@ -8,7 +8,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
-import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -44,18 +43,9 @@ public class Gringotts extends JavaPlugin {
 		getCommand("balance").setExecutor(gcommand);
 		getCommand("money").setExecutor(gcommand);
 		
-		Configuration config = Configuration.config;
-		
-		// load and setup configuration
+		// load and init configuration
 		FileConfiguration savedConfig = getConfig();
-		
-		int currencyType = savedConfig.getInt("currency.type", -1);
-		byte currencyDataValue = (byte)savedConfig.getInt("currency.datavalue", 0);
-		if (currencyType >=0)
-			config.currency.setData(new MaterialData(currencyType, currencyDataValue));
-		
-		config.transactionTaxFlat = savedConfig.getDouble("transactiontax.flat", 0);
-		config.transactionTaxRate = savedConfig.getDouble("transactiontax.rate", 0);
+		Configuration.config.readConfig(savedConfig);
 		
 		// load saved account data
 		data = getData();

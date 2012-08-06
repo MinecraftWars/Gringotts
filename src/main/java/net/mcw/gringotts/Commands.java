@@ -7,12 +7,12 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import net.mcw.gringotts.Gringotts;
 
 public class Commands implements CommandExecutor  {
 	Logger log = Bukkit.getServer().getLogger();
 	 
 	private Gringotts plugin;
+	private Configuration conf = Configuration.config;
 	 
 	public Commands(Gringotts plugin) {
 		this.plugin = plugin;
@@ -40,15 +40,19 @@ public class Commands implements CommandExecutor  {
 			if (args.length == 0) {
 				// same as balance
 				balance(account, accountOwner);
-			} else if (args.length == 2) {
-				double value;
-				try {
-					value = Double.parseDouble(args[1]);
-				} catch (NumberFormatException e) {
-					return false;
-				}
+			} 
+			
+			String command = "";
+			if (args.length >= 1) {
+				command = args[0];
+			}
+			
+			double value = 0;
+			if (args.length >= 2) {
+				try { value = Double.parseDouble(args[1]); } 
+				catch (NumberFormatException e) { return false; }
 				
-				if (args[0].equals("add")) {
+				if (command.equals("add")) {
 					
 					if(player.hasPermission("gringotts.admin")) {
 						sender.sendMessage("You do not have permission to do that.");
@@ -60,7 +64,9 @@ public class Commands implements CommandExecutor  {
 					else
 						accountOwner.sendMessage("could not add " + value + " to your account.");
 					
-				} else if (args[0].equals("remove")) {
+					return true;
+					
+				} else if (command.equals("remove")) {
 					
 					if(player.hasPermission("gringotts.admin")) {
 						sender.sendMessage("You do not have permission to do that.");
@@ -71,7 +77,40 @@ public class Commands implements CommandExecutor  {
 						accountOwner.sendMessage("removed from your account: " + value);
 					else
 						accountOwner.sendMessage("could not remove " + value + " from your account.");
-				} else return false;
+					
+					return true;
+				}
+			} 
+			
+			if(args.length == 3) {
+				// /money pay <amount> <player>
+				// TODO support faction payment
+				if (command.equals("pay")) {
+					String recipientName = args[2];
+					AccountHolder recipient = new PlayerAccountHolder(recipientName);
+					Account recipientAccount = accounting.getAccount(recipient);
+					
+					double tax = conf.transactionTaxFlat + value * conf.transactionTaxRate;
+					
+					double balance = account.balance();
+					if (balance < value + tax) {
+						accountOwner.sendMessage(
+								"Your account has insufficient balance. Current balance: " + balance + " " + numName(balance));
+					}
+					if (recipientAccount.capacity() < value) {
+						accountOwner.sendMessage(recipientName + " has insufficient storage space for this amount");
+						return true;
+					} else if (account.remove(value)) {
+						if (recipientAccount.add(value)) {
+							account.remove(tax);
+							String currencyName = numName(balance);
+							String taxMessage = "Transaction tax deducted from your account: " + tax + " " + numName(tax);
+							accountOwner.sendMessage("Sent " + value + " " + currencyName + " to " + recipientName +". " + (tax>0? taxMessage : ""));
+							recipient.sendMessage("Received " + value + " " + currencyName + " from " + accountOwner.getName() +".");
+							return true;
+						}
+					}
+				}
 			} else return false;
 			
 			return true;
@@ -82,6 +121,14 @@ public class Commands implements CommandExecutor  {
 	
 	private void balance(Account account, AccountHolder owner) {
 		owner.sendMessage("Your current balance: " + account.balance());
+	}
+	
+	/**
+	 * Currency name for a given value (singular or plural).
+	 * @return currency name for a given value (singular or plural)
+	 */
+	private String numName(double value) {
+		return value==1.0? conf.currencyNameSingular : conf.currencyNamePlural;
 	}
 
 }

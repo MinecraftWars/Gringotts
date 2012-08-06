@@ -1,7 +1,9 @@
 package net.mcw.gringotts;
 
 import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 
 /**
  * Singleton for global configuration information. 
@@ -22,5 +24,27 @@ public enum Configuration {
 	
 	/** Rate tax on every player-to-player transaction. This is a fraction, e.g. 0.1 means 10% tax. */ 
 	public double transactionTaxRate = 0;
+
+	/** Name of currency, singular. */
+	public String currencyNameSingular;
+	
+	/** Name of currency, plural. */
+	public String currencyNamePlural;
+	
+	/**
+	 * Set configuration form values in a file configuration.
+	 * @param savedConf
+	 */
+	public void readConfig(FileConfiguration savedConfig) {
+		int currencyType = savedConfig.getInt("currency.type", -1);
+		byte currencyDataValue = (byte)savedConfig.getInt("currency.datavalue", 0);
+		if (currencyType >=0)
+			config.currency.setData(new MaterialData(currencyType, currencyDataValue));
+		config.currencyNameSingular = savedConfig.getString("currency.name.singular", "Emerald");
+		config.currencyNamePlural = savedConfig.getString("currency.name.plural", config.currencyNameSingular+"s");
+		
+		config.transactionTaxFlat = savedConfig.getDouble("transactiontax.flat", 0);
+		config.transactionTaxRate = savedConfig.getDouble("transactiontax.rate", 0);
+	}
 
 }
