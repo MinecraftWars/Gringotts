@@ -31,6 +31,7 @@ public class Gringotts extends JavaPlugin {
 	private final Commands gcommand = new Commands(this);
 	private static String directory = "plugins" + File.separator + "Gringotts" + File.separator;
 	private final File dataFile = new File(directory + "data.yml");
+	public final AccountHolderFactory accountHolderFactory = new AccountHolderFactory();
 	
 	public Accounting accounting;
 	private FileConfiguration data;

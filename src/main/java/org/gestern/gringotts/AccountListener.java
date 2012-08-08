@@ -14,6 +14,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 
+import com.massivecraft.factions.FPlayer;
+import com.massivecraft.factions.FPlayers;
+
 /**
  * Listens for chest creation and destruction events.
  * 
@@ -43,8 +46,8 @@ public class AccountListener implements Listener {
 		if (line0.equals("[vault]")) {
 			chestOwner = new PlayerAccountHolder(player);
 		} else if (line0.equals("[faction vault]")) {
-			chestOwner = new FactionAccountHolder();
-			// TODO faction vault creation
+			FPlayer fplayer = FPlayers.i.get(player);
+			chestOwner = new FactionAccountHolder(fplayer.getFaction());
 		} else return; // not for us!
 		
 		Block signBlock = event.getBlock();
@@ -71,7 +74,6 @@ public class AccountListener implements Listener {
 		Block block = event.getBlock();
 		AccountChest accountChest = accounting.chestAt(block);
 		if (accountChest != null) {
-//			Account account = accountChest.account;
 			Account account = accounting.accountFor(accountChest);
 			accountChest.destroy();
 			accounting.removeChest(accountChest);

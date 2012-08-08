@@ -2,7 +2,6 @@ package org.gestern.gringotts;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -10,8 +9,7 @@ import org.bukkit.OfflinePlayer;
 
 
 public class PlayerAccountHolder extends AccountHolder {
-	
-	private final Logger log = Bukkit.getServer().getLogger();
+
 
 	public final OfflinePlayer accountHolder;
 	
