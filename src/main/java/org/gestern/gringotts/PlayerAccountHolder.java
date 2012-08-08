@@ -1,4 +1,4 @@
-package net.mcw.gringotts;
+package org.gestern.gringotts;
 
 import java.util.HashMap;
 import java.util.Map;
