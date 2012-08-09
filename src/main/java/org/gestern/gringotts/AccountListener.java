@@ -40,7 +40,7 @@ public class AccountListener implements Listener {
 	@EventHandler
 	public void createVault(SignChangeEvent event) {
 		Player player = event.getPlayer();
-		
+
 		String line0 = event.getLine(0);
 		AccountHolder chestOwner;
 		if (line0.equals("[vault]")) {
@@ -49,21 +49,21 @@ public class AccountListener implements Listener {
 			FPlayer fplayer = FPlayers.i.get(player);
 			chestOwner = new FactionAccountHolder(fplayer.getFaction());
 		} else return; // not for us!
-		
+
 		Block signBlock = event.getBlock();
 		Block chestBlock = signBlock.getRelative(BlockFace.DOWN);
 		if (chestBlock.getType() == Material.CHEST) {
 			event.setLine(2, chestOwner.getName());
 			Account account = accounting.getAccount(chestOwner);
-			
+
 			// create account chest
 			Chest chest = (Chest)chestBlock.getState();
 			AccountChest accountChest = new AccountChest(chest, (Sign)signBlock.getState());
 			account.addChest(accountChest);
-			
+
 			// add to tracking
 			accounting.addChest(account, accountChest, signBlock, chestBlock);;
-			
+
 			log.info("Vault created by " + player.getName());
 			player.sendMessage("Created a vault for your account. New balance is " + account.balance());			
 		}

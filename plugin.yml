@@ -3,7 +3,7 @@ authors: [jasticE, squidicuz, eXeC64]
 website: https://github.com/MinecraftWars/Gringotts
 
 version: 0.1
-main: net.mcw.gringotts.Gringotts
+main: org.gestern.gringotts.Gringotts
 
 depend: []
 softdepend: [Factions]
@@ -23,4 +23,4 @@ commands:
 permissions:
     gringotts.admin:
         description: Use all commands
-        default: false        
+        default: false
