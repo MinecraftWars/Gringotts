@@ -124,14 +124,15 @@ public class AccountChest implements ConfigurationSerializable {
 		// fill up incomplete stacks
 		while (remaining > 0) {
 			ItemStack stack = new ItemStack(config.currency);
-			stack.setAmount(remaining > stacksize? stacksize : (int)remaining);
+			int remainderStackSize = remaining > stacksize? stacksize : (int)remaining;
+			stack.setAmount(remainderStackSize);
 			
 			int returned = 0;
 			for (ItemStack leftover : inv.addItem(stack).values())
 				returned += leftover.getAmount();
 				
 			// reduce remaining amount by whatever was deposited
-			remaining -= stacksize-returned;
+			remaining -= remainderStackSize-returned;
 			
 			// stuff returned means no more space, leave this place
 			if (returned > 0) break; 
@@ -155,14 +156,15 @@ public class AccountChest implements ConfigurationSerializable {
 		
 		while (remaining > 0) {
 			ItemStack stack = new ItemStack(config.currency);
-			stack.setAmount(remaining > stacksize? stacksize : (int)remaining);
+			int remainderStackSize = remaining > stacksize? stacksize : (int)remaining;
+			stack.setAmount(remainderStackSize);
 			
 			int returned = 0;
 			for (ItemStack leftover : inv.removeItem(stack).values())
 				returned += leftover.getAmount();
 				
 			// reduce remaining amount by whatever was deposited
-			remaining -= stacksize-returned;
+			remaining -= remainderStackSize-returned;
 			
 			// stuff returned means no more space, leave this place
 			if (returned > 0) break; 
