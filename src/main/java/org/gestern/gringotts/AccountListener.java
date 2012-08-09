@@ -1,4 +1,4 @@
-package net.mcw.gringotts;
+package org.gestern.gringotts;
 
 import java.util.logging.Logger;
 
@@ -40,30 +40,30 @@ public class AccountListener implements Listener {
 	@EventHandler
 	public void createVault(SignChangeEvent event) {
 		Player player = event.getPlayer();
-		FPlayer fplayer = FPlayers.i.get(player);
-		
+
 		String line0 = event.getLine(0);
 		AccountHolder chestOwner;
 		if (line0.equals("[vault]")) {
 			chestOwner = new PlayerAccountHolder(player);
 		} else if (line0.equals("[faction vault]")) {
-			chestOwner = new FactionAccountHolder(fplayer);
+			FPlayer fplayer = FPlayers.i.get(player);
+			chestOwner = new FactionAccountHolder(fplayer.getFaction());
 		} else return; // not for us!
-		
+
 		Block signBlock = event.getBlock();
 		Block chestBlock = signBlock.getRelative(BlockFace.DOWN);
 		if (chestBlock.getType() == Material.CHEST) {
 			event.setLine(2, chestOwner.getName());
 			Account account = accounting.getAccount(chestOwner);
-			
+
 			// create account chest
 			Chest chest = (Chest)chestBlock.getState();
 			AccountChest accountChest = new AccountChest(chest, (Sign)signBlock.getState());
 			account.addChest(accountChest);
-			
+
 			// add to tracking
 			accounting.addChest(account, accountChest, signBlock, chestBlock);;
-			
+
 			log.info("Vault created by " + player.getName());
 			player.sendMessage("Created a vault for your account. New balance is " + account.balance());			
 		}
@@ -74,7 +74,6 @@ public class AccountListener implements Listener {
 		Block block = event.getBlock();
 		AccountChest accountChest = accounting.chestAt(block);
 		if (accountChest != null) {
-//			Account account = accountChest.account;
 			Account account = accounting.accountFor(accountChest);
 			accountChest.destroy();
 			accounting.removeChest(accountChest);

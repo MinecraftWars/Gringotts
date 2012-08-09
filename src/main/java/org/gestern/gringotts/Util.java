@@ -1,4 +1,4 @@
-package net.mcw.gringotts;
+package org.gestern.gringotts;
 
 public final class Util {
 
