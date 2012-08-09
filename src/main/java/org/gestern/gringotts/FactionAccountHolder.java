@@ -1,10 +1,12 @@
 package org.gestern.gringotts;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 
 import com.massivecraft.factions.Faction;
+import com.massivecraft.factions.Factions;
 
 public class FactionAccountHolder extends AccountHolder {
 	
@@ -21,13 +23,20 @@ public class FactionAccountHolder extends AccountHolder {
 		this.owner = owner;
 	}
 	
+	public FactionAccountHolder(String Id) {
+		Faction faction = Factions.i.get(Id);
+
+		if (faction != null)
+			this.owner = faction;
+		else throw new NullPointerException("Attempted to create account holder with null faction.");
+	}
+	
 	/**
 	 * Deserialization ctor.
 	 * @param serialized
 	 */
 	public FactionAccountHolder(Map<String,Object> serialized) {
-		this.owner = null;
-		// TODO implement deserializing constructor
+		this((String)serialized.get("fowner"));
 	}
 	
 	@Override
@@ -42,8 +51,9 @@ public class FactionAccountHolder extends AccountHolder {
 
 
 	public Map<String, Object> serialize() {
-		// TODO implement serializer
-		return null;
+		Map<String, Object> serialized = new HashMap<String, Object>();
+		serialized.put("fowner", owner.getId());
+		return serialized;
 	}
 
 	@Override
