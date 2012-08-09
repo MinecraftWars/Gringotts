@@ -59,13 +59,15 @@ public class AccountListener implements Listener {
 			// create account chest
 			Chest chest = (Chest)chestBlock.getState();
 			AccountChest accountChest = new AccountChest(chest, (Sign)signBlock.getState());
-			account.addChest(accountChest);
 
-			// add to tracking
-			accounting.addChest(account, accountChest, signBlock, chestBlock);;
-
-			log.info("Vault created by " + player.getName());
-			player.sendMessage("Created a vault for your account. New balance is " + account.balance());			
+			// check for existence / add to tracking
+			if (accounting.addChest(account, accountChest, signBlock, chestBlock)) {
+				account.addChest(accountChest);
+				log.info("Vault created by " + player.getName());
+				player.sendMessage("Created a vault for your account. New balance is " + account.balance());
+			} else {
+			    event.setCancelled(true);
+			}
 		}
 	}
 	

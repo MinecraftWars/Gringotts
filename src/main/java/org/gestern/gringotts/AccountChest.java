@@ -13,6 +13,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.inventory.DoubleChestInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
@@ -39,9 +40,11 @@ public class AccountChest implements ConfigurationSerializable {
 //	public final Account account;
 	
 	public AccountChest(Chest chest, Sign sign) {
+	    if (chest == null || sign == null)
+	        throw new IllegalArgumentException("chest and sign arguments may not be null");
+	    
 		this.chest = chest;
 		this.sign = sign;
-//		this.account = account;
 	}
 	
 	/**
@@ -202,6 +205,23 @@ public class AccountChest implements ConfigurationSerializable {
 //		serialized.put("account", account);
 		return serialized;
 	}
+	
+	/**
+	 * Connected chests that comprise the inventory of this account chest.
+	 * @return
+	 */
+	public Chest[] connectedChests() {
+	    Inventory inv = chest.getInventory();
+	    if (inv instanceof DoubleChestInventory) {
+	        DoubleChestInventory dinv = (DoubleChestInventory)inv;
+	        Chest left = (Chest)(dinv.getLeftSide().getHolder());
+	        Chest right = (Chest)(dinv.getRightSide().getHolder());
+	        
+	        return new Chest[] {left, right};
+	    } else {
+	        return new Chest[] {chest};
+	    }
+	}
 
 
 	/* (non-Javadoc)
@@ -209,11 +229,9 @@ public class AccountChest implements ConfigurationSerializable {
 	 */
 	@Override
 	public int hashCode() {
-		// FIXME probably need to manually implement hashCode based on block location
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((chest == null) ? 0 : chest.getBlock().hashCode());
-		result = prime * result + ((sign == null) ? 0 : sign.getBlock().hashCode());
+		result = prime * result + sign.getLocation().hashCode();
 		return result;
 	}
 
@@ -230,18 +248,9 @@ public class AccountChest implements ConfigurationSerializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
+		
 		AccountChest other = (AccountChest) obj;
-		if (chest == null) {
-			if (other.chest != null)
-				return false;
-		} else if (!chest.equals(other.chest))
-			return false;
-		if (sign == null) {
-			if (other.sign != null)
-				return false;
-		} else if (!sign.equals(other.sign))
-			return false;
-		return true;
+		return sign.getLocation().equals(other.sign.getLocation());
 	}
 	
 }
