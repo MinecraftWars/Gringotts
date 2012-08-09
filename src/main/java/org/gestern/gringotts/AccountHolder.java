@@ -14,19 +14,19 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
  */
 abstract public class AccountHolder implements ConfigurationSerializable {
 
-	/** 
-	 * Return name of the account holder.
-	 * 
-	 * @return name of the account holder
-	 */
-	abstract public String getName();
-	
-	/** 
-	 * Send message to the account holder. 
-	 * @param message to send
-	 * */
-	abstract public void sendMessage(String message);
+    /** 
+     * Return name of the account holder.
+     * 
+     * @return name of the account holder
+     */
+    abstract public String getName();
 
-	abstract public int hashCode();
-	abstract public boolean equals(Object other);
+    /** 
+     * Send message to the account holder. 
+     * @param message to send
+     * */
+    abstract public void sendMessage(String message);
+
+    abstract public int hashCode();
+    abstract public boolean equals(Object other);
 }
