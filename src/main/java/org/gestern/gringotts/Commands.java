@@ -53,7 +53,10 @@ public class Commands implements CommandExecutor  {
                 catch (NumberFormatException e) { return false; }
 
                 if (command.equals("add")) {
+                    
+                    return true;
 
+                    /*
                     if(player.hasPermission("gringotts.admin")) {
                         sender.sendMessage("You do not have permission to do that.");
                         return true;
@@ -65,6 +68,7 @@ public class Commands implements CommandExecutor  {
                         accountOwner.sendMessage("could not add " + value + " to your account.");
 
                     return true;
+                    */
 
                 } else if (command.equals("remove")) {
 
@@ -72,7 +76,6 @@ public class Commands implements CommandExecutor  {
                         sender.sendMessage("You do not have permission to do that.");
                         return true;
                     }
-
                     if (account.remove(value))
                         accountOwner.sendMessage("removed from your account: " + value);
                     else
