@@ -1,14 +1,26 @@
 name: Gringotts
-author: jastice, squidicuz
+authors: [jasticE, squidicuz, eXeC64]
+website: https://github.com/MinecraftWars/Gringotts
+
 version: 0.1
+main: org.gestern.gringotts.Gringotts
+
 depend: []
-main: net.mcw.gringotts.Gringotts
+softdepend: [Factions]
 
 commands:
   balance:
     description: Shows your vault balance
     usage: /balance
+    aliases: money
   money:
     aliases: [money]
     description: Money actions
-    usage: /money [add|remove]
+    usage: |
+        /money [add|remove] <amount>
+        /money pay <amount> <player>
+    
+permissions:
+    gringotts.admin:
+        description: Use all commands
+        default: false
