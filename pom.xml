@@ -69,13 +69,13 @@
       <url>http://repo.bukkit.org/content/groups/public/</url>
     </repository>
     <repository>
-        <id>project.local</id>
-        <name>project</name>
-        <releases>
-          <enabled>true</enabled>
-          <checksumPolicy>ignore</checksumPolicy>
-        </releases>
-        <url>file:${project.basedir}/repo</url>
+      <id>project.local</id>
+      <name>project.local</name>
+      <releases>
+        <enabled>true</enabled>
+        <checksumPolicy>ignore</checksumPolicy>
+      </releases>
+      <url>file://${project.basedir}/repo</url>
     </repository>
   </repositories>
   
