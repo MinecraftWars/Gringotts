@@ -1,36 +1,21 @@
 package org.gestern.gringotts;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
-public class Account implements ConfigurationSerializable {
+public class Account implements Persisted {
 
     private final Logger log = Bukkit.getLogger();
+    private final DAO dao = DAO.getDao(); 
 
     private final Set<AccountChest> storage;
     public final AccountHolder owner;
 
     //Stores any cents that cannot be stored physically
     private Long cents;
-
-    /**
-     * Deserialization ctor.
-     * @param serialized
-     */
-    @SuppressWarnings("unchecked")
-    public Account(Map<String,Object> serialized) {
-        log.info("[Gringotts] deserializing Account");
-
-        this.storage = (Set<AccountChest>)serialized.get("storage");
-        this.owner = (AccountHolder)serialized.get("owner");
-        this.cents = new Long((Integer)serialized.get("cents"));
-    }
 
     public Account(AccountHolder owner) {
         this.storage = new HashSet<AccountChest>();
@@ -44,27 +29,33 @@ public class Account implements ConfigurationSerializable {
      * @return new amount of chests in storage
      */
     public int addChest(AccountChest chest) {
+    	log.fine("Saving " + chest);
         this.storage.add(chest);
+        dao.storeAccountChest(chest);
         return storage.size();
     }
 
+    /**
+     * Remove a chest from the storage.
+     * @param chest
+     */
     public void removeChest(AccountChest chest) {
-        storage.remove(chest);		
+    	log.fine("[Gringotts] removing " + chest);
+        storage.remove(chest);
+        dao.destroyAccountChest(chest);
     }
 
     /**
      * Current balance of this account in cents
-     * @return
+     * @return current balance of this account in cents
      */
     public long balanceCents() {
         long balance = 0;
         for (AccountChest chest : storage)
             balance += chest.balance();
 
-        //Convert to cents
-        balance *= 100;
-
-        return balance + cents;
+        //Convert to total cents
+        return balance*100 + cents;
     }
 
     /**
@@ -185,16 +176,6 @@ public class Account implements ConfigurationSerializable {
     }
 
     /**
-     * Return representation of current state of storage. 
-     * Changes to this Set will not affect the Account, 
-     * but changes to the contained elements will.
-     * @return representation of current state of storage.
-     */
-    public Set<AccountChest> getStorage() {
-        return new HashSet<AccountChest>(storage);
-    }
-
-    /**
      * Attempt to transfer an amount of currency to another account. 
      * If the transfer fails because of insufficient funds, both accounts remain at previous
      * balance, and false is returned.
@@ -214,21 +195,16 @@ public class Account implements ConfigurationSerializable {
                 //Oops, failed, better refund this account
                 this.add(value);
             }
-
         }
-
         //We must have failed if execution made it here.
         return false;
-
     }
 
-    public Map<String, Object> serialize() {
-        Map<String, Object> serialized = new HashMap<String, Object>();
-
-        serialized.put("storage",storage);
-        serialized.put("owner", owner);
-        serialized.put("cents", cents);
-        return serialized;
-    }
+	@Override
+	public boolean persist() {
+		// TODO proper
+		dao.storeAccount(this);
+		return false;
+	}
 
 }

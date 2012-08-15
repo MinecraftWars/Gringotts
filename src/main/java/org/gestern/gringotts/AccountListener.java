@@ -3,10 +3,10 @@ package org.gestern.gringotts;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -25,6 +25,7 @@ import com.massivecraft.factions.FPlayers;
  */
 public class AccountListener implements Listener {
 
+	private DAO dao = DAO.getDao();
     private Logger log = Bukkit.getServer().getLogger();
     private final Accounting accounting;
 
@@ -57,8 +58,7 @@ public class AccountListener implements Listener {
             Account account = accounting.getAccount(chestOwner);
 
             // create account chest
-            Chest chest = (Chest)chestBlock.getState();
-            AccountChest accountChest = new AccountChest(chest, (Sign)signBlock.getState());
+            AccountChest accountChest = new AccountChest(account, (Sign)signBlock.getState());
 
             // check for existence / add to tracking
             if (accounting.addChest(account, accountChest, signBlock, chestBlock)) {
@@ -71,16 +71,18 @@ public class AccountListener implements Listener {
         }
     }
 
+    /**
+     * Catches and handles breaking of the sign block of an account chest.
+     * @param event
+     */
     @EventHandler
     public void vaultBroken(BlockBreakEvent event) {
-        Block block = event.getBlock();
-        AccountChest accountChest = accounting.chestAt(block);
-        if (accountChest != null) {
-            Account account = accounting.accountFor(accountChest);
-            accountChest.destroy();
-            accounting.removeChest(accountChest);
-
-            account.owner.sendMessage("Vault broken. New balance is " + account.balance());
+        Location loc = event.getBlock().getLocation();
+        for (AccountChest chest : dao.getChests()) {
+        	if ( loc.equals(chest.sign.getBlock().getLocation()) ) {
+        		chest.destroy();
+        		chest.account.owner.sendMessage("Vault broken. New balance is " + chest.account.balance());
+        	}
         }
     }
 }
