@@ -1,6 +1,5 @@
 package org.gestern.gringotts;
 
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 
 /**

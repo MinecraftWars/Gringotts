@@ -7,8 +7,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Logger;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.block.Sign;
 
 /**
  * 
@@ -29,6 +33,8 @@ public class DAO {
 	
 	private static final DAO dao = new DAO();
 	
+	private final Logger log = Bukkit.getLogger();
+	
 	private final Connection connection;
 	private final PreparedStatement 
 		storeAccountChest, destroyAccountChest, getAccountChest, 
@@ -39,14 +45,18 @@ public class DAO {
 		String connectString = "jdbc:derby:"+dbName+";create=true";
 		try {
 			connection = DriverManager.getConnection(connectString);
+			
+			setupDB(connection);
 	
-			storeAccountChest = connection.prepareStatement("");
+			storeAccountChest = connection.prepareStatement("select * from accountchest where false");
 			destroyAccountChest = connection.prepareStatement("delete from accountchest where world = ? and x = ? and y = ? and z = ?");
 			getAccountChest = connection.prepareStatement("select * from accountchest where world = ? and x = ? and y = ? and z = ?");
-			storeAccount = connection.prepareStatement(""); // insert or update?
+			storeAccount = connection.prepareStatement("select * from accountchest where false"); // TODO insert or update?
 			getAccount = connection.prepareStatement("select * from account where owner = ?");
 			getAccountList = connection.prepareStatement("select * from account");
 			getChests = connection.prepareStatement("select * from accountchest");
+			
+			log.info("[Gringotts] DAO setup successfully.");
 
 		} catch (SQLException e) {
 			throw new GringottsStorageException("Failed to initialize database connection.", e);
@@ -54,8 +64,31 @@ public class DAO {
 		
 	};
 	
-	
-    /**
+	/**
+	 * Configure DB for use with gringotts, if it isn't already.
+	 * @param connection Connection to the db
+	 * @throws SQLException 
+	 */
+    private void setupDB(Connection connection) throws SQLException {
+    	
+    	String createAccount = 
+    			"create table account (" +
+    			"id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
+    			"type varchar(64), owner varchar(64), " +
+    			"primary key (id))";
+
+    	String createAccountChest =		
+    		"create table accountchest (id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
+    				"world varchar(64), x integer, y integer, z integer, account integer, " + 
+    				"primary key(id), unique(world,x,y,z), foreign key(account) references account(id))";
+
+
+		connection.createStatement().executeQuery(createAccount);
+		connection.createStatement().executeQuery(createAccountChest);
+	}
+
+
+	/**
      * Save an account chest to database. 
      * @param chest
      * @throws GringottsStorageException when storage failed
@@ -104,23 +137,27 @@ public class DAO {
         return null;
     }
     
+    /**
+     * Get set of all chests registered with Gringotts.
+     * @return
+     */
     public Set<AccountChest> getChests() {
     	Set<AccountChest> chests = new HashSet<AccountChest>();
     	try {
 			ResultSet result = getChests.executeQuery();
 			
 			while (result.next()) {
-				String owner = result.getString("owner");
-				String world = result.getString("world");
+				String worldName = result.getString("world");
 				int x = result.getInt("x");
 				int y = result.getInt("y");
 				int z = result.getInt("z");
 				
-//				Account account = new Account(owner);
-//				new AccountChest(account, sign)
-//				new accountch
+				World world = Bukkit.getWorld(worldName);
+				Location loc = new Location(world, x, y, z);
+				
+				Sign sign = (Sign) loc.getBlock();
+				chests.add(new AccountChest(sign));
 			}
-			result.get
 		} catch (SQLException e) {
 			throw new GringottsStorageException("Failed to get list of all chests", e);
 		}
