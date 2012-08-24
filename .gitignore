@@ -4,3 +4,5 @@
 /.settings
 .classpath
 .project
+
+/src/main/java/org/gestern/gringotts/.DS_Store
