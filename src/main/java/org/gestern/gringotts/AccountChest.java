@@ -28,17 +28,22 @@ public class AccountChest {
     
     private final DAO dao = DAO.getDao();
 
-    /** Account this chest belongs to. */
-    public final Account account;
     /** Sign marking the chest as an account chest. */
     public final Sign sign;
 
     /** Account that this chest belongs to. */
     //	public final Account account;
 
-    public AccountChest(Account account, Sign sign) {
-    	this.account = account;
+    public AccountChest(Sign sign) {
         this.sign = sign;
+    }
+    
+    private Chest chest() {
+    	Block storage = sign.getBlock().getRelative(BlockFace.DOWN);
+    	if (Material.CHEST.equals(storage.getType()))
+    		return ((Chest)storage);
+    	else
+    		return null;
     }
     
     /**
@@ -46,11 +51,8 @@ public class AccountChest {
      * @return inventory of this accountchest, if any. otherwise null.
      */
     private Inventory inventory() {
-    	Block storage = sign.getBlock().getRelative(BlockFace.DOWN);
-    	if (Material.CHEST.equals(storage.getType()))
-    		return ((Chest)storage).getInventory();
-    	else
-    		return null;
+    	Chest chest = chest();
+    	return (chest != null)? chest.getInventory() : null;
     }
 
     /**
@@ -196,7 +198,7 @@ public class AccountChest {
      * Connected chests that comprise the inventory of this account chest.
      * @return
      */
-    public Chest[] connectedChests() {
+    private Chest[] connectedChests() {
         Inventory inv = inventory();
         if (inv == null)
         	return new Chest[0];
@@ -241,5 +243,28 @@ public class AccountChest {
         AccountChest other = (AccountChest) obj;
         return sign.getLocation().equals(other.sign.getLocation());
     }
+
+    /**
+     * Determine whether the chest of another AccountChest would be connected to this chest.
+     * @param chest
+     * @return
+     */
+	public boolean connected(AccountChest chest) {
+		Chest myChest = chest();
+		if (myChest == null)
+			return false;
+		
+		Location myLoc = myChest.getLocation();
+		for (Chest c : chest.connectedChests())
+			if (c.getLocation().equals(myLoc))
+				return true;
+		
+		return false;
+	}
+
+	public Account getAccount() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

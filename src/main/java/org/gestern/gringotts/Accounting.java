@@ -5,10 +5,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.Chest;
 
 /**
  * Manages accounts.
@@ -53,12 +50,9 @@ public class Accounting {
      * @return
      */
     private boolean chestConnected(AccountChest chest) {
-        Location chestLocation = chest.chest.getLocation();
         for (AccountChest ac : dao.getChests()) {
-            for (Chest c : ac.connectedChests()) {
-                if (c.getLocation().equals(chestLocation))
-                    return true;
-            }
+        	if (ac.connected(chest))
+        		return true;
         }
         return false;
     }
@@ -80,22 +74,6 @@ public class Accounting {
             blockAccountChest.put(block, chest);
 
         return true;
-    }
-
-    public void removeChest(AccountChest chest) {
-        Account account = accountChestAccount.get(chest);
-        if (account != null) {
-            account.removeChest(chest);
-            accountChestAccount.remove(chest);		
-            for (Block block : chest.getBlocks())
-                blockAccountChest.remove(block);
-        } else {
-            log.warning("[Gringotts] attempted to remove chest at " + chest.chest.getLocation() + " but it was not stored");
-        }
-    }
-
-    public Account accountFor(AccountChest accountChest) {
-        return accountChestAccount.get(accountChest);
     }
 
 }

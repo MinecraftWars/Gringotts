@@ -58,7 +58,7 @@ public class AccountListener implements Listener {
             Account account = accounting.getAccount(chestOwner);
 
             // create account chest
-            AccountChest accountChest = new AccountChest(account, (Sign)signBlock.getState());
+            AccountChest accountChest = new AccountChest((Sign)signBlock.getState());
 
             // check for existence / add to tracking
             if (accounting.addChest(account, accountChest, signBlock, chestBlock)) {
@@ -81,7 +81,8 @@ public class AccountListener implements Listener {
         for (AccountChest chest : dao.getChests()) {
         	if ( loc.equals(chest.sign.getBlock().getLocation()) ) {
         		chest.destroy();
-        		chest.account.owner.sendMessage("Vault broken. New balance is " + chest.account.balance());
+        		Account account = chest.getAccount();
+        		account.owner.sendMessage("Vault broken. New balance is " + account.balance());
         	}
         }
     }
