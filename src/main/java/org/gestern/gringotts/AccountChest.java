@@ -30,12 +30,21 @@ public class AccountChest {
 
     /** Sign marking the chest as an account chest. */
     public final Sign sign;
+    
+    /** Account this chest belongs to. */
+    public final Account account;
 
     /** Account that this chest belongs to. */
     //	public final Account account;
 
-    public AccountChest(Sign sign) {
+    /**
+     * 
+     * @param sign
+     * @param account
+     */
+    public AccountChest(Sign sign, Account account) {
         this.sign = sign;
+        this.account = account;
     }
     
     private Chest chest() {

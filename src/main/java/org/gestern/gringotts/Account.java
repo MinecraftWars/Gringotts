@@ -6,19 +6,17 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 
-public class Account implements Persisted {
+public class Account {
 
     private final Logger log = Bukkit.getLogger();
     private final DAO dao = DAO.getDao(); 
 
-    private final Set<AccountChest> storage;
     public final AccountHolder owner;
 
     //Stores any cents that cannot be stored physically
     private Long cents;
 
     public Account(AccountHolder owner) {
-        this.storage = new HashSet<AccountChest>();
         this.owner = owner;
         this.cents = new Long(0);
     }
@@ -26,13 +24,11 @@ public class Account implements Persisted {
     /**
      * Add a chest to the storage.
      * @param chest chest to add to storage
-     * @return new amount of chests in storage
+     * @return true if the chest was successfully added to storage
      */
-    public int addChest(AccountChest chest) {
+    public boolean addChest(AccountChest chest) {
     	log.fine("Saving " + chest);
-        this.storage.add(chest);
-        dao.storeAccountChest(chest);
-        return storage.size();
+        return dao.storeAccountChest(chest);
     }
 
     /**
@@ -41,7 +37,6 @@ public class Account implements Persisted {
      */
     public void removeChest(AccountChest chest) {
     	log.fine("[Gringotts] removing " + chest);
-        storage.remove(chest);
         dao.destroyAccountChest(chest);
     }
 
@@ -51,7 +46,7 @@ public class Account implements Persisted {
      */
     public long balanceCents() {
         long balance = 0;
-        for (AccountChest chest : storage)
+        for (AccountChest chest : dao.getChests(this))
             balance += chest.balance();
 
         //Convert to total cents
@@ -72,7 +67,7 @@ public class Account implements Persisted {
      */
     public long capacityCents() {
         long capacity = 0;
-        for (AccountChest chest: storage)
+        for (AccountChest chest: dao.getChests(this))
             capacity += chest.capacity();
 
         return capacity * 100;
@@ -112,7 +107,7 @@ public class Account implements Persisted {
             remainingEmeralds += 1;
         }
 
-        for (AccountChest chest : storage) {
+        for (AccountChest chest : dao.getChests(this)) {
             remainingEmeralds -= chest.add(remainingEmeralds);
             if (remainingEmeralds <= 0) break;
         }
@@ -157,7 +152,7 @@ public class Account implements Persisted {
         }
 
         //Now remove the physical amount left
-        for (AccountChest chest : storage) {
+        for (AccountChest chest : dao.getChests(this)) {
             remainingEmeralds -= chest.remove(remainingEmeralds);
             if (remainingEmeralds <= 0) break;
         }
@@ -199,12 +194,5 @@ public class Account implements Persisted {
         //We must have failed if execution made it here.
         return false;
     }
-
-	@Override
-	public boolean persist() {
-		// TODO proper
-		dao.storeAccount(this);
-		return false;
-	}
 
 }

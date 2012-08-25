@@ -55,10 +55,9 @@ public class AccountListener implements Listener {
         Block chestBlock = signBlock.getRelative(BlockFace.DOWN);
         if (chestBlock.getType() == Material.CHEST) {
             event.setLine(2, chestOwner.getName());
-            Account account = accounting.getAccount(chestOwner);
-
+            Account account = new Account(chestOwner);
             // create account chest
-            AccountChest accountChest = new AccountChest((Sign)signBlock.getState());
+            AccountChest accountChest = new AccountChest((Sign)signBlock.getState(), account);
 
             // check for existence / add to tracking
             if (accounting.addChest(account, accountChest, signBlock, chestBlock)) {

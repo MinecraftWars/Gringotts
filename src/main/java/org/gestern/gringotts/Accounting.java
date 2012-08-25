@@ -35,7 +35,7 @@ public class Accounting {
         Account account = accounts.get(owner);
         if (account == null) {
             account = new Account(owner);
-            account.persist();
+            dao.storeAccount(account);
             accounts.put(owner,account);
         }
 
