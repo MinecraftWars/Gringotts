@@ -75,5 +75,10 @@ public class FactionAccountHolder implements AccountHolder {
         return true;
     }
 
+	@Override
+	public String getType() {
+		return "faction";
+	}
+
 
 }

@@ -83,4 +83,9 @@ public class PlayerAccountHolder implements AccountHolder {
             return false;
         return true;
     }
+
+	@Override
+	public String getType() {
+		return "player";
+	}
 }

@@ -27,4 +27,10 @@ public interface AccountHolder {
 
     int hashCode();
     boolean equals(Object other);
+
+    /**
+     * Type of the account holder. For instance "faction" or "player".
+     * @return
+     */
+	String getType();
 }
