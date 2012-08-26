@@ -18,13 +18,6 @@ public class Accounting {
     private final Logger log = Bukkit.getServer().getLogger(); 
     private final DAO dao = DAO.getDao();
     
-    private final Map<AccountHolder, Account> accounts;
-    private final Map<Block, AccountChest> blockAccountChest = new HashMap<Block, AccountChest>();
-    private final Map<AccountChest, Account> accountChestAccount = new HashMap<AccountChest, Account>();
-
-    public Accounting() {
-        this.accounts = new HashMap<AccountHolder, Account>();
-    }
 
     /**
      * Get the account associated with an account holder.
@@ -32,11 +25,11 @@ public class Accounting {
      * @return account associated with an account holder
      */
     public Account getAccount(AccountHolder owner) {
-        Account account = accounts.get(owner);
+        Account account = dao.getAccount(owner);
         if (account == null) {
             account = new Account(owner);
             dao.storeAccount(account);
-            accounts.put(owner,account);
+            dao.storeAccount(account);
         }
 
         return account;
@@ -61,18 +54,15 @@ public class Accounting {
      * Associate an AccountChest with an Account.
      * @param account
      * @param chest 
-     * @param blocks
-     * @return false if the specified AccountChest is already registered. 
+     * @return false if the specified AccountChest is already registered or would be connected to a registered chest. 
      * 		true if the association was successful.  
      */
-    public boolean addChest(Account account, AccountChest chest, Block... blocks) {
-        if (accountChestAccount.containsKey(chest) || chestConnected(chest))
+    public boolean addChest(Account account, AccountChest chest) {
+    	
+        if (chestConnected(chest))
             return false;
 
-        accountChestAccount.put(chest, account);
-        for (Block block : blocks)
-            blockAccountChest.put(block, chest);
-
+        dao.storeAccountChest(chest);
         return true;
     }
 

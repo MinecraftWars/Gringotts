@@ -108,7 +108,7 @@ public class AccountChest {
             if( stack == null )
                 count += currency.getMaxStackSize();
             else if( stack.getType() == currency )
-                count += currency.getMaxStackSize();
+                count += currency.getMaxStackSize() - stack.getAmount();
 
             //If not, the slot is blocked by something else so we can't store anything.
 

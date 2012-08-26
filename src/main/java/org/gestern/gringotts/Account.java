@@ -1,7 +1,5 @@
 package org.gestern.gringotts;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -13,12 +11,8 @@ public class Account {
 
     public final AccountHolder owner;
 
-    //Stores any cents that cannot be stored physically
-    private Long cents;
-
     public Account(AccountHolder owner) {
         this.owner = owner;
-        this.cents = new Long(0);
     }
 
     /**
@@ -50,7 +44,7 @@ public class Account {
             balance += chest.balance();
 
         //Convert to total cents
-        return balance*100 + cents;
+        return balance*100 + dao.getCents(this);
     }
 
     /**
@@ -97,15 +91,17 @@ public class Account {
             return false;
 
         //Add the cents
-        this.cents += amount;
+        long cents = dao.getCents(this) + amount;
 
         //Convert excess cents into emeralds		
         long remainingEmeralds = 0;
 
-        while(this.cents >= 100) {
-            this.cents -= 100;
+        while(cents >= 100) {
+            cents -= 100;
             remainingEmeralds += 1;
         }
+        
+        dao.storeCents(this, (int)cents);
 
         for (AccountChest chest : dao.getChests(this)) {
             remainingEmeralds -= chest.add(remainingEmeralds);
@@ -141,15 +137,18 @@ public class Account {
             return false;
 
         //Remove the cents
-        this.cents -= amount;
+        long cents = dao.getCents(this);
+        cents -= amount;
 
         //Now lets get our amount of cents positive again, and count how many emeralds need removing
         long remainingEmeralds = 0;
 
-        while(this.cents < 0) {
-            this.cents += 100;
+        while(cents < 0) {
+            cents += 100;
             remainingEmeralds += 1;
         }
+        
+        dao.storeCents(this, (int)cents);
 
         //Now remove the physical amount left
         for (AccountChest chest : dao.getChests(this)) {

@@ -23,6 +23,7 @@ import org.bukkit.block.Sign;
 public class DAO {
 	
 	static {
+		// load derby embedded driver
 		String driver = "org.apache.derby.jdbc.EmbeddedDriver";
 		try {
 			Class.forName(driver);
@@ -31,7 +32,7 @@ public class DAO {
 		}
 	}
 	
-	
+	/** Singleton DAO instance. */
 	private static final DAO dao = new DAO();
 	
 	private final Logger log = Bukkit.getLogger();
@@ -39,7 +40,8 @@ public class DAO {
 	private final Connection connection;
 	private final PreparedStatement 
 		storeAccountChest, destroyAccountChest, getAccountChest, 
-		storeAccount, getAccount, getAccountList, getChests;
+		storeAccount, getAccount, getAccountList, getChests, 
+		getChestsForAccount, getCents, storeCents;
 	
 	private DAO() {
 		String dbName = "Gringotts";
@@ -55,17 +57,25 @@ public class DAO {
 					"delete from accountchest where world = ? and x = ? and y = ? and z = ?");
 			getAccountChest = connection.prepareStatement(
 					"SELECT ac.world, ac.x, ac.y, ac.z, a.type, a.owner " +
-					"FROM accountchest ac JOIN account a ON ac.owner = a.id " + 
+					"FROM accountchest ac JOIN account a ON ac.account = a.id " + 
 					"WHERE ac.world = ? and ac.x = ? and ac.y = ? and ac.z = ?");
 			storeAccount = connection.prepareStatement(
-					"insert into account (type, owner) values (?,?)");
+					"insert into account (type, owner, cents) values (?,?,0)");
 			getAccount = connection.prepareStatement(
 					"select * from account where owner = ? and type = ?");
 			getAccountList = connection.prepareStatement(
 					"select * from account");
 			getChests = connection.prepareStatement(
 					"SELECT ac.world, ac.x, ac.y, ac.z, a.type, a.owner " +
-							"FROM accountchest ac JOIN account a ON ac.owner = a.id ");
+					"FROM accountchest ac JOIN account a ON ac.account = a.id ");
+			getChestsForAccount = connection.prepareStatement(
+					"SELECT ac.world, ac.x, ac.y, ac.z " +
+					"FROM accountchest ac JOIN account a ON ac.account = a.id " +
+					"WHERE a.owner = ? and a.type = ?");
+			getCents = connection.prepareStatement(
+					"SELECT cents FROM account WHERE owner = ? and type = ?");
+			storeCents = connection.prepareStatement(
+					"UPDATE account SET cents = ? WHERE owner = ? and type = ?");
 			
 			log.info("[Gringotts] DAO setup successfully.");
 
@@ -90,10 +100,12 @@ public class DAO {
         	String createAccount = 
         			"create table account (" +
 	        			"id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-	        			"type varchar(64), owner varchar(64), centbuffer int" +
+	        			"type varchar(64), owner varchar(64), cents int not null, " +
 	        			"primary key (id), unique(type, owner))";
         	
-    		connection.createStatement().executeUpdate(createAccount);
+    		int updated = connection.createStatement().executeUpdate(createAccount);
+    		if (updated > 0)
+    			log.info("[Gringotts] created table ACCOUNT");
     	}
 
     	ResultSet rs2 = dbmd.getTables(null, null, "ACCOUNTCHEST", null);
@@ -103,7 +115,9 @@ public class DAO {
     	    				"world varchar(64), x integer, y integer, z integer, account integer, " + 
     	    				"primary key(id), unique(world,x,y,z), foreign key(account) references account(id))";
 
-    		connection.createStatement().executeUpdate(createAccountChest);
+    		int updated = connection.createStatement().executeUpdate(createAccountChest);
+    		if (updated > 0)
+    			log.info("[Gringotts] created table ACCOUNTCHEST");
     	}
 	}
 
@@ -228,8 +242,43 @@ public class DAO {
     }
     
     
-    
-    public static DAO getDao() {
+    /**
+     * Get all chests belonging to the given account.
+     * @param account
+     * @return
+     */
+    public Set<AccountChest> getChests(Account account) {
+	
+		AccountHolder owner = account.owner;
+		Set<AccountChest> chests = new HashSet<AccountChest>();
+		try {
+			getChestsForAccount.setString(1, owner.getName());
+			getChestsForAccount.setString(2, owner.getType());
+			ResultSet result = getChests.executeQuery();
+			
+			while (result.next()) {
+				String worldName = result.getString("world");
+				int x = result.getInt("x");
+				int y = result.getInt("y");
+				int z = result.getInt("z");
+			
+				World world = Bukkit.getWorld(worldName);
+				Location loc = new Location(world, x, y, z);
+				
+				Sign sign = (Sign) loc.getBlock();
+				chests.add(new AccountChest(sign, account));
+			}
+		} catch (SQLException e) {
+			throw new GringottsStorageException("Failed to get list of all chests", e);
+		}
+		return null;
+	}
+
+    /**
+     * Get a DAO instance.
+     * @return
+     */
+	public static DAO getDao() {
     	return dao;
     }
     
@@ -241,9 +290,48 @@ public class DAO {
 			e.printStackTrace();
 		}
     }
+    
+    /**
+     * Store an amount of cents to a given account.
+     * @param account
+     * @param amount
+     * @return true if storing was successful, false otherwise.
+     */
+    public boolean storeCents(Account account, int amount) {
+    	try {
+    		storeCents.setInt(1, amount);
+    		storeCents.setString(2, account.owner.getName());
+    		storeCents.setString(3, account.owner.getType());
+			
+			int updated = getChests.executeUpdate();
+			return updated > 0;
 
-	public Set<AccountChest> getChests(Account account) {
-		// TODO Auto-generated method stub
-		return null;
+		} catch (SQLException e) {
+			throw new GringottsStorageException("Failed to get stored cents for account: " + account, e);
+		}
+    }
+
+    /**
+     * Get the cents stored for a given account.
+     * @param account
+     * @return amount of cents stored in the account, 0 if the account is not stored
+     */
+	public int getCents(Account account) {
+		try {
+			getCents.setString(1, account.owner.getName());
+			getCents.setString(2, account.owner.getType());
+			
+			ResultSet result = getChests.executeQuery();
+			
+			if (result.next()) {
+				int cents = result.getInt(1);
+				return cents;
+			}
+			
+			return 0;
+
+		} catch (SQLException e) {
+			throw new GringottsStorageException("Failed to get store cents for account: " + account, e);
+		}
 	}
 }
