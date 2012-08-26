@@ -33,21 +33,12 @@ public class Gringotts extends JavaPlugin {
         Configuration.config.readConfig(savedConfig);
 
         // load saved account data
-        accounting = loadAccounting(); 
+        accounting = new Accounting();
 
         registerEvents();
 
         log.info("[Gringotts] enabled");
     }
-
-    /**
-     * Create and load Accounting object from database.
-     * @return Account state representation
-     */
-    private Accounting loadAccounting() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
     public void onDisable() {

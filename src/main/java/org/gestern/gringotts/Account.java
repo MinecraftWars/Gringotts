@@ -6,32 +6,16 @@ import org.bukkit.Bukkit;
 
 public class Account {
 
-    private final Logger log = Bukkit.getLogger();
+    @SuppressWarnings("unused")
+	private final Logger log = Bukkit.getLogger();
     private final DAO dao = DAO.getDao(); 
 
     public final AccountHolder owner;
 
     public Account(AccountHolder owner) {
+    	if (owner == null)
+    		throw new IllegalArgumentException("owner parameter to Account constructor may not be null");
         this.owner = owner;
-    }
-
-    /**
-     * Add a chest to the storage.
-     * @param chest chest to add to storage
-     * @return true if the chest was successfully added to storage
-     */
-    public boolean addChest(AccountChest chest) {
-    	log.fine("Saving " + chest);
-        return dao.storeAccountChest(chest);
-    }
-
-    /**
-     * Remove a chest from the storage.
-     * @param chest
-     */
-    public void removeChest(AccountChest chest) {
-    	log.fine("[Gringotts] removing " + chest);
-        dao.destroyAccountChest(chest);
     }
 
     /**
@@ -192,6 +176,11 @@ public class Account {
         }
         //We must have failed if execution made it here.
         return false;
+    }
+    
+    @Override
+    public String toString() {
+    	return "Account ("+owner+")";
     }
 
 }

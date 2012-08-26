@@ -12,7 +12,9 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 
 /**
@@ -61,6 +63,9 @@ public class DAO {
 					"WHERE ac.world = ? and ac.x = ? and ac.y = ? and ac.z = ?");
 			storeAccount = connection.prepareStatement(
 					"insert into account (type, owner, cents) values (?,?,0)");
+//			storeAccount = connection.prepareStatement(
+//					"insert into account (type, owner, cents) (select ? as type, ? as owner, 0 as cents from account where type=? and owner=? having count(*)=0)");
+
 			getAccount = connection.prepareStatement(
 					"select * from account where owner = ? and type = ?");
 			getAccountList = connection.prepareStatement(
@@ -112,7 +117,7 @@ public class DAO {
     	if(!rs2.next()) {
     		String createAccountChest =		
     	    		"create table accountchest (id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
-    	    				"world varchar(64), x integer, y integer, z integer, account integer, " + 
+    	    				"world varchar(64), x integer, y integer, z integer, account integer not null, " + 
     	    				"primary key(id), unique(world,x,y,z), foreign key(account) references account(id))";
 
     		int updated = connection.createStatement().executeUpdate(createAccountChest);
@@ -132,13 +137,15 @@ public class DAO {
     	// TODO handle chest already existing case
     	Account account = chest.getAccount();
     	Location loc = chest.sign.getLocation();
+    	
+    	log.info("[Gringotts] storing account chest: " + chest + " for account: " + account);
     	try {
-			storeAccountChest.setString(1, loc.getWorld().toString());
+			storeAccountChest.setString(1, loc.getWorld().getName());
 			storeAccountChest.setInt(2, loc.getBlockX());
-			storeAccountChest.setInt(3, loc.getBlockX());
-			storeAccountChest.setInt(4, loc.getBlockX());
+			storeAccountChest.setInt(3, loc.getBlockY());
+			storeAccountChest.setInt(4, loc.getBlockZ());
 			storeAccountChest.setString(5, account.owner.getName());
-			storeAccountChest.setString(5, account.owner.getType());
+			storeAccountChest.setString(6, account.owner.getType());
 			
 			int updated = storeAccountChest.executeUpdate();
 			return updated > 0;
@@ -155,29 +162,38 @@ public class DAO {
     public boolean destroyAccountChest(AccountChest chest) {
     	Location loc = chest.sign.getLocation();
     	try {
-			destroyAccountChest.setString(1, loc.getWorld().toString());
-			destroyAccountChest.setInt(2, loc.getBlockX());
-			destroyAccountChest.setInt(3, loc.getBlockY());
-			destroyAccountChest.setInt(4, loc.getBlockZ());
+    		return deleteAccountChest(loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+	    } catch (SQLException e) {
+			throw new GringottsStorageException("Failed to delete account chest: " + chest, e);
+		}
+    }
+    
+    private boolean deleteAccountChest(String world, int x, int y, int z) throws SQLException {
+			destroyAccountChest.setString(1, world);
+			destroyAccountChest.setInt(2, x);
+			destroyAccountChest.setInt(3, y);
+			destroyAccountChest.setInt(4, z);
 			
 			int updated = destroyAccountChest.executeUpdate();
 			return updated > 0;
-		} catch (SQLException e) {
-			throw new GringottsStorageException("Failed to delete account chest: " + chest, e);
-		}
     }
     
     /**
      * Store the given Account to DB.
      * @param account
-     * @return
+     * @return true if an account was stored, false if it already existed
      */
     public boolean storeAccount(Account account) {
     	AccountHolder owner = account.owner;
+
+    	if (getAccount(owner) != null)
+    		return false;
     	
     	try {
 			storeAccount.setString(1, owner.getType());
 			storeAccount.setString(2, owner.getName());
+//			storeAccount.setString(3, owner.getType());
+//			storeAccount.setString(4, owner.getName());
 			
 			int updated = storeAccount.executeUpdate();
 			return updated > 0;
@@ -187,36 +203,46 @@ public class DAO {
     }
     
     /**
-     * TODO do we even need this?
-     * Get 
+     * Get account belonging to a given account owner.
      * @param accountHolder
-     * @return
+     * @return account belonging to the given owner, or null if the owner has no account
      */
     public Account getAccount(AccountHolder accountHolder) {
+
+    	AccountHolderFactory ahf = new AccountHolderFactory();
+    	
+    	ResultSet result = null;
     	try {
 			getAccount.setString(1, accountHolder.getName());
 			getAccount.setString(2, accountHolder.getType());
 			
-			ResultSet rs = getAccount.executeQuery();
-			if (rs.next()) {
-				return null;
+			result = getAccount.executeQuery();
+			if (result.next()) {
+				String type = result.getString("type");
+				String ownerName = result.getString("owner");
+		    	AccountHolder owner = ahf.get(type, ownerName);
+				return new Account(owner);
 			} else return null;
 			
 		} catch (SQLException e) {
 			throw new GringottsStorageException("Failed to get account for owner: " + accountHolder, e);
+		} finally {
+			try { if (result!=null) result.close(); } catch (SQLException e) {}
 		}
     }
 
     
     /**
-     * Get set of all chests registered with Gringotts.
-     * @return
+     * Get set of all chests registered with Gringotts. 
+     * If a stored chest turns out to be invalid, that chest is removed from storage.
+     * @return set of all chests registered with Gringotts
      */
     public Set<AccountChest> getChests() {
     	AccountHolderFactory ahf = new AccountHolderFactory();
     	Set<AccountChest> chests = new HashSet<AccountChest>();
+    	ResultSet result = null;
     	try {
-			ResultSet result = getChests.executeQuery();
+    		result = getChests.executeQuery();
 			
 			while (result.next()) {
 				String worldName = result.getString("world");
@@ -230,31 +256,42 @@ public class DAO {
 				World world = Bukkit.getWorld(worldName);
 				Location loc = new Location(world, x, y, z);
 				
-				Sign sign = (Sign) loc.getBlock();
-				AccountHolder owner = ahf.get(type, ownerName);
-				Account ownerAccount = new Account(owner);
-				chests.add(new AccountChest(sign, ownerAccount));
+				Block signBlock = loc.getBlock();
+				if (signBlock.getType().equals(Material.SIGN)) {
+					Sign sign = (Sign) loc.getBlock();
+					AccountHolder owner = ahf.get(type, ownerName);
+					Account ownerAccount = new Account(owner);
+					chests.add(new AccountChest(sign, ownerAccount));
+				} else {
+					// remove accountchest from storage if it is not a valid chest
+					deleteAccountChest(signBlock.getWorld().toString(), signBlock.getX(), signBlock.getY(), signBlock.getZ());
+				}
 			}
 		} catch (SQLException e) {
 			throw new GringottsStorageException("Failed to get list of all chests", e);
+		} finally {
+			try { if (result!=null) result.close(); } catch (SQLException e) {}
 		}
-    	return null;
+    	
+    	return chests;
     }
     
     
     /**
      * Get all chests belonging to the given account.
-     * @param account
+     * If a stored chest turns out to be invalid, that chest is removed from storage.
+     * @param account account to fetch chests for.
      * @return
      */
     public Set<AccountChest> getChests(Account account) {
 	
 		AccountHolder owner = account.owner;
 		Set<AccountChest> chests = new HashSet<AccountChest>();
+		ResultSet result = null;
 		try {
 			getChestsForAccount.setString(1, owner.getName());
 			getChestsForAccount.setString(2, owner.getType());
-			ResultSet result = getChests.executeQuery();
+			result = getChestsForAccount.executeQuery();
 			
 			while (result.next()) {
 				String worldName = result.getString("world");
@@ -265,16 +302,73 @@ public class DAO {
 				World world = Bukkit.getWorld(worldName);
 				Location loc = new Location(world, x, y, z);
 				
-				Sign sign = (Sign) loc.getBlock();
-				chests.add(new AccountChest(sign, account));
+				Block signBlock = loc.getBlock();
+				if (signBlock.getType().equals(Material.SIGN)) {
+					Sign sign = (Sign) loc.getBlock();
+					chests.add(new AccountChest(sign, account));
+				} else {
+					// remove accountchest from storage if it is not a valid chest
+					deleteAccountChest(signBlock.getWorld().toString(), signBlock.getX(), signBlock.getY(), signBlock.getZ());
+				}
 			}
 		} catch (SQLException e) {
 			throw new GringottsStorageException("Failed to get list of all chests", e);
+		} finally {
+			try { if (result!=null) result.close(); } catch (SQLException e) {}
 		}
-		return null;
+		
+		return chests;
 	}
 
     /**
+	 * Store an amount of cents to a given account.
+	 * @param account
+	 * @param amount
+	 * @return true if storing was successful, false otherwise.
+	 */
+	public boolean storeCents(Account account, int amount) {
+		try {
+			storeCents.setInt(1, amount);
+			storeCents.setString(2, account.owner.getName());
+			storeCents.setString(3, account.owner.getType());
+			
+			int updated = storeCents.executeUpdate();
+			return updated > 0;
+	
+		} catch (SQLException e) {
+			throw new GringottsStorageException("Failed to get cents for account: " + account, e);
+		}
+	}
+
+	/**
+	 * Get the cents stored for a given account.
+	 * @param account
+	 * @return amount of cents stored in the account, 0 if the account is not stored
+	 */
+	public int getCents(Account account) {
+		
+		ResultSet result = null;
+		try {
+			getCents.setString(1, account.owner.getName());
+			getCents.setString(2, account.owner.getType());
+			
+			result = getCents.executeQuery();
+			
+			if (result.next()) {
+				int cents = result.getInt("cents");
+				return cents;
+			}
+			
+			return 0;
+	
+		} catch (SQLException e) {
+			throw new GringottsStorageException("Failed to get stored cents for account: " + account, e);
+		} finally {
+			try { if (result!=null) result.close(); } catch (SQLException e) {}
+		}
+	}
+
+	/**
      * Get a DAO instance.
      * @return
      */
@@ -290,48 +384,4 @@ public class DAO {
 			e.printStackTrace();
 		}
     }
-    
-    /**
-     * Store an amount of cents to a given account.
-     * @param account
-     * @param amount
-     * @return true if storing was successful, false otherwise.
-     */
-    public boolean storeCents(Account account, int amount) {
-    	try {
-    		storeCents.setInt(1, amount);
-    		storeCents.setString(2, account.owner.getName());
-    		storeCents.setString(3, account.owner.getType());
-			
-			int updated = getChests.executeUpdate();
-			return updated > 0;
-
-		} catch (SQLException e) {
-			throw new GringottsStorageException("Failed to get stored cents for account: " + account, e);
-		}
-    }
-
-    /**
-     * Get the cents stored for a given account.
-     * @param account
-     * @return amount of cents stored in the account, 0 if the account is not stored
-     */
-	public int getCents(Account account) {
-		try {
-			getCents.setString(1, account.owner.getName());
-			getCents.setString(2, account.owner.getType());
-			
-			ResultSet result = getChests.executeQuery();
-			
-			if (result.next()) {
-				int cents = result.getInt(1);
-				return cents;
-			}
-			
-			return 0;
-
-		} catch (SQLException e) {
-			throw new GringottsStorageException("Failed to get store cents for account: " + account, e);
-		}
-	}
 }

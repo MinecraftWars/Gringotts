@@ -22,7 +22,8 @@ import org.bukkit.material.MaterialData;
  */
 public class AccountChest {
 
-    private final Logger log = Bukkit.getLogger();
+    @SuppressWarnings("unused")
+	private final Logger log = Bukkit.getLogger();
 
     private final Configuration config = Configuration.config;
     
@@ -43,6 +44,8 @@ public class AccountChest {
      * @param account
      */
     public AccountChest(Sign sign, Account account) {
+    	if (sign == null || account == null)
+    		throw new IllegalArgumentException("null arguments to AccountChest() not allowed. args were: sign: " + sign + ", account: " + account);
         this.sign = sign;
         this.account = account;
     }
@@ -272,8 +275,7 @@ public class AccountChest {
 	}
 
 	public Account getAccount() {
-		// TODO Auto-generated method stub
-		return null;
+		return account;
 	}
 
 }

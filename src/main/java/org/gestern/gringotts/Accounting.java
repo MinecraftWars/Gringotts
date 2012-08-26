@@ -1,11 +1,8 @@
 package org.gestern.gringotts;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
-import org.bukkit.block.Block;
 
 /**
  * Manages accounts.
@@ -15,7 +12,8 @@ import org.bukkit.block.Block;
  */
 public class Accounting {
 
-    private final Logger log = Bukkit.getServer().getLogger(); 
+    @SuppressWarnings("unused")
+	private final Logger log = Bukkit.getServer().getLogger(); 
     private final DAO dao = DAO.getDao();
     
 
@@ -28,7 +26,6 @@ public class Accounting {
         Account account = dao.getAccount(owner);
         if (account == null) {
             account = new Account(owner);
-            dao.storeAccount(account);
             dao.storeAccount(account);
         }
 

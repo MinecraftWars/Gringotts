@@ -55,14 +55,15 @@ public class AccountListener implements Listener {
         Block chestBlock = signBlock.getRelative(BlockFace.DOWN);
         if (chestBlock.getType() == Material.CHEST) {
             event.setLine(2, chestOwner.getName());
-            Account account = new Account(chestOwner);
+            Account account = accounting.getAccount(chestOwner);
             // create account chest
             AccountChest accountChest = new AccountChest((Sign)signBlock.getState(), account);
+            
+            log.info("[Gringotts] creating account chest for account: " + account);
 
             // check for existence / add to tracking
             if (accounting.addChest(account, accountChest)) {
-                account.addChest(accountChest);
-                log.info("Vault created by " + player.getName());
+                log.info("[Gringotts] Vault created by " + player.getName());
                 player.sendMessage("Created a vault for your account. New balance is " + account.balance());
             } else {
                 event.setCancelled(true);
@@ -76,7 +77,13 @@ public class AccountListener implements Listener {
      */
     @EventHandler
     public void vaultBroken(BlockBreakEvent event) {
-        Location loc = event.getBlock().getLocation();
+    	Block block = event.getBlock();
+    	// only trigger on sign breaks
+    	// TODO do we even want to trigger at all?
+    	if (!block.getType().equals(Material.SIGN))
+    		return;
+    	
+        Location loc = block.getLocation();
         for (AccountChest chest : dao.getChests()) {
         	if ( loc.equals(chest.sign.getBlock().getLocation()) ) {
         		chest.destroy();

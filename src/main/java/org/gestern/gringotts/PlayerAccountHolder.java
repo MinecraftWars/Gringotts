@@ -88,4 +88,9 @@ public class PlayerAccountHolder implements AccountHolder {
 	public String getType() {
 		return "player";
 	}
+	
+	@Override
+	public String toString() {
+		return "PlayerAccountHolder("+getName()+")";
+	}
 }
