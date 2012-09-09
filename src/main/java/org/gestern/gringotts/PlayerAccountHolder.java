@@ -8,7 +8,7 @@ import org.bukkit.OfflinePlayer;
 
 
 
-public class PlayerAccountHolder extends AccountHolder {
+public class PlayerAccountHolder implements AccountHolder {
 
 
     public final OfflinePlayer accountHolder;
@@ -83,4 +83,14 @@ public class PlayerAccountHolder extends AccountHolder {
             return false;
         return true;
     }
+
+	@Override
+	public String getType() {
+		return "player";
+	}
+	
+	@Override
+	public String toString() {
+		return "PlayerAccountHolder("+getName()+")";
+	}
 }

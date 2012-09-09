@@ -3,16 +3,10 @@ package org.gestern.gringotts;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
-
 import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.Factions;
 
-public class FactionAccountHolder extends AccountHolder {
-
-    static {
-        ConfigurationSerialization.registerClass(FactionAccountHolder.class);
-    }
+public class FactionAccountHolder implements AccountHolder {
 
     private final Faction owner;
 
@@ -80,6 +74,16 @@ public class FactionAccountHolder extends AccountHolder {
             return false;
         return true;
     }
+
+	@Override
+	public String getType() {
+		return "faction";
+	}
+	
+	@Override
+	public String toString() {
+		return "FactionAccountHolder("+getName()+")";
+	}
 
 
 }

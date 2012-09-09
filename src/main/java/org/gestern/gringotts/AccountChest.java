@@ -1,23 +1,18 @@
 package org.gestern.gringotts;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.DoubleChestInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
-import org.bukkit.util.BlockVector;
 
 /**
  * Represents a storage unit for an account.
@@ -25,45 +20,63 @@ import org.bukkit.util.BlockVector;
  * @author jast
  *
  */
-public class AccountChest implements ConfigurationSerializable {
+public class AccountChest {
 
-    private final Logger log = Bukkit.getLogger();
+	private final Logger log = Bukkit.getLogger();
 
-    private final Configuration config = Configuration.config; 
+    private final Configuration config = Configuration.config;
+    
+    private final DAO dao = DAO.getDao();
 
-    /** Physical chest backing this chest representation. */
-    public final Chest chest;
     /** Sign marking the chest as an account chest. */
     public final Sign sign;
+    
+    /** Account this chest belongs to. */
+    public final Account account;
 
     /** Account that this chest belongs to. */
     //	public final Account account;
 
-    public AccountChest(Chest chest, Sign sign) {
-        if (chest == null || sign == null)
-            throw new IllegalArgumentException("chest and sign arguments may not be null");
-
-        this.chest = chest;
-        this.sign = sign;
-    }
-
     /**
-     * Deserialization ctor.
-     * @param serialized
+     * 
+     * @param sign
+     * @param account
      */
-    public AccountChest(Map<String,Object> serialized) {
-        log.finest("[Gringotts] deserializing AccountChest");
-
-        String worldName = (String) serialized.get("world");
-        World world = Bukkit.getWorld(worldName);
-
-        BlockVector chestBV = (BlockVector) serialized.get("chest");
-        this.chest = (Chest) chestBV.toLocation(world).getBlock().getState();
-
-        BlockVector signBV = (BlockVector) serialized.get("sign");
-        this.sign = (Sign) signBV.toLocation(world).getBlock().getState();
-
-        //		this.account = (Account) serialized.get("account");
+    public AccountChest(Sign sign, Account account) {
+    	if (sign == null || account == null)
+    		throw new IllegalArgumentException("null arguments to AccountChest() not allowed. args were: sign: " + sign + ", account: " + account);
+        this.sign = sign;
+        this.account = account;
+    }
+    
+    private Chest chest() {
+    	Block storage = sign.getBlock().getRelative(BlockFace.DOWN);
+    	if (Material.CHEST.equals(storage.getType()))
+    		return ((Chest)storage.getState());
+    	else
+    		return null;
+    }
+    
+    /**
+     * Get inventory of this account chest.
+     * @return inventory of this accountchest, if any. otherwise null.
+     */
+    private Inventory inventory() {
+    	Chest chest = chest();
+    	return (chest != null)? chest.getInventory() : null;
+    }
+    
+    /**
+     * Test if this chest is valid, and if not, removes it from storage.
+     * @return true if valid, false if not and was removed from storage.
+     */
+    private boolean updateValid() {
+    	if (!valid()) {
+    		log.info("Destroying orphaned vault: " + this);
+    		destroy();
+    		return false;
+    	}
+    	else return true;
     }
 
     /**
@@ -71,9 +84,15 @@ public class AccountChest implements ConfigurationSerializable {
      * @return balance of this chest
      */
     public long balance() {
-
+    	
+    	if (!updateValid())
+    		return 0;
+    		
+    	Inventory inv = inventory();
+    	if (inv==null) return 0;
+    	
         long count = 0;	
-        for (ItemStack stack : chest.getInventory()) {
+        for (ItemStack stack : inv) {
             Material material = config.currency.getType();
             if (stack == null || material != stack.getType())
                 continue;
@@ -94,9 +113,15 @@ public class AccountChest implements ConfigurationSerializable {
      * @return capacity of this chest
      */
     public long capacity() {
+    	
+    	if (!updateValid())
+    		return 0;
 
+    	Inventory inv = inventory();
+    	if (inv==null) return 0;
+    	
         long count = 0;
-        for (ItemStack stack : chest.getInventory()) {
+        for (ItemStack stack : inv) {
             Material currency = config.currency.getType();
 
 
@@ -104,7 +129,7 @@ public class AccountChest implements ConfigurationSerializable {
             if( stack == null )
                 count += currency.getMaxStackSize();
             else if( stack.getType() == currency )
-                count += currency.getMaxStackSize();
+                count += currency.getMaxStackSize() - stack.getAmount();
 
             //If not, the slot is blocked by something else so we can't store anything.
 
@@ -119,9 +144,14 @@ public class AccountChest implements ConfigurationSerializable {
      * @return amount actually added
      */
     public long add(long value) {
-
+    	
+    	if (!updateValid())
+    		return 0;
+    	
+    	Inventory inv = inventory();
+    	if (inv==null) return 0;
+    	
         int stacksize = config.currency.getMaxStackSize();
-        Inventory inv = chest.getInventory();
         long remaining = value;		
 
         // fill up incomplete stacks
@@ -153,8 +183,13 @@ public class AccountChest implements ConfigurationSerializable {
      */
     public long remove(long value) {
 
+    	if (!updateValid())
+    		return 0;
+    	
+    	Inventory inv = inventory();
+    	if (inv==null) return 0;
+    	
         int stacksize = config.currency.getMaxStackSize();
-        Inventory inv = chest.getInventory();
         long remaining = value;
 
         while (remaining > 0) {
@@ -175,43 +210,56 @@ public class AccountChest implements ConfigurationSerializable {
 
         return value - remaining;
     }
+    
+    /**
+     * Checks whether this chest is currently a valid vault.
+     * It is consideren valid when the sign block contains [vault] on the first line,
+     * a name on the third line and has a chest below it.
+     * 
+     * @return true if the chest can be considered a valid vault
+     */
+    public boolean valid() {
+    	// is it still a sign?
+    	if ( ! Util.isSignBlock(sign.getBlock()) ) 
+    		return false;
+    	
+    	String[] lines = sign.getLines();
+    	if ( ! "[vault]".equals(lines[0]) ) return false;
+    	if ( lines[1] == null || lines[2].length() == 0) return false;
+  
+    	if (chest() == null) return false;
+    	
+    	return true;
+    }
 
     /**
      * Triggered on destruction of physical chest or sign
      * @return Blocks belonging to this account chest.
      */
     public void destroy() {
+    	dao.destroyAccountChest(this);
         sign.getBlock().breakNaturally();
     }
-
-    /**
-     * Get Blocks belonging to this AccountChest-
-     * @return Blocks belonging to this AccountChest-
-     */
-    public Set<Block> getBlocks() {
-        Set<Block> blocks = new HashSet<Block>();
-        blocks.add(chest.getBlock());
-        blocks.add(sign.getBlock());
-
-        return blocks;
-    }
-
-
-    public Map<String, Object> serialize() {
-        Map<String, Object> serialized = new HashMap<String, Object>();
-        serialized.put("world", chest.getBlock().getWorld().getName());
-        serialized.put("chest", chest.getBlock().getLocation().toVector().toBlockVector());
-        serialized.put("sign", sign.getBlock().getLocation().toVector().toBlockVector());
-        //		serialized.put("account", account);
-        return serialized;
+    
+    @Override
+    public String toString() {
+    	Location loc = sign.getLocation();
+    	return "[vault] " 
+    			+ loc.getBlockX() + ", "
+    			+ loc.getBlockY() + ", "
+    			+ loc.getBlockZ() + ", "
+    			+ loc.getWorld();    			
     }
 
     /**
      * Connected chests that comprise the inventory of this account chest.
      * @return
      */
-    public Chest[] connectedChests() {
-        Inventory inv = chest.getInventory();
+    private Chest[] connectedChests() {
+        Inventory inv = inventory();
+        if (inv == null)
+        	return new Chest[0];
+        
         if (inv instanceof DoubleChestInventory) {
             DoubleChestInventory dinv = (DoubleChestInventory)inv;
             Chest left = (Chest)(dinv.getLeftSide().getHolder());
@@ -219,7 +267,7 @@ public class AccountChest implements ConfigurationSerializable {
 
             return new Chest[] {left, right};
         } else {
-            return new Chest[] {chest};
+            return new Chest[] {(Chest)(inv.getHolder())};
         }
     }
 
@@ -241,7 +289,6 @@ public class AccountChest implements ConfigurationSerializable {
      */
     @Override
     public boolean equals(Object obj) {
-        // FIXME probably need to manually implement based on block locations
         if (this == obj)
             return true;
         if (obj == null)
@@ -252,5 +299,31 @@ public class AccountChest implements ConfigurationSerializable {
         AccountChest other = (AccountChest) obj;
         return sign.getLocation().equals(other.sign.getLocation());
     }
+
+    /**
+     * Determine whether the chest of another AccountChest would be connected to this chest.
+     * @param chest
+     * @return
+     */
+	public boolean connected(AccountChest chest) {
+		
+		if (!updateValid())
+    		return false;
+		
+		Chest myChest = chest();
+		if (myChest == null)
+			return false;
+		
+		Location myLoc = myChest.getLocation();
+		for (Chest c : chest.connectedChests())
+			if (c.getLocation().equals(myLoc))
+				return true;
+		
+		return false;
+	}
+
+	public Account getAccount() {
+		return account;
+	}
 
 }

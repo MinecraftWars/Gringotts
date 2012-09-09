@@ -1,6 +1,5 @@
 package org.gestern.gringotts;
 
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 
 /**
@@ -12,21 +11,26 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
  * @author jast
  *
  */
-abstract public class AccountHolder implements ConfigurationSerializable {
-
+public interface AccountHolder {
     /** 
      * Return name of the account holder.
      * 
      * @return name of the account holder
      */
-    abstract public String getName();
+    String getName();
 
     /** 
      * Send message to the account holder. 
      * @param message to send
      * */
-    abstract public void sendMessage(String message);
+    void sendMessage(String message);
 
-    abstract public int hashCode();
-    abstract public boolean equals(Object other);
+    int hashCode();
+    boolean equals(Object other);
+
+    /**
+     * Type of the account holder. For instance "faction" or "player".
+     * @return
+     */
+	String getType();
 }

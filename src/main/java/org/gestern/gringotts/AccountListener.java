@@ -3,10 +3,10 @@ package org.gestern.gringotts;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -25,6 +25,7 @@ import com.massivecraft.factions.FPlayers;
  */
 public class AccountListener implements Listener {
 
+	private DAO dao = DAO.getDao();
     private Logger log = Bukkit.getServer().getLogger();
     private final Accounting accounting;
 
@@ -53,34 +54,50 @@ public class AccountListener implements Listener {
         Block signBlock = event.getBlock();
         Block chestBlock = signBlock.getRelative(BlockFace.DOWN);
         if (chestBlock.getType() == Material.CHEST) {
-            event.setLine(2, chestOwner.getName());
             Account account = accounting.getAccount(chestOwner);
-
             // create account chest
-            Chest chest = (Chest)chestBlock.getState();
-            AccountChest accountChest = new AccountChest(chest, (Sign)signBlock.getState());
+            AccountChest accountChest = new AccountChest((Sign)signBlock.getState(), account);
+            
+            log.info("[Gringotts] creating account chest for account: " + account);
 
             // check for existence / add to tracking
-            if (accounting.addChest(account, accountChest, signBlock, chestBlock)) {
-                account.addChest(accountChest);
-                log.info("Vault created by " + player.getName());
-                player.sendMessage("Created a vault for your account. New balance is " + account.balance());
+            if (accounting.addChest(account, accountChest)) {
+                log.info("[Gringotts] Vault created by " + player.getName());
+                event.setLine(2, chestOwner.getName());
+                player.sendMessage("Created a vault for your account.");
+
             } else {
                 event.setCancelled(true);
+                player.sendMessage("Failed to create vault.");
             }
         }
     }
 
+    /**
+     * Catches and handles breaking of the sign block of an account chest.
+     * @param event
+     */
     @EventHandler
     public void vaultBroken(BlockBreakEvent event) {
-        Block block = event.getBlock();
-        AccountChest accountChest = accounting.chestAt(block);
-        if (accountChest != null) {
-            Account account = accounting.accountFor(accountChest);
-            accountChest.destroy();
-            accounting.removeChest(accountChest);
-
-            account.owner.sendMessage("Vault broken. New balance is " + account.balance());
+    	Block block = event.getBlock();
+    	// only trigger on sign breaks
+    	
+    	if ( ! Util.isSignBlock(block) ) 
+    		return;
+    	
+    	// don't bother if it isn't a valid vault marker sign
+    	Sign sign = (Sign)block.getState();
+    	if ( ! "[vault]".equals(sign.getLine(0)))
+    		return;
+    	
+    	// TODO should be able to do this with a direct dao delete call
+        Location loc = block.getLocation();
+        for (AccountChest chest : dao.getChests()) {
+        	if ( loc.equals(chest.sign.getBlock().getLocation()) ) {
+        		chest.destroy();
+        		Account account = chest.getAccount();
+        		account.owner.sendMessage("Vault broken. New balance is " + account.balance());
+        	}
         }
     }
 }
