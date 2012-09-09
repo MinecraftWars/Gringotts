@@ -36,7 +36,7 @@ public class Account {
      * @return
      */
     public double balance() {
-        return Util.ToEmeralds( balanceCents() );
+        return Util.toEmeralds( balanceCents() );
     }
 
     /**
@@ -56,7 +56,7 @@ public class Account {
      * @return maximum capacity of account
      */
     public double capacity() {
-        return Util.ToEmeralds(capacityCents());
+        return Util.toEmeralds(capacityCents());
     }
 
     /**
@@ -101,7 +101,7 @@ public class Account {
      * @return Whether amount successfully added
      */
     public boolean add(double amount) {
-        return addCents(Util.ToCents(amount));
+        return addCents(Util.toCents(amount));
     }
 
     /**
@@ -150,7 +150,7 @@ public class Account {
      * @return amount actually removed.
      */
     public boolean remove(double amount) {
-        return removeCents(Util.ToCents(amount));
+        return removeCents(Util.toCents(amount));
     }
 
     /**

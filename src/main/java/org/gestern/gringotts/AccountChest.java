@@ -22,7 +22,6 @@ import org.bukkit.material.MaterialData;
  */
 public class AccountChest {
 
-    @SuppressWarnings("unused")
 	private final Logger log = Bukkit.getLogger();
 
     private final Configuration config = Configuration.config;
@@ -53,7 +52,7 @@ public class AccountChest {
     private Chest chest() {
     	Block storage = sign.getBlock().getRelative(BlockFace.DOWN);
     	if (Material.CHEST.equals(storage.getType()))
-    		return ((Chest)storage);
+    		return ((Chest)storage.getState());
     	else
     		return null;
     }
@@ -66,13 +65,29 @@ public class AccountChest {
     	Chest chest = chest();
     	return (chest != null)? chest.getInventory() : null;
     }
+    
+    /**
+     * Test if this chest is valid, and if not, removes it from storage.
+     * @return true if valid, false if not and was removed from storage.
+     */
+    private boolean updateValid() {
+    	if (!valid()) {
+    		log.info("Destroying orphaned vault: " + this);
+    		destroy();
+    		return false;
+    	}
+    	else return true;
+    }
 
     /**
      * Return balance of this chest.
      * @return balance of this chest
      */
     public long balance() {
-
+    	
+    	if (!updateValid())
+    		return 0;
+    		
     	Inventory inv = inventory();
     	if (inv==null) return 0;
     	
@@ -98,6 +113,9 @@ public class AccountChest {
      * @return capacity of this chest
      */
     public long capacity() {
+    	
+    	if (!updateValid())
+    		return 0;
 
     	Inventory inv = inventory();
     	if (inv==null) return 0;
@@ -126,7 +144,10 @@ public class AccountChest {
      * @return amount actually added
      */
     public long add(long value) {
-
+    	
+    	if (!updateValid())
+    		return 0;
+    	
     	Inventory inv = inventory();
     	if (inv==null) return 0;
     	
@@ -162,6 +183,9 @@ public class AccountChest {
      */
     public long remove(long value) {
 
+    	if (!updateValid())
+    		return 0;
+    	
     	Inventory inv = inventory();
     	if (inv==null) return 0;
     	
@@ -185,6 +209,27 @@ public class AccountChest {
         }
 
         return value - remaining;
+    }
+    
+    /**
+     * Checks whether this chest is currently a valid vault.
+     * It is consideren valid when the sign block contains [vault] on the first line,
+     * a name on the third line and has a chest below it.
+     * 
+     * @return true if the chest can be considered a valid vault
+     */
+    public boolean valid() {
+    	// is it still a sign?
+    	if ( ! Util.isSignBlock(sign.getBlock()) ) 
+    		return false;
+    	
+    	String[] lines = sign.getLines();
+    	if ( ! "[vault]".equals(lines[0]) ) return false;
+    	if ( lines[1] == null || lines[2].length() == 0) return false;
+  
+    	if (chest() == null) return false;
+    	
+    	return true;
     }
 
     /**
@@ -244,7 +289,6 @@ public class AccountChest {
      */
     @Override
     public boolean equals(Object obj) {
-        // FIXME probably need to manually implement based on block locations
         if (this == obj)
             return true;
         if (obj == null)
@@ -262,6 +306,10 @@ public class AccountChest {
      * @return
      */
 	public boolean connected(AccountChest chest) {
+		
+		if (!updateValid())
+    		return false;
+		
 		Chest myChest = chest();
 		if (myChest == null)
 			return false;

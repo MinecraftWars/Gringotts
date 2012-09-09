@@ -54,7 +54,6 @@ public class AccountListener implements Listener {
         Block signBlock = event.getBlock();
         Block chestBlock = signBlock.getRelative(BlockFace.DOWN);
         if (chestBlock.getType() == Material.CHEST) {
-            event.setLine(2, chestOwner.getName());
             Account account = accounting.getAccount(chestOwner);
             // create account chest
             AccountChest accountChest = new AccountChest((Sign)signBlock.getState(), account);
@@ -64,9 +63,13 @@ public class AccountListener implements Listener {
             // check for existence / add to tracking
             if (accounting.addChest(account, accountChest)) {
                 log.info("[Gringotts] Vault created by " + player.getName());
-                player.sendMessage("Created a vault for your account. New balance is " + account.balance());
+                event.setLine(2, chestOwner.getName());
+//                player.sendMessage("Created a vault for your account. New balance is " + account.balance());
+                player.sendMessage("Created a vault for your account.");
+
             } else {
                 event.setCancelled(true);
+                player.sendMessage("Failed to create vault.");
             }
         }
     }
@@ -79,9 +82,18 @@ public class AccountListener implements Listener {
     public void vaultBroken(BlockBreakEvent event) {
     	Block block = event.getBlock();
     	// only trigger on sign breaks
-    	// TODO do we even want to trigger at all?
-    	if (!block.getType().equals(Material.SIGN))
+    	
+    	if ( ! Util.isSignBlock(block) ) 
     		return;
+    	
+    	log.info("[Gringotts] checking blockbreakevent on " + block.getType());
+
+    	// don't bother if it isn't a valid vault marker sign
+    	Sign sign = (Sign)block.getState();
+    	if ( ! "[vault]".equals(sign.getLine(0)))
+    		return;
+    	
+    	log.info("[Gringotts] checking for account chests at " + block.getLocation());
     	
         Location loc = block.getLocation();
         for (AccountChest chest : dao.getChests()) {

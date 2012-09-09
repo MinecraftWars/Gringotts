@@ -1,5 +1,6 @@
 package org.gestern.gringotts;
 
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -39,8 +40,8 @@ public class Accounting {
      * @param chest
      * @return
      */
-    private boolean chestConnected(AccountChest chest) {
-        for (AccountChest ac : dao.getChests()) {
+    private boolean chestConnected(AccountChest chest, Set<AccountChest> allChests) {
+        for (AccountChest ac : allChests) {
         	if (ac.connected(chest))
         		return true;
         }
@@ -48,7 +49,7 @@ public class Accounting {
     }
 
     /**
-     * Associate an AccountChest with an Account.
+     * Associate an AccountChest with an Account. 
      * @param account
      * @param chest 
      * @return false if the specified AccountChest is already registered or would be connected to a registered chest. 
@@ -56,11 +57,29 @@ public class Accounting {
      */
     public boolean addChest(Account account, AccountChest chest) {
     	
-        if (chestConnected(chest))
+    	Set<AccountChest> allChests = dao.getChests();
+    	
+    	// if there is an invalid stored chest on location of new chest, remove it from storage.
+    	if (allChests.contains(chest) && !chest.valid()) {
+    		log.info("[Gringotts] removing orphaned vault: " + chest);
+    		dao.destroyAccountChest(chest);
+    		allChests.remove(chest);
+    	}
+    	
+    	if (chestConnected(chest, allChests) )
             return false;
 
         dao.storeAccountChest(chest);
         return true;
     }
+
+    /**
+     * Determine whether a chest is valid in the game world.
+     * @param chest
+     * @return
+     */
+	public boolean validChest(AccountChest chest) {
+		return false;
+	}
 
 }

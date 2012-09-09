@@ -106,7 +106,7 @@ public class DAO {
         			"create table account (" +
 	        			"id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
 	        			"type varchar(64), owner varchar(64), cents int not null, " +
-	        			"primary key (id), unique(type, owner))";
+	        			"primary key (id), constraint unique_type_owner unique(type, owner))";
         	
     		int updated = connection.createStatement().executeUpdate(createAccount);
     		if (updated > 0)
@@ -118,7 +118,7 @@ public class DAO {
     		String createAccountChest =		
     	    		"create table accountchest (id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
     	    				"world varchar(64), x integer, y integer, z integer, account integer not null, " + 
-    	    				"primary key(id), unique(world,x,y,z), foreign key(account) references account(id))";
+    	    				"primary key(id), constraint unique_location unique(world,x,y,z), constraint fk_account foreign key(account) references account(id))";
 
     		int updated = connection.createStatement().executeUpdate(createAccountChest);
     		if (updated > 0)
@@ -134,7 +134,6 @@ public class DAO {
      * @throws GringottsStorageException when storage failed
      */
     public boolean storeAccountChest(AccountChest chest) {
-    	// TODO handle chest already existing case
     	Account account = chest.getAccount();
     	Location loc = chest.sign.getLocation();
     	
@@ -150,6 +149,13 @@ public class DAO {
 			int updated = storeAccountChest.executeUpdate();
 			return updated > 0;
 		} catch (SQLException e) {
+			// unique constraint failed: chest already exists
+			if (e.getErrorCode() == 23505) {
+				log.warning("[Gringotts] Unable to store account chest: " + e.getMessage());
+				return false;
+			}
+			
+			// other more serious error probably
 			throw new GringottsStorageException("Failed to store account chest: " + chest, e);
 		}
     }
@@ -192,8 +198,6 @@ public class DAO {
     	try {
 			storeAccount.setString(1, owner.getType());
 			storeAccount.setString(2, owner.getName());
-//			storeAccount.setString(3, owner.getType());
-//			storeAccount.setString(4, owner.getName());
 			
 			int updated = storeAccount.executeUpdate();
 			return updated > 0;
@@ -220,6 +224,7 @@ public class DAO {
 			if (result.next()) {
 				String type = result.getString("type");
 				String ownerName = result.getString("owner");
+				log.info("Getting account "+type+":"+ownerName);
 		    	AccountHolder owner = ahf.get(type, ownerName);
 				return new Account(owner);
 			} else return null;
@@ -257,8 +262,8 @@ public class DAO {
 				Location loc = new Location(world, x, y, z);
 				
 				Block signBlock = loc.getBlock();
-				if (signBlock.getType().equals(Material.SIGN)) {
-					Sign sign = (Sign) loc.getBlock();
+		    	if (Util.isSignBlock(signBlock)) {
+					Sign sign = (Sign) signBlock.getState();
 					AccountHolder owner = ahf.get(type, ownerName);
 					Account ownerAccount = new Account(owner);
 					chests.add(new AccountChest(sign, ownerAccount));
@@ -303,8 +308,8 @@ public class DAO {
 				Location loc = new Location(world, x, y, z);
 				
 				Block signBlock = loc.getBlock();
-				if (signBlock.getType().equals(Material.SIGN)) {
-					Sign sign = (Sign) loc.getBlock();
+		    	if (Util.isSignBlock(signBlock)) {
+					Sign sign = (Sign) loc.getBlock().getState();
 					chests.add(new AccountChest(sign, account));
 				} else {
 					// remove accountchest from storage if it is not a valid chest
