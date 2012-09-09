@@ -64,7 +64,6 @@ public class AccountListener implements Listener {
             if (accounting.addChest(account, accountChest)) {
                 log.info("[Gringotts] Vault created by " + player.getName());
                 event.setLine(2, chestOwner.getName());
-//                player.sendMessage("Created a vault for your account. New balance is " + account.balance());
                 player.sendMessage("Created a vault for your account.");
 
             } else {
@@ -86,15 +85,12 @@ public class AccountListener implements Listener {
     	if ( ! Util.isSignBlock(block) ) 
     		return;
     	
-    	log.info("[Gringotts] checking blockbreakevent on " + block.getType());
-
     	// don't bother if it isn't a valid vault marker sign
     	Sign sign = (Sign)block.getState();
     	if ( ! "[vault]".equals(sign.getLine(0)))
     		return;
     	
-    	log.info("[Gringotts] checking for account chests at " + block.getLocation());
-    	
+    	// TODO should be able to do this with a direct dao delete call
         Location loc = block.getLocation();
         for (AccountChest chest : dao.getChests()) {
         	if ( loc.equals(chest.sign.getBlock().getLocation()) ) {

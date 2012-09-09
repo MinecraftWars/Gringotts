@@ -13,7 +13,6 @@ import org.bukkit.Bukkit;
  */
 public class Accounting {
 
-    @SuppressWarnings("unused")
 	private final Logger log = Bukkit.getServer().getLogger(); 
     private final DAO dao = DAO.getDao();
     
@@ -61,7 +60,7 @@ public class Accounting {
     	
     	// if there is an invalid stored chest on location of new chest, remove it from storage.
     	if (allChests.contains(chest) && !chest.valid()) {
-    		log.info("[Gringotts] removing orphaned vault: " + chest);
+    		log.info("[Gringotts][Accounting] removing orphaned vault: " + chest);
     		dao.destroyAccountChest(chest);
     		allChests.remove(chest);
     	}

@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -116,9 +115,10 @@ public class DAO {
     	ResultSet rs2 = dbmd.getTables(null, null, "ACCOUNTCHEST", null);
     	if(!rs2.next()) {
     		String createAccountChest =		
-    	    		"create table accountchest (id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
-    	    				"world varchar(64), x integer, y integer, z integer, account integer not null, " + 
-    	    				"primary key(id), constraint unique_location unique(world,x,y,z), constraint fk_account foreign key(account) references account(id))";
+    	    		"create table accountchest (" +
+	    				"id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
+	    				"world varchar(64), x integer, y integer, z integer, account integer not null, " + 
+	    				"primary key(id), constraint unique_location unique(world,x,y,z), constraint fk_account foreign key(account) references account(id))";
 
     		int updated = connection.createStatement().executeUpdate(createAccountChest);
     		if (updated > 0)
