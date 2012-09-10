@@ -246,7 +246,6 @@ public class DAO {
 				String type = result.getString("type");
 				String ownerName = result.getString("owner");
 				
-				log.info("Getting account "+type+":"+ownerName);
 		    	AccountHolder owner = ahf.get(type, ownerName);
 		    	
 				return new Account(owner);

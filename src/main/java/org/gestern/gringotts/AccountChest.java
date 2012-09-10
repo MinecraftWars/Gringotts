@@ -224,7 +224,7 @@ public class AccountChest {
     		return false;
     	
     	String[] lines = sign.getLines();
-    	if ( ! "[vault]".equals(lines[0]) ) return false;
+    	if ( ! ("[vault]".equals(lines[0]) || "[faction vault]".equals(lines[0]) )) return false;
     	if ( lines[1] == null || lines[2].length() == 0) return false;
   
     	if (chest() == null) return false;
