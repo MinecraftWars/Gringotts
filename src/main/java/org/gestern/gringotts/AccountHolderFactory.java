@@ -1,11 +1,21 @@
 package org.gestern.gringotts;
 
+import java.util.logging.Logger;
+
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
+import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.Factions;
 
 public class AccountHolderFactory {
+	
+	@SuppressWarnings("unused")
+	private final Logger log = Bukkit.getLogger();
+	
+	public AccountHolder getAccount(String owner) {
+		return get(owner);
+	}
 
 	/**
 	 * Get an account holder with automatically determined type, based on the owner's name.
@@ -19,9 +29,19 @@ public class AccountHolderFactory {
             return new PlayerAccountHolder(player);
 
         if (owner.startsWith("faction-")) {
-            String factionId = owner.substring(8);
-            if (Factions.i.exists(factionId))
-                return new FactionAccountHolder(Factions.i.get(factionId));
+        	// not sure, but somehow this is sometimes id, sometimes tag??
+            String factionTag = owner.substring(8);
+            Faction faction;
+            
+            // try id first
+            faction = Factions.i.get(factionTag);            
+            // and then tag
+            if (faction == null)
+            	faction = Factions.i.getByTag(factionTag);
+            
+            if (faction != null) 
+                return new FactionAccountHolder(faction);
+            
         }
 
         return null;

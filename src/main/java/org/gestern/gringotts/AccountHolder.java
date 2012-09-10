@@ -30,7 +30,14 @@ public interface AccountHolder {
 
     /**
      * Type of the account holder. For instance "faction" or "player".
-     * @return
+     * @return account holder type
      */
 	String getType();
+
+	/**
+	 * A unique identifier for the account holder.
+	 * For players, this is simply the name. For factions, it is their id.
+	 * @return unique account holder id
+	 */
+	String getId();
 }

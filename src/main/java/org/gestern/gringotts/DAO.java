@@ -2,6 +2,7 @@ package org.gestern.gringotts;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -41,14 +42,18 @@ public class DAO {
 	private final Connection connection;
 	private final PreparedStatement 
 		storeAccountChest, destroyAccountChest, getAccountChest, 
-		storeAccount, getAccount, getAccountList, getChests, 
+		storeAccount, getAccount, deleteAccount, getAccountList, getChests, 
 		getChestsForAccount, getCents, storeCents;
 	
+	private static final String dbName = "Gringotts";
+	
 	private DAO() {
-		String dbName = "Gringotts";
+		
+		
 		String connectString = "jdbc:derby:"+dbName+";create=true";
 		try {
-			connection = DriverManager.getConnection(connectString);
+			Driver driver = DriverManager.getDriver(connectString);
+			connection = driver.connect(connectString, null);
 			
 			setupDB(connection);
 	
@@ -67,6 +72,8 @@ public class DAO {
 
 			getAccount = connection.prepareStatement(
 					"select * from account where owner = ? and type = ?");
+			deleteAccount = connection.prepareStatement(
+					"delete from account where owner = ?  and type = ?");
 			getAccountList = connection.prepareStatement(
 					"select * from account");
 			getChests = connection.prepareStatement(
@@ -143,7 +150,7 @@ public class DAO {
 			storeAccountChest.setInt(2, loc.getBlockX());
 			storeAccountChest.setInt(3, loc.getBlockY());
 			storeAccountChest.setInt(4, loc.getBlockZ());
-			storeAccountChest.setString(5, account.owner.getName());
+			storeAccountChest.setString(5, account.owner.getId());
 			storeAccountChest.setString(6, account.owner.getType());
 			
 			int updated = storeAccountChest.executeUpdate();
@@ -197,7 +204,7 @@ public class DAO {
     	
     	try {
 			storeAccount.setString(1, owner.getType());
-			storeAccount.setString(2, owner.getName());
+			storeAccount.setString(2, owner.getId());
 			
 			int updated = storeAccount.executeUpdate();
 			return updated > 0;
@@ -206,8 +213,22 @@ public class DAO {
 		}
     }
     
+    private boolean deleteAccount(String type, String id) {
+
+    	try {
+			deleteAccount.setString(1, type);
+			deleteAccount.setString(2, id);
+			
+			int updated = storeAccount.executeUpdate();
+			return updated > 0;
+		} catch (SQLException e) {
+			throw new GringottsStorageException("Failed to delete account: " + type +":"+id, e);
+		}
+    }
+    
     /**
-     * Get account belonging to a given account owner.
+     * Get account belonging to a given account owner. 
+     * If an account seems to belong to an owner, but h
      * @param accountHolder
      * @return account belonging to the given owner, or null if the owner has no account
      */
@@ -217,15 +238,16 @@ public class DAO {
     	
     	ResultSet result = null;
     	try {
-			getAccount.setString(1, accountHolder.getName());
+			getAccount.setString(1, accountHolder.getId());
 			getAccount.setString(2, accountHolder.getType());
 			
 			result = getAccount.executeQuery();
 			if (result.next()) {
 				String type = result.getString("type");
 				String ownerName = result.getString("owner");
-				log.info("Getting account "+type+":"+ownerName);
+				
 		    	AccountHolder owner = ahf.get(type, ownerName);
+		    	
 				return new Account(owner);
 			} else return null;
 			
@@ -256,16 +278,18 @@ public class DAO {
 				int z = result.getInt("z");
 				
 				String type = result.getString("type");
-				String ownerName = result.getString("owner");
+				String ownerId = result.getString("owner");
 				
 				World world = Bukkit.getWorld(worldName);
 				Location loc = new Location(world, x, y, z);
 				
 				Block signBlock = loc.getBlock();
 		    	if (Util.isSignBlock(signBlock)) {
-					Sign sign = (Sign) signBlock.getState();
-					AccountHolder owner = ahf.get(type, ownerName);
+					AccountHolder owner = ahf.get(type, ownerId);
+					if (owner == null)
+						throw new GringottsStorageException("AccountHolder "+type+":"+ownerId+" is not valid. Perhaps stored data is inconsistent?");
 					Account ownerAccount = new Account(owner);
+					Sign sign = (Sign) signBlock.getState();
 					chests.add(new AccountChest(sign, ownerAccount));
 				} else {
 					// remove accountchest from storage if it is not a valid chest
@@ -294,7 +318,7 @@ public class DAO {
 		Set<AccountChest> chests = new HashSet<AccountChest>();
 		ResultSet result = null;
 		try {
-			getChestsForAccount.setString(1, owner.getName());
+			getChestsForAccount.setString(1, owner.getId());
 			getChestsForAccount.setString(2, owner.getType());
 			result = getChestsForAccount.executeQuery();
 			
@@ -334,7 +358,7 @@ public class DAO {
 	public boolean storeCents(Account account, int amount) {
 		try {
 			storeCents.setInt(1, amount);
-			storeCents.setString(2, account.owner.getName());
+			storeCents.setString(2, account.owner.getId());
 			storeCents.setString(3, account.owner.getType());
 			
 			int updated = storeCents.executeUpdate();
@@ -354,7 +378,7 @@ public class DAO {
 		
 		ResultSet result = null;
 		try {
-			getCents.setString(1, account.owner.getName());
+			getCents.setString(1, account.owner.getId());
 			getCents.setString(2, account.owner.getType());
 			
 			result = getCents.executeQuery();
@@ -375,16 +399,38 @@ public class DAO {
 
 	/**
      * Get a DAO instance.
-     * @return
+     * @return the DAO instance
      */
 	public static DAO getDao() {
     	return dao;
     }
+	
+	/**
+	 * Shutdown connections and DB.
+	 */
+	public void shutdown() {
+		try {
+			connection.close();
+			
+			// disconnect from derby completely
+			String disconnectString = "jdbc:derby:"+dbName+";shutdown=true";
+			Driver driver = DriverManager.getDriver(disconnectString);
+			DriverManager.deregisterDriver(driver);
+//			DriverManager.getConnection(disconnectString);
+			
+			// force garbage collection to unload the EmbeddedDriver
+			// so Derby can be restarted (just to be sure)
+			System.gc();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
     
     @Override
     public void finalize() {
     	try {
 			connection.close();
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

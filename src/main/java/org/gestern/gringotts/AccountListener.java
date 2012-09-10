@@ -16,6 +16,7 @@ import org.bukkit.event.block.SignChangeEvent;
 
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
+import com.massivecraft.factions.Faction;
 
 /**
  * Listens for chest creation and destruction events.
@@ -28,7 +29,7 @@ public class AccountListener implements Listener {
 	private DAO dao = DAO.getDao();
     private Logger log = Bukkit.getServer().getLogger();
     private final Accounting accounting;
-
+    
     public AccountListener(Gringotts gringotts) {
         this.accounting = gringotts.accounting;
     }
@@ -48,7 +49,12 @@ public class AccountListener implements Listener {
             chestOwner = new PlayerAccountHolder(player);
         } else if (line0.equals("[faction vault]")) {
             FPlayer fplayer = FPlayers.i.get(player);
-            chestOwner = new FactionAccountHolder(fplayer.getFaction());
+            Faction playerFaction = fplayer.getFaction();
+            if (playerFaction == null) {
+            	player.sendMessage("Failed to create faction vault: You are not in a faction.");
+            	return;
+            }
+            chestOwner = new FactionAccountHolder(playerFaction);
         } else return; // not for us!
 
         Block signBlock = event.getBlock();
