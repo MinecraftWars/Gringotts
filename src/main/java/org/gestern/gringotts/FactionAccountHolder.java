@@ -85,5 +85,10 @@ public class FactionAccountHolder implements AccountHolder {
 		return "FactionAccountHolder("+getName()+")";
 	}
 
+	@Override
+	public String getId() {
+		return owner.getId();
+	}
+
 
 }

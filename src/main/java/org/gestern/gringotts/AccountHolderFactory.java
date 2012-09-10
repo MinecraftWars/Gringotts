@@ -3,9 +3,14 @@ package org.gestern.gringotts;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
+import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.Factions;
 
 public class AccountHolderFactory {
+	
+	public AccountHolder getAccount(String owner) {
+		return get(owner);
+	}
 
 	/**
 	 * Get an account holder with automatically determined type, based on the owner's name.
@@ -19,9 +24,11 @@ public class AccountHolderFactory {
             return new PlayerAccountHolder(player);
 
         if (owner.startsWith("faction-")) {
-            String factionId = owner.substring(8);
-            if (Factions.i.exists(factionId))
-                return new FactionAccountHolder(Factions.i.get(factionId));
+            String factionTag = owner.substring(8);
+            Faction factionOwner = Factions.i.getByTag(factionTag);
+            if (factionOwner != null) 
+                return new FactionAccountHolder(factionOwner);
+            
         }
 
         return null;

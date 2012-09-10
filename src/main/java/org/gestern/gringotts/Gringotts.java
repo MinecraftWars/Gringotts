@@ -47,6 +47,10 @@ public class Gringotts extends JavaPlugin {
     	Configuration.config.saveConfig(getConfig());
     	// actually persist config
         saveConfig();
+        
+        // shut down db connection
+        DAO.getDao().shutdown();
+        
         log.info("[Gringotts] disabled");
     }
 

@@ -24,5 +24,6 @@ public final class Util {
     	Material type = block.getType();
     	return Material.SIGN == type || Material.WALL_SIGN == type;
     }
+   
     
 }
