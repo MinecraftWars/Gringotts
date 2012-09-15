@@ -10,19 +10,25 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Gringotts extends JavaPlugin {
 
-    PluginManager pluginmanager;
-    Logger log = Bukkit.getServer().getLogger();
+	/** The Gringotts plugin instance. */
+	public static Gringotts gringotts;
+	
+    private PluginManager pluginmanager;
+    private Logger log = Bukkit.getServer().getLogger();
 
-    /** Manager of accounts, listener of events. */
-
+    
     private final Commands gcommand = new Commands(this);
     public final AccountHolderFactory accountHolderFactory = new AccountHolderFactory();
 
+    /** Manages accounts. */
     public Accounting accounting;
 
 
     @Override
     public void onEnable() {
+    	
+    	gringotts = this;
+    	
         pluginmanager = getServer().getPluginManager();
 
         getCommand("balance").setExecutor(gcommand);

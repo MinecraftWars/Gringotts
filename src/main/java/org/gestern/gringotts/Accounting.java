@@ -23,6 +23,7 @@ public class Accounting {
      * @return account associated with an account holder
      */
     public Account getAccount(AccountHolder owner) {
+    	log.info("[Gringotts.Accounting.debug] getting account for owner: " + owner);
         Account account = dao.getAccount(owner);
         if (account == null) {
             account = new Account(owner);
@@ -51,8 +52,9 @@ public class Accounting {
      * Associate an AccountChest with an Account. 
      * @param account
      * @param chest 
-     * @return false if the specified AccountChest is already registered or would be connected to a registered chest. 
-     * 		true if the association was successful.  
+     * @return false if the specified AccountChest is already registered or would be connected to 
+     * a registered chest. true if the association was successful. 
+     * @throws GringottsStorageException when saving of account chest failed 
      */
     public boolean addChest(Account account, AccountChest chest) {
     	
@@ -68,7 +70,8 @@ public class Accounting {
     	if (chestConnected(chest, allChests) )
             return false;
 
-        dao.storeAccountChest(chest);
+        if ( ! dao.storeAccountChest(chest) )
+        	throw new GringottsStorageException("Could not save account chest: " + chest);
         return true;
     }
 

@@ -13,6 +13,8 @@ public class Commands implements CommandExecutor  {
 
     private Gringotts plugin;
     private Configuration conf = Configuration.config;
+    
+    private final AccountHolderFactory ahf = new AccountHolderFactory();
 
     public Commands(Gringotts plugin) {
         this.plugin = plugin;
@@ -28,7 +30,9 @@ public class Commands implements CommandExecutor  {
             return false; // for now, no console commands
         }
 
-        AccountHolder accountOwner = new PlayerAccountHolder(player);
+//        AccountHolder accountOwner = new PlayerAccountHolder(player);
+        AccountHolder accountOwner = ahf.get("player", player.getName());
+        
         Accounting accounting = plugin.accounting;
         Account account = accounting.getAccount(accountOwner);
 
