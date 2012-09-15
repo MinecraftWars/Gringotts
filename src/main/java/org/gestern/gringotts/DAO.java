@@ -45,15 +45,20 @@ public class DAO {
 		storeAccount, getAccount, deleteAccount, getAccountList, getChests, 
 		getChestsForAccount, getCents, storeCents;
 	
-	private static final String dbName = "Gringotts";
+	private static final String dbName = "GringottsDB";
+	
+	/** Full connection string for database, without connect options. */
+	private final String dbString;
 	
 	private DAO() {
 		
-		
-		String connectString = "jdbc:derby:"+dbName+";create=true";
+		String dbPath = Gringotts.gringotts.getDataFolder().getAbsolutePath();
+		dbString = "jdbc:derby:" + dbPath+"/"+dbName;
+		String connectString = dbString + ";create=true";
 		try {
 			Driver driver = DriverManager.getDriver(connectString);
 			connection = driver.connect(connectString, null);
+			
 			
 			setupDB(connection);
 	
@@ -247,7 +252,7 @@ public class DAO {
 				String ownerName = result.getString("owner");
 				
 		    	AccountHolder owner = ahf.get(type, ownerName);
-		    	
+		    	log.info("[Gringotts.DAO.debug] found account: " + type+":"+owner);
 				return new Account(owner);
 			} else return null;
 			
@@ -412,16 +417,17 @@ public class DAO {
 		try {
 			connection.close();
 			
+			log.info("[Gringotts] shutting down database connection");
 			// disconnect from derby completely
-			String disconnectString = "jdbc:derby:"+dbName+";shutdown=true";
+			String disconnectString = dbString + ";shutdown=true";
 			Driver driver = DriverManager.getDriver(disconnectString);
 			DriverManager.deregisterDriver(driver);
-//			DriverManager.getConnection(disconnectString);
 			
 			// force garbage collection to unload the EmbeddedDriver
 			// so Derby can be restarted (just to be sure)
 			System.gc();
 		} catch (SQLException e) {
+			log.severe("[Gringotts] failed to shut down database correctly: " + e.getMessage());
 			e.printStackTrace();
 		}
 	}

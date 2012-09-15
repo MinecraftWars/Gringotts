@@ -22,11 +22,13 @@ public class AccountHolderFactory {
 	 * @param owner
 	 * @return account holder for the given owner name, or null if none could be determined
 	 */
-    public AccountHolder get(String owner) {
+    public AccountHolder get(String owner) {    	
         OfflinePlayer player = Bukkit.getOfflinePlayer(owner);
         // if this player has ever played on the server, they are a legit account holder
-        if (player.getLastPlayed() > 0)
+        if (player.isOnline() || player.getLastPlayed() > 0) {
+        	log.info("[Gringotts.AccountHolderFactory.debug] has been online: " + owner);
             return new PlayerAccountHolder(player);
+        }
 
         if (owner.startsWith("faction-")) {
         	// not sure, but somehow this is sometimes id, sometimes tag??
@@ -57,8 +59,10 @@ public class AccountHolderFactory {
     	if (type.equals("player")) {
             OfflinePlayer player = Bukkit.getOfflinePlayer(owner);
             // if this player has ever played on the server, they are a legit account holder
-            if (player.getLastPlayed() > 0)
+            if (player.isOnline() || player.getLastPlayed() > 0) {
+            	log.info("[Gringotts.AccountHolderFactory.debug] has been online: " + owner);
                 return new PlayerAccountHolder(player);
+            }
             else return null;
     	}
     	
