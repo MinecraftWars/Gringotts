@@ -2,7 +2,7 @@ name: Gringotts
 authors: [jasticE, squidicuz, eXeC64]
 website: https://github.com/MinecraftWars/Gringotts
 
-version: 0.1
+version: 0.2
 main: org.gestern.gringotts.Gringotts
 
 depend: []
@@ -17,7 +17,7 @@ commands:
     aliases: [money]
     description: Money actions
     usage: |
-        /money [add|remove] <amount>
+        /money
         /money pay <amount> <player>
     
 permissions:

@@ -26,7 +26,8 @@ import com.massivecraft.factions.Faction;
 public class AccountListener implements Listener {
 
 	private DAO dao = DAO.getDao();
-    private Logger log = Bukkit.getServer().getLogger();
+    @SuppressWarnings("unused")
+	private Logger log = Bukkit.getServer().getLogger();
     private final Accounting accounting;
     
     public AccountListener(Gringotts gringotts) {
@@ -63,11 +64,8 @@ public class AccountListener implements Listener {
             // create account chest
             AccountChest accountChest = new AccountChest((Sign)signBlock.getState(), account);
             
-            log.info("[Gringotts] creating account chest for account: " + account);
-
             // check for existence / add to tracking
             if (accounting.addChest(account, accountChest)) {
-                log.info("[Gringotts] Vault created by " + player.getName());
                 event.setLine(2, chestOwner.getName());
                 player.sendMessage("Created a vault for your account.");
 
