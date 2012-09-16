@@ -17,10 +17,18 @@ commands:
     aliases: [money]
     description: Money actions
     usage: |
-        /money
-        /money pay <amount> <player>
-    
+      /money
+      /money pay <amount> <player>
+  moneyadmin:
+    aliases: [moneyadm]
+    description: Gringotts admin actions
+    usage: |
+      /moneyadm add <amount> [player]
+      /moneyadm rm <amount> [player]
+      /moneyadm b <player>
+    permission: gringotts.admin
+
 permissions:
-    gringotts.admin:
-        description: Use all commands
-        default: false
+  gringotts.admin:
+    description: Use all commands
+    default: false
