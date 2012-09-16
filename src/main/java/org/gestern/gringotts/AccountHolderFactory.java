@@ -26,7 +26,6 @@ public class AccountHolderFactory {
         OfflinePlayer player = Bukkit.getOfflinePlayer(owner);
         // if this player has ever played on the server, they are a legit account holder
         if (player.isOnline() || player.getLastPlayed() > 0) {
-        	log.info("[Gringotts.AccountHolderFactory.debug] has been online: " + owner);
             return new PlayerAccountHolder(player);
         }
 
@@ -60,7 +59,6 @@ public class AccountHolderFactory {
             OfflinePlayer player = Bukkit.getOfflinePlayer(owner);
             // if this player has ever played on the server, they are a legit account holder
             if (player.isOnline() || player.getLastPlayed() > 0) {
-            	log.info("[Gringotts.AccountHolderFactory.debug] has been online: " + owner);
                 return new PlayerAccountHolder(player);
             }
             else return null;

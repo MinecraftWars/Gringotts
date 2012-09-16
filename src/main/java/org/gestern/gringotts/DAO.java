@@ -252,7 +252,6 @@ public class DAO {
 				String ownerName = result.getString("owner");
 				
 		    	AccountHolder owner = ahf.get(type, ownerName);
-		    	log.info("[Gringotts.DAO.debug] found account: " + type+":"+owner);
 				return new Account(owner);
 			} else return null;
 			
