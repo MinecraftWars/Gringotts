@@ -88,7 +88,6 @@ public class Commands implements CommandExecutor  {
 
             if(args.length == 3) {
                 // /money pay <amount> <player>
-                // TODO support faction payment
                 if (command.equals("pay")) {
                     String recipientName = args[2];
                     AccountHolder recipient = new PlayerAccountHolder(recipientName);

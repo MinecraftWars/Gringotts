@@ -86,7 +86,7 @@ public class AccountChest {
      */
     private boolean updateValid() {
     	if (!valid()) {
-    		log.info("Destroying orphaned vault: " + this);
+    		log.info("[Gringotts] Destroying orphaned vault: " + this);
     		destroy();
     		return false;
     	}
