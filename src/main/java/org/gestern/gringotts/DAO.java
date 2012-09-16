@@ -42,7 +42,7 @@ public class DAO {
 	private final Connection connection;
 	private final PreparedStatement 
 		storeAccountChest, destroyAccountChest, getAccountChest, 
-		storeAccount, getAccount, deleteAccount, getAccountList, getChests, 
+		storeAccount, getAccount, getAccountList, getChests, 
 		getChestsForAccount, getCents, storeCents;
 	
 	private static final String dbName = "GringottsDB";
@@ -72,13 +72,9 @@ public class DAO {
 					"WHERE ac.world = ? and ac.x = ? and ac.y = ? and ac.z = ?");
 			storeAccount = connection.prepareStatement(
 					"insert into account (type, owner, cents) values (?,?,0)");
-//			storeAccount = connection.prepareStatement(
-//					"insert into account (type, owner, cents) (select ? as type, ? as owner, 0 as cents from account where type=? and owner=? having count(*)=0)");
 
 			getAccount = connection.prepareStatement(
 					"select * from account where owner = ? and type = ?");
-			deleteAccount = connection.prepareStatement(
-					"delete from account where owner = ?  and type = ?");
 			getAccountList = connection.prepareStatement(
 					"select * from account");
 			getChests = connection.prepareStatement(
@@ -217,19 +213,7 @@ public class DAO {
 			throw new GringottsStorageException("Failed to store account: " + account, e);
 		}
     }
-    
-    private boolean deleteAccount(String type, String id) {
-
-    	try {
-			deleteAccount.setString(1, type);
-			deleteAccount.setString(2, id);
-			
-			int updated = storeAccount.executeUpdate();
-			return updated > 0;
-		} catch (SQLException e) {
-			throw new GringottsStorageException("Failed to delete account: " + type +":"+id, e);
-		}
-    }
+   
     
     /**
      * Get account belonging to a given account owner. 
