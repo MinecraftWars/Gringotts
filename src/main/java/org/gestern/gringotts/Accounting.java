@@ -23,7 +23,6 @@ public class Accounting {
      * @return account associated with an account holder
      */
     public Account getAccount(AccountHolder owner) {
-    	log.info("[Gringotts.Accounting.debug] getting account for owner: " + owner);
         Account account = dao.getAccount(owner);
         if (account == null) {
             account = new Account(owner);
