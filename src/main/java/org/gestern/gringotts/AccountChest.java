@@ -11,6 +11,7 @@ import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
 import org.bukkit.inventory.DoubleChestInventory;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 
@@ -49,12 +50,25 @@ public class AccountChest {
         this.account = account;
     }
     
-    private Chest chest() {
+    /**
+     * The actual "chest" containing this account chest's stuff.
+     * @return
+     */
+    private InventoryHolder chest() {
     	Block storage = sign.getBlock().getRelative(BlockFace.DOWN);
-    	if (Material.CHEST.equals(storage.getType()))
-    		return ((Chest)storage.getState());
+    	if (validContainer(storage.getType()))
+    		return ((InventoryHolder)storage.getState());
     	else
     		return null;
+    }
+    
+    /** 
+     * Location of the storage block of this account chest.
+     * @return
+     */
+    private Location chestLocation() {
+    	Block storage = sign.getBlock().getRelative(BlockFace.DOWN);
+    	return storage.getLocation();
     }
     
     /**
@@ -62,7 +76,7 @@ public class AccountChest {
      * @return inventory of this accountchest, if any. otherwise null.
      */
     private Inventory inventory() {
-    	Chest chest = chest();
+    	InventoryHolder chest = chest();
     	return (chest != null)? chest.getInventory() : null;
     }
     
@@ -267,8 +281,12 @@ public class AccountChest {
 
             return new Chest[] {left, right};
         } else {
-            return new Chest[] {(Chest)(inv.getHolder())};
+        	InventoryHolder invHolder = inv.getHolder();
+        	if (invHolder instanceof Chest)
+        		return new Chest[] {(Chest)(inv.getHolder())};
         }
+        
+        return new Chest[0];
     }
 
 
@@ -307,14 +325,15 @@ public class AccountChest {
      */
 	public boolean connected(AccountChest chest) {
 		
-		if (!updateValid())
+		// no valid account chest anymore -> no connection
+		if (! updateValid())
     		return false;
 		
-		Chest myChest = chest();
-		if (myChest == null)
+		// no double chest -> no connection possible
+		if (! (inventory() instanceof DoubleChestInventory))
 			return false;
-		
-		Location myLoc = myChest.getLocation();
+			
+		Location myLoc = chestLocation();
 		for (Chest c : chest.connectedChests())
 			if (c.getLocation().equals(myLoc))
 				return true;
@@ -324,6 +343,17 @@ public class AccountChest {
 
 	public Account getAccount() {
 		return account;
+	}
+	
+	public static boolean validContainer(Material material) {
+		switch (material) {
+		case CHEST:
+		case DISPENSER:
+		case FURNACE:
+			return true;
+		default:
+			return false;
+		}
 	}
 
 }

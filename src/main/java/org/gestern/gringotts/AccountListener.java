@@ -4,7 +4,6 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
@@ -59,7 +58,7 @@ public class AccountListener implements Listener {
 
         Block signBlock = event.getBlock();
         Block chestBlock = signBlock.getRelative(BlockFace.DOWN);
-        if (chestBlock.getType() == Material.CHEST) {
+        if (AccountChest.validContainer(chestBlock.getType())) {
             Account account = accounting.getAccount(chestOwner);
             // create account chest
             AccountChest accountChest = new AccountChest((Sign)signBlock.getState(), account);
