@@ -23,8 +23,8 @@ commands:
     aliases: [moneyadm]
     description: Gringotts admin actions
     usage: |
-      /moneyadm add <amount> [player]
-      /moneyadm rm <amount> [player]
+      /moneyadm add <amount> <player>
+      /moneyadm rm <amount> <player>
       /moneyadm b <player>
     permission: gringotts.admin
 
