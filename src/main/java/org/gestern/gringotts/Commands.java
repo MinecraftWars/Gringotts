@@ -60,34 +60,6 @@ public class Commands implements CommandExecutor {
             if (args.length >= 2) {
                 try { value = Double.parseDouble(args[1]); } 
                 catch (NumberFormatException e) { return false; }
-
-                if (command.equals("add")) {
-
-                    if(! player.hasPermission("gringotts.admin")) {
-                        sender.sendMessage("You do not have permission to do that.");
-                        return true;
-                    }
-
-                    if (account.add(value))
-                        accountOwner.sendMessage("added to your account: " + value);
-                    else
-                        accountOwner.sendMessage("could not add " + value + " to your account.");
-
-                    return true;
-
-                } else if (command.equals("remove")) {
-
-                    if(! player.hasPermission("gringotts.admin")) {
-                        sender.sendMessage("You do not have permission to do that.");
-                        return true;
-                    }
-                    if (account.remove(value))
-                        accountOwner.sendMessage("removed from your account: " + value);
-                    else
-                        accountOwner.sendMessage("could not remove " + value + " from your account.");
-
-                    return true;
-                }
             } 
 
             if(args.length == 3) {
