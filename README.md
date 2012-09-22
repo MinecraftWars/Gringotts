@@ -33,11 +33,14 @@ Display your account's current balance.
 Pay an amount to a player. The transaction will only succeed if your account has at least the given amount plus any taxes that apply, and the receiving account has enough capacity for the amount.
 
 ### Admin commands ###
-    /money add <amount>
-Add an amount of money to your account.
+    /moneyadmin b <account>
+Get the balance of a player's account.
 
-    /money remove <amount>
-Remove an amount of money from your account.
+    /moneyadmin add <amount> <account>
+Add an amount of money to a player's account.
+
+    /moneyadmin rm <amount>
+Remove an amount of money from a player's account.
 
 Installation
 ------------
@@ -45,8 +48,6 @@ Installing Gringotts is as simple as putting gringotts.jar in the _plugins_ subf
 
 ### Caveats ###
 Currently using the `reload` command on a running server may cause Gringotts to lose its database connection or even crash CraftBukkit. Please restart the server instead.
-
-Gringotts does currently not check if Factions is loaded. Trying to create a faction vault may cause errors.
 
 Configuration
 -------------
