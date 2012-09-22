@@ -29,7 +29,7 @@ public class AccountHolderFactory {
             return new PlayerAccountHolder(player);
         }
 
-        if (owner.startsWith("faction-")) {
+        if (Dependency.dependency().factions != null && owner.startsWith("faction-")) {
         	// not sure, but somehow this is sometimes id, sometimes tag??
             String factionTag = owner.substring(8);
             Faction faction;
@@ -64,7 +64,7 @@ public class AccountHolderFactory {
             else return null;
     	}
     	
-    	if (type.equals("faction")) {
+    	if (Dependency.dependency().factions != null && type.equals("faction")) {
             if (Factions.i.exists(owner))
                 return new FactionAccountHolder(Factions.i.get(owner));
             else return null;

@@ -41,6 +41,7 @@ public class DAO {
 	
 	private final Driver driver;
 	private Connection connection;
+	// TODO remove or use unused statements
 	private PreparedStatement 
 		storeAccountChest, destroyAccountChest, getAccountChest, 
 		storeAccount, getAccount, getAccountList, getChests, 

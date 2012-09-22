@@ -38,11 +38,10 @@ public class Gringotts extends JavaPlugin {
         FileConfiguration savedConfig = getConfig();
         Configuration.config.readConfig(savedConfig);
 
-        // load saved account data
         accounting = new Accounting();
 
         registerEvents();
-
+        
         log.info("[Gringotts] enabled");
     }
 
