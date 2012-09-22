@@ -39,8 +39,9 @@ public class DAO {
 	
 	private final Logger log = Bukkit.getLogger();
 	
-	private final Connection connection;
-	private final PreparedStatement 
+	private final Driver driver;
+	private Connection connection;
+	private PreparedStatement 
 		storeAccountChest, destroyAccountChest, getAccountChest, 
 		storeAccount, getAccount, getAccountList, getChests, 
 		getChestsForAccount, getCents, storeCents;
@@ -55,39 +56,14 @@ public class DAO {
 		String dbPath = Gringotts.gringotts.getDataFolder().getAbsolutePath();
 		dbString = "jdbc:derby:" + dbPath+"/"+dbName;
 		String connectString = dbString + ";create=true";
-		try {
-			Driver driver = DriverManager.getDriver(connectString);
-			connection = driver.connect(connectString, null);
-			
-			
-			setupDB(connection);
-	
-			storeAccountChest = connection.prepareStatement(
-					"insert into accountchest (world,x,y,z,account) values (?, ?, ?, ?, (select id from account where owner=? and type=?))");
-			destroyAccountChest = connection.prepareStatement(
-					"delete from accountchest where world = ? and x = ? and y = ? and z = ?");
-			getAccountChest = connection.prepareStatement(
-					"SELECT ac.world, ac.x, ac.y, ac.z, a.type, a.owner " +
-					"FROM accountchest ac JOIN account a ON ac.account = a.id " + 
-					"WHERE ac.world = ? and ac.x = ? and ac.y = ? and ac.z = ?");
-			storeAccount = connection.prepareStatement(
-					"insert into account (type, owner, cents) values (?,?,0)");
 
-			getAccount = connection.prepareStatement(
-					"select * from account where owner = ? and type = ?");
-			getAccountList = connection.prepareStatement(
-					"select * from account");
-			getChests = connection.prepareStatement(
-					"SELECT ac.world, ac.x, ac.y, ac.z, a.type, a.owner " +
-					"FROM accountchest ac JOIN account a ON ac.account = a.id ");
-			getChestsForAccount = connection.prepareStatement(
-					"SELECT ac.world, ac.x, ac.y, ac.z " +
-					"FROM accountchest ac JOIN account a ON ac.account = a.id " +
-					"WHERE a.owner = ? and a.type = ?");
-			getCents = connection.prepareStatement(
-					"SELECT cents FROM account WHERE owner = ? and type = ?");
-			storeCents = connection.prepareStatement(
-					"UPDATE account SET cents = ? WHERE owner = ? and type = ?");
+		try {
+			driver = DriverManager.getDriver(connectString);
+			connection = driver.connect(connectString, null);
+
+			checkConnection();
+			setupDB(connection);
+			prepareStatements();
 			
 			log.info("[Gringotts] DAO setup successfully.");
 
@@ -133,6 +109,49 @@ public class DAO {
     			log.info("[Gringotts] created table ACCOUNTCHEST");
     	}
 	}
+    
+    /**
+     * Prepare sql statements for use in DAO.
+     * 
+     * @throws SQLException
+     */
+    private void prepareStatements() throws SQLException {
+
+		storeAccountChest = connection.prepareStatement(
+				"insert into accountchest (world,x,y,z,account) values (?, ?, ?, ?, (select id from account where owner=? and type=?))");
+		destroyAccountChest = connection.prepareStatement(
+				"delete from accountchest where world = ? and x = ? and y = ? and z = ?");
+		getAccountChest = connection.prepareStatement(
+				"SELECT ac.world, ac.x, ac.y, ac.z, a.type, a.owner " +
+				"FROM accountchest ac JOIN account a ON ac.account = a.id " + 
+				"WHERE ac.world = ? and ac.x = ? and ac.y = ? and ac.z = ?");
+		storeAccount = connection.prepareStatement(
+				"insert into account (type, owner, cents) values (?,?,0)");
+
+		getAccount = connection.prepareStatement(
+				"select * from account where owner = ? and type = ?");
+		getAccountList = connection.prepareStatement(
+				"select * from account");
+		getChests = connection.prepareStatement(
+				"SELECT ac.world, ac.x, ac.y, ac.z, a.type, a.owner " +
+				"FROM accountchest ac JOIN account a ON ac.account = a.id ");
+		getChestsForAccount = connection.prepareStatement(
+				"SELECT ac.world, ac.x, ac.y, ac.z " +
+				"FROM accountchest ac JOIN account a ON ac.account = a.id " +
+				"WHERE a.owner = ? and a.type = ?");
+		getCents = connection.prepareStatement(
+				"SELECT cents FROM account WHERE owner = ? and type = ?");
+		storeCents = connection.prepareStatement(
+				"UPDATE account SET cents = ? WHERE owner = ? and type = ?");
+    }
+    
+    private void checkConnection() throws SQLException {
+    	if (connection == null || connection.isClosed()) {
+			connection = driver.connect(dbString, null);
+			prepareStatements();
+			log.warning("[Gringotts] Database connection lost. Reinitialized DB.");
+    	}
+    }
 
 
 	/**
@@ -147,6 +166,8 @@ public class DAO {
     	
     	log.info("[Gringotts] storing account chest: " + chest + " for account: " + account);
     	try {
+    		checkConnection();
+    		
 			storeAccountChest.setString(1, loc.getWorld().getName());
 			storeAccountChest.setInt(2, loc.getBlockX());
 			storeAccountChest.setInt(3, loc.getBlockY());
@@ -176,6 +197,8 @@ public class DAO {
     public boolean destroyAccountChest(AccountChest chest) {
     	Location loc = chest.sign.getLocation();
     	try {
+    		checkConnection();
+    		
     		return deleteAccountChest(loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 	    } catch (SQLException e) {
 			throw new GringottsStorageException("Failed to delete account chest: " + chest, e);
@@ -204,6 +227,8 @@ public class DAO {
     		return false;
     	
     	try {
+    		checkConnection();
+    		
 			storeAccount.setString(1, owner.getType());
 			storeAccount.setString(2, owner.getId());
 			
@@ -227,6 +252,8 @@ public class DAO {
     	
     	ResultSet result = null;
     	try {
+    		checkConnection();
+    		
 			getAccount.setString(1, accountHolder.getId());
 			getAccount.setString(2, accountHolder.getType());
 			
@@ -257,6 +284,8 @@ public class DAO {
     	Set<AccountChest> chests = new HashSet<AccountChest>();
     	ResultSet result = null;
     	try {
+    		checkConnection();
+    		
     		result = getChests.executeQuery();
 			
 			while (result.next()) {
@@ -306,6 +335,8 @@ public class DAO {
 		Set<AccountChest> chests = new HashSet<AccountChest>();
 		ResultSet result = null;
 		try {
+			checkConnection();
+    		
 			getChestsForAccount.setString(1, owner.getId());
 			getChestsForAccount.setString(2, owner.getType());
 			result = getChestsForAccount.executeQuery();
@@ -345,6 +376,8 @@ public class DAO {
 	 */
 	public boolean storeCents(Account account, int amount) {
 		try {
+			checkConnection();
+    		
 			storeCents.setInt(1, amount);
 			storeCents.setString(2, account.owner.getId());
 			storeCents.setString(3, account.owner.getType());
@@ -366,6 +399,8 @@ public class DAO {
 		
 		ResultSet result = null;
 		try {
+			checkConnection();
+    		
 			getCents.setString(1, account.owner.getId());
 			getCents.setString(2, account.owner.getType());
 			
@@ -398,6 +433,8 @@ public class DAO {
 	 */
 	public void shutdown() {
 		try {
+			checkConnection();
+    		
 			connection.close();
 			
 			log.info("[Gringotts] shutting down database connection");
@@ -417,6 +454,7 @@ public class DAO {
     
     @Override
     public void finalize() {
+    	log.info("[Gringotts] shutting down database connection.");
     	try {
 			connection.close();
 			
