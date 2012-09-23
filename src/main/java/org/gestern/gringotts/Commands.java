@@ -109,16 +109,17 @@ public class Commands implements CommandExecutor {
             	AccountHolder targetAccountHolder = ahf.get(targetAccountHolderStr);
             	Account targetAccount = accounting.getAccount(targetAccountHolder);
             	sender.sendMessage("Balance of account " + targetAccountHolder.getName() + ": " + targetAccount.balance());
+            	return true;
             }
             
             // moneyadmin add/remove
             if (args.length == 3) {
-            	String amountStr = args[2];
+            	String amountStr = args[1];
             	double value;
             	try { value = Double.parseDouble(amountStr);} 
             	catch(NumberFormatException x) { return false; }
             	
-            	String targetAccountHolderStr = args[3];
+            	String targetAccountHolderStr = args[2];
             	AccountHolder targetAccountHolder = ahf.get(targetAccountHolderStr);
             	Account targetAccount = accounting.getAccount(targetAccountHolder);
             	if (command.equalsIgnoreCase("add")) {
