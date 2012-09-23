@@ -47,7 +47,7 @@ public class AccountListener implements Listener {
         AccountHolder chestOwner;
         if (line0.equals("[vault]")) {
             chestOwner = new PlayerAccountHolder(player);
-        } else if (line0.equals("[faction vault]")) {
+        } else if (Dependency.dependency().factions != null && line0.equals("[faction vault]")) {
             FPlayer fplayer = FPlayers.i.get(player);
             Faction playerFaction = fplayer.getFaction();
             if (playerFaction == null) {
