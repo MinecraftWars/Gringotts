@@ -84,7 +84,11 @@ Example configuration section:
 This would add to every transaction 1 plus 5% of the transaction value. For instance, if you had issued the command `/money pay 200 notch` it would remove 211 emeralds from your account, and add 200 emeralds to notch's account.
 
 ### Permissions ###
-**TODO**
+There is only one permission:
+  
+    gringotts.admin
+
+This allows use of all `/moneyadmin` commands
 
 Development
 -----------
@@ -95,3 +99,7 @@ Gringotts uses the [Maven 3](http://maven.apache.org/ref/3.0/) build system. To 
     mvn compile assembly:single
     
 This should put a jar with the required dependencies in the _target_ subdirectory
+
+License
+-------
+All code within Gringotts is licensed under the BSD 2-clause license. See `license.txt` for details.
