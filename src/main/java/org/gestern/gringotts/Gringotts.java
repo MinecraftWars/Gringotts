@@ -3,6 +3,7 @@ package org.gestern.gringotts;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -31,9 +32,12 @@ public class Gringotts extends JavaPlugin {
     	
         pluginmanager = getServer().getPluginManager();
 
-        getCommand("balance").setExecutor(gcommand);
-        getCommand("money").setExecutor(gcommand);
-        getCommand("moneyadmin").setExecutor(gcommand);
+        CommandExecutor playerCommands = gcommand.new Money();
+        CommandExecutor adminCommands = gcommand.new Moneyadmin();
+
+        getCommand("balance").setExecutor(playerCommands);
+        getCommand("money").setExecutor(playerCommands);
+        getCommand("moneyadmin").setExecutor(adminCommands);
 
         // load and init configuration
         FileConfiguration savedConfig = getConfig();
