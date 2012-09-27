@@ -25,26 +25,16 @@ public class Commands implements CommandExecutor {
     }
 
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-
-        Player player;
-        if (sender instanceof Player) {
-            player = (Player)sender;
-        } else {
-            sender.sendMessage("This command can only be run by a player.");
-            return false; // for now, no console commands
-            // TODO allow console commands
-            // TODO actually, refactor the whole thing already!
-        }
-
-        AccountHolder accountOwner = new PlayerAccountHolder(player);
-        
+    	
         Accounting accounting = plugin.accounting;
-        Account account = accounting.getAccount(accountOwner);
 
-        if(cmd.getName().equalsIgnoreCase("balance")){
-            balanceMessage(account, accountOwner);
-            return true;
-        } else if(cmd.getName().equalsIgnoreCase("money")){
+        if (cmd.getName().equalsIgnoreCase("money") || cmd.getName().equalsIgnoreCase("balance")) {
+        	Player player = checkIfPlayer(sender);
+        	if (player == null) return false;
+        	
+            AccountHolder accountOwner = new PlayerAccountHolder(player);
+            Account account = accounting.getAccount(accountOwner);
+            
             if (args.length == 0) {
                 // same as balance
                 balanceMessage(account, accountOwner);
@@ -97,7 +87,7 @@ public class Commands implements CommandExecutor {
         } else if (cmd.getName().equalsIgnoreCase("moneyadmin")) {
         	
         	AccountHolderFactory ahf = new AccountHolderFactory();
-
+        	
         	String command;
             if (args.length >= 2) {
                 command = args[0];
@@ -146,6 +136,25 @@ public class Commands implements CommandExecutor {
         }
 
         return false; 
+    }
+    
+    /**
+     * Check if command sender is player, and notify them if they are not.
+     * @param sender
+     * @return true if the sender is a player
+     */
+    private Player checkIfPlayer(CommandSender sender) {
+        Player player;
+        if (sender instanceof Player) {
+            player = (Player)sender;
+            return player;
+        } else {
+            sender.sendMessage("This command can only be run by a player.");
+            return null; // for now, no console commands
+            // TODO allow console commands
+            // TODO actually, refactor the whole thing already!
+        }
+
     }
 
     private void balanceMessage(Account account, AccountHolder owner) {

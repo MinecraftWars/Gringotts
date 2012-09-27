@@ -33,6 +33,7 @@ public class Gringotts extends JavaPlugin {
 
         getCommand("balance").setExecutor(gcommand);
         getCommand("money").setExecutor(gcommand);
+        getCommand("moneyadmin").setExecutor(gcommand);
 
         // load and init configuration
         FileConfiguration savedConfig = getConfig();
