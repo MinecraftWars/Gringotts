@@ -45,9 +45,9 @@ public class AccountListener implements Listener {
 
         String line0 = event.getLine(0);
         AccountHolder chestOwner;
-        if (line0.equals("[vault]")) {
+        if (line0.equals("[vault]") || line0.equals("[Vault]")) {
             chestOwner = new PlayerAccountHolder(player);
-        } else if (Dependency.dependency().factions != null && line0.equals("[faction vault]")) {
+        } else if (Dependency.dependency().factions != null && (line0.equals("[faction vault]") || line0.equals("[Faction Vault]"))) {
             FPlayer fplayer = FPlayers.i.get(player);
             Faction playerFaction = fplayer.getFaction();
             if (playerFaction == null) {
