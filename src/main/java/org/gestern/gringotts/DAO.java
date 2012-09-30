@@ -18,6 +18,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 
 /**
+ * The Data Access Object provides accees to the datastore.
+ * This implementation uses the Apache Derby embedded DB.
  * 
  * @author jast
  *
@@ -430,37 +432,25 @@ public class DAO {
     }
 	
 	/**
-	 * Shutdown connections and DB.
+	 * Shutdown connection.
 	 */
 	public void shutdown() {
-		try {
-			checkConnection();
-    		
-			connection.close();
-			
+		try {			
 			log.info("[Gringotts] shutting down database connection");
 			// disconnect from derby completely
-			String disconnectString = dbString + ";shutdown=true";
-			Driver driver = DriverManager.getDriver(disconnectString);
-			DriverManager.deregisterDriver(driver);
+//			String disconnectString = dbString+";shutdown=true";
+			String disconnectString = "jdbc:derby:;shutdown=true";
+			DriverManager.getConnection(disconnectString);
 			
-			// force garbage collection to unload the EmbeddedDriver
-			// so Derby can be restarted (just to be sure)
-			System.gc();
 		} catch (SQLException e) {
-			log.severe("[Gringotts] failed to shut down database correctly: " + e.getMessage());
-			e.printStackTrace();
-		}
+			// yes, derby actually throws an exception as a shutdown message ...
+			log.info("[Gringotts] Derby shutdown: " + e.getSQLState() + ": " + e.getMessage());
+			System.gc();
+		} 
 	}
     
     @Override
     public void finalize() {
-    	log.info("[Gringotts] shutting down database connection.");
-    	try {
-			connection.close();
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+    	shutdown();
     }
 }
