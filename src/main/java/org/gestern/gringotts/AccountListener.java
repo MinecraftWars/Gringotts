@@ -46,12 +46,21 @@ public class AccountListener implements Listener {
         String line0 = event.getLine(0);
         AccountHolder chestOwner;
         if (line0.equals("[vault]")) {
+        	if (!player.hasPermission("gringotts.createvault.player")) {
+        		noPermission(player);
+        		return;
+        	}
             chestOwner = new PlayerAccountHolder(player);
         } else if (Dependency.dependency().factions != null && line0.equals("[faction vault]")) {
+        	if (!player.hasPermission("gringotts.createvault.faction")) {
+        		noPermission(player);
+        		return;
+        	}
+        	
             FPlayer fplayer = FPlayers.i.get(player);
             Faction playerFaction = fplayer.getFaction();
             if (playerFaction == null) {
-            	player.sendMessage("Failed to create faction vault: You are not in a faction.");
+            	player.sendMessage("Cannot create faction vault: You are not in a faction.");
             	return;
             }
             chestOwner = new FactionAccountHolder(playerFaction);
@@ -102,5 +111,9 @@ public class AccountListener implements Listener {
         		account.owner.sendMessage("Vault broken. New balance is " + account.balance());
         	}
         }
+    }
+    
+    private static void noPermission(Player player) {
+    	player.sendMessage("You do not have permission to create this vault.");
     }
 }

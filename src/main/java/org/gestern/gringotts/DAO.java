@@ -193,7 +193,7 @@ public class DAO {
     }
     
     /**
-     * 
+     * Remove an account chest from the datastore.
      * @param chest
      * @return true if the chest was deleted, false if no chest was deleted.
      */
@@ -306,14 +306,17 @@ public class DAO {
 				Block signBlock = loc.getBlock();
 		    	if (Util.isSignBlock(signBlock)) {
 					AccountHolder owner = ahf.get(type, ownerId);
-					if (owner == null)
-						throw new GringottsStorageException("AccountHolder "+type+":"+ownerId+" is not valid. Perhaps stored data is inconsistent?");
-					Account ownerAccount = new Account(owner);
-					Sign sign = (Sign) signBlock.getState();
-					chests.add(new AccountChest(sign, ownerAccount));
+					if (owner == null) {
+						log.info("[Gringotts] AccountHolder "+type+":"+ownerId+" is not valid. Deleting associated account chest at " + signBlock.getLocation());
+						deleteAccountChest(signBlock.getWorld().getName(), signBlock.getX(), signBlock.getY(), signBlock.getZ());
+					} else {
+						Account ownerAccount = new Account(owner);
+						Sign sign = (Sign) signBlock.getState();
+						chests.add(new AccountChest(sign, ownerAccount));
+					}
 				} else {
 					// remove accountchest from storage if it is not a valid chest
-					deleteAccountChest(signBlock.getWorld().toString(), signBlock.getX(), signBlock.getY(), signBlock.getZ());
+					deleteAccountChest(signBlock.getWorld().getName(), signBlock.getX(), signBlock.getY(), signBlock.getZ());
 				}
 			}
 		} catch (SQLException e) {

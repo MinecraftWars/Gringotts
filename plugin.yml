@@ -2,7 +2,7 @@ name: Gringotts
 authors: [jasticE, squidicuz, eXeC64]
 website: https://github.com/MinecraftWars/Gringotts
 
-version: 1.0
+version: 1.0.2-SNAPSHOT
 main: org.gestern.gringotts.Gringotts
 
 depend: []
@@ -29,6 +29,21 @@ commands:
     permission: gringotts.admin
 
 permissions:
+  gringotts.createvault:
+    description: Create vaults
+    default: true
+    children:
+      gringotts.createvault.player: true
+      gringotts.createvault.faction: true
+  gringotts.createvault.player:
+    description: Create player vaults
+    default: true
+  gringotts.createvault.faction:
+    description: Create faction vaults
+    default: true
+  gringotts.transfer:
+    description: Allow money transfer commands
+    default: true
   gringotts.admin:
-    description: Use all commands
+    description: Use all /moneyadmin commands
     default: op

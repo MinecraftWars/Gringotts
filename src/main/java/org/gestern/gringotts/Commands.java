@@ -20,6 +20,9 @@ public class Commands {
     private Gringotts plugin;
     private Configuration conf = Configuration.config;
     
+	private final AccountHolderFactory ahf = new AccountHolderFactory();
+
+    
     public Commands(Gringotts plugin) {
         this.plugin = plugin;
     }
@@ -61,10 +64,20 @@ public class Commands {
             if(args.length == 3) {
                 // /money pay <amount> <player>
                 if (command.equals("pay")) {
+                	if (!player.hasPermission("gringotts.transfer")) {
+                		player.sendMessage("You do not have permission to transfer money.");
+                	}
+                	
                     String recipientName = args[2];
-                    AccountHolder recipient = new PlayerAccountHolder(recipientName);
+                    
+                    AccountHolder recipient = ahf.get(recipientName);
+                    if (recipient == null) {
+                		invalidAccount(sender, recipientName);
+                		return true;
+                	}
+                    
                     Account recipientAccount = accounting.getAccount(recipient);
-
+                    
                     double tax = conf.transactionTaxFlat + value * conf.transactionTaxRate;
 
                     double balance = account.balance();
@@ -104,9 +117,7 @@ public class Commands {
             if (cmd.getName().equalsIgnoreCase("money") || cmd.getName().equalsIgnoreCase("balance")) {
             	
             } else if (cmd.getName().equalsIgnoreCase("moneyadmin")) {
-            	
-            	AccountHolderFactory ahf = new AccountHolderFactory();
-            	
+            	            	
             	String command;
                 if (args.length >= 2) {
                     command = args[0];
@@ -116,6 +127,10 @@ public class Commands {
                 if (args.length == 2 && command.equalsIgnoreCase("b")) {
                 	String targetAccountHolderStr = args[1];
                 	AccountHolder targetAccountHolder = ahf.get(targetAccountHolderStr);
+                	if (targetAccountHolder == null) {
+                		invalidAccount(sender, targetAccountHolderStr);
+                		return true;
+                	}
                 	Account targetAccount = accounting.getAccount(targetAccountHolder);
                 	sender.sendMessage("Balance of account " + targetAccountHolder.getName() + ": " + targetAccount.balance());
                 	return true;
@@ -130,6 +145,11 @@ public class Commands {
                 	
                 	String targetAccountHolderStr = args[2];
                 	AccountHolder targetAccountHolder = ahf.get(targetAccountHolderStr);
+                	if (targetAccountHolder == null) {
+                		invalidAccount(sender, targetAccountHolderStr);
+                		return true;
+                	}
+                	
                 	Account targetAccount = accounting.getAccount(targetAccountHolder);
                 	if (command.equalsIgnoreCase("add")) {
                         if (targetAccount.add(value)) {
@@ -161,6 +181,10 @@ public class Commands {
     
     private static void balanceMessage(Account account, AccountHolder owner) {
         owner.sendMessage("Your current balance: " + account.balance());
+    }
+    
+    private static void invalidAccount(CommandSender sender, String accountName) {
+    	sender.sendMessage("Invalid account: " + accountName);
     }
 
     /**
