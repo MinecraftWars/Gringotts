@@ -1,11 +1,11 @@
 Gringotts
 =========
 
-Gringotts is an economy plugin for the Bukkit Minecraft server platform. Unlike earlier economy plugins such as iConomy, all currency value and transactions is based on actual items in Minecraft, per default emeralds. The goals are to add a greater level of immersion, a generally more Minecraft-like feeling, and in the case of a PvP environment, making the currency itself vulnerable to raiding.
+Gringotts is an item-based economy plugin for the Bukkit Minecraft server platform. Unlike earlier economy plugins such as iConomy, all currency value and transactions is based on actual items in Minecraft, per default emeralds. The goals are to add a greater level of immersion, a generally more Minecraft-like feeling, and in the case of a PvP environment, making the currency itself vulnerable to raiding.
 
 Gringotts was created for the [Minecraft Wars](http://www.minecraft-wars.com/) PvP/survival server.
 
-Download current version: [Gringotts v1.0](https://github.com/downloads/MinecraftWars/Gringotts/Gringotts-1.0.jar)
+Download current version: [Gringotts v1.1.0](https://github.com/downloads/MinecraftWars/Gringotts/Gringotts-1.1.0.jar)
 
 Features
 --------
@@ -46,10 +46,15 @@ Remove an amount of money from a player's account.
 
 Installation
 ------------
-Installing Gringotts is as simple as putting gringotts.jar in the _plugins_ subfolder of your CraftBukkit folder. The exact behavior may be customized as described in the Configuration section.
+Installing jar with dependencies: Place the gringotts jar file in the `plugins` directory of your craftbukkit folder
+
+Installing jar without dependencies: 
+
+* download [Gringotts](http://dev.bukkit.org/media/files/633/314/Gringotts-1.1.0.jar) and place it in your craftbukkit/plugins folder
+* download [Apache Derby](http://repo1.maven.org/maven2/org/apache/derby/derby/10.9.1.0/derby-10.9.1.0.jar) and place it in your craftbukkit/lib folder
 
 ### Caveats ###
-Currently using the `reload` command on a running server may cause Gringotts to lose its database connection or even crash CraftBukkit. Please restart the server instead.
+The `reload` command on a running server may cause a memory leak, which after repeated reloads causes an out-of-memory error.
 
 Configuration
 -------------
@@ -69,12 +74,14 @@ Example configuration section:
 
 This is the default configuration which uses emeralds as currency.
 
-Individual settings:
+### Individual settings ###
+
 * `type` The [item id](http://www.minecraftwiki.net/wiki/Data_values#Item_IDs) of the actual item type to use as currency.
 * `datavalue` Some items, such as dyes, have different subtypes. To specify the exact item type, set this field appropriately. For example, to use Lapis Lazuli, set `type` to `351` and `datavalue` to `4`.
 * `name` Name of the currency to be used in messages to players. Please enter both a singular and plural version.
 
 ### Taxes ###
+
 Gringotts supports two types of taxes on transactions done via `/money pay` command: `flat` and `rate`. Flat taxes are a flat amount added to any transaction, while rate adds a percentage of the actual transaction. These can be used individually or combined.
 
 Example configuration section:
@@ -86,22 +93,50 @@ Example configuration section:
 This would add to every transaction 1 plus 5% of the transaction value. For instance, if you had issued the command `/money pay 200 notch` it would remove 211 emeralds from your account, and add 200 emeralds to notch's account.
 
 ### Permissions ###
-There is only one permission:
-  
-    gringotts.admin
 
-This allows use of all `/moneyadmin` commands
+    gringotts.createvault:
+      default: true
+
+Allow players to create any type of vault.
+
+    gringotts.createvault.player:
+      default: true
+
+Allow players to create vaults for their own account.
+
+    gringotts.createvault.faction:
+      default: true
+
+Allow players to create vaults for their faction.
+
+    gringotts.transfer:
+      default: true
+
+Allow players to transfer money to other accounts via `/money pay`
+
+    gringotts.admin:
+      default: op
+
+Allow use of all `/moneyadmin` commands
+
 
 Development
 -----------
 This section is intended to help out developers who wish to make changes to Gringotts themselves. If you have any changes that you would like included in the main branch, please submit a pull request.
 
-Gringotts uses the [Maven 3](http://maven.apache.org/ref/3.0/) build system. To obtain a working plugin jar, build with the command
+Gringotts uses the [Maven 3](http://maven.apache.org/ref/3.0/) build system. To obtain a working plugin jar that inlcludes dependencies, build with the command
 
     mvn compile assembly:single
     
 This should put a jar with the required dependencies in the _target_ subdirectory
 
+For a build without dependencies, use
+
+    mvn compile jar:jar
+
+
 License
 -------
 All code within Gringotts is licensed under the BSD 2-clause license. See `license.txt` for details.
+
+The jar with dependencies includes Apache Derby, which is licensed under the [Apache License Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
