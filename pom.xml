@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>Gringotts</groupId>
   <artifactId>Gringotts</artifactId>
-  <version>1.0</version>
+  <version>1.0.2-SNAPSHOT</version>
 
   <build>
 
@@ -32,6 +32,13 @@
         <configuration>
           <includes>
           </includes>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+              <classpathLayoutType>custom</classpathLayoutType>
+               <customClasspathLayout>../lib/$${artifact.artifactId}-$${artifact.version}$${dashClassifier?}.$${artifact.extension}</customClasspathLayout>
+            </manifest>
+          </archive>
         </configuration>
       </plugin>
       <plugin>

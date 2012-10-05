@@ -5,11 +5,13 @@ Gringotts is an economy plugin for the Bukkit Minecraft server platform. Unlike 
 
 Gringotts was created for the [Minecraft Wars](http://www.minecraft-wars.com/) PvP/survival server.
 
+Download current version: [Gringotts v1.0](https://github.com/downloads/MinecraftWars/Gringotts/Gringotts-1.0.jar)
+
 Features
 --------
 * Item-backed economy (configurable, default emeralds)
 * Storage of currency in chests and other containers
-* direct account-to-account
+* direct account-to-account transfers
 * optional transaction taxes
 * fractional currency values (2 decimal digits)
 * [Factions](http://dev.bukkit.org/server-mods/factions/) support
