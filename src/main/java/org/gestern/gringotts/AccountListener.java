@@ -99,7 +99,7 @@ public class AccountListener implements Listener {
     	
     	// don't bother if it isn't a valid vault marker sign
     	Sign sign = (Sign)block.getState();
-    	if ( ! "[vault]".equalsIgnoreCase(sign.getLine(0)))
+    	if ( ! ("[vault]".equalsIgnoreCase(sign.getLine(0)) || "[faction vault]".equalsIgnoreCase(sign.getLine(0)) )) 
     		return;
     	
     	// TODO should be able to do this with a direct dao delete call
