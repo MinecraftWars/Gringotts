@@ -1,6 +1,10 @@
 Gringotts Changelog
 ===================
 
+v1.1.1
+------
+Upcoming!
+
 v1.1.0
 ------
 * New permissions: `gringotts.createvault`, `gringotts.createvault`
