@@ -218,9 +218,7 @@ public class Account {
     private Player playerOwner() {
     	if (owner instanceof PlayerAccountHolder) {
         	OfflinePlayer player = ((PlayerAccountHolder) owner).accountHolder;
-        	if (player.isOnline()) {
-        		return (Player)player;
-        	}
+        	return player.getPlayer();
         }
     	
     	return null;
