@@ -44,7 +44,7 @@ public class Account {
         }
 
         // convert to total cents
-        return Util.toCents(balance) + dao.getCents(this);
+        return Util.toCents(balance) + (config.currencyFractional? dao.getCents(this) : 0);
     }
 
     /**
@@ -102,17 +102,21 @@ public class Account {
             return false;
 
         //Add the cents
-        long cents = dao.getCents(this) + amount;
-
-        //Convert excess cents into emeralds		
+        long cents = amount;
         long remainingEmeralds = 0;
-
-        while(cents >= 100) {
-            cents -= 100;
-            remainingEmeralds += 1;
-        }
-        
-        dao.storeCents(this, (int)cents);
+        if (config.currencyFractional) {
+	        cents += dao.getCents(this);
+	
+	        //Convert excess cents into emeralds		
+	        while(cents >= 100) {
+	            cents -= 100;
+	            remainingEmeralds += 1;
+	        }
+	        
+	        dao.storeCents(this, (int)cents);
+    	} else {
+    		remainingEmeralds = cents/100;
+    	}
 
         if (config.usevaultContainer) {
 	        for (AccountChest chest : dao.getChests(this)) {
@@ -158,19 +162,22 @@ public class Account {
         if(balanceCents() < amount)
             return false;
 
-        //Remove the cents
-        long cents = dao.getCents(this);
-        cents -= amount;
-
-        //Now lets get our amount of cents positive again, and count how many emeralds need removing
+        long cents = 0;
         long remainingEmeralds = 0;
-
-        while(cents < 0) {
-            cents += 100;
-            remainingEmeralds += 1;
+        if(config.currencyFractional) {
+	        //Remove the cents
+	        cents = dao.getCents(this) - amount;
+	
+	        //Now lets get our amount of cents positive again, and count how many emeralds need removing
+	        while(cents < 0) {
+	            cents += 100;
+	            remainingEmeralds += 1;
+	        }
+	        
+	        dao.storeCents(this, (int)cents);
+        } else {
+        	remainingEmeralds = cents/100;
         }
-        
-        dao.storeCents(this, (int)cents);
 
         //Now remove the physical amount left
         if (config.usevaultContainer) {

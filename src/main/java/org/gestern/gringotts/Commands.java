@@ -57,7 +57,13 @@ public class Commands {
 
             double value = 0;
             if (args.length >= 2) {
-                try { value = Double.parseDouble(args[1]); } 
+                try { 
+                	value = Double.parseDouble(args[1]); 
+                	
+                	// cutoff base value when fractions are disabled, so that nothing is taxed that isn't being paid
+                	if (conf.currencyFractional)
+                		value = Math.floor(value);
+                } 
                 catch (NumberFormatException e) { return false; }
             } 
 
@@ -79,9 +85,14 @@ public class Commands {
                     Account recipientAccount = accounting.getAccount(recipient);
                     
                     double tax = conf.transactionTaxFlat + value * conf.transactionTaxRate;
+                    // round tax value when fractions are disabled
+                    if (conf.currencyFractional)
+                    	tax = Math.round(tax);
 
                     double balance = account.balance();
                     double valueAdded = value + tax;
+                    
+                    
                     if (balance < valueAdded) {
                         accountOwner.sendMessage(
                                 "Your account has insufficient balance. Current balance: " + balance + " " + numName(balance) 
@@ -140,7 +151,11 @@ public class Commands {
                 if (args.length == 3) {
                 	String amountStr = args[1];
                 	double value;
-                	try { value = Double.parseDouble(amountStr);} 
+                	try { 
+                		value = Double.parseDouble(amountStr);
+                		if (!conf.currencyFractional)
+                			value = Math.floor(value);
+                	} 
                 	catch(NumberFormatException x) { return false; }
                 	
                 	String targetAccountHolderStr = args[2];

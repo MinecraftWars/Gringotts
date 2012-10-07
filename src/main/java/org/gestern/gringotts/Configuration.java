@@ -31,8 +31,12 @@ public enum Configuration {
     /** Name of currency, plural. */
     public String currencyNamePlural;
     
-    /** Whether to use container vaults (chest, dispenser, furnace). */
+    /** Support (virtual) fractional currency values. */
+    public boolean currencyFractional;
+    
+    /** Use container vaults (chest, dispenser, furnace). */
     public boolean usevaultContainer;
+    
     
 
     /**
@@ -46,6 +50,7 @@ public enum Configuration {
             config.currency.setData(new MaterialData(currencyType, currencyDataValue));
         config.currencyNameSingular = savedConfig.getString("currency.name.singular", "Emerald");
         config.currencyNamePlural = savedConfig.getString("currency.name.plural", config.currencyNameSingular+"s");
+        config.currencyFractional = savedConfig.getBoolean("currency.fractional", true);
 
         config.transactionTaxFlat = savedConfig.getDouble("transactiontax.flat", 0);
         config.transactionTaxRate = savedConfig.getDouble("transactiontax.rate", 0);
@@ -58,6 +63,8 @@ public enum Configuration {
         savedConfig.set("currency.datavalue", config.currency.getData().getData());
         savedConfig.set("currency.name.singular", config.currencyNameSingular);
         savedConfig.set("currency.name.plural", config.currencyNamePlural);
+        savedConfig.set("currency.fractional", config.currencyFractional);
+
         savedConfig.set("transactiontax.flat", config.transactionTaxFlat);
         savedConfig.set("transactiontax.rate", config.transactionTaxRate);
         savedConfig.set("usevault.container", config.usevaultContainer);
