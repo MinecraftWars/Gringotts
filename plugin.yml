@@ -41,6 +41,22 @@ permissions:
   gringotts.createvault.faction:
     description: Create faction vaults
     default: true
+  gringotts.usevault:
+    description: Use any type of vault
+    default: true
+    children:
+      gringotts.usevault.container: true
+      gringotts.usevault.inventory: true
+      gringotts.usevault.enderchest: true
+  gringotts.usevault.container:
+    description: Use containers as vault (chest, dispenser, furnace)
+    default: true
+  gringotts.usevault.inventory:
+    description: Use player's inventory as 'vault'
+    default: true
+  gringotts.usevault.enderchest:
+    description: Use player's enderchest inventory as vault
+    default: true
   gringotts.transfer:
     description: Allow money transfer commands
     default: true

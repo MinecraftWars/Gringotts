@@ -30,6 +30,10 @@ public enum Configuration {
 
     /** Name of currency, plural. */
     public String currencyNamePlural;
+    
+    /** Whether to use container vaults (chest, dispenser, furnace). */
+    public boolean usevaultContainer;
+    
 
     /**
      * Set configuration form values in a file configuration.
@@ -45,6 +49,8 @@ public enum Configuration {
 
         config.transactionTaxFlat = savedConfig.getDouble("transactiontax.flat", 0);
         config.transactionTaxRate = savedConfig.getDouble("transactiontax.rate", 0);
+        
+        config.usevaultContainer = savedConfig.getBoolean("usevault.container", true);
     }
 
     public void saveConfig(FileConfiguration savedConfig) {
@@ -54,6 +60,7 @@ public enum Configuration {
         savedConfig.set("currency.name.plural", config.currencyNamePlural);
         savedConfig.set("transactiontax.flat", config.transactionTaxFlat);
         savedConfig.set("transactiontax.rate", config.transactionTaxRate);
+        savedConfig.set("usevault.container", config.usevaultContainer);
     }
 
 }

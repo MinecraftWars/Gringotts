@@ -15,6 +15,7 @@ public class Account {
     public final AccountHolder owner;
     
     private final Util util = new Util();
+	private final Configuration config = Configuration.config;
 
     public Account(AccountHolder owner) {
     	if (owner == null)
@@ -26,14 +27,20 @@ public class Account {
      * Current balance of this account in cents
      * @return current balance of this account in cents
      */
-    public long balanceCents() {
+    long balanceCents() {
         long balance = 0;
-        for (AccountChest chest : dao.getChests(this))
-            balance += chest.balance();
+        
+        if (config.usevaultContainer) {
+	        for (AccountChest chest : dao.getChests(this))
+	            balance += chest.balance();
+        }
         
         Player player = playerOwner();
         if (player != null) {
-        	balance += util.balanceInventory(player.getInventory());
+        	if (player.hasPermission("gringotts.usevault.inventory"))
+        		balance += util.balanceInventory(player.getInventory());
+        	if (player.hasPermission("gringotts.usevault.enderchest"))
+        		balance += util.balanceInventory(player.getEnderChest());
         }
 
         // convert to total cents
@@ -52,14 +59,20 @@ public class Account {
      * Maximum capacity of this account in cents
      * @return maximum capacity of account in cents
      */
-    public long capacityCents() {
+    long capacityCents() {
         long capacity = 0;
-        for (AccountChest chest: dao.getChests(this))
-            capacity += chest.capacity();
+        
+        if (config.usevaultContainer) {
+	        for (AccountChest chest: dao.getChests(this))
+	            capacity += chest.capacity();
+        }
         
         Player player = playerOwner();
         if (player != null) {
-        	capacity += util.capacityInventory(player.getInventory());
+        	if (player.hasPermission("gringotts.usevault.inventory"))
+        		capacity += util.capacityInventory(player.getInventory());
+        	if (player.hasPermission("gringotts.usevault.enderchest"))
+        		capacity += util.capacityInventory(player.getEnderChest());
         }
 
         return Util.toCents(capacity);
@@ -78,7 +91,7 @@ public class Account {
      * @param amount
      * @return Whether amount successfully added
      */
-    public boolean addCents(long amount) {
+    boolean addCents(long amount) {
 
         //Cannot add negative amount
         if(amount < 0)
@@ -101,19 +114,22 @@ public class Account {
         
         dao.storeCents(this, (int)cents);
 
-        for (AccountChest chest : dao.getChests(this)) {
-            remainingEmeralds -= chest.add(remainingEmeralds);
-            if (remainingEmeralds <= 0) break;
+        if (config.usevaultContainer) {
+	        for (AccountChest chest : dao.getChests(this)) {
+	            remainingEmeralds -= chest.add(remainingEmeralds);
+	            if (remainingEmeralds <= 0) break;
+	        }
         }
         
-        // add stuff to player's inventory too, when they are online
+        // add stuff to player's inventory and enderchest too, when they are online
         Player player = playerOwner();
         if (player != null) {
-        	remainingEmeralds -= util.addToInventory(remainingEmeralds, player.getInventory());
-            // TODO drop surplus items that don't have any space at player's feet
+        	if (player.hasPermission("gringotts.usevault.inventory"))
+        		remainingEmeralds -= util.addToInventory(remainingEmeralds, player.getInventory());
+        	if (player.hasPermission("gringotts.usevault.enderchest"))
+        		remainingEmeralds -= util.addToInventory(remainingEmeralds, player.getEnderChest());
         }
         
-
         return true;
     }
 
@@ -132,7 +148,7 @@ public class Account {
      * @param amount
      * @return amount actually removed.
      */
-    public boolean removeCents(long amount) {
+    boolean removeCents(long amount) {
 
         //Cannot remove negative amount
         if(amount < 0)
@@ -157,14 +173,19 @@ public class Account {
         dao.storeCents(this, (int)cents);
 
         //Now remove the physical amount left
-        for (AccountChest chest : dao.getChests(this)) {
-            remainingEmeralds -= chest.remove(remainingEmeralds);
-            if (remainingEmeralds <= 0) break;
+        if (config.usevaultContainer) {
+	        for (AccountChest chest : dao.getChests(this)) {
+	            remainingEmeralds -= chest.remove(remainingEmeralds);
+	            if (remainingEmeralds <= 0) break;
+	        }
         }
         
         Player player = playerOwner();
         if (player != null) {
-        	remainingEmeralds -= util.removeFromInventory(remainingEmeralds, player.getInventory());
+        	if (player.hasPermission("gringotts.usevault.inventory"))
+        		remainingEmeralds -= util.removeFromInventory(remainingEmeralds, player.getInventory());
+        	if (player.hasPermission("gringotts.usevault.enderchest"))
+        		remainingEmeralds -= util.removeFromInventory(remainingEmeralds, player.getEnderChest());
         }
 
 
