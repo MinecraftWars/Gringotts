@@ -10,7 +10,7 @@ Gringotts was created for the [Minecraft Wars](http://www.minecraft-wars.com/) P
 Features
 --------
 * Item-backed economy (configurable, default emeralds)
-* Storage of currency in chests and other containers
+* Storage of currency in chests and other containers, and player inventory and ender chests
 * direct account-to-account transfers
 * optional transaction taxes
 * fractional currency values (2 decimal digits)
@@ -71,6 +71,7 @@ Example configuration section:
       name:
         singular: Emerald
         plural: Emeralds
+      fractional: true
 
 This is the default configuration which uses emeralds as currency.
 
@@ -79,6 +80,7 @@ This is the default configuration which uses emeralds as currency.
 * `type` The [item id](http://www.minecraftwiki.net/wiki/Data_values#Item_IDs) of the actual item type to use as currency.
 * `datavalue` Some items, such as dyes, have different subtypes. To specify the exact item type, set this field appropriately. For example, to use Lapis Lazuli, set `type` to `351` and `datavalue` to `4`.
 * `name` Name of the currency to be used in messages to players. Please enter both a singular and plural version.
+* `fractional` Whether to allow fractional values. `true` or `false`
 
 ### Taxes ###
 
@@ -91,6 +93,14 @@ Example configuration section:
       rate: 0.05
 
 This would add to every transaction 1 plus 5% of the transaction value. For instance, if you had issued the command `/money pay 200 notch` it would remove 211 emeralds from your account, and add 200 emeralds to notch's account.
+
+### Misc ###
+
+  usevault:
+    container: true
+
+Enable the use of container vaults: chests, dispensers and furnaces. If this is `false`, only player's inventory and/or enderchests will serve as a player "vault".
+
 
 ### Permissions ###
 
@@ -108,6 +118,21 @@ Allow players to create vaults for their own account.
       default: true
 
 Allow players to create vaults for their faction.
+
+    gringotts.usevault
+      default: true
+
+Use player inventory and player's enderchest as vault when player is online.
+
+    gringotts.usevault.inventory
+      default: true
+
+Use player inventory as vault when player is online.
+
+    gringotts.usevault.enderchest
+      default:true
+
+Use player's enderchest as vault when player is online.
 
     gringotts.transfer:
       default: true
