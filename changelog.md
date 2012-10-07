@@ -1,9 +1,14 @@
 Gringotts Changelog
 ===================
 
-v1.1.1
+v1.2.0
 ------
-Upcoming!
+* use player inventory as "vault", on by default, permission `gringotts.usevault.inventory`
+* use enderchests as vault, on by default, permission `gringotts.usevault.enderchest`
+* toggle using containers vaults: configuration option `usevault.container`
+* make fractional values optional: configuration option `currency.fractional`
+* new command `/gringotts reload` reloads configuration from plugins `config.yml`
+* minor bugfixes
 
 v1.1.0
 ------
