@@ -33,11 +33,14 @@ public class Gringotts extends JavaPlugin {
         pluginmanager = getServer().getPluginManager();
 
         CommandExecutor playerCommands = gcommand.new Money();
-        CommandExecutor adminCommands = gcommand.new Moneyadmin();
+        CommandExecutor moneyAdminCommands = gcommand.new Moneyadmin();
+        CommandExecutor adminCommands = gcommand.new GringottsCmd();
 
         getCommand("balance").setExecutor(playerCommands);
         getCommand("money").setExecutor(playerCommands);
-        getCommand("moneyadmin").setExecutor(adminCommands);
+        getCommand("moneyadmin").setExecutor(moneyAdminCommands);
+        getCommand("gringotts").setExecutor(adminCommands);
+
 
         // load and init configuration
         FileConfiguration savedConfig = getConfig();

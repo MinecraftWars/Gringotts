@@ -27,6 +27,11 @@ commands:
       /moneyadm rm <amount> <player>
       /moneyadm b <player>
     permission: gringotts.admin
+  gringotts:
+    aliases: [grin]
+    usage: |
+      /grin reload
+    permission: gringotts.admin
 
 permissions:
   gringotts.createvault:

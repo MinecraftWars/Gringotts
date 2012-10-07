@@ -9,7 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
- * Central handler for player and console commands.
+ * Handlers for player and console commands.
  * 
  * @author jast
  *
@@ -27,6 +27,9 @@ public class Commands {
         this.plugin = plugin;
     }
     
+    /**
+     * Player commands.
+     */
     public class Money implements CommandExecutor{
     	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
     		
@@ -119,6 +122,9 @@ public class Commands {
     	}
     }
     
+    /**
+     * Admin commands for managing ingame aspects.
+     */
     public class Moneyadmin implements CommandExecutor {
     	
     	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
@@ -191,6 +197,26 @@ public class Commands {
 
             return false; 
         }
+    }
+    
+    /**
+     * Administrative commands not related to ingame money.
+     */
+    public class GringottsCmd implements CommandExecutor {
+
+		@Override
+    	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+
+			if (args.length >=1 && "reload".equalsIgnoreCase(args[0])) {
+				plugin.reloadConfig();
+				conf.readConfig(plugin.getConfig());
+				sender.sendMessage("Reloaded Gringotts configuration!");
+				return true;
+			}
+			
+			return false;
+		}
+    	
     }
 
     
