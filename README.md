@@ -5,7 +5,7 @@ Gringotts is an item-based economy plugin for the Bukkit Minecraft server platfo
 
 Gringotts was created for the [Minecraft Wars](http://www.minecraft-wars.com/) PvP/survival server.
 
-Download current version: [Gringotts v1.1.0](https://github.com/downloads/MinecraftWars/Gringotts/Gringotts-1.1.0.jar)
+[Get Gringotts from BukkitDev](http://dev.bukkit.org/server-mods/gringotts/)
 
 Features
 --------
@@ -50,7 +50,7 @@ Installing jar with dependencies: Place the gringotts jar file in the `plugins` 
 
 Installing jar without dependencies: 
 
-* download [Gringotts](http://dev.bukkit.org/media/files/633/314/Gringotts-1.1.0.jar) and place it in your craftbukkit/plugins folder
+* download [Gringotts](http://dev.bukkit.org/media/files/635/112/Gringotts-1.1.0.jar) and place it in your craftbukkit/plugins folder
 * download [Apache Derby](http://repo1.maven.org/maven2/org/apache/derby/derby/10.9.1.0/derby-10.9.1.0.jar) and place it in your craftbukkit/lib folder
 
 ### Caveats ###
