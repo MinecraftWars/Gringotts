@@ -53,9 +53,6 @@ permissions:
       gringotts.usevault.container: true
       gringotts.usevault.inventory: true
       gringotts.usevault.enderchest: true
-  gringotts.usevault.container:
-    description: Use containers as vault (chest, dispenser, furnace)
-    default: true
   gringotts.usevault.inventory:
     description: Use player's inventory as 'vault'
     default: true
