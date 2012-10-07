@@ -25,7 +25,7 @@ public class AccountHolderFactory {
     public AccountHolder get(String owner) {    	
         OfflinePlayer player = Bukkit.getOfflinePlayer(owner);
         // if this player has ever played on the server, they are a legit account holder
-        if (player.isOnline() || player.getLastPlayed() > 0) {
+        if (player.isOnline() || player.hasPlayedBefore()) {
             return new PlayerAccountHolder(player);
         }
 
@@ -44,6 +44,9 @@ public class AccountHolderFactory {
                 return new FactionAccountHolder(faction);
             
         }
+        
+        // TODO support banks
+        // TODO support virtual accounts
 
         return null;
     }

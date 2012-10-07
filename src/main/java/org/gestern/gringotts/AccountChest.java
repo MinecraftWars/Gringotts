@@ -12,8 +12,6 @@ import org.bukkit.block.Sign;
 import org.bukkit.inventory.DoubleChestInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
 
 /**
  * Represents a storage unit for an account.
@@ -24,8 +22,6 @@ import org.bukkit.material.MaterialData;
 public class AccountChest {
 
 	private final Logger log = Bukkit.getLogger();
-
-    private final Configuration config = Configuration.config;
     
     private final DAO dao = DAO.getDao();
 
@@ -35,8 +31,8 @@ public class AccountChest {
     /** Account this chest belongs to. */
     public final Account account;
 
-    /** Account that this chest belongs to. */
-    //	public final Account account;
+    /** Non-static utility methods. */
+    private final Util util = new Util();
 
     /**
      * 
@@ -105,21 +101,7 @@ public class AccountChest {
     	Inventory inv = inventory();
     	if (inv==null) return 0;
     	
-        long count = 0;	
-        for (ItemStack stack : inv) {
-            Material material = config.currency.getType();
-            if (stack == null || material != stack.getType())
-                continue;
-
-            MaterialData currencyData = config.currency.getData();
-            MaterialData stackData = stack.getData();
-            if (currencyData == null || currencyData.getData() == stackData.getData()) {
-                count += stack.getAmount();
-            }
-
-        }
-
-        return count;
+        return util.balanceInventory(inv);
     }
 
     /**
@@ -134,21 +116,7 @@ public class AccountChest {
     	Inventory inv = inventory();
     	if (inv==null) return 0;
     	
-        long count = 0;
-        for (ItemStack stack : inv) {
-            Material currency = config.currency.getType();
-
-
-            //If it's air or our currency material we can store a stack of it
-            if( stack == null )
-                count += currency.getMaxStackSize();
-            else if( stack.getType() == currency )
-                count += currency.getMaxStackSize() - stack.getAmount();
-
-            //If not, the slot is blocked by something else so we can't store anything.
-
-        }
-        return count;
+    	return util.capacityInventory(inv);
     }
 
     /**
@@ -165,27 +133,7 @@ public class AccountChest {
     	Inventory inv = inventory();
     	if (inv==null) return 0;
     	
-        int stacksize = config.currency.getMaxStackSize();
-        long remaining = value;		
-
-        // fill up incomplete stacks
-        while (remaining > 0) {
-            ItemStack stack = new ItemStack(config.currency);
-            int remainderStackSize = remaining > stacksize? stacksize : (int)remaining;
-            stack.setAmount(remainderStackSize);
-
-            int returned = 0;
-            for (ItemStack leftover : inv.addItem(stack).values())
-                returned += leftover.getAmount();
-
-            // reduce remaining amount by whatever was deposited
-            remaining -= remainderStackSize-returned;
-
-            // stuff returned means no more space, leave this place
-            if (returned > 0) break; 
-        }
-
-        return value - remaining;
+        return util.addToInventory(value, inv);
     }
 
     /**
@@ -203,26 +151,7 @@ public class AccountChest {
     	Inventory inv = inventory();
     	if (inv==null) return 0;
     	
-        int stacksize = config.currency.getMaxStackSize();
-        long remaining = value;
-
-        while (remaining > 0) {
-            ItemStack stack = new ItemStack(config.currency);
-            int remainderStackSize = remaining > stacksize? stacksize : (int)remaining;
-            stack.setAmount(remainderStackSize);
-
-            int returned = 0;
-            for (ItemStack leftover : inv.removeItem(stack).values())
-                returned += leftover.getAmount();
-
-            // reduce remaining amount by whatever was deposited
-            remaining -= remainderStackSize-returned;
-
-            // stuff returned means no more space, leave this place
-            if (returned > 0) break; 
-        }
-
-        return value - remaining;
+    	return util.removeFromInventory(value, inv);
     }
     
     /**

@@ -3,6 +3,8 @@ package org.gestern.gringotts;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 public class Account {
 
@@ -11,6 +13,8 @@ public class Account {
     private final DAO dao = DAO.getDao(); 
 
     public final AccountHolder owner;
+    
+    private final Util util = new Util();
 
     public Account(AccountHolder owner) {
     	if (owner == null)
@@ -26,9 +30,14 @@ public class Account {
         long balance = 0;
         for (AccountChest chest : dao.getChests(this))
             balance += chest.balance();
+        
+        Player player = playerOwner();
+        if (player != null) {
+        	balance += util.balanceInventory(player.getInventory());
+        }
 
-        //Convert to total cents
-        return balance*100 + dao.getCents(this);
+        // convert to total cents
+        return Util.toCents(balance) + dao.getCents(this);
     }
 
     /**
@@ -47,8 +56,13 @@ public class Account {
         long capacity = 0;
         for (AccountChest chest: dao.getChests(this))
             capacity += chest.capacity();
+        
+        Player player = playerOwner();
+        if (player != null) {
+        	capacity += util.capacityInventory(player.getInventory());
+        }
 
-        return capacity * 100;
+        return Util.toCents(capacity);
     }
 
     /**
@@ -91,6 +105,14 @@ public class Account {
             remainingEmeralds -= chest.add(remainingEmeralds);
             if (remainingEmeralds <= 0) break;
         }
+        
+        // add stuff to player's inventory too, when they are online
+        Player player = playerOwner();
+        if (player != null) {
+        	remainingEmeralds -= util.addToInventory(remainingEmeralds, player.getInventory());
+            // TODO drop surplus items that don't have any space at player's feet
+        }
+        
 
         return true;
     }
@@ -139,6 +161,12 @@ public class Account {
             remainingEmeralds -= chest.remove(remainingEmeralds);
             if (remainingEmeralds <= 0) break;
         }
+        
+        Player player = playerOwner();
+        if (player != null) {
+        	remainingEmeralds -= util.removeFromInventory(remainingEmeralds, player.getInventory());
+        }
+
 
         return true;
     }
@@ -181,6 +209,21 @@ public class Account {
     @Override
     public String toString() {
     	return "Account ("+owner+")";
+    }
+    
+    /**
+     * Returns the player owning this account, if the owner is actually a player and online.
+     * @return the player owning this account, if the owner is actually a player and online, otherwise null
+     */
+    private Player playerOwner() {
+    	if (owner instanceof PlayerAccountHolder) {
+        	OfflinePlayer player = ((PlayerAccountHolder) owner).accountHolder;
+        	if (player.isOnline()) {
+        		return (Player)player;
+        	}
+        }
+    	
+    	return null;
     }
 
 }
