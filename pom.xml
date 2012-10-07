@@ -10,7 +10,9 @@
       <resource>
         <directory>${basedir}</directory>
         <includes>
-          <include>plugin.yml</include>
+          <include>*.yml</include>
+          <include>LICENSE.txt</include>
+          <include>README.md</include>
         </includes>
       </resource>
     </resources>

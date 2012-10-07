@@ -1,0 +1,12 @@
+currency:
+  type: 388
+  datavalue: 0
+  name:
+    singular: Emerald
+    plural: Emeralds
+  fractional: true
+transactiontax:
+  flat: 0.0
+  rate: 0.0
+usevault:
+  container: true

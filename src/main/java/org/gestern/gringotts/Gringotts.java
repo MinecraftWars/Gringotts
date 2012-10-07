@@ -43,6 +43,7 @@ public class Gringotts extends JavaPlugin {
 
 
         // load and init configuration
+        saveDefaultConfig(); // saves default configuration if no config.yml exists yet
         FileConfiguration savedConfig = getConfig();
         Configuration.config.readConfig(savedConfig);
 
