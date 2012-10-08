@@ -64,11 +64,11 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-        <groupId>unmanaged</groupId>
+        <groupId>massivecraft</groupId>
 	    <artifactId>factions</artifactId>
-	    <version>1.7.6pre</version>
-	    <scope>provided</scope>
+	    <version>1.6.9.1</version>
 	    <optional>true</optional>
+	    <scope>provided</scope>
     </dependency>
     <dependency>
     	<groupId>org.apache.derby</groupId>
@@ -97,7 +97,11 @@
       <url>http://repo.bukkit.org/content/groups/public/</url>
     </repository>
     <repository>
-        <id>project.local</id>
+        <id>mcw-repo</id>
+        <url>https://github.com/MinecraftWars/mcw-mvn-repo/raw/master/releases</url>
+    </repository>
+    <repository>
+      <id>project.local</id>
       <name>project.local</name>
       <releases>
         <enabled>true</enabled>
