@@ -16,8 +16,8 @@ public enum Configuration {
     config;
 
     /** Currency item type - default emerald. */
-    public final ItemStack currency =  
-            new ItemStack(Material.EMERALD, 1, (short)	0, (byte)0);
+    public final ItemStack currency =  new ItemStack(Material.GOLD_INGOT, 1, (short)0, (byte)0); 
+    // gold is just a placeholder for 1.2.5 compatibility
 
     /** Flat tax on every player-to-player transaction. This is a value in currency units. */
     public double transactionTaxFlat = 0;
@@ -44,7 +44,7 @@ public enum Configuration {
      * @param savedConf
      */
     public void readConfig(FileConfiguration savedConfig) {
-        int currencyType = savedConfig.getInt("currency.type", -1);
+        int currencyType = savedConfig.getInt("currency.type", 388);
         byte currencyDataValue = (byte)savedConfig.getInt("currency.datavalue", 0);
         if (currencyType >=0)
             config.currency.setData(new MaterialData(currencyType, currencyDataValue));

@@ -210,7 +210,7 @@ public class Commands {
 			if (args.length >=1 && "reload".equalsIgnoreCase(args[0])) {
 				plugin.reloadConfig();
 				conf.readConfig(plugin.getConfig());
-				sender.sendMessage("Reloaded Gringotts configuration!");
+				sender.sendMessage("[Gringotts] Reloaded configuration!");
 				return true;
 			}
 			
