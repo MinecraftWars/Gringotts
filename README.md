@@ -1,7 +1,7 @@
 Gringotts
 =========
 
-Gringotts is an item-based economy plugin for the Bukkit Minecraft server platform. Unlike earlier economy plugins such as iConomy, all currency value and transactions is based on actual items in Minecraft, per default emeralds. The goals are to add a greater level of immersion, a generally more Minecraft-like feeling, and in the case of a PvP environment, making the currency itself vulnerable to raiding.
+Gringotts is an item-based economy plugin for the Bukkit Minecraft server platform. Unlike earlier economy plugins such as iConomy, all currency value and money transactions are based on actual items in Minecraft, per default emeralds. The goals are to add a greater level of immersion, a generally more Minecraft-like feeling, and in the case of a PvP environment, making the currency itself vulnerable to raiding.
 
 Gringotts was created for the [Minecraft Wars](http://www.minecraft-wars.com/) PvP/survival server.
 
@@ -10,7 +10,7 @@ Gringotts was created for the [Minecraft Wars](http://www.minecraft-wars.com/) P
 Features
 --------
 * Item-backed economy (configurable, default emeralds)
-* Storage of currency in chests and other containers, and player inventory and ender chests
+* Storage of currency in chests and other containers, player inventory and ender chests (configurable)
 * direct account-to-account transfers
 * optional transaction taxes
 * fractional currency values (2 decimal digits)
@@ -44,13 +44,16 @@ Add an amount of money to a player's account.
     /moneyadmin rm <amount>
 Remove an amount of money from a player's account.
 
+    /gringotts reload
+Reload Gringotts config.yml and apply any changed settings.
+
 Installation
 ------------
 Installing jar with dependencies: Place the gringotts jar file in the `plugins` directory of your craftbukkit folder
 
 Installing jar without dependencies: 
 
-* download [Gringotts](http://dev.bukkit.org/media/files/635/112/Gringotts-1.1.0.jar) and place it in your craftbukkit/plugins folder
+* download [Gringotts v1.2.0](http://dev.bukkit.org/media/files/635/745/Gringotts-1.2.0.jar) and place it in your craftbukkit/plugins folder
 * download [Apache Derby](http://repo1.maven.org/maven2/org/apache/derby/derby/10.9.1.0/derby-10.9.1.0.jar) and place it in your craftbukkit/lib folder
 
 ### Caveats ###
@@ -75,7 +78,7 @@ Example configuration section:
 
 This is the default configuration which uses emeralds as currency.
 
-### Individual settings ###
+#### Individual settings
 
 * `type` The [item id](http://www.minecraftwiki.net/wiki/Data_values#Item_IDs) of the actual item type to use as currency.
 * `datavalue` Some items, such as dyes, have different subtypes. To specify the exact item type, set this field appropriately. For example, to use Lapis Lazuli, set `type` to `351` and `datavalue` to `4`.
@@ -96,13 +99,14 @@ This would add to every transaction 1 plus 5% of the transaction value. For inst
 
 ### Misc ###
 
-  usevault:
-    container: true
+    usevault:
+      container: true
 
 Enable the use of container vaults: chests, dispensers and furnaces. If this is `false`, only player's inventory and/or enderchests will serve as a player "vault".
 
 
-### Permissions ###
+Permissions
+-----------
 
     gringotts.createvault:
       default: true
