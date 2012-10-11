@@ -39,8 +39,6 @@ public class Account {
         if (player != null) {
         	if (player.hasPermission("gringotts.usevault.inventory"))
         		balance += util.balanceInventory(player.getInventory());
-        	if (player.hasPermission("gringotts.usevault.enderchest"))
-        		balance += util.balanceInventory(player.getEnderChest());
         }
 
         // convert to total cents
@@ -71,8 +69,6 @@ public class Account {
         if (player != null) {
         	if (player.hasPermission("gringotts.usevault.inventory"))
         		capacity += util.capacityInventory(player.getInventory());
-        	if (player.hasPermission("gringotts.usevault.enderchest"))
-        		capacity += util.capacityInventory(player.getEnderChest());
         }
 
         return Util.toCents(capacity);
@@ -130,8 +126,6 @@ public class Account {
         if (player != null) {
         	if (player.hasPermission("gringotts.usevault.inventory"))
         		remainingEmeralds -= util.addToInventory(remainingEmeralds, player.getInventory());
-        	if (player.hasPermission("gringotts.usevault.enderchest"))
-        		remainingEmeralds -= util.addToInventory(remainingEmeralds, player.getEnderChest());
         }
         
         return true;
@@ -191,8 +185,6 @@ public class Account {
         if (player != null) {
         	if (player.hasPermission("gringotts.usevault.inventory"))
         		remainingEmeralds -= util.removeFromInventory(remainingEmeralds, player.getInventory());
-        	if (player.hasPermission("gringotts.usevault.enderchest"))
-        		remainingEmeralds -= util.removeFromInventory(remainingEmeralds, player.getEnderChest());
         }
 
 

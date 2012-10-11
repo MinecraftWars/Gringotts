@@ -1,9 +1,9 @@
 currency:
-  type: 388
+  type: 266
   datavalue: 0
   name:
-    singular: Emerald
-    plural: Emeralds
+    singular: gold ingot
+    plural: gold ingots
   fractional: true
 transactiontax:
   flat: 0.0

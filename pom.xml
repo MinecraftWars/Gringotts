@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>minecraftwars</groupId>
   <artifactId>Gringotts</artifactId>
-  <version>1.2.1-SNAPSHOT</version>
+  <version>1.2.1-bukkit1.2.5-SNAPSHOT</version>
 
   <build>
 
@@ -60,7 +60,7 @@
     <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>bukkit</artifactId>
-      <version>1.3.2-R1.0</version>
+      <version>1.2.5-R5.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>

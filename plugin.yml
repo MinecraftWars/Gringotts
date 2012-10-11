@@ -56,9 +56,6 @@ permissions:
   gringotts.usevault.inventory:
     description: Use player's inventory as 'vault'
     default: true
-  gringotts.usevault.enderchest:
-    description: Use player's enderchest inventory as vault
-    default: true
   gringotts.transfer:
     description: Allow money transfer commands
     default: true
