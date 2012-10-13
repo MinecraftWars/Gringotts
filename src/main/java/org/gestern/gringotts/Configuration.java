@@ -1,9 +1,7 @@
 package org.gestern.gringotts;
 
-import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
 
 /**
  * Singleton for global configuration information. 
@@ -15,9 +13,8 @@ import org.bukkit.material.MaterialData;
 public enum Configuration {
     config;
 
-    /** Currency item type - default emerald. */
-    public final ItemStack currency =  new ItemStack(Material.GOLD_INGOT, 1, (short)0, (byte)0); 
-    // gold is just a placeholder for 1.2.5 compatibility
+    /** Currency item type. */
+    public ItemStack currency = null; 
 
     /** Flat tax on every player-to-player transaction. This is a value in currency units. */
     public double transactionTaxFlat = 0;
@@ -46,8 +43,8 @@ public enum Configuration {
     public void readConfig(FileConfiguration savedConfig) {
         int currencyType = savedConfig.getInt("currency.type", 388);
         byte currencyDataValue = (byte)savedConfig.getInt("currency.datavalue", 0);
-        if (currencyType >=0)
-            config.currency.setData(new MaterialData(currencyType, currencyDataValue));
+        currency = new ItemStack(currencyType, 0, (short)0, currencyDataValue);
+        
         config.currencyNameSingular = savedConfig.getString("currency.name.singular", "Emerald");
         config.currencyNamePlural = savedConfig.getString("currency.name.plural", config.currencyNameSingular+"s");
         config.currencyFractional = savedConfig.getBoolean("currency.fractional", true);
