@@ -38,9 +38,9 @@ public class Account {
         Player player = playerOwner();
         if (player != null) {
         	if (player.hasPermission("gringotts.usevault.inventory"))
-        		balance += util.balanceInventory(player.getInventory());
+        		balance += new AccountInventory(player.getInventory()).balance();
         	if (player.hasPermission("gringotts.usevault.enderchest"))
-        		balance += util.balanceInventory(player.getEnderChest());
+        		balance += new AccountInventory(player.getEnderChest()).balance();
         }
 
         // convert to total cents
@@ -70,9 +70,9 @@ public class Account {
         Player player = playerOwner();
         if (player != null) {
         	if (player.hasPermission("gringotts.usevault.inventory"))
-        		capacity += util.capacityInventory(player.getInventory());
+        		capacity += new AccountInventory(player.getInventory()).capacity();
         	if (player.hasPermission("gringotts.usevault.enderchest"))
-        		capacity += util.capacityInventory(player.getEnderChest());
+        		capacity += new AccountInventory(player.getEnderChest()).capacity();
         }
 
         return Util.toCents(capacity);
@@ -129,9 +129,9 @@ public class Account {
         Player player = playerOwner();
         if (player != null) {
         	if (player.hasPermission("gringotts.usevault.inventory"))
-        		remainingEmeralds -= util.addToInventory(remainingEmeralds, player.getInventory());
+        		remainingEmeralds -= new AccountInventory(player.getInventory()).add(remainingEmeralds);
         	if (player.hasPermission("gringotts.usevault.enderchest"))
-        		remainingEmeralds -= util.addToInventory(remainingEmeralds, player.getEnderChest());
+        		remainingEmeralds -= new AccountInventory(player.getEnderChest()).add(remainingEmeralds);
         }
         
         return true;
@@ -190,9 +190,9 @@ public class Account {
         Player player = playerOwner();
         if (player != null) {
         	if (player.hasPermission("gringotts.usevault.inventory"))
-        		remainingEmeralds -= util.removeFromInventory(remainingEmeralds, player.getInventory());
+        		remainingEmeralds -= new AccountInventory(player.getInventory()).remove(remainingEmeralds);
         	if (player.hasPermission("gringotts.usevault.enderchest"))
-        		remainingEmeralds -= util.removeFromInventory(remainingEmeralds, player.getEnderChest());
+        		remainingEmeralds -= new AccountInventory(player.getEnderChest()).remove(remainingEmeralds);
         }
 
 

@@ -31,11 +31,8 @@ public class AccountChest {
     /** Account this chest belongs to. */
     public final Account account;
 
-    /** Non-static utility methods. */
-    private final Util util = new Util();
-
     /**
-     * 
+     * Create Account chest based on a sign marking its position and belonging to an account.
      * @param sign
      * @param account
      */
@@ -77,6 +74,15 @@ public class AccountChest {
     }
     
     /**
+     * Get account inventory of this account chest, which is based on the container inventory.
+     * @return
+     */
+    private AccountInventory accountInventory() {
+    	Inventory inv = inventory();	
+		return inv!=null? new AccountInventory(inv) : null;
+    }
+    
+    /**
      * Test if this chest is valid, and if not, removes it from storage.
      * @return true if valid, false if not and was removed from storage.
      */
@@ -98,10 +104,10 @@ public class AccountChest {
     	if (!updateValid())
     		return 0;
     		
-    	Inventory inv = inventory();
+    	AccountInventory inv = accountInventory();
     	if (inv==null) return 0;
     	
-        return util.balanceInventory(inv);
+        return inv.balance();
     }
 
     /**
@@ -113,10 +119,10 @@ public class AccountChest {
     	if (!updateValid())
     		return 0;
 
-    	Inventory inv = inventory();
+    	AccountInventory inv = accountInventory();
     	if (inv==null) return 0;
     	
-    	return util.capacityInventory(inv);
+    	return inv.capacity();
     }
 
     /**
@@ -130,10 +136,10 @@ public class AccountChest {
     	if (!updateValid())
     		return 0;
     	
-    	Inventory inv = inventory();
+    	AccountInventory inv = accountInventory();
     	if (inv==null) return 0;
     	
-        return util.addToInventory(value, inv);
+        return inv.add(value);
     }
 
     /**
@@ -148,10 +154,10 @@ public class AccountChest {
     	if (!updateValid())
     		return 0;
     	
-    	Inventory inv = inventory();
+    	AccountInventory inv = accountInventory();
     	if (inv==null) return 0;
     	
-    	return util.removeFromInventory(value, inv);
+    	return inv.remove(value);
     }
     
     /**
