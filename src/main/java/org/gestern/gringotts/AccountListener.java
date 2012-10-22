@@ -16,6 +16,11 @@ import org.bukkit.event.block.SignChangeEvent;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.Faction;
+import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
+import com.palmergames.bukkit.towny.object.Nation;
+import com.palmergames.bukkit.towny.object.Resident;
+import com.palmergames.bukkit.towny.object.Town;
+import com.palmergames.bukkit.towny.object.TownyUniverse;
 
 /**
  * Listens for chest creation and destruction events.
@@ -64,6 +69,37 @@ public class AccountListener implements Listener {
             	return;
             }
             chestOwner = new FactionAccountHolder(playerFaction);
+        } else if (Dependency.dependency().towny != null  && line0.equalsIgnoreCase("[town vault]")) {
+        	if (!player.hasPermission("gringotts.createvault.town")) {
+        		noPermission(player);
+        		return;
+        	}
+        	
+        	try {
+				Resident resident = TownyUniverse.getDataSource().getResident(player.getName());
+				Town town = resident.getTown();
+				chestOwner = new TownyAccountHolder(town);
+					
+			} catch (NotRegisteredException e) {
+				player.sendMessage("Cannot create town vault: You are not resident of a town.");
+				return;
+			}
+        } else if (Dependency.dependency().towny != null  && line0.equalsIgnoreCase("[nation vault]")) {
+        	if (!player.hasPermission("gringotts.createvault.nation")) {
+        		noPermission(player);
+        		return;
+        	}
+        	
+        	try {
+				Resident resident = TownyUniverse.getDataSource().getResident(player.getName());
+				Town town = resident.getTown();
+				Nation nation = town.getNation();
+				chestOwner = new TownyAccountHolder(nation);
+					
+			} catch (NotRegisteredException e) {
+				player.sendMessage("Cannot create nation vault.");
+				return;
+			}
         } else return; // not for us!
 
         Block signBlock = event.getBlock();

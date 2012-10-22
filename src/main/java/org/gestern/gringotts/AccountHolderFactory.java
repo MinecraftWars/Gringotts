@@ -7,10 +7,12 @@ import org.bukkit.OfflinePlayer;
 
 import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.Factions;
+import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
+import com.palmergames.bukkit.towny.object.TownyEconomyObject;
+import com.palmergames.bukkit.towny.object.TownyUniverse;
 
 public class AccountHolderFactory {
 	
-	@SuppressWarnings("unused")
 	private final Logger log = Bukkit.getLogger();
 	
 	public AccountHolder getAccount(String owner) {
@@ -42,12 +44,18 @@ public class AccountHolderFactory {
             
             if (faction != null) 
                 return new FactionAccountHolder(faction);
-            
+        }
+        
+        if (Dependency.dependency().towny != null) {
+        	TownyEconomyObject teo = townyObject(owner);
+        	if (teo != null) return new TownyAccountHolder(teo);
         }
         
         // TODO support banks
         // TODO support virtual accounts
 
+        log.fine("[Gringotts] No account holder found for " + owner);
+        
         return null;
     }
     
@@ -73,7 +81,34 @@ public class AccountHolderFactory {
             else return null;
     	}
     	
+    	if (Dependency.dependency().towny != null && type.equals("towny")) {
+    		TownyEconomyObject teo = townyObject(owner);
+    		return teo!=null? new TownyAccountHolder(teo) : null;
+    	} 
+    	
     	// no valid type
     	return null;
+    }
+    
+    /**
+     * Get a towny Town or Nation for a given name.
+     * @param name name of town or nation
+     * @return Town or Nation object for given name
+     */
+    private TownyEconomyObject townyObject(String name) {
+    	
+    	TownyEconomyObject teo = null;
+    	
+    	if (name.startsWith("town-")) {
+	    	try { teo = TownyUniverse.getDataSource().getTown(name.substring(5)); } 
+	    	catch (NotRegisteredException e) { }
+    	}
+    	
+    	if (name.startsWith("nation-")) {
+	    	try { teo = TownyUniverse.getDataSource().getNation(name.substring(7));
+			} catch (NotRegisteredException e) { }
+    	}
+    	
+    	return teo;
     }
 }
