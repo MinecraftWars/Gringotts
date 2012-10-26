@@ -18,8 +18,9 @@ public class Account {
 	private final Configuration config = Configuration.config;
 
     public Account(AccountHolder owner) {
-    	if (owner == null)
+    	if (owner == null) {
     		throw new IllegalArgumentException("owner parameter to Account constructor may not be null");
+    	}
         this.owner = owner;
     }
 

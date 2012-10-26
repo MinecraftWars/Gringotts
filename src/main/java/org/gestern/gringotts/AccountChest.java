@@ -166,8 +166,13 @@ public class AccountChest {
     	if ( ! Util.isSignBlock(sign.getBlock()) ) 
     		return false;
     	
+    	// TODO refactor: common definition of valid vault types
     	String[] lines = sign.getLines();
-    	if ( ! ("[vault]".equalsIgnoreCase(lines[0]) || "[faction vault]".equalsIgnoreCase(lines[0]) )) return false;
+    	if ( ! ("[vault]".equalsIgnoreCase(lines[0]) 
+    			|| "[faction vault]".equalsIgnoreCase(lines[0]) 
+    			|| "[town vault]".equalsIgnoreCase(lines[0])
+    			|| "[nation vault]".equalsIgnoreCase(lines[0]))) 
+    		return false;
     	if ( lines[1] == null || lines[2].length() == 0) return false;
   
     	if (chest() == null) return false;

@@ -15,7 +15,9 @@ Features
 * optional transaction taxes
 * fractional currency values (2 decimal digits)
 * [Factions](http://dev.bukkit.org/server-mods/factions/) support
+* [Towny](http://dev.bukkit.org/server-mods/towny-advanced/) support
 * [Vault](http://dev.bukkit.org/server-mods/vault/) integration
+* Tekkit compatible version available
 
 Usage
 -----
@@ -26,6 +28,13 @@ Place a sign above a container block, with `[vault]` written on the first line. 
 
 ### Faction vaults ###
 Place a sign above a container block, with `[faction vault]` written on the first line. If it was created correctly, the will display your faction's tag on the third line and you will receive a message that the vault has been created.
+
+## Towny vaults ###
+
+* To make a vault for your town: place a sign above a container block, with `[town vault]` written on the first line. 
+* To make a vault for your nation: place a sign above a container block, with `[nation vault]` written on the first line. 
+If it was created correctly, the will display your faction's tag on the third line and you will receive a message that the vault has been created.
+
 
 ### User commands ###
     /money
@@ -49,15 +58,10 @@ Reload Gringotts config.yml and apply any changed settings.
 
 Installation
 ------------
-Installing jar with dependencies: Place the gringotts jar file in the `plugins` directory of your craftbukkit folder
-
-Installing jar without dependencies: 
-
-* download [Gringotts v1.2.0](http://dev.bukkit.org/media/files/635/745/Gringotts-1.2.0.jar) and place it in your craftbukkit/plugins folder
+* download [Gringotts v1.3.0](http://dev.bukkit.org/server-mods/gringotts/files/) and place it in your craftbukkit/plugins folder
 * download [Apache Derby](http://repo1.maven.org/maven2/org/apache/derby/derby/10.9.1.0/derby-10.9.1.0.jar) and place it in your craftbukkit/lib folder
 
-### Caveats ###
-The `reload` command on a running server may cause a memory leak, which after repeated reloads causes an out-of-memory error.
+
 
 Configuration
 -------------
@@ -121,7 +125,17 @@ Allow players to create vaults for their own account.
     gringotts.createvault.faction:
       default: true
 
-Allow players to create vaults for their faction.
+Allow players to create vaults for their faction (Factions only).
+
+    gringotts.createvault.town:
+      default: true
+
+Allow players to create vaults for their town (Towny only).
+
+    gringotts.createvault.nation:
+      default: true
+
+Allow players to create vaults for their nation (Towny only).
 
     gringotts.usevault
       default: true
@@ -153,7 +167,7 @@ Development
 -----------
 This section is intended to help out developers who wish to make changes to Gringotts themselves. If you have any changes that you would like included in the main branch, please submit a pull request.
 
-Gringotts uses the [Maven 3](http://maven.apache.org/ref/3.0/) build system. To obtain a working plugin jar that inlcludes dependencies, build with the command
+Gringotts uses the [Maven 3](http://maven.apache.org/) build system. To obtain a working plugin jar that inlcludes dependencies, build with the command
 
     mvn compile assembly:single
     

@@ -2,11 +2,11 @@ name: Gringotts
 authors: [jasticE, squidicuz, eXeC64]
 website: https://github.com/MinecraftWars/Gringotts
 
-version: 1.2.1-compat-1.2.5
+version: 1.3.0-compat-1.2.5
 main: org.gestern.gringotts.Gringotts
 
 depend: []
-softdepend: [Factions]
+softdepend: [Factions, Towny]
 
 commands:
   balance:
@@ -40,17 +40,24 @@ permissions:
     children:
       gringotts.createvault.player: true
       gringotts.createvault.faction: true
+      gringotts.createvault.town: true
+      gringotts.createvault.nation: true
   gringotts.createvault.player:
     description: Create player vaults
     default: true
   gringotts.createvault.faction:
-    description: Create faction vaults
+    description: Create faction vaults (Factions only)
+    default: true
+  gringotts.createvault.town:
+    description: Create town vaults (Towny only)
+    default: true
+  gringotts.createvault.nation:
+    description: Create nation vaults (Towny only)
     default: true
   gringotts.usevault:
     description: Use any type of vault
     default: true
     children:
-      gringotts.usevault.container: true
       gringotts.usevault.inventory: true
       gringotts.usevault.enderchest: true
   gringotts.usevault.inventory:

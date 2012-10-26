@@ -18,6 +18,7 @@ public class Dependency {
 	private final Logger log = Bukkit.getLogger();
 		
 	public final Plugin factions;
+	public final Plugin towny;
 	
 	
 	/**
@@ -25,12 +26,22 @@ public class Dependency {
 	 */
 	private Dependency() {
 		
+		// TODO if I add any more: refactor!
+		
 		if (packagesExists("com.massivecraft.factions.P")) {
 	        factions = Bukkit.getServer().getPluginManager().getPlugin("Factions");
             log.info("[Gringotts] Factions hooked.");
         } else {
-        	log.info("[Gringotts] Unable to hook factions.");
+        	log.info("[Gringotts] Unable to hook Factions.");
         	factions = null;
+        }
+		
+		if (packagesExists("com.palmergames.bukkit.towny.Towny")) {
+			towny = Bukkit.getServer().getPluginManager().getPlugin("Towny");
+			log.info("[Gringotts] Towny hooked.");
+		} else {
+        	log.info("[Gringotts] Unable to hook Towny.");
+        	towny = null;
         }
     
 	}
