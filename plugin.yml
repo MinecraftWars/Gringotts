@@ -2,7 +2,7 @@ name: Gringotts
 authors: [jasticE, squidicuz, eXeC64]
 website: https://github.com/MinecraftWars/Gringotts
 
-version: 1.3.0-beta1
+version: 1.3.0
 main: org.gestern.gringotts.Gringotts
 
 depend: []
