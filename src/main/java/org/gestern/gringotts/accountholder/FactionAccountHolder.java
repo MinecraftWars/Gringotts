@@ -1,4 +1,4 @@
-package org.gestern.gringotts;
+package org.gestern.gringotts.accountholder;
 
 import java.util.HashMap;
 import java.util.Map;

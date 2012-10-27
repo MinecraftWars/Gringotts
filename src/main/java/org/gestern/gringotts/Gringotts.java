@@ -7,6 +7,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.gestern.gringotts.accountholder.AccountHolderFactory;
 
 
 public class Gringotts extends JavaPlugin {

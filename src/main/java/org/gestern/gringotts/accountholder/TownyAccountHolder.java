@@ -1,4 +1,4 @@
-package org.gestern.gringotts;
+package org.gestern.gringotts.accountholder;
 
 import com.palmergames.bukkit.towny.object.TownyEconomyObject;
 
