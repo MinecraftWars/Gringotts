@@ -4,13 +4,20 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.gestern.gringotts.accountholder.FactionAccountHolder;
+import org.gestern.gringotts.accountholder.PlayerAccountHolder;
+import org.gestern.gringotts.dependency.Dependency;
+import org.gestern.gringotts.dependency.FactionsHandler;
+import org.gestern.gringotts.dependency.TownyHandler;
 
-import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.Factions;
-import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
-import com.palmergames.bukkit.towny.object.TownyEconomyObject;
-import com.palmergames.bukkit.towny.object.TownyUniverse;
 
+/**
+ * Manages creating various types of AccountHolder centrally.
+ * 
+ * @author jast
+ *
+ */
 public class AccountHolderFactory {
 	
 	private final Logger log = Bukkit.getLogger();
@@ -31,24 +38,16 @@ public class AccountHolderFactory {
             return new PlayerAccountHolder(player);
         }
 
-        if (Dependency.dependency().factions != null && owner.startsWith("faction-")) {
-        	// not sure, but somehow this is sometimes id, sometimes tag??
-            String factionTag = owner.substring(8);
-            Faction faction;
-            
-            // try id first
-            faction = Factions.i.get(factionTag);            
-            // and then tag
-            if (faction == null)
-            	faction = Factions.i.getByTag(factionTag);
-            
-            if (faction != null) 
-                return new FactionAccountHolder(faction);
+        if (Dependency.D.factions != null) {
+        	FactionsHandler handler = new FactionsHandler();
+        	AccountHolder holder = handler.getAccountHolderByName(owner);
+        	if (holder != null) return holder;
         }
         
-        if (Dependency.dependency().towny != null) {
-        	TownyEconomyObject teo = townyObject(owner);
-        	if (teo != null) return new TownyAccountHolder(teo);
+        if (Dependency.D.towny != null) {
+    		TownyHandler handler = new TownyHandler();
+    		AccountHolder holder = handler.getAccountHolderByAccountName(owner);
+    		if (holder!=null) return holder;
         }
         
         // TODO support banks
@@ -75,40 +74,21 @@ public class AccountHolderFactory {
             else return null;
     	}
     	
-    	if (Dependency.dependency().factions != null && type.equals("faction")) {
+    	if (Dependency.D.factions != null && type.equals("faction")) {
             if (Factions.i.exists(owner))
                 return new FactionAccountHolder(Factions.i.get(owner));
             else return null;
     	}
     	
-    	if (Dependency.dependency().towny != null && type.equals("towny")) {
-    		TownyEconomyObject teo = townyObject(owner);
-    		return teo!=null? new TownyAccountHolder(teo) : null;
+    	if (Dependency.D.towny != null && type.equals("towny")) {
+    		TownyHandler handler = new TownyHandler();
+    		AccountHolder holder = handler.getAccountHolderByAccountName(owner);
+    		if (holder!=null) return holder;
     	} 
     	
     	// no valid type
     	return null;
     }
     
-    /**
-     * Get a towny Town or Nation for a given name.
-     * @param name name of town or nation
-     * @return Town or Nation object for given name
-     */
-    private TownyEconomyObject townyObject(String name) {
-    	
-    	TownyEconomyObject teo = null;
-    	
-    	if (name.startsWith("town-")) {
-	    	try { teo = TownyUniverse.getDataSource().getTown(name.substring(5)); } 
-	    	catch (NotRegisteredException e) { }
-    	}
-    	
-    	if (name.startsWith("nation-")) {
-	    	try { teo = TownyUniverse.getDataSource().getNation(name.substring(7));
-			} catch (NotRegisteredException e) { }
-    	}
-    	
-    	return teo;
-    }
+
 }

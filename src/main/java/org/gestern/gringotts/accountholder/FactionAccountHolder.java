@@ -1,7 +1,9 @@
-package org.gestern.gringotts;
+package org.gestern.gringotts.accountholder;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import org.gestern.gringotts.AccountHolder;
 
 import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.Factions;
