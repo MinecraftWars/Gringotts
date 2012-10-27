@@ -1,15 +1,23 @@
-package org.gestern.gringotts.accountholder;
+package org.gestern.gringotts;
 
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.gestern.gringotts.accountholder.FactionAccountHolder;
+import org.gestern.gringotts.accountholder.PlayerAccountHolder;
 import org.gestern.gringotts.dependency.Dependency;
 import org.gestern.gringotts.dependency.FactionsHandler;
 import org.gestern.gringotts.dependency.TownyHandler;
 
 import com.massivecraft.factions.Factions;
 
+/**
+ * Manages creating various types of AccountHolder centrally.
+ * 
+ * @author jast
+ *
+ */
 public class AccountHolderFactory {
 	
 	private final Logger log = Bukkit.getLogger();

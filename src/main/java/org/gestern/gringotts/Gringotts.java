@@ -1,5 +1,6 @@
 package org.gestern.gringotts;
 
+import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -7,7 +8,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.gestern.gringotts.accountholder.AccountHolderFactory;
+import org.mcstats.MetricsLite;
 
 
 public class Gringotts extends JavaPlugin {
@@ -51,6 +52,14 @@ public class Gringotts extends JavaPlugin {
         accounting = new Accounting();
 
         registerEvents();
+        
+        try {
+            MetricsLite metrics = new MetricsLite(this);
+            metrics.start();
+        } catch (IOException e) {
+        	log.info("[Gringotts] Failed to submit PluginMetrics stats");
+            // Failed to submit the stats :-(
+        }
         
         log.info("[Gringotts] enabled");
     }

@@ -1,4 +1,4 @@
-package org.gestern.gringotts.accountholder;
+package org.gestern.gringotts;
 
 
 
@@ -7,6 +7,8 @@ package org.gestern.gringotts.accountholder;
  * Can be a player or another type of entity able to partiticapte in the economy, for instance a faction.
  * 
  * To function correctly within Gringotts, implementors must provide a working equals and hashCode method. 
+ * 
+ * TODO move to accountholder package when vault is updated
  * 
  * @author jast
  *
