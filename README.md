@@ -58,7 +58,7 @@ Reload Gringotts config.yml and apply any changed settings.
 
 Installation
 ------------
-* download [Gringotts v1.3.0](http://dev.bukkit.org/server-mods/gringotts/files/) and place it in your craftbukkit/plugins folder
+* download [Gringotts v1.3.0](http://dev.bukkit.org/media/files/642/288/Gringotts-1.3.0.jar) and place it in your craftbukkit/plugins folder
 * download [Apache Derby](http://repo1.maven.org/maven2/org/apache/derby/derby/10.9.1.0/derby-10.9.1.0.jar) and place it in your craftbukkit/lib folder
 
 
@@ -167,15 +167,15 @@ Development
 -----------
 This section is intended to help out developers who wish to make changes to Gringotts themselves. If you have any changes that you would like included in the main branch, please submit a pull request.
 
-Gringotts uses the [Maven 3](http://maven.apache.org/) build system. To obtain a working plugin jar that inlcludes dependencies, build with the command
+Gringotts uses the [Maven 3](http://maven.apache.org/) build system. To obtain a working plugin jar that includes all dependencies, build with the command
 
     mvn compile assembly:single
     
 This should put a jar with the required dependencies in the _target_ subdirectory
 
-For a build without dependencies, use
+For a build with only basic dependencies (plugin metrics), use
 
-    mvn compile jar:jar
+    mvn compile package
 
 
 License
