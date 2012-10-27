@@ -1,6 +1,16 @@
 Gringotts Changelog
 ===================
 
+v1.3.0
+------
+* added Towny support: can now create town and nation vaults when Towny plugin is installed and you are member of a town or nation
+* permissions for creating town vault: `gringotts.createvault.town` and nation vault: `gringotts.createvault.nation`
+* added plugin metrics
+
+v1.2.1
+------
+* fix bug in currency configuration
+
 v1.2.0
 ------
 * use player inventory as "vault", on by default, permission `gringotts.usevault.inventory`
