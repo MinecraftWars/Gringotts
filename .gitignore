@@ -5,3 +5,4 @@
 .classpath
 .project
 .DS_Store
+/dependency-reduced-pom.xml
