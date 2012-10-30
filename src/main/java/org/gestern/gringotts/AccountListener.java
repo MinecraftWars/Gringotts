@@ -23,9 +23,9 @@ import org.gestern.gringotts.dependency.TownyHandler;
  * @author jast
  *
  */
-public class AccountListener implements Listener {
+public class AccountListener implements Listener { 
 
-	private DAO dao = DAO.getDao();
+	private final DAO dao = DAO.getDao();
     @SuppressWarnings("unused")
 	private Logger log = Bukkit.getServer().getLogger();
     private final Accounting accounting;
