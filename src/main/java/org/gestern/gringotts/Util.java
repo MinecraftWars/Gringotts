@@ -2,6 +2,7 @@ package org.gestern.gringotts;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
@@ -18,7 +19,7 @@ class Util {
      */
     public long addToInventory(long value, Inventory inv) {
         int stacksize = config.currency.getMaxStackSize();
-        long remaining = value;		
+        long remaining = value;
 
         // fill up incomplete stacks
         while (remaining > 0) {
@@ -144,12 +145,10 @@ class Util {
      * @return true if the block is a sign or wall sign
      */
     public static boolean isSignBlock(Block block) {
-    	Material type = block.getType();
-    	return Material.SIGN == type || Material.WALL_SIGN == type;
+    	//Material type = block.getType();
+    	//return Material.SIGN == type || Material.WALL_SIGN == type;
+    	// NOTE: Changed method to checking for instance of Sign
+    	
+    	return ( block.getState() instanceof Sign );
     }
-
-
-
-
-    
 }
