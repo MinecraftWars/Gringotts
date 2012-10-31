@@ -42,7 +42,14 @@ public class Account {
         	if (player.hasPermission("gringotts.usevault.inventory"))
         		balance += util.balanceInventory(player.getInventory());
         	if (player.hasPermission("gringotts.usevault.enderchest"))
-        		balance += util.balanceInventory(player.getEnderChest());
+        		try
+        		{
+        			balance += util.balanceInventory(player.getEnderChest());
+        		}
+	        	catch (NoSuchMethodError e)
+	        	{
+	        		
+	        	}
         }
 
         // convert to total cents
