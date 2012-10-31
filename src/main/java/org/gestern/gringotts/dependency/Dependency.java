@@ -4,6 +4,8 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginDescriptionFile;
+import static org.gestern.gringotts.Util.versionAtLeast;
 
 /**
  * Manages optional plugin dependencies.
@@ -20,6 +22,7 @@ public enum Dependency {
 		
 	public final Plugin factions;
 	public final Plugin towny;
+	public final Plugin vault;
 	
 	
 	/**
@@ -27,16 +30,32 @@ public enum Dependency {
 	 */
 	private Dependency() {
 		
-		factions = hookPlugin("Factions", "com.massivecraft.factions.P");
-		towny = hookPlugin("Towny","com.palmergames.bukkit.towny.Towny");
+		factions = hookPlugin("Factions", "com.massivecraft.factions.P","1.6.9.1");
+		towny = hookPlugin("Towny","com.palmergames.bukkit.towny.Towny","0.82.0.0");
+		vault = hookPlugin("Vault","net.milkbowl.vault.Vault","2.1.17");
 	}
 	
 
-	private Plugin hookPlugin(String name, String classpath) {
+	/**
+	 * Attempt to hook a plugin dependency.
+	 * @param name Name of the plugin.
+	 * @param classpath classpath to check for
+	 * @param minVersion minimum version of the plugin. The plugin will still be hooked if this version is not satisfied,
+	 * 		but a warning will mbe emitted.
+	 * @return the plugin object when hooked successfully, or null if not.
+	 */
+	private Plugin hookPlugin(String name, String classpath, String minVersion) {
 		Plugin plugin;
 		if (packagesExists(classpath)) {
 			plugin = Bukkit.getServer().getPluginManager().getPlugin(name);
 			log.info("[Gringotts] Plugin "+name+" hooked.");
+			
+			PluginDescriptionFile desc = plugin.getDescription();
+			String version = desc.getVersion();
+			if (!versionAtLeast(version, minVersion)) {
+				log.warning("[Gringotts] Plugin dependency "+ name +" is version " + version + 
+						". Expected at least "+ minVersion +" -- Errors may occur.");
+			}
 		} else {
         	log.info("[Gringotts] Unable to hook plugin " + name);
         	plugin = null;
@@ -63,4 +82,5 @@ public enum Dependency {
             return false;
         }
     }
+    
 }
