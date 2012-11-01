@@ -32,7 +32,7 @@ public enum Dependency {
 		
 		factions = hookPlugin("Factions", "com.massivecraft.factions.P","1.6.9.1");
 		towny = hookPlugin("Towny","com.palmergames.bukkit.towny.Towny","0.82.0.0");
-		vault = hookPlugin("Vault","net.milkbowl.vault.Vault","2.1.17");
+		vault = hookPlugin("Vault","net.milkbowl.vault.Vault","1.2.17");
 	}
 	
 
