@@ -43,7 +43,6 @@ public class Gringotts extends JavaPlugin {
         getCommand("moneyadmin").setExecutor(moneyAdminCommands);
         getCommand("gringotts").setExecutor(adminCommands);
 
-
         // load and init configuration
         saveDefaultConfig(); // saves default configuration if no config.yml exists yet
         FileConfiguration savedConfig = getConfig();
@@ -61,7 +60,7 @@ public class Gringotts extends JavaPlugin {
             // Failed to submit the stats :-(
         }
         
-        log.info("[Gringotts] enabled");
+        log.fine("[Gringotts] enabled");
     }
 
 	@Override
