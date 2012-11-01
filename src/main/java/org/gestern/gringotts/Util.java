@@ -196,4 +196,12 @@ public class Util {
     	
     	return parts;
     }
+    
+    /**
+     * Get the name of the currency based on the value (singular or plural).
+     * @return
+     */
+    public static String currencyName(double value) {
+    	return value==1.0? Configuration.config.currencyNameSingular : Configuration.config.currencyNamePlural;
+    }
 }
