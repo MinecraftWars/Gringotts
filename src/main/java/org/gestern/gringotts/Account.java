@@ -41,11 +41,8 @@ public class Account {
         if (player != null) {
         	if (player.hasPermission("gringotts.usevault.inventory"))
         		balance += util.balanceInventory(player.getInventory());
-        	if (player.hasPermission("gringotts.usevault.enderchest"))
-        		try {
-        			balance += util.balanceInventory(player.getEnderChest());
-        		}
-	        	catch (NoSuchMethodError e) {}
+        	if (Configuration.config.usevaultEnderchest && player.hasPermission("gringotts.usevault.enderchest"))
+        		balance += util.balanceInventory(player.getEnderChest());
         }
 
         // convert to total cents
@@ -76,7 +73,7 @@ public class Account {
         if (player != null) {
         	if (player.hasPermission("gringotts.usevault.inventory"))
         		capacity += util.capacityInventory(player.getInventory());
-        	if (player.hasPermission("gringotts.usevault.enderchest"))
+        	if (Configuration.config.usevaultEnderchest && player.hasPermission("gringotts.usevault.enderchest"))
         		capacity += util.capacityInventory(player.getEnderChest());
         }
 
@@ -135,7 +132,7 @@ public class Account {
         if (player != null) {
         	if (player.hasPermission("gringotts.usevault.inventory"))
         		remainingEmeralds -= util.addToInventory(remainingEmeralds, player.getInventory());
-        	if (player.hasPermission("gringotts.usevault.enderchest"))
+        	if (Configuration.config.usevaultEnderchest && player.hasPermission("gringotts.usevault.enderchest"))
         		remainingEmeralds -= util.addToInventory(remainingEmeralds, player.getEnderChest());
         }
         
@@ -196,7 +193,7 @@ public class Account {
         if (player != null) {
         	if (player.hasPermission("gringotts.usevault.inventory"))
         		remainingEmeralds -= util.removeFromInventory(remainingEmeralds, player.getInventory());
-        	if (player.hasPermission("gringotts.usevault.enderchest"))
+        	if (Configuration.config.usevaultEnderchest && player.hasPermission("gringotts.usevault.enderchest"))
         		remainingEmeralds -= util.removeFromInventory(remainingEmeralds, player.getEnderChest());
         }
 

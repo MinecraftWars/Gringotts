@@ -10,3 +10,4 @@ transactiontax:
   rate: 0.0
 usevault:
   container: true
+  enderchest: true
