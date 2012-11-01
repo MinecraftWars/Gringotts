@@ -68,7 +68,7 @@ public class DAO {
 			setupDB(connection);
 			prepareStatements();
 			
-			log.info("[Gringotts] DAO setup successfully.");
+			log.fine("[Gringotts] DAO setup successfully.");
 
 		} catch (SQLException e) {
 			throw new GringottsStorageException("Failed to initialize database connection.", e);
