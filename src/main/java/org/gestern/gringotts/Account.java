@@ -95,12 +95,12 @@ public class Account {
      */
     boolean addCents(long amount) {
 
-        //Cannot add negative amount
+        // Cannot add negative amount
         if(amount < 0)
             return false;
 
-        //Is there space?
-        if(balanceCents() + amount > capacityCents())
+        // Is there space?
+        if(amount > capacityCents())
             return false;
 
         //Add the cents
@@ -109,7 +109,7 @@ public class Account {
         if (config.currencyFractional) {
 	        cents += dao.getCents(this);
 	
-	        //Convert excess cents into emeralds		
+	        // Convert excess cents into emeralds		
 	        while(cents >= 100) {
 	            cents -= 100;
 	            remainingEmeralds += 1;
