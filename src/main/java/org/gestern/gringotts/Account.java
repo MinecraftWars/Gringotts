@@ -178,7 +178,7 @@ public class Account {
 	        
 	        dao.storeCents(this, (int)cents);
         } else {
-        	remainingEmeralds = cents/100;
+        	remainingEmeralds = amount/100;
         }
 
         //Now remove the physical amount left
