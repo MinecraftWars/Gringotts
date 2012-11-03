@@ -143,7 +143,8 @@ public class Commands {
                 } else return false;
                 
                 // admin command: balance of player / faction
-                if (args.length == 2 && command.equalsIgnoreCase("b")) {
+                if (args.length == 2)  {
+                	
                 	String targetAccountHolderStr = args[1];
                 	AccountHolder targetAccountHolder = ahf.get(targetAccountHolderStr);
                 	if (targetAccountHolder == null) {
@@ -151,8 +152,15 @@ public class Commands {
                 		return true;
                 	}
                 	Account targetAccount = accounting.getAccount(targetAccountHolder);
-                	sender.sendMessage("Balance of account " + targetAccountHolder.getName() + ": " + targetAccount.balance());
-                	return true;
+                	
+                	if (command.equalsIgnoreCase("c")) {
+                		sender.sendMessage("Capacity of account " + targetAccountHolder.getName() + ": " + targetAccount.capacity());
+	                	return true;
+                	} else if (command.equalsIgnoreCase("b")) {
+	                	sender.sendMessage("Balance of account " + targetAccountHolder.getName() + ": " + targetAccount.balance());
+	                	return true;
+                	} else
+                		return false;
                 }
                 
                 // moneyadmin add/remove
