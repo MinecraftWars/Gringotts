@@ -66,7 +66,7 @@ public class Commands {
                 	value = Double.parseDouble(args[1]); 
                 	
                 	// cutoff base value when fractions are disabled, so that nothing is taxed that isn't being paid
-                	if (conf.currencyFractional)
+                	if (!conf.currencyFractional)
                 		value = Math.floor(value);
                 } 
                 catch (NumberFormatException e) { return false; }
@@ -91,7 +91,7 @@ public class Commands {
                     
                     double tax = conf.transactionTaxFlat + value * conf.transactionTaxRate;
                     // round tax value when fractions are disabled
-                    if (conf.currencyFractional)
+                    if (!conf.currencyFractional)
                     	tax = Math.round(tax);
 
                     double balance = account.balance();
@@ -101,7 +101,7 @@ public class Commands {
                     if (balance < valueAdded) {
                         accountOwner.sendMessage(
                                 "Your account has insufficient balance. Current balance: " + balance + " " + currencyName(balance) 
-                                + ". Required: " + (valueAdded) + " " + currencyName(valueAdded));
+                                + ". Required: " + valueAdded + " " + currencyName(valueAdded));
                         return true;
                     }
                     if (recipientAccount.capacity() < value) {
