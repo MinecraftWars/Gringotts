@@ -24,16 +24,16 @@ Usage
 Storing money in an account requires a Gringotts vault. A vault consists of a container, which can be either chest, dispenser or furnace, and a sign above declaring it as a vault. A player or faction may claim any number of vaults. Vaults are not protected from access through other players. If you would like them to be, you may use additional plugins such as [LWC](http://dev.bukkit.org/server-mods/lwc/) or [WorldGuard](http://dev.bukkit.org/server-mods/worldguard/).
 
 ### Player vaults ###
-Place a sign above a container block, with `[vault]` written on the first line. If it was created correctly, the will display your name on the third line and you will receive a message that the vault has been created.
+Place a sign above a container block, with `[vault]` written on the first line. If it was created correctly, the sign will display your name on the third line and you will receive a message that the vault has been created.
 
 ### Faction vaults ###
-Place a sign above a container block, with `[faction vault]` written on the first line. If it was created correctly, the will display your faction's tag on the third line and you will receive a message that the vault has been created.
+Place a sign above a container block, with `[faction vault]` written on the first line. If it was created correctly, the sign will display your faction's tag on the third line and you will receive a message that the vault has been created.
 
 ### Towny vaults ###
 
 * To make a vault for your town: place a sign above a container block, with `[town vault]` written on the first line. 
 * To make a vault for your nation: place a sign above a container block, with `[nation vault]` written on the first line. 
-If it was created correctly, the will display your faction's tag on the third line and you will receive a message that the vault has been created.
+If it was created correctly, the sign will display your town's or nation's tag on the third line and you will receive a message that the vault has been created.
 
 
 ### User commands ###
@@ -46,6 +46,9 @@ Pay an amount to a player. The transaction will only succeed if your account has
 ### Admin commands ###
     /moneyadmin b <account>
 Get the balance of a player's account.
+
+    /moneyadmin c <account>
+Get the available capacity of a player's account.
 
     /moneyadmin add <amount> <account>
 Add an amount of money to a player's account.
@@ -69,6 +72,7 @@ As usual with Bukkit plugins, the configuration is in the config.yml in the plug
 
 ### Currency ###
 Per default Gringotts uses emeralds as currency, but this can be changed to any other type of item.
+To use Gringotts with Tekkit, you will need to adjust this to a 1.2.5-compatible item (eg gold ingots, id 266) or a Tekkit item (eg industrial credits, id 30186)
 
 Example configuration section:
 
@@ -80,7 +84,6 @@ Example configuration section:
         plural: Emeralds
       fractional: true
 
-This is the default configuration which uses emeralds as currency. To use Gringotts on Tekkit or another CraftBukkit v1.2.5 server, you will
 
 #### Individual settings
 
