@@ -1,7 +1,7 @@
 Gringotts Changelog
 ===================
 
-v1.3.2
+v1.3.1
 ------
 * Tekkit/1.2.5 compatible  (configuration required)
 * added configuration option `usevault.enderchest`: globally enable/disable enderchest as valid vault. This can also be done on a per-player/world basis with the permission `gringotts.usevault.enderchest`

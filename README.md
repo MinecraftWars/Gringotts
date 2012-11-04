@@ -17,7 +17,7 @@ Features
 * [Factions](http://dev.bukkit.org/server-mods/factions/) support
 * [Towny](http://dev.bukkit.org/server-mods/towny-advanced/) support
 * [Vault](http://dev.bukkit.org/server-mods/vault/) integration
-* Tekkit compatible version available
+* Tekkit / 1.2.5 compatible
 
 Usage
 -----
@@ -80,7 +80,7 @@ Example configuration section:
         plural: Emeralds
       fractional: true
 
-This is the default configuration which uses emeralds as currency.
+This is the default configuration which uses emeralds as currency. To use Gringotts on Tekkit or another CraftBukkit v1.2.5 server, you will
 
 #### Individual settings
 
@@ -105,8 +105,11 @@ This would add to every transaction 1 plus 5% of the transaction value. For inst
 
     usevault:
       container: true
+      enderchest: true
 
-Enable the use of container vaults: chests, dispensers and furnaces. If this is `false`, only player's inventory and/or enderchests will serve as a player "vault".
+Globally enable use of specific kinds of vault:
+* `container` Enable the use of container vaults: chests, dispensers and furnaces. If this is `false`, only player's inventory and/or enderchests will serve as a player "vault".
+* `enderchest` Enable use of enderchest as vault for players globally. The permission `gringotts.usevault.enderchest` may still be used to disable this on a per-player/world basis.
 
 
 Permissions
