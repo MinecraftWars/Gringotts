@@ -12,10 +12,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
-
-import com.massivecraft.factions.FPlayer;
-import com.massivecraft.factions.FPlayers;
-import com.massivecraft.factions.Faction;
+import org.gestern.gringotts.accountholder.PlayerAccountHolder;
+import org.gestern.gringotts.dependency.Dependency;
+import org.gestern.gringotts.dependency.FactionsHandler;
+import org.gestern.gringotts.dependency.TownyHandler;
 
 /**
  * Listens for chest creation and destruction events.
@@ -23,9 +23,9 @@ import com.massivecraft.factions.Faction;
  * @author jast
  *
  */
-public class AccountListener implements Listener {
+public class AccountListener implements Listener { 
 
-	private DAO dao = DAO.getDao();
+	private final DAO dao = DAO.getDao();
     @SuppressWarnings("unused")
 	private Logger log = Bukkit.getServer().getLogger();
     private final Accounting accounting;
@@ -51,19 +51,45 @@ public class AccountListener implements Listener {
         		return;
         	}
             chestOwner = new PlayerAccountHolder(player);
-        } else if (Dependency.dependency().factions != null && line0.equalsIgnoreCase("[faction vault]")) {
+        } else if (Dependency.D.factions != null && line0.equalsIgnoreCase("[faction vault]")) {
         	if (!player.hasPermission("gringotts.createvault.faction")) {
         		noPermission(player);
         		return;
         	}
         	
-            FPlayer fplayer = FPlayers.i.get(player);
-            Faction playerFaction = fplayer.getFaction();
-            if (playerFaction == null) {
-            	player.sendMessage("Cannot create faction vault: You are not in a faction.");
+        	FactionsHandler handler = new FactionsHandler();
+        	AccountHolder holder = handler.getFactionAccountHolder(player);
+        	if (holder==null) {
+        		player.sendMessage("Cannot create faction vault: You are not in a faction.");
             	return;
-            }
-            chestOwner = new FactionAccountHolder(playerFaction);
+        	}
+            chestOwner = holder;
+        } else if (Dependency.D.towny != null  && line0.equalsIgnoreCase("[town vault]")) {
+        	if (!player.hasPermission("gringotts.createvault.town")) {
+        		noPermission(player);
+        		return;
+        	}
+        	
+        	TownyHandler handler = new TownyHandler();
+        	chestOwner = handler.getTownAccountHolder(player);
+        	if (chestOwner == null) {
+        		player.sendMessage("Cannot create town vault: You are not resident of a town.");
+				return;
+        	}
+        	
+        } else if (Dependency.D.towny != null  && line0.equalsIgnoreCase("[nation vault]")) {
+        	if (!player.hasPermission("gringotts.createvault.nation")) {
+        		noPermission(player);
+        		return;
+        	}
+        	
+        	TownyHandler handler = new TownyHandler();
+        	chestOwner = handler.getNationAccountHolder(player);
+        	if (chestOwner == null) {
+        		player.sendMessage("Cannot create nation vault.");
+				return;
+        	}
+        	
         } else return; // not for us!
 
         Block signBlock = event.getBlock();
@@ -106,7 +132,9 @@ public class AccountListener implements Listener {
         Location loc = block.getLocation();
         for (AccountChest chest : dao.getChests()) {
         	if ( loc.equals(chest.sign.getBlock().getLocation()) ) {
-        		chest.destroy();
+        		//chest.destroy();
+        		// NOTE: Removed because breakNaturally() was causing a double call of this event which ends in a intermittent Internal Server Error on Tekkit 3.1.2
+        		dao.destroyAccountChest(chest);
         		Account account = chest.getAccount();
         		account.owner.sendMessage("Vault broken. New balance is " + account.balance());
         	}

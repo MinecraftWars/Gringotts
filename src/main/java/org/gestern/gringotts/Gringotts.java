@@ -1,5 +1,6 @@
 package org.gestern.gringotts;
 
+import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -7,6 +8,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.mcstats.MetricsLite;
 
 
 public class Gringotts extends JavaPlugin {
@@ -41,7 +43,6 @@ public class Gringotts extends JavaPlugin {
         getCommand("moneyadmin").setExecutor(moneyAdminCommands);
         getCommand("gringotts").setExecutor(adminCommands);
 
-
         // load and init configuration
         saveDefaultConfig(); // saves default configuration if no config.yml exists yet
         FileConfiguration savedConfig = getConfig();
@@ -51,7 +52,15 @@ public class Gringotts extends JavaPlugin {
 
         registerEvents();
         
-        log.info("[Gringotts] enabled");
+        try {
+            MetricsLite metrics = new MetricsLite(this);
+            metrics.start();
+        } catch (IOException e) {
+        	log.info("[Gringotts] Failed to submit PluginMetrics stats");
+            // Failed to submit the stats :-(
+        }
+        
+        log.fine("[Gringotts] enabled");
     }
 
 	@Override

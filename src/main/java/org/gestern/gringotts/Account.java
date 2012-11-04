@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.gestern.gringotts.accountholder.PlayerAccountHolder;
 
 public class Account {
 
@@ -18,8 +19,9 @@ public class Account {
 	private final Configuration config = Configuration.config;
 
     public Account(AccountHolder owner) {
-    	if (owner == null)
+    	if (owner == null) {
     		throw new IllegalArgumentException("owner parameter to Account constructor may not be null");
+    	}
         this.owner = owner;
     }
 
@@ -39,7 +41,7 @@ public class Account {
         if (player != null) {
         	if (player.hasPermission("gringotts.usevault.inventory"))
         		balance += new AccountInventory(player.getInventory()).balance();
-        	if (player.hasPermission("gringotts.usevault.enderchest"))
+        	if (Configuration.config.usevaultEnderchest && player.hasPermission("gringotts.usevault.enderchest"))
         		balance += new AccountInventory(player.getEnderChest()).balance();
         }
 
@@ -71,7 +73,7 @@ public class Account {
         if (player != null) {
         	if (player.hasPermission("gringotts.usevault.inventory"))
         		capacity += new AccountInventory(player.getInventory()).capacity();
-        	if (player.hasPermission("gringotts.usevault.enderchest"))
+        	if (Configuration.config.usevaultEnderchest && player.hasPermission("gringotts.usevault.enderchest"))
         		capacity += new AccountInventory(player.getEnderChest()).capacity();
         }
 
@@ -93,12 +95,12 @@ public class Account {
      */
     boolean addCents(long amount) {
 
-        //Cannot add negative amount
+        // Cannot add negative amount
         if(amount < 0)
             return false;
 
-        //Is there space?
-        if(balanceCents() + amount > capacityCents())
+        // Is there space?
+        if(amount > capacityCents())
             return false;
 
         //Add the cents
@@ -107,7 +109,7 @@ public class Account {
         if (config.currencyFractional) {
 	        cents += dao.getCents(this);
 	
-	        //Convert excess cents into emeralds		
+	        // Convert excess cents into emeralds		
 	        while(cents >= 100) {
 	            cents -= 100;
 	            remainingEmeralds += 1;
@@ -130,7 +132,7 @@ public class Account {
         if (player != null) {
         	if (player.hasPermission("gringotts.usevault.inventory"))
         		remainingEmeralds -= new AccountInventory(player.getInventory()).add(remainingEmeralds);
-        	if (player.hasPermission("gringotts.usevault.enderchest"))
+        	if (Configuration.config.usevaultEnderchest && player.hasPermission("gringotts.usevault.enderchest"))
         		remainingEmeralds -= new AccountInventory(player.getEnderChest()).add(remainingEmeralds);
         }
         
@@ -176,7 +178,7 @@ public class Account {
 	        
 	        dao.storeCents(this, (int)cents);
         } else {
-        	remainingEmeralds = cents/100;
+        	remainingEmeralds = amount/100;
         }
 
         //Now remove the physical amount left
@@ -191,7 +193,7 @@ public class Account {
         if (player != null) {
         	if (player.hasPermission("gringotts.usevault.inventory"))
         		remainingEmeralds -= new AccountInventory(player.getInventory()).remove(remainingEmeralds);
-        	if (player.hasPermission("gringotts.usevault.enderchest"))
+        	if (Configuration.config.usevaultEnderchest && player.hasPermission("gringotts.usevault.enderchest"))
         		remainingEmeralds -= new AccountInventory(player.getEnderChest()).remove(remainingEmeralds);
         }
 

@@ -7,6 +7,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.gestern.gringotts.accountholder.PlayerAccountHolder;
+import static org.gestern.gringotts.Util.*;
 
 /**
  * Handlers for player and console commands.
@@ -64,7 +66,7 @@ public class Commands {
                 	value = Double.parseDouble(args[1]); 
                 	
                 	// cutoff base value when fractions are disabled, so that nothing is taxed that isn't being paid
-                	if (conf.currencyFractional)
+                	if (!conf.currencyFractional)
                 		value = Math.floor(value);
                 } 
                 catch (NumberFormatException e) { return false; }
@@ -89,7 +91,7 @@ public class Commands {
                     
                     double tax = conf.transactionTaxFlat + value * conf.transactionTaxRate;
                     // round tax value when fractions are disabled
-                    if (conf.currencyFractional)
+                    if (!conf.currencyFractional)
                     	tax = Math.round(tax);
 
                     double balance = account.balance();
@@ -98,8 +100,8 @@ public class Commands {
                     
                     if (balance < valueAdded) {
                         accountOwner.sendMessage(
-                                "Your account has insufficient balance. Current balance: " + balance + " " + numName(balance) 
-                                + ". Required: " + (valueAdded) + " " + numName(valueAdded));
+                                "Your account has insufficient balance. Current balance: " + balance + " " + currencyName(balance) 
+                                + ". Required: " + valueAdded + " " + currencyName(valueAdded));
                         return true;
                     }
                     if (recipientAccount.capacity() < value) {
@@ -108,8 +110,8 @@ public class Commands {
                     } else if (account.remove(value)) {
                         if (recipientAccount.add(value)) {
                             account.remove(tax);
-                            String currencyName = numName(balance);
-                            String taxMessage = "Transaction tax deducted from your account: " + tax + " " + numName(tax);
+                            String currencyName = currencyName(balance);
+                            String taxMessage = "Transaction tax deducted from your account: " + tax + " " + currencyName(tax);
                             accountOwner.sendMessage("Sent " + value + " " + currencyName + " to " + recipientName +". " + (tax>0? taxMessage : ""));
                             recipient.sendMessage("Received " + value + " " + currencyName + " from " + accountOwner.getName() +".");
                             return true;
@@ -141,7 +143,8 @@ public class Commands {
                 } else return false;
                 
                 // admin command: balance of player / faction
-                if (args.length == 2 && command.equalsIgnoreCase("b")) {
+                if (args.length == 2)  {
+                	
                 	String targetAccountHolderStr = args[1];
                 	AccountHolder targetAccountHolder = ahf.get(targetAccountHolderStr);
                 	if (targetAccountHolder == null) {
@@ -149,8 +152,15 @@ public class Commands {
                 		return true;
                 	}
                 	Account targetAccount = accounting.getAccount(targetAccountHolder);
-                	sender.sendMessage("Balance of account " + targetAccountHolder.getName() + ": " + targetAccount.balance());
-                	return true;
+                	
+                	if (command.equalsIgnoreCase("c")) {
+                		sender.sendMessage("Capacity of account " + targetAccountHolder.getName() + ": " + targetAccount.capacity());
+	                	return true;
+                	} else if (command.equalsIgnoreCase("b")) {
+	                	sender.sendMessage("Balance of account " + targetAccountHolder.getName() + ": " + targetAccount.balance());
+	                	return true;
+                	} else
+                		return false;
                 }
                 
                 // moneyadmin add/remove
@@ -221,19 +231,12 @@ public class Commands {
 
     
     private static void balanceMessage(Account account, AccountHolder owner) {
-        owner.sendMessage("Your current balance: " + account.balance());
+    	double balance = account.balance();
+        owner.sendMessage("Your current balance: " + balance + " " + currencyName(balance) + ".");
     }
     
     private static void invalidAccount(CommandSender sender, String accountName) {
     	sender.sendMessage("Invalid account: " + accountName);
-    }
-
-    /**
-     * Currency name for a given value (singular or plural).
-     * @return currency name for a given value (singular or plural)
-     */
-    private String numName(double value) {
-        return value==1.0? conf.currencyNameSingular : conf.currencyNamePlural;
     }
 
 }

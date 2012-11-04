@@ -4,13 +4,22 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.gestern.gringotts.accountholder.FactionAccountHolder;
+import org.gestern.gringotts.accountholder.PlayerAccountHolder;
+import org.gestern.gringotts.dependency.Dependency;
+import org.gestern.gringotts.dependency.FactionsHandler;
+import org.gestern.gringotts.dependency.TownyHandler;
 
-import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.Factions;
 
+/**
+ * Manages creating various types of AccountHolder centrally.
+ * 
+ * @author jast
+ *
+ */
 public class AccountHolderFactory {
 	
-	@SuppressWarnings("unused")
 	private final Logger log = Bukkit.getLogger();
 	
 	public AccountHolder getAccount(String owner) {
@@ -29,25 +38,23 @@ public class AccountHolderFactory {
             return new PlayerAccountHolder(player);
         }
 
-        if (Dependency.dependency().factions != null && owner.startsWith("faction-")) {
-        	// not sure, but somehow this is sometimes id, sometimes tag??
-            String factionTag = owner.substring(8);
-            Faction faction;
-            
-            // try id first
-            faction = Factions.i.get(factionTag);            
-            // and then tag
-            if (faction == null)
-            	faction = Factions.i.getByTag(factionTag);
-            
-            if (faction != null) 
-                return new FactionAccountHolder(faction);
-            
+        if (Dependency.D.factions != null) {
+        	FactionsHandler handler = new FactionsHandler();
+        	AccountHolder holder = handler.getAccountHolderByName(owner);
+        	if (holder != null) return holder;
+        }
+        
+        if (Dependency.D.towny != null) {
+    		TownyHandler handler = new TownyHandler();
+    		AccountHolder holder = handler.getAccountHolderByAccountName(owner);
+    		if (holder!=null) return holder;
         }
         
         // TODO support banks
         // TODO support virtual accounts
 
+        log.fine("[Gringotts] No account holder found for " + owner);
+        
         return null;
     }
     
@@ -67,13 +74,21 @@ public class AccountHolderFactory {
             else return null;
     	}
     	
-    	if (Dependency.dependency().factions != null && type.equals("faction")) {
+    	if (Dependency.D.factions != null && type.equals("faction")) {
             if (Factions.i.exists(owner))
                 return new FactionAccountHolder(Factions.i.get(owner));
             else return null;
     	}
     	
+    	if (Dependency.D.towny != null && type.equals("towny")) {
+    		TownyHandler handler = new TownyHandler();
+    		AccountHolder holder = handler.getAccountHolderByAccountName(owner);
+    		if (holder!=null) return holder;
+    	} 
+    	
     	// no valid type
     	return null;
     }
+    
+
 }

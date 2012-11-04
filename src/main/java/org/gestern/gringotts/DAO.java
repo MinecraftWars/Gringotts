@@ -43,10 +43,10 @@ public class DAO {
 	
 	private final Driver driver;
 	private Connection connection;
-	// TODO remove or use unused statements
+
 	private PreparedStatement 
-		storeAccountChest, destroyAccountChest, getAccountChest, 
-		storeAccount, getAccount, getAccountList, getChests, 
+		storeAccountChest, destroyAccountChest, 
+		storeAccount, getAccount, getChests, 
 		getChestsForAccount, getCents, storeCents;
 	
 	private static final String dbName = "GringottsDB";
@@ -68,7 +68,7 @@ public class DAO {
 			setupDB(connection);
 			prepareStatements();
 			
-			log.info("[Gringotts] DAO setup successfully.");
+			log.fine("[Gringotts] DAO setup successfully.");
 
 		} catch (SQLException e) {
 			throw new GringottsStorageException("Failed to initialize database connection.", e);
@@ -124,17 +124,10 @@ public class DAO {
 				"insert into accountchest (world,x,y,z,account) values (?, ?, ?, ?, (select id from account where owner=? and type=?))");
 		destroyAccountChest = connection.prepareStatement(
 				"delete from accountchest where world = ? and x = ? and y = ? and z = ?");
-		getAccountChest = connection.prepareStatement(
-				"SELECT ac.world, ac.x, ac.y, ac.z, a.type, a.owner " +
-				"FROM accountchest ac JOIN account a ON ac.account = a.id " + 
-				"WHERE ac.world = ? and ac.x = ? and ac.y = ? and ac.z = ?");
 		storeAccount = connection.prepareStatement(
 				"insert into account (type, owner, cents) values (?,?,0)");
-
 		getAccount = connection.prepareStatement(
 				"select * from account where owner = ? and type = ?");
-		getAccountList = connection.prepareStatement(
-				"select * from account");
 		getChests = connection.prepareStatement(
 				"SELECT ac.world, ac.x, ac.y, ac.z, a.type, a.owner " +
 				"FROM accountchest ac JOIN account a ON ac.account = a.id ");
@@ -264,8 +257,8 @@ public class DAO {
 			if (result.next()) {
 				String type = result.getString("type");
 				String ownerName = result.getString("owner");
-				
 		    	AccountHolder owner = ahf.get(type, ownerName);
+		    	
 				return new Account(owner);
 			} else return null;
 			
