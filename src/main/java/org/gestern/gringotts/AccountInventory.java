@@ -2,7 +2,11 @@ package org.gestern.gringotts;
 
 import java.util.Map;
 
+import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
+import org.gestern.gringotts.currency.Currency;
 
 /**
  * Account inventories define operations that can be used on all inventories belonging to an account.
@@ -19,7 +23,7 @@ public class AccountInventory {
 	}
 	
 	/**
-	 * Capacity of this inventory in terms of monetary value.
+	 * Free capacity of this inventory in terms of monetary value.
 	 * Depending on the exact value being added and resulting stack sizes, the actual capacity may be more or less than
 	 * the capacity returned by this method. Users should not rely on this method to ascertain a transaction can be completed.
 	 * The capacity is defined as 
@@ -27,9 +31,16 @@ public class AccountInventory {
 	 * {free slots} * {maximum denomination value} * {maximum denomination slot size} +
 	 * sum({stacks with valid coins in them} * {free coin slots in stack} * {coin value})
 	 * </code>
-	 * @return
+	 * 
+	 * @return 
 	 */
 	public long capacity() {
+		Currency cur = Configuration.config.currency;
+
+        for (ItemStack stack : inventory) {
+        	long val = cur.value(stack)
+        	if (cur.value(stack) > 0)
+        }
 		return 0;
 	}
 	
@@ -38,7 +49,12 @@ public class AccountInventory {
 	 * @return current balance of this inventory in cents
 	 */
 	public long balance() {
-		return 0;
+		Currency cur = Configuration.config.currency;
+		long count = 0;	
+        for (ItemStack stack : inventory)
+        	count += cur.value(stack);
+
+        return count;
 	}
 
 	/**

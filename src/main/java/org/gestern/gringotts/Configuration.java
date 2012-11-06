@@ -1,10 +1,13 @@
 package org.gestern.gringotts;
 
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.inventory.ItemStack;
+import org.gestern.gringotts.currency.Currency;
+import org.gestern.gringotts.currency.Denomination;
 
 /**
  * Singleton for global configuration information. 
@@ -18,8 +21,8 @@ public enum Configuration {
     
     private final Logger log = Bukkit.getLogger();
 
-    /** Currency item type. */
-    public ItemStack currency = null; 
+    /** Currency item types. The item types are ordered by their respective unit value. */
+    public Currency currency;
 
     /** Flat tax on every player-to-player transaction. This is a value in currency units. */
     public double transactionTaxFlat = 0;
@@ -55,7 +58,7 @@ public enum Configuration {
         	
         	int currencyType = savedConfig.getInt("currency.type", 388);
             byte currencyDataValue = (byte)savedConfig.getInt("currency.datavalue", 0);
-    		currency = new ItemStack(currencyType, 0, (short)0, currencyDataValue);
+//    		currency = new ItemStack(currencyType, 0, (short)0, currencyDataValue);
     		config.currencyNameSingular = savedConfig.getString("currency.name.singular", "Emerald");
             config.currencyNamePlural = savedConfig.getString("currency.name.plural", config.currencyNameSingular+"s");
         } else {
@@ -63,7 +66,7 @@ public enum Configuration {
         	
         	int currencyType = savedConfig.getInt("currency.type", 266);
             byte currencyDataValue = (byte)savedConfig.getInt("currency.datavalue", 0);
-    		currency = new ItemStack(currencyType, 0, (short)0, currencyDataValue);
+//    		currency = new ItemStack(currencyType, 0, (short)0, currencyDataValue);
     		config.currencyNameSingular = savedConfig.getString("currency.name.singular", "Gold Ingot");
             config.currencyNamePlural = savedConfig.getString("currency.name.plural", config.currencyNameSingular+"s");
         	
@@ -80,8 +83,8 @@ public enum Configuration {
     }
 
     public void saveConfig(FileConfiguration savedConfig) {
-        savedConfig.set("currency.type", config.currency.getTypeId());
-        savedConfig.set("currency.datavalue", config.currency.getData().getData());
+//        savedConfig.set("currency.type", config.currency.getTypeId());
+//        savedConfig.set("currency.datavalue", config.currency.getData().getData());
         savedConfig.set("currency.name.singular", config.currencyNameSingular);
         savedConfig.set("currency.name.plural", config.currencyNamePlural);
         savedConfig.set("currency.fractional", config.currencyFractional);
