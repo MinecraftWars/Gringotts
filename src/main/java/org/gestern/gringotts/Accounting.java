@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.gestern.gringotts.accountholder.AccountHolder;
 
 /**
  * Manages accounts.

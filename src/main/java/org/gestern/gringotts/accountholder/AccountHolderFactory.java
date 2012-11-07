@@ -1,11 +1,9 @@
-package org.gestern.gringotts;
+package org.gestern.gringotts.accountholder;
 
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.gestern.gringotts.accountholder.FactionAccountHolder;
-import org.gestern.gringotts.accountholder.PlayerAccountHolder;
 import org.gestern.gringotts.dependency.Dependency;
 import org.gestern.gringotts.dependency.FactionsHandler;
 import org.gestern.gringotts.dependency.TownyHandler;

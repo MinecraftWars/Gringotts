@@ -3,11 +3,17 @@ package org.gestern.gringotts;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import net.milkbowl.vault.economy.Economy;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.ServicePriority;
+import org.bukkit.plugin.ServicesManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.gestern.gringotts.accountholder.AccountHolderFactory;
+import org.gestern.gringotts.dependency.Dependency;
 import org.mcstats.MetricsLite;
 
 
@@ -51,13 +57,14 @@ public class Gringotts extends JavaPlugin {
         accounting = new Accounting();
 
         registerEvents();
+        registerEconomy();
+        
         
         try {
             MetricsLite metrics = new MetricsLite(this);
             metrics.start();
         } catch (IOException e) {
         	log.info("[Gringotts] Failed to submit PluginMetrics stats");
-            // Failed to submit the stats :-(
         }
         
         log.fine("[Gringotts] enabled");
@@ -76,9 +83,17 @@ public class Gringotts extends JavaPlugin {
     }
 
 
+	/**
+	 * Register Gringotts as economy provider for vault.
+	 */
+	private void registerEconomy() {
+		ServicesManager sm = getServer().getServicesManager();
+		sm.register(Economy.class, new VaultInterface(gringotts), Dependency.D.vault, ServicePriority.Highest);
+	}
 
     private void registerEvents() {
         pluginmanager.registerEvents(new AccountListener(this), this);
+        log.info("[Gringotts] registered Vault interface");
     }
 
 

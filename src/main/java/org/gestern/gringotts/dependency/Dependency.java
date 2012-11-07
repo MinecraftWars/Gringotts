@@ -2,9 +2,15 @@ package org.gestern.gringotts.dependency;
 
 import java.util.logging.Logger;
 
+import net.milkbowl.vault.Vault;
+
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
+
+import com.massivecraft.factions.P;
+import com.palmergames.bukkit.towny.Towny;
+
 import static org.gestern.gringotts.Util.versionAtLeast;
 
 /**
@@ -20,9 +26,9 @@ public enum Dependency {
 	
 	private final Logger log = Bukkit.getLogger();
 		
-	public final Plugin factions;
-	public final Plugin towny;
-	public final Plugin vault;
+	public final P factions;
+	public final Towny towny;
+	public final Vault vault;
 	
 	
 	/**
@@ -30,9 +36,9 @@ public enum Dependency {
 	 */
 	private Dependency() {
 		
-		factions = hookPlugin("Factions", "com.massivecraft.factions.P","1.6.9.1");
-		towny = hookPlugin("Towny","com.palmergames.bukkit.towny.Towny","0.82.0.0");
-		vault = hookPlugin("Vault","net.milkbowl.vault.Vault","1.2.17");
+		factions = (P)hookPlugin("Factions", "com.massivecraft.factions.P","1.6.9.1");
+		towny = (Towny)hookPlugin("Towny","com.palmergames.bukkit.towny.Towny","0.82.0.0");
+		vault = (Vault)hookPlugin("Vault","net.milkbowl.vault.Vault","1.2.17");
 	}
 	
 

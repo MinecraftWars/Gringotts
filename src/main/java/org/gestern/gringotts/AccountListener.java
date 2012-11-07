@@ -12,6 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
+import org.gestern.gringotts.accountholder.AccountHolder;
 import org.gestern.gringotts.accountholder.PlayerAccountHolder;
 import org.gestern.gringotts.dependency.Dependency;
 import org.gestern.gringotts.dependency.FactionsHandler;
