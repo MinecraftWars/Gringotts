@@ -15,6 +15,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
+import org.gestern.gringotts.accountholder.AccountHolder;
 
 /** 
  * Provides the vault interface, so that the economy adapter in vault does not need to be changed. 
