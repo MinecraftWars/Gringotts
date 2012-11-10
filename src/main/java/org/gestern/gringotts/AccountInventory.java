@@ -2,11 +2,10 @@ package org.gestern.gringotts;
 
 import java.util.Map;
 
-import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
 import org.gestern.gringotts.currency.Currency;
+import org.gestern.gringotts.currency.Denomination;
 
 /**
  * Account inventories define operations that can be used on all inventories belonging to an account.
@@ -34,14 +33,18 @@ public class AccountInventory {
 	 * 
 	 * @return 
 	 */
-	public long capacity() {
+	// TODO capacity is a bit of an unclear concept with multiple denominations. 
+	// instead, create and use a hasCapacity(int) method
+	// such a method can determine if there is enough space with optimal stacking
+	// or maybe not? maybe safest is just adding stuff and rolling back on failure?
+	public long capacity(Inventory inv) {
 		Currency cur = Configuration.config.currency;
-
-        for (ItemStack stack : inventory) {
-        	long val = cur.value(stack)
-        	if (cur.value(stack) > 0)
-        }
-		return 0;
+		long value = 0;
+		for (ItemStack stack : inventory) {
+			value += cur.value(stack);
+		}
+		
+		return value;
 	}
 	
 	/**
@@ -58,13 +61,38 @@ public class AccountInventory {
 	}
 
 	/**
-	 * Add a items to this inventory corresponding to given value.
+	 * Add items to this inventory corresponding to given value.
+	 * If the amount is larger than available space, the space is filled and the actually
+     * added amount returned.
 	 * @param value
 	 * @return amount actually added
 	 */
-	public long add(long value) {
-		return 0;
-	}
+    public long add(long value) {
+		Currency cur = Configuration.config.currency;
+        long remaining = value;
+        
+        Denomination[] denoms = cur.denominations();
+        
+        // try denominations from largest to smallest
+        for(Denomination denom : denoms) {
+        	denom.value;
+        }
+
+        // fill up incomplete stacks
+        while (remaining > 0) {
+            int returned = 0;
+            for (ItemStack leftover : inv.addItem(stack).values())
+                returned += leftover.getAmount();
+
+            // reduce remaining amount by whatever was deposited
+            remaining -= remainderStackSize-returned;
+
+            // stuff returned means no more space, leave this place
+            if (returned > 0) break; 
+        }
+
+        return value - remaining;
+    }
 	
 	/** 
 	 * Remove a items from this inventory corresponding to given value.

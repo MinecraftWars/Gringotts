@@ -111,7 +111,7 @@ public class VaultInterface implements Economy {
 
     @Override
     public boolean hasAccount(String playerName) {
-        AccountHolder owner = gringotts.accountHolderFactory.getAccount(playerName);
+        AccountHolder owner = gringotts.accountHolderFactory.get(playerName);
         if (owner == null) return false;
 
         return gringotts.accounting.getAccount(owner) != null;
@@ -119,7 +119,7 @@ public class VaultInterface implements Economy {
 
     @Override
     public double getBalance(String playerName){
-        AccountHolder owner = gringotts.accountHolderFactory.getAccount(playerName);
+        AccountHolder owner = gringotts.accountHolderFactory.get(playerName);
         if (owner == null) return 0;
         Account account = gringotts.accounting.getAccount(owner);
         return account.balance();
@@ -137,7 +137,7 @@ public class VaultInterface implements Economy {
             return new EconomyResponse(0, 0, ResponseType.FAILURE, "Cannot withdraw a negative amount.");
         }
 
-        AccountHolder accountHolder = gringotts.accountHolderFactory.getAccount(playerName);
+        AccountHolder accountHolder = gringotts.accountHolderFactory.get(playerName);
         if (accountHolder == null) 
             return new EconomyResponse(0, 0, ResponseType.FAILURE, playerName + " is not a valid account holder.");
 
@@ -159,7 +159,7 @@ public class VaultInterface implements Economy {
             return new EconomyResponse(0, 0, ResponseType.FAILURE, "Cannot desposit negative funds");
         }
 
-        AccountHolder accountHolder = gringotts.accountHolderFactory.getAccount(playerName);
+        AccountHolder accountHolder = gringotts.accountHolderFactory.get(playerName);
         if (accountHolder == null) 
             return new EconomyResponse(0, 0, ResponseType.FAILURE, playerName + " is not a valid account holder.");
 

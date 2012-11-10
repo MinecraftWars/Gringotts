@@ -59,7 +59,6 @@ public class Gringotts extends JavaPlugin {
         registerEvents();
         registerEconomy();
         
-        
         try {
             MetricsLite metrics = new MetricsLite(this);
             metrics.start();
@@ -87,13 +86,17 @@ public class Gringotts extends JavaPlugin {
 	 * Register Gringotts as economy provider for vault.
 	 */
 	private void registerEconomy() {
-		ServicesManager sm = getServer().getServicesManager();
-		sm.register(Economy.class, new VaultInterface(gringotts), Dependency.D.vault, ServicePriority.Highest);
+		if (Dependency.D.vault != null) {
+			ServicesManager sm = getServer().getServicesManager();
+			sm.register(Economy.class, new VaultInterface(gringotts), Dependency.D.vault, ServicePriority.Highest);
+			log.info("[Gringotts] Registered Vault interface.");
+		} else {
+			log.info("[Gringotts] Vault not found. Other plugins may not be able to access Gringotts accounts.");
+		}
 	}
 
     private void registerEvents() {
         pluginmanager.registerEvents(new AccountListener(this), this);
-        log.info("[Gringotts] registered Vault interface");
     }
 
 

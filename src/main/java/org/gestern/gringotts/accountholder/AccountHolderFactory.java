@@ -19,10 +19,7 @@ import com.massivecraft.factions.Factions;
 public class AccountHolderFactory {
 	
 	private final Logger log = Bukkit.getLogger();
-	
-	public AccountHolder getAccount(String owner) {
-		return get(owner);
-	}
+
 
 	/**
 	 * Get an account holder with automatically determined type, based on the owner's name.

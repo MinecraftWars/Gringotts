@@ -1,9 +1,5 @@
 package org.gestern.gringotts.currency;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -12,21 +8,25 @@ import org.bukkit.inventory.ItemStack;
  * @author jast
  *
  */
-public class Denomination {
-	
-
-	
+public class Denomination implements Comparable<Denomination> {
+		
 	/** Item type of this denomination. */
 	public final ItemStack type;
 	public final int id;
 	public final short damage;
 	public final byte data;
+	public final long value;
 	
 	public Denomination(ItemStack type) {
+		this(type, 0);
+	}
+	
+	public Denomination(ItemStack type, long value) {
 		this.type = type;
 		this.id = type.getTypeId();
 		this.damage = type.getDurability();
 		this.data = type.getData().getData();
+		this.value = value;
 	}
 
 	@Override
@@ -56,5 +56,10 @@ public class Denomination {
 			return false;
 		return true;
 	}
+
+	@Override
+    public int compareTo(Denomination other) {
+		return Long.valueOf(value).compareTo(other.value);
+    }
 
 }
