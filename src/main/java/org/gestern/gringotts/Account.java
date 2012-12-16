@@ -16,7 +16,6 @@ public class Account {
 
     public final AccountHolder owner;
     
-    private final Util util = new Util();
 	private final Configuration config = Configuration.config;
 
     public Account(AccountHolder owner) {

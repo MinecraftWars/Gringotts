@@ -1,6 +1,7 @@
 package org.gestern.gringotts;
 
-import java.util.Map;
+import java.util.Collections;
+import java.util.List;
 
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -37,7 +38,7 @@ public class AccountInventory {
 	// instead, create and use a hasCapacity(int) method
 	// such a method can determine if there is enough space with optimal stacking
 	// or maybe not? maybe safest is just adding stuff and rolling back on failure?
-	public long capacity(Inventory inv) {
+	public long capacity() {
 		Currency cur = Configuration.config.currency;
 		long value = 0;
 		for (ItemStack stack : inventory) {
@@ -64,52 +65,96 @@ public class AccountInventory {
 	 * Add items to this inventory corresponding to given value.
 	 * If the amount is larger than available space, the space is filled and the actually
      * added amount returned.
-	 * @param value
+	 * @param value value to add to this inventory
 	 * @return amount actually added
 	 */
     public long add(long value) {
-		Currency cur = Configuration.config.currency;
         long remaining = value;
         
-        Denomination[] denoms = cur.denominations();
-        
         // try denominations from largest to smallest
-        for(Denomination denom : denoms) {
-        	denom.value;
+        for(Denomination denom : Configuration.config.currency.denominations()) {
+        	if (denom.value <= remaining) {
+        		ItemStack stack = new ItemStack(denom.type);
+        		int stacksize = stack.getMaxStackSize();
+        		long denomItemCount = remaining / denom.value;
+        		
+        		// add stacks in this denomination until stuff is returned
+        		while (denomItemCount > 0) {
+	        		int remainderStackSize = denomItemCount > stacksize? stacksize : (int)denomItemCount;
+	        		stack.setAmount(remainderStackSize);
+	        		
+	        		int returned = 0;
+	        		for (ItemStack leftover : inventory.addItem(stack).values())
+	                    returned += leftover.getAmount();
+	        		
+	        		// reduce remaining amount by whatever was deposited
+	        		remaining -= (remainderStackSize-returned) * denom.value;
+	        		
+	        		// no more space for this denomination
+	        		if (returned > 0) break;
+        		}
+        	}
         }
-
-        // fill up incomplete stacks
-        while (remaining > 0) {
-            int returned = 0;
-            for (ItemStack leftover : inv.addItem(stack).values())
-                returned += leftover.getAmount();
-
-            // reduce remaining amount by whatever was deposited
-            remaining -= remainderStackSize-returned;
-
-            // stuff returned means no more space, leave this place
-            if (returned > 0) break; 
-        }
-
+        
         return value - remaining;
     }
 	
 	/** 
-	 * Remove a items from this inventory corresponding to given value.
-	 * @param value
-	 * @return
+	 * Remove items from this inventory corresponding to given value.
+	 * @param value amount to remove
+	 * @return value actually removed
 	 */
 	public long remove(long value) {
-		return 0;
+		Currency cur = Configuration.config.currency;
+        long remaining = value;
+        
+        // try denominations from smallest to largest
+        List<Denomination> denoms = cur.denominations();
+        Collections.reverse(denoms);
+        for(Denomination denom : denoms) {
+        	if (denom.value <= remaining) {
+        		ItemStack stack = new ItemStack(denom.type);
+        		int stacksize = stack.getMaxStackSize();
+        		long denomItemCount = remaining / denom.value;
+        		
+        		// add stacks in this denomination until stuff is returned
+        		while (denomItemCount > 0) {
+	        		int remainderStackSize = denomItemCount > stacksize? stacksize : (int)denomItemCount;
+	        		stack.setAmount(remainderStackSize);
+	        		
+	        		int returned = 0;
+	        		for (ItemStack leftover : inventory.removeItem(stack).values())
+	                    returned += leftover.getAmount();
+	        		
+	        		// reduce remaining amount by whatever was removed
+	        		remaining -= (remainderStackSize-returned) * denom.value;
+	        		
+	        		// stuff was returned, no more items of this type to take
+	        		if (returned > 0) break;
+        		}
+        	} else {
+        		// if denom value > remaining, take 1 of denom, add the rest back to the remaining alue
+        		ItemStack stack = new ItemStack(denom.type);
+        		stack.setAmount(1);
+        		int returned = 0;
+        		for (ItemStack leftover : inventory.removeItem(stack).values())
+                    returned += leftover.getAmount();
+        		
+        		if (returned == 0)
+        			remaining = denom.value - remaining;
+        	}
+        }
+        return value - remaining;
 	}
 	
+	
 	/**
-	 * Find a good distribution of denominations to represent the value.
+	 * TODO: Find a good distribution of denominations to represent the value.
 	 * The implementation should minimize the amount of stacks used.
 	 * @param value
 	 * @return
 	 */
-	private Map<Integer, Integer> stacking(long value) {
-		return null;
-	}
+//	private Map<Integer, Integer> stacking(long value) {
+//		return null;
+//	}
 }

@@ -1,8 +1,9 @@
 package org.gestern.gringotts.currency;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -14,8 +15,7 @@ import org.bukkit.inventory.ItemStack;
  */
 public class Currency {
 	
-	private final Map<Denomination, Long> denoms = new HashMap<Denomination, Long>();
-	
+	private final SortedSet<Denomination> denoms = new TreeSet<Denomination>();
 	
 	public final String name;
 	public final String namePlural;
@@ -34,8 +34,8 @@ public class Currency {
 	 * @param d the denomination
 	 * @param value the denomination's value
 	 */
-	public void addDenomination(Denomination d, long value) {
-		denoms.put(d, value);
+	public void addDenomination(Denomination d) {
+		denoms.add(d);
 	}
 	
 	/**
@@ -47,20 +47,17 @@ public class Currency {
 	 * @return free capacity of an item stack in terms of monetary value
 	 */
 	public long capacity(ItemStack stack) {
-		long value = 0;
-		if (stack == null || stack.getData().getItemType() == Material.AIR) {
-			// TODO use a more direct access to highest denomination 
+		Denomination d = denominationOf(stack);
+		if (stack == null || stack.getData().getItemType() == Material.AIR) { 
 			// open slots * highest denomination
-			value += denominations()[0].type.getMaxStackSize();
-		} else {
-			Denomination d = new Denomination(stack);
-			Long val = denoms.get(d);
-			if (val!=null)
-				// free slots on this stack * denom item value
-				value += val * (stack.getMaxStackSize() - stack.getAmount());	
-		}
-		
-		return value;
+			Denomination highest = denoms.first();
+			return highest.value * highest.type.getMaxStackSize();
+		} else if (d!=null) {
+			long val = d.value;
+			// free slots on this stack * denom item value
+			return val * (stack.getMaxStackSize() - stack.getAmount());
+		} else
+			return 0;
 	}
 	
 	/**
@@ -71,43 +68,17 @@ public class Currency {
 	 * @return
 	 */
 	public long value(ItemStack stack) {
-		Denomination d = new Denomination(stack);
-		Long val = denoms.get(d);
-		return val!=null? val * stack.getAmount() : 0;
+		Denomination d = denominationOf(stack);
+		return d!=null? d.value * stack.getAmount() : 0;
 	}
 	
 
-//	/**
-//	 * Attempt to add a value amount to an item stack. 
-//	 * If the stack is empty, adds items of the highest denomination lesser or equal to the given value.
-//	 * If the stack contains items, only those kind of items will be added, insofar they
-//	 * @param stack
-//	 * @param value
-//	 * @return
-//	 */
-//	public long add(ItemStack stack, long value) {
-//		Denomination d = denominationOf(stack);
-//		Material type = stack.getType();
-//		if (type == Material.AIR) {
-//			Denomination maxDenom = highestDenomination(value);
-//			long denomValue = denoms.get(maxDenom);
-//			long itemCount = value/denomValue;
-//			stack.getAmount()
-//			stack.setAmount(amount)
-//		}
-//		return 0;
-//	}
-	
 	/**
-	 * Denominations of the currency, in order of their respective values, from highest to lowest.
-	 * 
+	 * List of denominations used in this currency, in order of descending value.
 	 * @return
 	 */
-	public Denomination[] denominations() {
-		// FIXME this probably sorts lowest to highest? and also by hashcode??
-		Denomination[] d = denoms.keySet().toArray(new Denomination[0]);
-		Arrays.sort(d);
-		return d;
+	public List<Denomination> denominations() {
+		return new ArrayList<Denomination>(denoms);
 	}
 	
 	/**
@@ -117,16 +88,8 @@ public class Currency {
 	 */
 	private Denomination denominationOf(ItemStack stack) {
 		Denomination d = new Denomination(stack);
-		return denoms.containsKey(d)? d : null;
+		return denoms.contains(d)? denoms.tailSet(d).first() : null;
 	}
 	
-	/**
-	 * Get the highest denomination lesser than or equal to a given value.
-	 * @param value
-	 * @return
-	 */
-	private Denomination highestDenomination(long value) {
-		
-	}
 	
 }
