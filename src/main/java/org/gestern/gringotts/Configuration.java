@@ -58,6 +58,8 @@ public enum Configuration {
     		currency = new ItemStack(currencyType, 0, (short)0, currencyDataValue);
     		config.currencyNameSingular = savedConfig.getString("currency.name.singular", "Emerald");
             config.currencyNamePlural = savedConfig.getString("currency.name.plural", config.currencyNameSingular+"s");
+            
+            config.usevaultEnderchest = savedConfig.getBoolean("usevault.enderchest", true);
         } else {
         	log.info("[Gringotts] Found Bukkit version: "+version+". Disabling 1.3 features.");
         	

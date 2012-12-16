@@ -1,6 +1,11 @@
 Gringotts Changelog
 ===================
 
+v1.3.2
+------
+* fix enderchest config option
+* some internal restructuring
+
 v1.3.1
 ------
 * Tekkit/1.2.5 compatible  (configuration required)
