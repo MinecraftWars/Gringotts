@@ -84,10 +84,12 @@ public class Util {
     }
     
     /**
-     * Get the name of the currency based on the value (singular or plural).
+     * Get a formatted currency value. The value display includes the currency name.
      * @return
      */
-    public static String currencyName(double value) {
-    	return value==1.0? Configuration.config.currencyNameSingular : Configuration.config.currencyNamePlural;
+    public static String format(double value) {
+    	return String.format("%f2 %s", 
+    			value, 
+    			value==1.0? Configuration.config.currency.name : Configuration.config.currency.namePlural);
     }
 }

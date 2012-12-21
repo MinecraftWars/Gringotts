@@ -96,17 +96,17 @@ public class VaultInterface implements Economy {
 
     @Override
     public String format(double amount) {
-        return Double.toString(amount);
+        return Util.format(amount);
     }
 
     @Override
     public String currencyNamePlural(){
-        return org.gestern.gringotts.Configuration.config.currencyNamePlural;
+        return org.gestern.gringotts.Configuration.config.currency.namePlural;
     }
 
     @Override
     public String currencyNameSingular(){
-        return org.gestern.gringotts.Configuration.config.currencyNameSingular;
+        return org.gestern.gringotts.Configuration.config.currency.name;
     }
 
     @Override
