@@ -2,7 +2,6 @@ package org.gestern.gringotts;
 
 import java.util.logging.Logger;
 
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.gestern.gringotts.accountholder.AccountHolder;
@@ -11,7 +10,7 @@ import org.gestern.gringotts.accountholder.PlayerAccountHolder;
 public class Account {
 
     @SuppressWarnings("unused")
-	private final Logger log = Bukkit.getLogger();
+	private final Logger log = Gringotts.gringotts.getLogger();
     private final DAO dao = DAO.getDao(); 
 
     public final AccountHolder owner;

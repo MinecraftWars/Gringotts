@@ -2,7 +2,6 @@ package org.gestern.gringotts;
 
 import java.util.logging.Logger;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -21,7 +20,7 @@ import org.bukkit.inventory.InventoryHolder;
  */
 public class AccountChest {
 
-	private final Logger log = Bukkit.getLogger();
+	private final Logger log = Gringotts.gringotts.getLogger();
     
     private final DAO dao = DAO.getDao();
 

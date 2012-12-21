@@ -41,7 +41,7 @@ public class DAO {
 	/** Singleton DAO instance. */
 	private static final DAO dao = new DAO();
 	
-	private final Logger log = Bukkit.getLogger();
+	private final Logger log = Gringotts.gringotts.getLogger();
 	
 	private final Driver driver;
 	private Connection connection;

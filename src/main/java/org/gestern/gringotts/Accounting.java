@@ -14,7 +14,7 @@ import org.gestern.gringotts.accountholder.AccountHolder;
  */
 public class Accounting {
 
-	private final Logger log = Bukkit.getServer().getLogger(); 
+	private final Logger log = Gringotts.gringotts.getLogger();
     private final DAO dao = DAO.getDao();
     
 

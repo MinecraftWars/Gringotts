@@ -1,8 +1,5 @@
 package org.gestern.gringotts;
 
-import java.util.logging.Logger;
-
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -27,8 +24,6 @@ import org.gestern.gringotts.dependency.TownyHandler;
 public class AccountListener implements Listener { 
 
 	private final DAO dao = DAO.getDao();
-    @SuppressWarnings("unused")
-	private Logger log = Bukkit.getServer().getLogger();
     private final Accounting accounting;
     
     public AccountListener(Gringotts gringotts) {

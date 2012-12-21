@@ -5,7 +5,6 @@ import java.util.logging.Logger;
 
 import net.milkbowl.vault.economy.Economy;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginManager;
@@ -23,7 +22,7 @@ public class Gringotts extends JavaPlugin {
 	public static Gringotts gringotts;
 	
     private PluginManager pluginmanager;
-    private Logger log = Bukkit.getServer().getLogger();
+    private final Logger log = getLogger();
 
     
     private final Commands gcommand = new Commands(this);
@@ -71,9 +70,6 @@ public class Gringotts extends JavaPlugin {
 
 	@Override
     public void onDisable() {
-    	log.info("[Gringotts] shutting down, saving configuration");
-    	// fill config file
-    	Configuration.config.saveConfig(getConfig());
         
         // shut down db connection
         DAO.getDao().shutdown();

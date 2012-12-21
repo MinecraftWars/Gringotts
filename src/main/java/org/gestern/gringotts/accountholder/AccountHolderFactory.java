@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.gestern.gringotts.Gringotts;
 import org.gestern.gringotts.dependency.Dependency;
 import org.gestern.gringotts.dependency.FactionsHandler;
 import org.gestern.gringotts.dependency.TownyHandler;
@@ -18,8 +19,7 @@ import com.massivecraft.factions.Factions;
  */
 public class AccountHolderFactory {
 	
-	private final Logger log = Bukkit.getLogger();
-
+	private final Logger log = Gringotts.gringotts.getLogger();
 
 	/**
 	 * Get an account holder with automatically determined type, based on the owner's name.

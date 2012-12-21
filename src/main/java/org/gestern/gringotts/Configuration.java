@@ -24,7 +24,7 @@ import org.gestern.gringotts.currency.Denomination;
 public enum Configuration {
     config;
     
-    private final Logger log = Bukkit.getLogger();
+    private final Logger log = Gringotts.gringotts.getLogger();
 
     /** Currency item types. The item types are ordered by their respective unit value. */
     public Currency currency;

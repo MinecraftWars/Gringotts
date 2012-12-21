@@ -19,7 +19,7 @@ import static org.gestern.gringotts.Util.*;
  *
  */
 public class Commands {
-    Logger log = Bukkit.getServer().getLogger();
+    Logger log = Gringotts.gringotts.getLogger();
 
     private Gringotts plugin;
     private Configuration conf = Configuration.config;

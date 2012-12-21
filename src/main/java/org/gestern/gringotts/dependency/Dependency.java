@@ -7,6 +7,7 @@ import net.milkbowl.vault.Vault;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
+import org.gestern.gringotts.Gringotts;
 
 import com.massivecraft.factions.P;
 import com.palmergames.bukkit.towny.Towny;
@@ -24,7 +25,7 @@ public enum Dependency {
 	/** Singleton instance. */
 	D;
 	
-	private final Logger log = Bukkit.getLogger();
+	private final Logger log = Gringotts.gringotts.getLogger();
 		
 	public final P factions;
 	public final Towny towny;
