@@ -70,7 +70,7 @@ public class DAO {
 			setupDB(connection);
 			prepareStatements();
 			
-			log.fine("[Gringotts] DAO setup successfully.");
+			log.fine("DAO setup successfully.");
 
 		} catch (SQLException e) {
 			throw new GringottsStorageException("Failed to initialize database connection.", e);
@@ -98,7 +98,7 @@ public class DAO {
         	
     		int updated = connection.createStatement().executeUpdate(createAccount);
     		if (updated > 0)
-    			log.info("[Gringotts] created table ACCOUNT");
+    			log.info("created table ACCOUNT");
     	}
 
     	ResultSet rs2 = dbmd.getTables(null, null, "ACCOUNTCHEST", null);
@@ -111,7 +111,7 @@ public class DAO {
 
     		int updated = connection.createStatement().executeUpdate(createAccountChest);
     		if (updated > 0)
-    			log.info("[Gringotts] created table ACCOUNTCHEST");
+    			log.info("created table ACCOUNTCHEST");
     	}
 	}
     
@@ -147,7 +147,7 @@ public class DAO {
     	if (connection == null || connection.isClosed()) {
 			connection = driver.connect(dbString, null);
 			prepareStatements();
-			log.warning("[Gringotts] Database connection lost. Reinitialized DB.");
+			log.warning("Database connection lost. Reinitialized DB.");
     	}
     }
 
@@ -162,7 +162,7 @@ public class DAO {
     	Account account = chest.getAccount();
     	Location loc = chest.sign.getLocation();
     	
-    	log.info("[Gringotts] storing account chest: " + chest + " for account: " + account);
+    	log.info("storing account chest: " + chest + " for account: " + account);
     	try {
     		checkConnection();
     		
@@ -178,7 +178,7 @@ public class DAO {
 		} catch (SQLException e) {
 			// unique constraint failed: chest already exists
 			if (e.getErrorCode() == 23505) {
-				log.warning("[Gringotts] Unable to store account chest: " + e.getMessage());
+				log.warning("Unable to store account chest: " + e.getMessage());
 				return false;
 			}
 			
@@ -302,7 +302,7 @@ public class DAO {
 		    	if (Util.isSignBlock(signBlock)) {
 					AccountHolder owner = ahf.get(type, ownerId);
 					if (owner == null) {
-						log.info("[Gringotts] AccountHolder "+type+":"+ownerId+" is not valid. Deleting associated account chest at " + signBlock.getLocation());
+						log.info("AccountHolder "+type+":"+ownerId+" is not valid. Deleting associated account chest at " + signBlock.getLocation());
 						deleteAccountChest(signBlock.getWorld().getName(), signBlock.getX(), signBlock.getY(), signBlock.getZ());
 					} else {
 						Account ownerAccount = new Account(owner);
@@ -434,7 +434,7 @@ public class DAO {
 	 */
 	public void shutdown() {
 		try {			
-			log.info("[Gringotts] shutting down database connection");
+			log.info("shutting down database connection");
 			// disconnect from derby completely
 //			String disconnectString = dbString+";shutdown=true";
 			String disconnectString = "jdbc:derby:;shutdown=true";
@@ -442,7 +442,7 @@ public class DAO {
 			
 		} catch (SQLException e) {
 			// yes, derby actually throws an exception as a shutdown message ...
-			log.info("[Gringotts] Derby shutdown: " + e.getSQLState() + ": " + e.getMessage());
+			log.info("Derby shutdown: " + e.getSQLState() + ": " + e.getMessage());
 			System.gc();
 		} 
 	}

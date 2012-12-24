@@ -25,7 +25,7 @@ import org.gestern.gringotts.accountholder.AccountHolder;
  */
 public class VaultInterface implements Economy {
 
-    private static final Logger log = Logger.getLogger("Minecraft");
+    private static final Logger log = Gringotts.gringotts.getLogger();
 
     private final String name = "Gringotts";
     private Plugin plugin = null;
@@ -39,7 +39,7 @@ public class VaultInterface implements Economy {
             Plugin grngts = plugin.getServer().getPluginManager().getPlugin("Gringotts");
             if (grngts != null && grngts.isEnabled()) {
                 gringotts = (Gringotts) grngts;
-                log.info(String.format("[%s][Economy] %s hooked.", plugin.getDescription().getName(), name));
+                log.info(String.format("[Economy] %s hooked.", plugin.getDescription().getName(), name));
             }
         }
     }

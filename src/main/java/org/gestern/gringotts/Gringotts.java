@@ -21,12 +21,12 @@ public class Gringotts extends JavaPlugin {
 	/** The Gringotts plugin instance. */
 	public static Gringotts gringotts;
 	
+	private Logger log = getLogger();
+	
     private PluginManager pluginmanager;
-    private final Logger log = getLogger();
-
-    
-    private final Commands gcommand = new Commands(this);
-    public final AccountHolderFactory accountHolderFactory = new AccountHolderFactory();
+        
+    private Commands gcommand;
+    public AccountHolderFactory accountHolderFactory;
 
     /** Manages accounts. */
     public Accounting accounting;
@@ -36,9 +36,12 @@ public class Gringotts extends JavaPlugin {
     public void onEnable() {
     	
     	gringotts = this;
+    	log = getLogger();
+    	pluginmanager = getServer().getPluginManager();
     	
-        pluginmanager = getServer().getPluginManager();
-
+    	gcommand = new Commands(this);
+    	accountHolderFactory = new AccountHolderFactory();
+    	 
         CommandExecutor playerCommands = gcommand.new Money();
         CommandExecutor moneyAdminCommands = gcommand.new Moneyadmin();
         CommandExecutor adminCommands = gcommand.new GringottsCmd();
@@ -62,10 +65,10 @@ public class Gringotts extends JavaPlugin {
             MetricsLite metrics = new MetricsLite(this);
             metrics.start();
         } catch (IOException e) {
-        	log.info("[Gringotts] Failed to submit PluginMetrics stats");
+        	log.info("Failed to submit PluginMetrics stats");
         }
         
-        log.fine("[Gringotts] enabled");
+        log.fine("enabled");
     }
 
 	@Override
@@ -74,7 +77,7 @@ public class Gringotts extends JavaPlugin {
         // shut down db connection
         DAO.getDao().shutdown();
         
-        log.info("[Gringotts] disabled");
+        log.info("disabled");
     }
 
 
@@ -85,9 +88,9 @@ public class Gringotts extends JavaPlugin {
 		if (Dependency.D.vault != null) {
 			ServicesManager sm = getServer().getServicesManager();
 			sm.register(Economy.class, new VaultInterface(gringotts), Dependency.D.vault, ServicePriority.Highest);
-			log.info("[Gringotts] Registered Vault interface.");
+			log.info("Registered Vault interface.");
 		} else {
-			log.info("[Gringotts] Vault not found. Other plugins may not be able to access Gringotts accounts.");
+			log.info("Vault not found. Other plugins may not be able to access Gringotts accounts.");
 		}
 	}
 

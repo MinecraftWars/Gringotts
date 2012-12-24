@@ -48,7 +48,7 @@ public class AccountHolderFactory {
         // TODO support banks
         // TODO support virtual accounts
 
-        log.fine("[Gringotts] No account holder found for " + owner);
+        log.fine("No account holder found for " + owner);
         
         return null;
     }

@@ -55,16 +55,16 @@ public enum Dependency {
 		Plugin plugin;
 		if (packagesExists(classpath)) {
 			plugin = Bukkit.getServer().getPluginManager().getPlugin(name);
-			log.info("[Gringotts] Plugin "+name+" hooked.");
+			log.info("Plugin "+name+" hooked.");
 			
 			PluginDescriptionFile desc = plugin.getDescription();
 			String version = desc.getVersion();
 			if (!versionAtLeast(version, minVersion)) {
-				log.warning("[Gringotts] Plugin dependency "+ name +" is version " + version + 
+				log.warning("Plugin dependency "+ name +" is version " + version + 
 						". Expected at least "+ minVersion +" -- Errors may occur.");
 			}
 		} else {
-        	log.info("[Gringotts] Unable to hook plugin " + name);
+        	log.info("Unable to hook plugin " + name);
         	plugin = null;
         }
 		
