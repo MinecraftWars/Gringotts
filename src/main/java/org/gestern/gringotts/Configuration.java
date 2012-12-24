@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 import org.gestern.gringotts.currency.Currency;
 import org.gestern.gringotts.currency.Denomination;
 
@@ -71,7 +72,8 @@ public enum Configuration {
     	int currencyType = savedConfig.getInt("currency.type",-1);
     	if (currencyType > 0) {
     		byte currencyDataValue = (byte)savedConfig.getInt("currency.datavalue", 0);
-    		ItemStack legacyCurrency = new ItemStack(currencyType, 0, (short)0, currencyDataValue);
+    		ItemStack legacyCurrency = new ItemStack(currencyType, 0, (short)0);
+    		legacyCurrency.setData(new MaterialData(currencyType, currencyDataValue));
     		Denomination denom = new Denomination(legacyCurrency, 1);
     		currency.addDenomination(denom);
     	} else {
@@ -110,7 +112,8 @@ public enum Configuration {
 				type = Integer.parseInt(parts[0]);
     			if (parts.length >=2) dmg = Short.parseShort(parts[1]);
     			if (parts.length >=3) data = Byte.parseByte(parts[2]);
-    			ItemStack denomType = new ItemStack(type, 1, dmg, data);
+    			ItemStack denomType = new ItemStack(type, 1, dmg);
+    			denomType.setData(new MaterialData(type, data));
     			
     			int value = denomSection.getInt(denomStr);
     			Denomination denom = new Denomination(denomType,value);
