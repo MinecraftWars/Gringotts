@@ -64,8 +64,10 @@ public class Account {
         if(amount < 0)
             return ERROR;
 
-        long remaining = amount;
+        long centsStored = dao.getCents(this);
+        long remaining = amount + centsStored;
 
+        // add currency to account's vaults
         if (config.usevaultContainer) {
 	        for (AccountChest chest : dao.getChests(this)) {
 	        	remaining -= chest.add(remaining);
@@ -81,6 +83,14 @@ public class Account {
         	if (Configuration.config.usevaultEnderchest && usevault_enderchest.allowed(player))
         		remaining -= new AccountInventory(player.getEnderChest()).add(remaining);
         }
+        
+        // allow largest denom value as threshold for available space
+    	// TODO make maximum virtual amount configurable
+    	long largestDenomValue = config.currency.denominations().get(0).value;
+    	if (remaining < largestDenomValue) {
+    		dao.storeCents(this, remaining);
+    		remaining = 0;
+    	}
         
         if (remaining == 0) 
         	return SUCCESS;
@@ -124,11 +134,13 @@ public class Account {
         }
         
         if (remaining < 0)
+        	// took too much, pay back the extra
         	return add(-remaining);
-        else if (remaining > 0) {
-        	// this should never happen, but just in case, try to roll back transaction
-        	add(amount-remaining);
-        	return INSUFFICIENT_FUNDS;
+        
+        if (remaining > 0) {
+        	// cannot represent the leftover in our denominations, take them from the virtual reserve
+        	long cents = dao.getCents(this);
+        	dao.storeCents(this, cents - remaining);
         }
 
         return SUCCESS;

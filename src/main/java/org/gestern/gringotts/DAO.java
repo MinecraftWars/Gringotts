@@ -375,11 +375,11 @@ public class DAO {
 	 * @param amount
 	 * @return true if storing was successful, false otherwise.
 	 */
-	public boolean storeCents(Account account, int amount) {
+	public boolean storeCents(Account account, long amount) {
 		try {
 			checkConnection();
     		
-			storeCents.setInt(1, amount);
+			storeCents.setLong(1, amount);
 			storeCents.setString(2, account.owner.getId());
 			storeCents.setString(3, account.owner.getType());
 			
@@ -396,7 +396,7 @@ public class DAO {
 	 * @param account
 	 * @return amount of cents stored in the account, 0 if the account is not stored
 	 */
-	public int getCents(Account account) {
+	public long getCents(Account account) {
 		
 		ResultSet result = null;
 		try {
@@ -408,8 +408,7 @@ public class DAO {
 			result = getCents.executeQuery();
 			
 			if (result.next()) {
-				int cents = result.getInt("cents");
-				return cents;
+				return result.getLong("cents");
 			}
 			
 			return 0;
