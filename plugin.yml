@@ -21,7 +21,7 @@ commands:
       /money
       /money pay <amount> <player>
   moneyadmin:
-    aliases: [moneyadm]
+    aliases: [moneyadm, mad]
     description: Gringotts admin actions
     usage: |
       /moneyadm add <amount> <player>
@@ -31,7 +31,7 @@ commands:
   gringotts:
     aliases: [grin]
     usage: |
-      /grin reload
+      /gringotts reload
     permission: gringotts.admin
 
 permissions:
