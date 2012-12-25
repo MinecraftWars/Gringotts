@@ -63,7 +63,7 @@ public class Denomination implements Comparable<Denomination> {
 
 	@Override
     public int compareTo(Denomination other) {
-		return Long.valueOf(value).compareTo(other.value);
+		return Long.valueOf(other.value).compareTo(this.value);
     }
 	
 	@Override
