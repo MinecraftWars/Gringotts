@@ -9,7 +9,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.gestern.gringotts.currency.Currency;
-import org.gestern.gringotts.currency.Denomination;
 
 /**
  * Singleton for global configuration information. 
@@ -42,7 +41,6 @@ public enum Configuration {
     public boolean usevaultEnderchest;
     
     
-
     /**
      * Set configuration form values in a file configuration.
      * @param savedConf
@@ -66,7 +64,7 @@ public enum Configuration {
         String currencyNameSingular, currencyNamePlural;
     	currencyNameSingular = savedConfig.getString("currency.name.singular", "Emerald");
         currencyNamePlural = savedConfig.getString("currency.name.plural", currencyNameSingular+"s");
-        currency = new Currency(currencyNameSingular, currencyNamePlural);
+        currency = new Currency(currencyNameSingular, currencyNamePlural, 100); // TODO make unit configurable
         
     	// legacy currency config, overrides defaults if available
     	int currencyType = savedConfig.getInt("currency.type",-1);
@@ -74,8 +72,7 @@ public enum Configuration {
     		byte currencyDataValue = (byte)savedConfig.getInt("currency.datavalue", 0);
     		ItemStack legacyCurrency = new ItemStack(currencyType, 0, (short)0);
     		legacyCurrency.setData(new MaterialData(currencyType, currencyDataValue));
-    		Denomination denom = new Denomination(legacyCurrency, 1);
-    		currency.addDenomination(denom);
+    		currency.addDenomination(legacyCurrency, 1);
     	} else {
     		// regular currency configuration (multi-denomination)
     		ConfigurationSection denomSection = savedConfig.getConfigurationSection("currency.denominations");
@@ -115,9 +112,8 @@ public enum Configuration {
     			ItemStack denomType = new ItemStack(type, 1, dmg);
     			denomType.setData(new MaterialData(type, data));
     			
-    			int value = denomSection.getInt(denomStr);
-    			Denomination denom = new Denomination(denomType,value);
-    			currency.addDenomination(denom);
+    			double value = denomSection.getDouble(denomStr);
+    			currency.addDenomination(denomType, value);
 			} catch (Exception e) {
 				throw new RuntimeException("Encountered an error parsing currency. Please check your Gringotts configuration.", e);
 			}

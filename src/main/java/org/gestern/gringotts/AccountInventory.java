@@ -81,6 +81,10 @@ public class AccountInventory {
 	 * @return value actually removed
 	 */
 	public long remove(long value) {
+		
+		// avoid dealing with negatives
+		if (value <= 0) return 0;
+		
 		Currency cur = Configuration.config.currency;
         long remaining = value;
         
@@ -88,39 +92,30 @@ public class AccountInventory {
         List<Denomination> denoms = cur.denominations();
         Collections.reverse(denoms);
         for(Denomination denom : denoms) {
-        	if (denom.value <= remaining) {
-        		ItemStack stack = new ItemStack(denom.type);
-        		int stacksize = stack.getMaxStackSize();
-        		long denomItemCount = remaining / denom.value;
+    		ItemStack stack = new ItemStack(denom.type);
+    		int stacksize = stack.getMaxStackSize();
+    		
+    		// take 1 more than necessary if it doesn't round. add the extra later
+    		long denomItemCount = (long)Math.ceil((double)remaining / denom.value);
+    		
+    		// add stacks in this denomination until stuff is returned or we are done
+    		while (denomItemCount > 0) {
+        		int remainderStackSize = denomItemCount > stacksize? stacksize : (int)denomItemCount;
+        		stack.setAmount(remainderStackSize);
         		
-        		// add stacks in this denomination until stuff is returned
-        		while (denomItemCount > 0) {
-	        		int remainderStackSize = denomItemCount > stacksize? stacksize : (int)denomItemCount;
-	        		stack.setAmount(remainderStackSize);
-	        		
-	        		int returned = 0;
-	        		for (ItemStack leftover : inventory.removeItem(stack).values())
-	                    returned += leftover.getAmount();
-	        		
-	        		// reduce remaining amount by whatever was removed
-	        		long removed = remainderStackSize-returned;
-	        		denomItemCount -= removed;
-	        		remaining -= removed * denom.value;
-	        		
-	        		// stuff was returned, no more items of this type to take
-	        		if (returned > 0) break;
-        		}
-        	} else {
-        		// if denom value > remaining, take 1 of denom, add the rest back to the remaining alue
-        		ItemStack stack = new ItemStack(denom.type);
-        		stack.setAmount(1);
         		int returned = 0;
         		for (ItemStack leftover : inventory.removeItem(stack).values())
                     returned += leftover.getAmount();
         		
-        		if (returned == 0)
-        			remaining = denom.value - remaining;
-        	}
+        		// reduce remaining amount by whatever was removed
+        		long removed = remainderStackSize-returned;
+        		denomItemCount -= removed;
+        		remaining -= removed * denom.value;
+        		
+        		// stuff was returned, no more items of this type to take
+        		if (returned > 0) break;
+    		}
+        
         }
         return value - remaining;
 	}

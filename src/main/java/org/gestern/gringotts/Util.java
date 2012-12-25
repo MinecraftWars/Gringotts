@@ -2,28 +2,9 @@ package org.gestern.gringotts;
 
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.gestern.gringotts.currency.Currency;
 
 public class Util {
-	
-    //Have these as utility functions for easy tweaking of conversion
-
-	/**
-	 * Conversion emeralds -> cents
-	 * @param emeralds
-	 * @return
-	 */
-    public static long toCents( double emeralds ) {
-        return (long)(emeralds * 100);
-    }
-
-    /**
-     * Conversion cents -> emeralds
-     * @param cents
-     * @return
-     */
-    public static double toEmeralds( long cents ) { 
-        return (double)(cents) / 100.0;
-    }
     
     /**
      * Check whether a block is a sign or wall sign type.
@@ -85,12 +66,12 @@ public class Util {
     
     /**
      * Get a formatted currency value. The value display includes the currency name.
-     * @return
+     * @param value the value in cents
+     * @return formatted currency value
      */
     public static String format(double value) {
-    	String formatString = Configuration.config.currencyFractional? "%.2f %s" : "%.0f %s";
-    	return String.format(formatString, 
-    			value, 
-    			value==1.0? Configuration.config.currency.name : Configuration.config.currency.namePlural);
+    	Currency cur = Configuration.config.currency;
+    	String formatString = cur.unit > 1? "%.2f %s" : "%.0f %s";
+    	return String.format(formatString, value, value==1.0? cur.name : cur.namePlural);
     }
 }

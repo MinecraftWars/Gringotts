@@ -1,7 +1,7 @@
 package org.gestern.gringotts;
 
 import static org.gestern.gringotts.Util.format;
-import static org.gestern.gringotts.TransactionResult.*;
+import static org.gestern.gringotts.api.TransactionResult.*;
 
 import java.util.logging.Logger;
 
@@ -12,6 +12,9 @@ import org.bukkit.entity.Player;
 import org.gestern.gringotts.accountholder.AccountHolder;
 import org.gestern.gringotts.accountholder.AccountHolderFactory;
 import org.gestern.gringotts.accountholder.PlayerAccountHolder;
+import org.gestern.gringotts.api.TransactionResult;
+import org.gestern.gringotts.currency.Currency;
+
 
 /**
  * Handlers for player and console commands.
@@ -78,8 +81,9 @@ public class Commands {
             if(args.length == 3) {
                 // /money pay <amount> <player>
                 if (command.equals("pay")) {
-                	if (!player.hasPermission("gringotts.transfer")) {
+                	if (!Permissions.transfer.allowed(player)) {
                 		player.sendMessage("You do not have permission to transfer money.");
+                		return true;
                 	}
                 	
                     String recipientName = args[2];
@@ -92,30 +96,39 @@ public class Commands {
                     
                     Account recipientAccount = accounting.getAccount(recipient);
                     
+                    Currency cur = Configuration.config.currency;
                     double tax = conf.transactionTaxFlat + value * conf.transactionTaxRate;
                     // round tax value when fractions are disabled
                     if (!conf.currencyFractional)
                     	tax = Math.round(tax);
-
-                    double balance = account.balance();
-                    double valueAdded = value + tax;
                     
-                    TransactionResult taxed = account.remove(tax);
-                    TransactionResult transfer = account.transfer(value, recipientAccount);
+                    
+                    long valueCents = cur.centValue(value);
+                    long taxCent = cur.centValue(tax);
+
+                    long balance = account.balance();
+                    long valueAdded = valueCents + taxCent;
+                    
+                    String formattedBalance = format(cur.displayValue(balance));
+                    String formattedValue = format(cur.displayValue(valueAdded));
+                    
+                    // TODO move the business logic to API
+                    TransactionResult taxed = account.remove(taxCent);
+                    TransactionResult transfer = account.transfer(valueCents, recipientAccount);
                     if (taxed == SUCCESS) {
                     	if (transfer == SUCCESS) {
-                    		account.remove(tax);
-                            String formattedValue = format(balance);
+                    		account.remove(taxCent);
+                            
                             String taxMessage = "Transaction tax deducted from your account: " + formattedValue;
                             accountOwner.sendMessage("Sent " + formattedValue + " to " + recipientName +". " + (tax>0? taxMessage : ""));
                             recipient.sendMessage("Received " + formattedValue + " from " + accountOwner.getName() +".");
                     	} else {
                     		// transfer failed, refund tax
-                    		account.add(tax); // this better not fail!
+                    		account.add(taxCent); // this better not fail!
                     		if (transfer == INSUFFICIENT_FUNDS) {
                     			accountOwner.sendMessage(
-                                        "Your account has insufficient balance. Current balance: " + format(balance) 
-                                        + ". Required: " + format(valueAdded));
+                                        "Your account has insufficient balance. Current balance: " + formattedBalance 
+                                        + ". Required: " + formattedValue);
                     		} else if (transfer == INSUFFICIENT_SPACE) {
                     			accountOwner.sendMessage(recipientName + " has insufficient storage space for this amount.");
                     		}
@@ -159,9 +172,9 @@ public class Commands {
                 		return true;
                 	}
                 	Account targetAccount = accounting.getAccount(targetAccountHolder);
-                	
+                	String formattedBalance = format(conf.currency.displayValue(targetAccount.balance()));
                 	if (command.equalsIgnoreCase("b")) {
-	                	sender.sendMessage("Balance of account " + targetAccountHolder.getName() + ": " + targetAccount.balance());
+	                	sender.sendMessage("Balance of account " + targetAccountHolder.getName() + ": " + formattedBalance);
 	                	return true;
                 	} else
                 		return false;
@@ -188,8 +201,9 @@ public class Commands {
                 	Account targetAccount = accounting.getAccount(targetAccountHolder);
                 	
                 	String formatValue = format(value);
+                	long valueCents = conf.currency.centValue(value);
                 	if (command.equalsIgnoreCase("add")) {
-                		TransactionResult added = targetAccount.add(value);
+                		TransactionResult added = targetAccount.add(valueCents);
                         if (added == SUCCESS) {
                         	sender.sendMessage("Added " + formatValue + " to account " + targetAccountHolder.getName());
                         	targetAccountHolder.sendMessage("Added to your account: " + formatValue);
@@ -200,7 +214,7 @@ public class Commands {
                         return true;
                         
                 	} else if (command.equalsIgnoreCase("rm")) {
-                		TransactionResult removed = targetAccount.remove(value); 
+                		TransactionResult removed = targetAccount.remove(valueCents); 
                         if (removed == SUCCESS) {
                         	sender.sendMessage("Removed " + formatValue + " from account " + targetAccountHolder.getName());
                         	targetAccountHolder.sendMessage("Removed from your account: " + formatValue);
@@ -239,8 +253,8 @@ public class Commands {
 
     
     private static void balanceMessage(Account account, AccountHolder owner) {
-    	double balance = account.balance();
-        owner.sendMessage("Your current balance: " + format(balance) + ".");
+    	long balance = account.balance();
+        owner.sendMessage("Your current balance: " + format(Configuration.config.currency.displayValue(balance)) + ".");
     }
     
     private static void invalidAccount(CommandSender sender, String accountName) {

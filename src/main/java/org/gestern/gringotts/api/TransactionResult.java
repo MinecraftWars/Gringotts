@@ -1,4 +1,4 @@
-package org.gestern.gringotts;
+package org.gestern.gringotts.api;
 
 /**
  * The result of a transaction.

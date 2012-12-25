@@ -1,4 +1,4 @@
-package org.gestern.gringotts;
+package org.gestern.gringotts.api;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +15,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
+import org.gestern.gringotts.Account;
+import org.gestern.gringotts.Configuration;
+import org.gestern.gringotts.Gringotts;
+import org.gestern.gringotts.Util;
 import org.gestern.gringotts.accountholder.AccountHolder;
 
 /** 
@@ -23,7 +27,7 @@ import org.gestern.gringotts.accountholder.AccountHolder;
  * @author jast
  *
  */
-public class VaultInterface implements Economy {
+public class VaultEconomy implements Economy {
 
     private static final Logger log = Gringotts.gringotts.getLogger();
 
@@ -31,7 +35,7 @@ public class VaultInterface implements Economy {
     private Plugin plugin = null;
     private Gringotts gringotts = null;
 
-    public VaultInterface(Plugin plugin) {
+    public VaultEconomy(Plugin plugin) {
         this.plugin = plugin;
         Bukkit.getServer().getPluginManager().registerEvents(new EconomyServerListener(this), plugin);
         // Load Plugin in case it was loaded before
@@ -45,9 +49,9 @@ public class VaultInterface implements Economy {
     }
 
     public class EconomyServerListener implements Listener {
-        VaultInterface economy = null;
+        VaultEconomy economy = null;
 
-        public EconomyServerListener(VaultInterface economy_Gringotts) {
+        public EconomyServerListener(VaultEconomy economy_Gringotts) {
             this.economy = economy_Gringotts;
         }
 
@@ -144,7 +148,7 @@ public class VaultInterface implements Economy {
         Account account = gringotts.accounting.getAccount( accountHolder );
 
         
-        TransactionResult removed = account.remove(amount);
+        TransactionResult removed = account.remove(Configuration.config.currency.centValue(amount));
         
         if (removed==TransactionResult.SUCCESS)
         	return new EconomyResponse(amount, account.balance(), ResponseType.SUCCESS, null);
@@ -167,7 +171,7 @@ public class VaultInterface implements Economy {
 
         Account account = gringotts.accounting.getAccount( accountHolder );
 
-        TransactionResult added = account.add(amount);
+        TransactionResult added = account.add(Configuration.config.currency.centValue(amount));
         if (added==TransactionResult.SUCCESS)
             return new EconomyResponse( amount, account.balance(), ResponseType.SUCCESS, null);
         else if (added == TransactionResult.INSUFFICIENT_SPACE)

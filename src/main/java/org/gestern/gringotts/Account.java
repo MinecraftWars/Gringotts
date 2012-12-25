@@ -1,12 +1,16 @@
 package org.gestern.gringotts;
 
-import static org.gestern.gringotts.TransactionResult.*;
+import static org.gestern.gringotts.Permissions.*;
+import static org.gestern.gringotts.api.TransactionResult.*;
+
 import java.util.logging.Logger;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.gestern.gringotts.accountholder.AccountHolder;
 import org.gestern.gringotts.accountholder.PlayerAccountHolder;
+import org.gestern.gringotts.api.TransactionResult;
+
 
 public class Account {
 
@@ -29,7 +33,7 @@ public class Account {
      * Current balance of this account in cents
      * @return current balance of this account in cents
      */
-    long balanceCents() {
+    public long balance() {
         long balance = 0;
         
         if (config.usevaultContainer) {
@@ -39,22 +43,14 @@ public class Account {
         
         Player player = playerOwner();
         if (player != null) {
-        	if (player.hasPermission("gringotts.usevault.inventory"))
+        	if (usevault_inventory.allowed(player))
         		balance += new AccountInventory(player.getInventory()).balance();
-        	if (Configuration.config.usevaultEnderchest && player.hasPermission("gringotts.usevault.enderchest"))
+        	if (usevault_enderchest.allowed(player))
         		balance += new AccountInventory(player.getEnderChest()).balance();
         }
 
         // convert to total cents
-        return Util.toCents(balance) + (config.currencyFractional? dao.getCents(this) : 0);
-    }
-
-    /**
-     * Current balance of this account.
-     * @return
-     */
-    public double balance() {
-        return Util.toEmeralds( balanceCents() );
+        return balance + (config.currencyFractional? dao.getCents(this) : 0);
     }
 
     /**
@@ -62,60 +58,37 @@ public class Account {
      * @param amount
      * @return Whether amount successfully added
      */
-    TransactionResult addCents(long amount) {
+    public TransactionResult add(long amount) {
 
         // Cannot add negative amount
         if(amount < 0)
             return ERROR;
 
-        // Add the cents
-        long cents = amount;
-        long remainingEmeralds = 0;
-        if (config.currencyFractional) {
-	        cents += dao.getCents(this); 
-	
-	        // Convert excess cents into emeralds
-	        while(cents >= 100) {
-	            cents -= 100;
-	            remainingEmeralds += 1;
-	        }
-	        
-	        dao.storeCents(this, (int)cents); // FIXME don't store cents before it's all over
-    	} else {
-    		remainingEmeralds = cents/100;
-    	}
+        long remaining = amount;
 
         if (config.usevaultContainer) {
 	        for (AccountChest chest : dao.getChests(this)) {
-	            remainingEmeralds -= chest.add(remainingEmeralds);
-	            if (remainingEmeralds <= 0) break;
+	        	remaining -= chest.add(remaining);
+	            if (remaining <= 0) break;
 	        }
         }
         
         // add stuff to player's inventory and enderchest too, when they are online
         Player player = playerOwner();
         if (player != null) {
-        	if (player.hasPermission("gringotts.usevault.inventory"))
-        		remainingEmeralds -= new AccountInventory(player.getInventory()).add(remainingEmeralds);
-        	if (Configuration.config.usevaultEnderchest && player.hasPermission("gringotts.usevault.enderchest"))
-        		remainingEmeralds -= new AccountInventory(player.getEnderChest()).add(remainingEmeralds);
+        	if (usevault_inventory.allowed(player))
+        		remaining -= new AccountInventory(player.getInventory()).add(remaining);
+        	if (Configuration.config.usevaultEnderchest && usevault_enderchest.allowed(player))
+        		remaining -= new AccountInventory(player.getEnderChest()).add(remaining);
         }
         
-        if (remainingEmeralds == 0) 
+        if (remaining == 0) 
         	return SUCCESS;
         
         // failed, remove the stuff added so far
-        removeCents(amount-remainingEmeralds);
+        remove(amount-remaining);
+        
         return INSUFFICIENT_SPACE;
-    }
-
-    /**
-     * Add an amount to this account if able to.
-     * @param amount
-     * @return Whether amount successfully added
-     */
-    public TransactionResult add(double amount) {
-        return addCents(Util.toCents(amount));
     }
 
     /**
@@ -124,61 +97,43 @@ public class Account {
      * @param amount
      * @return amount actually removed.
      */
-    TransactionResult removeCents(long amount) {
+    public TransactionResult remove(long amount) {
 
-        //Cannot remove negative amount
+        // Cannot remove negative amount
         if(amount < 0)
             return ERROR;
 
-        //Make sure we have enough to remove
-        if(balanceCents() < amount)
+        // Make sure we have enough to remove
+        if(balance() < amount)
             return INSUFFICIENT_FUNDS;
 
-        long cents = 0;
-        long remainingEmeralds = 0;
-        if(config.currencyFractional) {
-	        //Remove the cents
-	        cents = dao.getCents(this) - amount;
-	
-	        //Now lets get our amount of cents positive again, and count how many emeralds need removing
-	        while(cents < 0) {
-	            cents += 100;
-	            remainingEmeralds += 1;
-	        }
-	        
-	        dao.storeCents(this, (int)cents);
-        } else {
-        	remainingEmeralds = amount/100;
-        }
+        long remaining = amount;
 
-        //Now remove the physical amount left
+        // Now remove the physical amount left
         if (config.usevaultContainer) {
-	        for (AccountChest chest : dao.getChests(this)) {
-	            remainingEmeralds -= chest.remove(remainingEmeralds);
-	            if (remainingEmeralds <= 0) break;
-	        }
+	        for (AccountChest chest : dao.getChests(this))
+	            remaining -= chest.remove(remaining);
         }
         
         Player player = playerOwner();
         if (player != null) {
-        	if (player.hasPermission("gringotts.usevault.inventory"))
-        		remainingEmeralds -= new AccountInventory(player.getInventory()).remove(remainingEmeralds);
-        	if (Configuration.config.usevaultEnderchest && player.hasPermission("gringotts.usevault.enderchest"))
-        		remainingEmeralds -= new AccountInventory(player.getEnderChest()).remove(remainingEmeralds);
+        	if (usevault_inventory.allowed(player))
+        		remaining -= new AccountInventory(player.getInventory()).remove(remaining);
+        	if (Configuration.config.usevaultEnderchest && usevault_enderchest.allowed(player))
+        		remaining -= new AccountInventory(player.getEnderChest()).remove(remaining);
+        }
+        
+        if (remaining < 0)
+        	return add(-remaining);
+        else if (remaining > 0) {
+        	// this should never happen, but just in case, try to roll back transaction
+        	add(amount-remaining);
+        	return INSUFFICIENT_FUNDS;
         }
 
-        return TransactionResult.SUCCESS;
+        return SUCCESS;
     }
 
-    /**
-     * Attempt to remove an amount from this account. 
-     * If the account contains less than the specified amount, returns false
-     * @param amount
-     * @return amount actually removed.
-     */
-    public TransactionResult remove(double amount) {
-        return removeCents(Util.toCents(amount));
-    }
 
     /**
      * Attempt to transfer an amount of currency to another account. 
@@ -188,7 +143,7 @@ public class Account {
      * @param other account to transfer funds to.
      * @return false if this account had insufficient funds.
      */
-    public TransactionResult transfer(double value, Account other) {
+    public TransactionResult transfer(long value, Account other) {
 
         // First try to deduct the amount from this account
     	TransactionResult removed = this.remove(value);

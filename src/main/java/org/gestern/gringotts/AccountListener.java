@@ -1,5 +1,7 @@
 package org.gestern.gringotts;
 
+import static org.gestern.gringotts.Permissions.*;
+
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -42,13 +44,13 @@ public class AccountListener implements Listener {
         String line0 = event.getLine(0);
         AccountHolder chestOwner;
         if (line0.equalsIgnoreCase("[vault]")) {
-        	if (!player.hasPermission("gringotts.createvault.player")) {
+        	if (!createvault_player.allowed(player)) {
         		noPermission(player);
         		return;
         	}
             chestOwner = new PlayerAccountHolder(player);
         } else if (Dependency.D.factions != null && line0.equalsIgnoreCase("[faction vault]")) {
-        	if (!player.hasPermission("gringotts.createvault.faction")) {
+        	if (!createvault_faction.allowed(player)) {
         		noPermission(player);
         		return;
         	}
@@ -61,7 +63,7 @@ public class AccountListener implements Listener {
         	}
             chestOwner = holder;
         } else if (Dependency.D.towny != null  && line0.equalsIgnoreCase("[town vault]")) {
-        	if (!player.hasPermission("gringotts.createvault.town")) {
+        	if (!createvault_town.allowed(player)) {
         		noPermission(player);
         		return;
         	}
@@ -74,7 +76,7 @@ public class AccountListener implements Listener {
         	}
         	
         } else if (Dependency.D.towny != null  && line0.equalsIgnoreCase("[nation vault]")) {
-        	if (!player.hasPermission("gringotts.createvault.nation")) {
+        	if (!createvault_nation.allowed(player)) {
         		noPermission(player);
         		return;
         	}
