@@ -5,6 +5,10 @@ import org.bukkit.inventory.ItemStack;
 /**
  * Representation of a denomination within a currency.
  * 
+ * Note: this class has a natural ordering that is inconsistent with equals.
+ * Specifically, the ordering is based purely on the value of the denomination, but not the type.
+ * Conversely, the equality of denominations is based purely on their respective types, and their value is not regarded.
+ * 
  * @author jast
  *
  */
@@ -61,5 +65,10 @@ public class Denomination implements Comparable<Denomination> {
     public int compareTo(Denomination other) {
 		return Long.valueOf(value).compareTo(other.value);
     }
+	
+	@Override
+	public String toString() {
+		return String.format("Denomination: %d;%d;%d : %d", id, damage, data, value); 
+	}
 
 }

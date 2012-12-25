@@ -1,9 +1,10 @@
 package org.gestern.gringotts.currency;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.Map;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -15,7 +16,9 @@ import org.bukkit.inventory.ItemStack;
  */
 public class Currency {
 	
-	private final SortedSet<Denomination> denoms = new TreeSet<Denomination>();
+	// yes, I want to be able to get the key from the value.
+	private final Map<Denomination,Denomination> denoms = new HashMap<Denomination,Denomination>();
+	private final List<Denomination> sortedDenoms = new ArrayList<Denomination>();
 	
 	public final String name;
 	public final String namePlural;
@@ -35,7 +38,10 @@ public class Currency {
 	 * @param value the denomination's value
 	 */
 	public void addDenomination(Denomination d) {
-		denoms.add(d);
+		denoms.put(d, d);
+		// infrequent insertion, so I don't mind sorting on every insert
+		sortedDenoms.add(d);
+		Collections.sort(sortedDenoms);
 	}
 	
 	/**
@@ -50,7 +56,7 @@ public class Currency {
 		Denomination d = denominationOf(stack);
 		if (stack == null || stack.getData().getItemType() == Material.AIR) { 
 			// open slots * highest denomination
-			Denomination highest = denoms.first();
+			Denomination highest = sortedDenoms.get(0);
 			return highest.value * highest.type.getMaxStackSize();
 		} else if (d!=null) {
 			long val = d.value;
@@ -68,6 +74,7 @@ public class Currency {
 	 * @return
 	 */
 	public long value(ItemStack stack) {
+		if (stack == null || stack.getType() == Material.AIR) return 0;
 		Denomination d = denominationOf(stack);
 		return d!=null? d.value * stack.getAmount() : 0;
 	}
@@ -78,7 +85,7 @@ public class Currency {
 	 * @return
 	 */
 	public List<Denomination> denominations() {
-		return new ArrayList<Denomination>(denoms);
+		return sortedDenoms;
 	}
 	
 	/**
@@ -88,7 +95,7 @@ public class Currency {
 	 */
 	private Denomination denominationOf(ItemStack stack) {
 		Denomination d = new Denomination(stack);
-		return denoms.contains(d)? denoms.tailSet(d).first() : null;
+		return denoms.get(d);
 	}
 	
 	

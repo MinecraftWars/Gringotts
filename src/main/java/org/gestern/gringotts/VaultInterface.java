@@ -143,13 +143,15 @@ public class VaultInterface implements Economy {
 
         Account account = gringotts.accounting.getAccount( accountHolder );
 
-        if(account.balance() >= amount && account.remove(amount)) {
-            //We has mulah!
-            return new EconomyResponse(amount, account.balance(), ResponseType.SUCCESS, null);
-        } else {
-            //Not enough money to withdraw this much.
+        
+        TransactionResult removed = account.remove(amount);
+        
+        if (removed==TransactionResult.SUCCESS)
+        	return new EconomyResponse(amount, account.balance(), ResponseType.SUCCESS, null);
+        else if (removed == TransactionResult.INSUFFICIENT_FUNDS)
             return new EconomyResponse(0, account.balance(), ResponseType.FAILURE, "Insufficient funds");
-        }
+        else
+        	return new EconomyResponse(0, account.balance(), ResponseType.FAILURE, "Negative amount or other error.");
 
     }
 
@@ -165,11 +167,13 @@ public class VaultInterface implements Economy {
 
         Account account = gringotts.accounting.getAccount( accountHolder );
 
-        if (account.add(amount))        
+        TransactionResult added = account.add(amount);
+        if (added==TransactionResult.SUCCESS)
             return new EconomyResponse( amount, account.balance(), ResponseType.SUCCESS, null);
+        else if (added == TransactionResult.INSUFFICIENT_SPACE)
+            return new EconomyResponse(0, account.balance(), ResponseType.FAILURE, "Not enough capacity to store that amount!");
         else
-            return new EconomyResponse( 0, account.balance(), ResponseType.FAILURE, "Not enough capacity to store that amount!");
-
+        	return new EconomyResponse(0, account.balance(), ResponseType.FAILURE, "Negative amount or other error.");
     }
 
     @Override

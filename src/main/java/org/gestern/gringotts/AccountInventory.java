@@ -23,32 +23,6 @@ public class AccountInventory {
 	}
 	
 	/**
-	 * Free capacity of this inventory in terms of monetary value.
-	 * Depending on the exact value being added and resulting stack sizes, the actual capacity may be more or less than
-	 * the capacity returned by this method. Users should not rely on this method to ascertain a transaction can be completed.
-	 * The capacity is defined as 
-	 * <code>
-	 * {free slots} * {maximum denomination value} * {maximum denomination slot size} +
-	 * sum({stacks with valid coins in them} * {free coin slots in stack} * {coin value})
-	 * </code>
-	 * 
-	 * @return 
-	 */
-	// TODO capacity is a bit of an unclear concept with multiple denominations. 
-	// instead, create and use a hasCapacity(int) method
-	// such a method can determine if there is enough space with optimal stacking
-	// or maybe not? maybe safest is just adding stuff and rolling back on failure?
-	public long capacity() {
-		Currency cur = Configuration.config.currency;
-		long value = 0;
-		for (ItemStack stack : inventory) {
-			value += cur.value(stack);
-		}
-		
-		return value;
-	}
-	
-	/**
 	 * Current balance of this inventory in cents (or rather atomic currency units).
 	 * @return current balance of this inventory in cents
 	 */
@@ -56,7 +30,7 @@ public class AccountInventory {
 		Currency cur = Configuration.config.currency;
 		long count = 0;	
         for (ItemStack stack : inventory)
-        	count += cur.value(stack);
+    		count += cur.value(stack);
 
         return count;
 	}
@@ -88,7 +62,9 @@ public class AccountInventory {
 	                    returned += leftover.getAmount();
 	        		
 	        		// reduce remaining amount by whatever was deposited
-	        		remaining -= (remainderStackSize-returned) * denom.value;
+	        		long added = remainderStackSize-returned;
+	        		denomItemCount -= added;
+	        		remaining -= added * denom.value;
 	        		
 	        		// no more space for this denomination
 	        		if (returned > 0) break;
@@ -127,7 +103,9 @@ public class AccountInventory {
 	                    returned += leftover.getAmount();
 	        		
 	        		// reduce remaining amount by whatever was removed
-	        		remaining -= (remainderStackSize-returned) * denom.value;
+	        		long removed = remainderStackSize-returned;
+	        		denomItemCount -= removed;
+	        		remaining -= removed * denom.value;
 	        		
 	        		// stuff was returned, no more items of this type to take
 	        		if (returned > 0) break;

@@ -1,5 +1,6 @@
 package org.gestern.gringotts;
 
+import static org.gestern.gringotts.TransactionResult.*;
 import java.util.logging.Logger;
 
 import org.bukkit.OfflinePlayer;
@@ -57,64 +58,29 @@ public class Account {
     }
 
     /**
-     * Maximum capacity of this account in cents
-     * @return maximum capacity of account in cents
-     */
-    long capacityCents() {
-        long capacity = 0;
-        
-        if (config.usevaultContainer) {
-	        for (AccountChest chest: dao.getChests(this))
-	            capacity += chest.capacity();
-        }
-        
-        Player player = playerOwner();
-        if (player != null) {
-        	if (player.hasPermission("gringotts.usevault.inventory"))
-        		capacity += new AccountInventory(player.getInventory()).capacity();
-        	if (Configuration.config.usevaultEnderchest && player.hasPermission("gringotts.usevault.enderchest"))
-        		capacity += new AccountInventory(player.getEnderChest()).capacity();
-        }
-
-        return Util.toCents(capacity);
-    }
-
-    /**
-     * Maximum capacity of this account.
-     * @return maximum capacity of account
-     */
-    public double capacity() {
-        return Util.toEmeralds(capacityCents());
-    }
-
-    /**
      * Add an amount in cents to this account if able to.
      * @param amount
      * @return Whether amount successfully added
      */
-    boolean addCents(long amount) {
+    TransactionResult addCents(long amount) {
 
         // Cannot add negative amount
         if(amount < 0)
-            return false;
+            return ERROR;
 
-        // Is there space?
-        if(amount > capacityCents())
-            return false;
-
-        //Add the cents
+        // Add the cents
         long cents = amount;
         long remainingEmeralds = 0;
         if (config.currencyFractional) {
-	        cents += dao.getCents(this);
+	        cents += dao.getCents(this); 
 	
-	        // Convert excess cents into emeralds		
+	        // Convert excess cents into emeralds
 	        while(cents >= 100) {
 	            cents -= 100;
 	            remainingEmeralds += 1;
 	        }
 	        
-	        dao.storeCents(this, (int)cents);
+	        dao.storeCents(this, (int)cents); // FIXME don't store cents before it's all over
     	} else {
     		remainingEmeralds = cents/100;
     	}
@@ -135,7 +101,12 @@ public class Account {
         		remainingEmeralds -= new AccountInventory(player.getEnderChest()).add(remainingEmeralds);
         }
         
-        return true;
+        if (remainingEmeralds == 0) 
+        	return SUCCESS;
+        
+        // failed, remove the stuff added so far
+        removeCents(amount-remainingEmeralds);
+        return INSUFFICIENT_SPACE;
     }
 
     /**
@@ -143,7 +114,7 @@ public class Account {
      * @param amount
      * @return Whether amount successfully added
      */
-    public boolean add(double amount) {
+    public TransactionResult add(double amount) {
         return addCents(Util.toCents(amount));
     }
 
@@ -153,15 +124,15 @@ public class Account {
      * @param amount
      * @return amount actually removed.
      */
-    boolean removeCents(long amount) {
+    TransactionResult removeCents(long amount) {
 
         //Cannot remove negative amount
         if(amount < 0)
-            return false;
+            return ERROR;
 
         //Make sure we have enough to remove
         if(balanceCents() < amount)
-            return false;
+            return INSUFFICIENT_FUNDS;
 
         long cents = 0;
         long remainingEmeralds = 0;
@@ -196,8 +167,7 @@ public class Account {
         		remainingEmeralds -= new AccountInventory(player.getEnderChest()).remove(remainingEmeralds);
         }
 
-
-        return true;
+        return TransactionResult.SUCCESS;
     }
 
     /**
@@ -206,7 +176,7 @@ public class Account {
      * @param amount
      * @return amount actually removed.
      */
-    public boolean remove(double amount) {
+    public TransactionResult remove(double amount) {
         return removeCents(Util.toCents(amount));
     }
 
@@ -218,21 +188,20 @@ public class Account {
      * @param other account to transfer funds to.
      * @return false if this account had insufficient funds.
      */
-    public boolean transfer(double value, Account other) {
+    public TransactionResult transfer(double value, Account other) {
 
-        //First try to deduct the amount from this account
-        if(this.remove(value)) {
-            //Okay, now lets send it to the other account
-            if(other.add(value)) {
-                //Success, yay
-                return true;
-            } else {
-                //Oops, failed, better refund this account
+        // First try to deduct the amount from this account
+    	TransactionResult removed = this.remove(value);
+        if(removed == SUCCESS) {
+            // Okay, now lets send it to the other account
+        	TransactionResult added = other.add(value);
+            if(added!=SUCCESS) {
+                // Oops, failed, better refund this account
                 this.add(value);
             }
-        }
-        //We must have failed if execution made it here.
-        return false;
+            return added;
+        } 
+        return removed;
     }
     
     @Override
@@ -252,5 +221,8 @@ public class Account {
     	
     	return null;
     }
+    
+    
+
 
 }

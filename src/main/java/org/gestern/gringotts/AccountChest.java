@@ -108,22 +108,7 @@ public class AccountChest {
     	
         return inv.balance();
     }
-
-    /**
-     * Return the capacity of this chest.
-     * @return capacity of this chest
-     */
-    public long capacity() {
-    	
-    	if (!updateValid())
-    		return 0;
-
-    	AccountInventory inv = accountInventory();
-    	if (inv==null) return 0;
-    	
-    	return inv.capacity();
-    }
-
+    
     /**
      * Attempts to add given amount to this chest. 
      * If the amount is larger than available space, the space is filled and the actually

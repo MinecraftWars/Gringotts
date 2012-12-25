@@ -1,6 +1,17 @@
 Gringotts Changelog
 ===================
 
+v1.4.0
+------
+* support multiple denominations. New installations will use emeralds and emerald blocks by default.
+* removed capacity methods. With multiple denominations a single capacity cannot always be defined.
+
+
+v1.3.2
+------
+* fix enderchest config option
+* some internal restructuring
+
 v1.3.1
 ------
 * Tekkit/1.2.5 compatible  (configuration required)

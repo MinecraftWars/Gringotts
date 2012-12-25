@@ -53,12 +53,12 @@ public enum Configuration {
 
         
         if (Util.versionAtLeast(version, "1.3.1")) {
-        	log.info("[Gringotts] Found Bukkit version: "+version+". All features enabled.");
+        	log.info("Found Bukkit version: "+version+". All features enabled.");
     		
         	config.usevaultEnderchest = savedConfig.getBoolean("usevault.enderchest", true);
             
         } else {
-        	log.info("[Gringotts] Found Bukkit version: "+version+". Disabling 1.3+ features.");
+        	log.info("Found Bukkit version: "+version+". Disabling 1.3+ features.");
         	
             config.usevaultEnderchest = false;
         }
@@ -119,7 +119,7 @@ public enum Configuration {
     			Denomination denom = new Denomination(denomType,value);
     			currency.addDenomination(denom);
 			} catch (Exception e) {
-				throw new RuntimeException("[Gringotts] Encountered an error parsing currency. Please check your Gringotts configuration.", e);
+				throw new RuntimeException("Encountered an error parsing currency. Please check your Gringotts configuration.", e);
 			}
 		}
     	

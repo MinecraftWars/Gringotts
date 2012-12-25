@@ -88,7 +88,8 @@ public class Util {
      * @return
      */
     public static String format(double value) {
-    	return String.format("%f2 %s", 
+    	String formatString = Configuration.config.currencyFractional? "%.2f %s" : "%.0f %s";
+    	return String.format(formatString, 
     			value, 
     			value==1.0? Configuration.config.currency.name : Configuration.config.currency.namePlural);
     }

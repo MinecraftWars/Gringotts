@@ -1,6 +1,7 @@
 package org.gestern.gringotts;
 
 import static org.gestern.gringotts.Util.format;
+import static org.gestern.gringotts.TransactionResult.*;
 
 import java.util.logging.Logger;
 
@@ -99,26 +100,30 @@ public class Commands {
                     double balance = account.balance();
                     double valueAdded = value + tax;
                     
-                    
-                    if (balance < valueAdded) {
-                        accountOwner.sendMessage(
-                                "Your account has insufficient balance. Current balance: " + format(balance) 
-                                + ". Required: " + format(valueAdded));
-                        return true;
-                    }
-                    if (recipientAccount.capacity() < value) {
-                        accountOwner.sendMessage(recipientName + " has insufficient storage space for this amount");
-                        return true;
-                    } else if (account.remove(value)) {
-                        if (recipientAccount.add(value)) {
-                            account.remove(tax);
+                    TransactionResult taxed = account.remove(tax);
+                    TransactionResult transfer = account.transfer(value, recipientAccount);
+                    if (taxed == SUCCESS) {
+                    	if (transfer == SUCCESS) {
+                    		account.remove(tax);
                             String formattedValue = format(balance);
                             String taxMessage = "Transaction tax deducted from your account: " + formattedValue;
                             accountOwner.sendMessage("Sent " + formattedValue + " to " + recipientName +". " + (tax>0? taxMessage : ""));
                             recipient.sendMessage("Received " + formattedValue + " from " + accountOwner.getName() +".");
-                            return true;
-                        }
+                    	} else {
+                    		// transfer failed, refund tax
+                    		account.add(tax); // this better not fail!
+                    		if (transfer == INSUFFICIENT_FUNDS) {
+                    			accountOwner.sendMessage(
+                                        "Your account has insufficient balance. Current balance: " + format(balance) 
+                                        + ". Required: " + format(valueAdded));
+                    		} else if (transfer == INSUFFICIENT_SPACE) {
+                    			accountOwner.sendMessage(recipientName + " has insufficient storage space for this amount.");
+                    		}
+                    	}
+                    } else {
+                    	accountOwner.sendMessage("Transfer failed. You couldn't even pay the taxes!");
                     }
+                    return true;
                 }
             }
             
@@ -155,10 +160,7 @@ public class Commands {
                 	}
                 	Account targetAccount = accounting.getAccount(targetAccountHolder);
                 	
-                	if (command.equalsIgnoreCase("c")) {
-                		sender.sendMessage("Capacity of account " + targetAccountHolder.getName() + ": " + targetAccount.capacity());
-	                	return true;
-                	} else if (command.equalsIgnoreCase("b")) {
+                	if (command.equalsIgnoreCase("b")) {
 	                	sender.sendMessage("Balance of account " + targetAccountHolder.getName() + ": " + targetAccount.balance());
 	                	return true;
                 	} else
@@ -184,22 +186,26 @@ public class Commands {
                 	}
                 	
                 	Account targetAccount = accounting.getAccount(targetAccountHolder);
+                	
+                	String formatValue = format(value);
                 	if (command.equalsIgnoreCase("add")) {
-                        if (targetAccount.add(value)) {
-                        	sender.sendMessage("Added " + value + " to account " + targetAccountHolder.getName());
-                        	targetAccountHolder.sendMessage("Added to your account: " + value);
+                		TransactionResult added = targetAccount.add(value);
+                        if (added == SUCCESS) {
+                        	sender.sendMessage("Added " + formatValue + " to account " + targetAccountHolder.getName());
+                        	targetAccountHolder.sendMessage("Added to your account: " + formatValue);
                         } else {
-                        	sender.sendMessage("Could not add " + value + " to account " + targetAccountHolder.getName());
+                        	sender.sendMessage("Could not add " + formatValue + " to account " + targetAccountHolder.getName());
                         }
                         
                         return true;
                         
                 	} else if (command.equalsIgnoreCase("rm")) {
-                        if (targetAccount.remove(value)) {
-                        	sender.sendMessage("Removed " + value + " from account " + targetAccountHolder.getName());
-                        	targetAccountHolder.sendMessage("Removed from your account: " + value);
+                		TransactionResult removed = targetAccount.remove(value); 
+                        if (removed == SUCCESS) {
+                        	sender.sendMessage("Removed " + formatValue + " from account " + targetAccountHolder.getName());
+                        	targetAccountHolder.sendMessage("Removed from your account: " + formatValue);
                         } else {
-                        	sender.sendMessage("Could not remove " + value + " from account " + targetAccountHolder.getName());
+                        	sender.sendMessage("Could not remove " + formatValue + " from account " + targetAccountHolder.getName());
                         }
                         
                         return true;
