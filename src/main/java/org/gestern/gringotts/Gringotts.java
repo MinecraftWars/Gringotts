@@ -88,8 +88,8 @@ public class Gringotts extends JavaPlugin {
 	 */
 	private void registerEconomy() {
 		if (Dependency.D.vault != null) {
-			ServicesManager sm = getServer().getServicesManager();
-			sm.register(Economy.class, new VaultEconomy(gringotts), Dependency.D.vault, ServicePriority.Highest);
+			final ServicesManager sm = getServer().getServicesManager();
+			sm.register(Economy.class, new VaultEconomy(gringotts), this, ServicePriority.Highest);
 			log.info("Registered Vault interface.");
 		} else {
 			log.info("Vault not found. Other plugins may not be able to access Gringotts accounts.");
@@ -100,6 +100,4 @@ public class Gringotts extends JavaPlugin {
         pluginmanager.registerEvents(new AccountListener(this), this);
     }
 
-
-    // TODO add optional dependency to factions. how?
 }

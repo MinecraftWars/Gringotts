@@ -8,13 +8,6 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
 
-import org.bukkit.Bukkit;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.server.PluginDisableEvent;
-import org.bukkit.event.server.PluginEnableEvent;
-import org.bukkit.plugin.Plugin;
 import org.gestern.gringotts.Account;
 import org.gestern.gringotts.Configuration;
 import org.gestern.gringotts.Gringotts;
@@ -29,54 +22,16 @@ import org.gestern.gringotts.accountholder.AccountHolder;
  */
 public class VaultEconomy implements Economy {
 
+    @SuppressWarnings("unused")
     private static final Logger log = Gringotts.gringotts.getLogger();
 
     private final String name = "Gringotts";
-    private Plugin plugin = null;
-    private Gringotts gringotts = null;
+    private final Gringotts gringotts;
 
-    public VaultEconomy(Plugin plugin) {
-        this.plugin = plugin;
-        Bukkit.getServer().getPluginManager().registerEvents(new EconomyServerListener(this), plugin);
-        // Load Plugin in case it was loaded before
-        if (gringotts == null) {
-            Plugin grngts = plugin.getServer().getPluginManager().getPlugin("Gringotts");
-            if (grngts != null && grngts.isEnabled()) {
-                gringotts = (Gringotts) grngts;
-                log.info(String.format("[Economy] %s hooked.", plugin.getDescription().getName(), name));
-            }
-        }
+    public VaultEconomy(Gringotts gringotts) {
+    	this.gringotts = gringotts;
     }
 
-    public class EconomyServerListener implements Listener {
-        VaultEconomy economy = null;
-
-        public EconomyServerListener(VaultEconomy economy_Gringotts) {
-            this.economy = economy_Gringotts;
-        }
-
-        @EventHandler(priority = EventPriority.MONITOR)
-        public void onPluginEnable(PluginEnableEvent event) {
-            if (economy.gringotts == null) {
-                Plugin grngts = plugin.getServer().getPluginManager().getPlugin("Gringotts");
-
-                if (grngts != null && grngts.isEnabled()) {
-                    economy.gringotts = (Gringotts) grngts;
-                    log.info(String.format("[%s][Economy] %s hooked.", plugin.getDescription().getName(), economy.name));
-                }
-            }
-        }
-
-        @EventHandler(priority = EventPriority.MONITOR)
-        public void onPluginDisable(PluginDisableEvent event) {
-            if (economy.gringotts != null) {
-                if (event.getPlugin().getDescription().getName().equals("Gringotts")) {
-                    economy.gringotts = null;
-                    log.info(String.format("[%s][Economy] %s unhooked.", plugin.getDescription().getName(), economy.name));
-                }
-            }
-        }
-    }
 
     @Override
     public boolean isEnabled(){

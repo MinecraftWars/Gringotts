@@ -2,8 +2,9 @@ name: Gringotts
 authors: [jasticE, squidicuz, eXeC64]
 website: https://github.com/MinecraftWars/Gringotts
 
-version: 1.4.0-beta1
+version: 1.4.0-beta2
 main: org.gestern.gringotts.Gringotts
+load: startup
 
 depend: []
 softdepend: [Factions, Towny]
