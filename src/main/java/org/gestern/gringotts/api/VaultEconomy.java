@@ -13,6 +13,7 @@ import org.gestern.gringotts.Configuration;
 import org.gestern.gringotts.Gringotts;
 import org.gestern.gringotts.Util;
 import org.gestern.gringotts.accountholder.AccountHolder;
+import org.gestern.gringotts.currency.Currency;
 
 /** 
  * Provides the vault interface, so that the economy adapter in vault does not need to be changed. 
@@ -27,9 +28,11 @@ public class VaultEconomy implements Economy {
 
     private final String name = "Gringotts";
     private final Gringotts gringotts;
+    private final Currency currency;
 
     public VaultEconomy(Gringotts gringotts) {
     	this.gringotts = gringotts;
+    	this.currency = Configuration.config.currency;
     }
 
 
@@ -81,7 +84,7 @@ public class VaultEconomy implements Economy {
         AccountHolder owner = gringotts.accountHolderFactory.get(playerName);
         if (owner == null) return 0;
         Account account = gringotts.accounting.getAccount(owner);
-        return account.balance();
+        return currency.displayValue(account.balance());
     }
 
     @Override
@@ -103,14 +106,14 @@ public class VaultEconomy implements Economy {
         Account account = gringotts.accounting.getAccount( accountHolder );
 
         
-        TransactionResult removed = account.remove(Configuration.config.currency.centValue(amount));
+        TransactionResult removed = account.remove(currency.centValue(amount));
         
         if (removed==TransactionResult.SUCCESS)
-        	return new EconomyResponse(amount, account.balance(), ResponseType.SUCCESS, null);
+        	return new EconomyResponse(amount, currency.displayValue(account.balance()), ResponseType.SUCCESS, null);
         else if (removed == TransactionResult.INSUFFICIENT_FUNDS)
-            return new EconomyResponse(0, account.balance(), ResponseType.FAILURE, "Insufficient funds");
+            return new EconomyResponse(0, currency.displayValue(account.balance()), ResponseType.FAILURE, "Insufficient funds");
         else
-        	return new EconomyResponse(0, account.balance(), ResponseType.FAILURE, "Negative amount or other error.");
+        	return new EconomyResponse(0, currency.displayValue(account.balance()), ResponseType.FAILURE, "Negative amount or other error.");
 
     }
 
@@ -126,13 +129,13 @@ public class VaultEconomy implements Economy {
 
         Account account = gringotts.accounting.getAccount( accountHolder );
 
-        TransactionResult added = account.add(Configuration.config.currency.centValue(amount));
+        TransactionResult added = account.add(currency.centValue(amount));
         if (added==TransactionResult.SUCCESS)
-            return new EconomyResponse( amount, account.balance(), ResponseType.SUCCESS, null);
+            return new EconomyResponse( amount, currency.displayValue(account.balance()), ResponseType.SUCCESS, null);
         else if (added == TransactionResult.INSUFFICIENT_SPACE)
-            return new EconomyResponse(0, account.balance(), ResponseType.FAILURE, "Not enough capacity to store that amount!");
+            return new EconomyResponse(0, currency.displayValue(account.balance()), ResponseType.FAILURE, "Not enough capacity to store that amount!");
         else
-        	return new EconomyResponse(0, account.balance(), ResponseType.FAILURE, "Negative amount or other error.");
+        	return new EconomyResponse(0, currency.displayValue(account.balance()), ResponseType.FAILURE, "Negative amount or other error.");
     }
 
     @Override

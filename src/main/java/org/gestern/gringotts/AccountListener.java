@@ -134,7 +134,9 @@ public class AccountListener implements Listener {
         		// NOTE: Removed because breakNaturally() was causing a double call of this event which ends in a intermittent Internal Server Error on Tekkit 3.1.2
         		dao.destroyAccountChest(chest);
         		Account account = chest.getAccount();
-        		account.owner.sendMessage("Vault broken. New balance is " + account.balance());
+        		account.owner.sendMessage("Vault broken. New balance is " + 
+        				Util.format(Configuration.config.currency.displayValue(account.balance())));
+        		// okay, that line was not pretty.
         	}
         }
     }
