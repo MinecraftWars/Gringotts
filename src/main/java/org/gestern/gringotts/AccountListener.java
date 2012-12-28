@@ -5,16 +5,12 @@ import static org.gestern.gringotts.Permissions.createvault_nation;
 import static org.gestern.gringotts.Permissions.createvault_player;
 import static org.gestern.gringotts.Permissions.createvault_town;
 
-import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockEvent;
-import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.gestern.gringotts.accountholder.AccountHolder;
 import org.gestern.gringotts.accountholder.PlayerAccountHolder;
@@ -30,7 +26,6 @@ import org.gestern.gringotts.dependency.TownyHandler;
  */
 public class AccountListener implements Listener { 
 
-	private final DAO dao = DAO.getDao();
     private final Accounting accounting;
     
     public AccountListener(Gringotts gringotts) {
@@ -114,44 +109,6 @@ public class AccountListener implements Listener {
         }
     }
 
-    /** Handle account chest sign breaks from players.*/
-    @EventHandler public void vaultBrokenPlayer(BlockBreakEvent event) {
-    	vaultBroken(event);
-    }
-
-    /** Hande account chest sign breaks from natural causes */
-    @EventHandler public void vaultBrokenPhysics(BlockPhysicsEvent event) {
-    	vaultBroken(event);
-    }
-    
-    /**
-     * Catches and handles breaking of the sign block of an account chest.
-     * @param event
-     */
-    public void vaultBroken(BlockEvent event) {
-    	Block block = event.getBlock();
-    	// only trigger on sign breaks	
-    	if ( ! Util.isSignBlock(block) ) 
-    		return;
-    	
-    	// don't bother if it isn't a valid vault marker sign
-    	Sign sign = (Sign)block.getState();
-    	if ( ! ("[vault]".equalsIgnoreCase(sign.getLine(0)) || "[faction vault]".equalsIgnoreCase(sign.getLine(0)) )) 
-    		return;
-    	
-    	// TODO should be able to do this with a direct dao delete call
-        Location loc = block.getLocation();
-        for (AccountChest chest : dao.getChests()) {
-        	if ( loc.equals(chest.sign.getBlock().getLocation()) ) {
-        		dao.destroyAccountChest(chest);
-        		Account account = chest.getAccount();
-        		account.owner.sendMessage("Vault broken. New balance is " + 
-        				Util.format(Configuration.config.currency.displayValue(account.balance())));
-        		// okay, that line was not pretty.
-        	}
-        }
-    }
-    
     private static void noPermission(Player player) {
     	player.sendMessage("You do not have permission to create this vault.");
     }
