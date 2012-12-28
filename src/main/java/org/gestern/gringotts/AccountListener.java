@@ -1,6 +1,9 @@
 package org.gestern.gringotts;
 
-import static org.gestern.gringotts.Permissions.*;
+import static org.gestern.gringotts.Permissions.createvault_faction;
+import static org.gestern.gringotts.Permissions.createvault_nation;
+import static org.gestern.gringotts.Permissions.createvault_player;
+import static org.gestern.gringotts.Permissions.createvault_town;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -10,6 +13,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockEvent;
+import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.gestern.gringotts.accountholder.AccountHolder;
 import org.gestern.gringotts.accountholder.PlayerAccountHolder;
@@ -109,15 +114,23 @@ public class AccountListener implements Listener {
         }
     }
 
+    /** Handle account chest sign breaks from players.*/
+    @EventHandler public void vaultBrokenPlayer(BlockBreakEvent event) {
+    	vaultBroken(event);
+    }
+
+    /** Hande account chest sign breaks from natural causes */
+    @EventHandler public void vaultBrokenPhysics(BlockPhysicsEvent event) {
+    	vaultBroken(event);
+    }
+    
     /**
      * Catches and handles breaking of the sign block of an account chest.
      * @param event
      */
-    @EventHandler
-    public void vaultBroken(BlockBreakEvent event) {
+    public void vaultBroken(BlockEvent event) {
     	Block block = event.getBlock();
-    	// only trigger on sign breaks
-    	
+    	// only trigger on sign breaks	
     	if ( ! Util.isSignBlock(block) ) 
     		return;
     	
@@ -130,8 +143,6 @@ public class AccountListener implements Listener {
         Location loc = block.getLocation();
         for (AccountChest chest : dao.getChests()) {
         	if ( loc.equals(chest.sign.getBlock().getLocation()) ) {
-        		//chest.destroy();
-        		// NOTE: Removed because breakNaturally() was causing a double call of this event which ends in a intermittent Internal Server Error on Tekkit 3.1.2
         		dao.destroyAccountChest(chest);
         		Account account = chest.getAccount();
         		account.owner.sendMessage("Vault broken. New balance is " + 
