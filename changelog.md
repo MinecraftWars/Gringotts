@@ -3,9 +3,11 @@ Gringotts Changelog
 
 v1.4.0
 ------
-* support multiple denominations. New installations will use emeralds and emerald blocks by default.
+* support multiple denominations. New installations will use emeralds and emerald blocks by default. See configuration on how to set them up.
 * removed capacity methods. With multiple denominations a single capacity cannot always be defined.
-
+* configuration option `currency.fractional` deprecated in favor or `currency.digits`, which specifies the amount of decimal digits to use, and consequently the smallest possible currency value
+* Gringotts registers its own Vault compatible Economy service provider now
+* lots of internal changes you needn't worry about
 
 v1.3.2
 ------

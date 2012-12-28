@@ -10,6 +10,7 @@ Gringotts was created for the [Minecraft Wars](http://www.minecraft-wars.com/) P
 Features
 --------
 * Item-backed economy (configurable, default emeralds)
+* multiple denominations with automatic conversion (for example, use emeralds and emerald blocks)
 * Storage of currency in chests and other containers, player inventory and ender chests (configurable)
 * direct account-to-account transfers
 * optional transaction taxes
