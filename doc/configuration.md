@@ -4,7 +4,7 @@ As usual with Bukkit plugins, the configuration is in the config.yml in the plug
 
 ### Tekkit quick-start ###
 
-To run Gringotts on a Tekkit server, set `currency.type` to a 1.2.5-compatible item (eg gold ingots, id 266) or a Tekkit item (eg industrial credits, id 30186), and set usevault.enderchest to `false`.
+To run Gringotts on a Tekkit server, set `currency.denominations` to use only 1.2.5-compatible item (eg gold ingots, id 266) or Tekkit items (eg industrial credits, id 30186), and set usevault.enderchest to `false`.
 
 ### Currency ###
 Per default Gringotts uses emeralds as currency, but this can be changed to any other type of item.
