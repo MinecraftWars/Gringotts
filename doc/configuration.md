@@ -12,7 +12,6 @@ Per default Gringotts uses emeralds as currency, but this can be changed to any 
 Example configuration section:
 
     currency:
-      datavalue: 0
       name:
         singular: Emerald
         plural: Emeralds
