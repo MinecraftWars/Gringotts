@@ -49,7 +49,8 @@ public class Commands {
 	        } else {
 	            sender.sendMessage("This command can only be run by a player.");
 	            return false;
-	            // TODO actually, refactor the whole thing already!
+	            // TODO actually, refactor the whole thing already! take the business logic out of here, oh gosh!
+	            // how many more times must I slap myself to do this!!!11
 	        }
 	        
             AccountHolder accountOwner = new PlayerAccountHolder(player);
@@ -68,13 +69,7 @@ public class Commands {
 
             double value = 0;
             if (args.length >= 2) {
-                try { 
-                	value = Double.parseDouble(args[1]); 
-                	
-                	// cutoff base value when fractions are disabled, so that nothing is taxed that isn't being paid
-                	if (!conf.currencyFractional)
-                		value = Math.floor(value);
-                } 
+                try { value = Double.parseDouble(args[1]); } 
                 catch (NumberFormatException e) { return false; }
             } 
 
@@ -97,11 +92,10 @@ public class Commands {
                     Account recipientAccount = accounting.getAccount(recipient);
                     
                     Currency cur = Configuration.config.currency;
+                    
+                    // FIXME take the damn business logic out of the command handler
                     double tax = conf.transactionTaxFlat + value * conf.transactionTaxRate;
                     // round tax value when fractions are disabled
-                    if (!conf.currencyFractional)
-                    	tax = Math.round(tax);
-                    
                     
                     long valueCents = cur.centValue(value);
                     long taxCent = cur.centValue(tax);
@@ -184,11 +178,7 @@ public class Commands {
                 if (args.length == 3) {
                 	String amountStr = args[1];
                 	double value;
-                	try { 
-                		value = Double.parseDouble(amountStr);
-                		if (!conf.currencyFractional)
-                			value = Math.floor(value);
-                	} 
+                	try { value = Double.parseDouble(amountStr); } 
                 	catch(NumberFormatException x) { return false; }
                 	
                 	String targetAccountHolderStr = args[2];
@@ -242,7 +232,7 @@ public class Commands {
 			if (args.length >=1 && "reload".equalsIgnoreCase(args[0])) {
 				plugin.reloadConfig();
 				conf.readConfig(plugin.getConfig());
-				sender.sendMessage("Reloaded configuration!");
+				sender.sendMessage("Gringotts: Reloaded configuration!");
 				return true;
 			}
 			

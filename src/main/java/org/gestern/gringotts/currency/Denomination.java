@@ -18,7 +18,6 @@ public class Denomination implements Comparable<Denomination> {
 	public final ItemStack type;
 	public final int id;
 	public final short damage;
-	public final byte data;
 	public final long value;
 	
 	public Denomination(ItemStack type) {
@@ -29,7 +28,6 @@ public class Denomination implements Comparable<Denomination> {
 		this.type = type;
 		this.id = type.getTypeId();
 		this.damage = type.getDurability();
-		this.data = type.getData().getData();
 		this.value = value;
 	}
 
@@ -38,7 +36,6 @@ public class Denomination implements Comparable<Denomination> {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + damage;
-		result = prime * result + data;
 		result = prime * result + id;
 		return result;
 	}
@@ -54,8 +51,6 @@ public class Denomination implements Comparable<Denomination> {
 		Denomination other = (Denomination) obj;
 		if (damage != other.damage)
 			return false;
-		if (data != other.data)
-			return false;
 		if (id != other.id)
 			return false;
 		return true;
@@ -63,12 +58,13 @@ public class Denomination implements Comparable<Denomination> {
 
 	@Override
     public int compareTo(Denomination other) {
+		// sort in descending value order
 		return Long.valueOf(other.value).compareTo(this.value);
     }
 	
 	@Override
 	public String toString() {
-		return String.format("Denomination: %d;%d;%d : %d", id, damage, data, value); 
+		return String.format("Denomination: %d;%d : %d", id, damage, value);
 	}
 
 }

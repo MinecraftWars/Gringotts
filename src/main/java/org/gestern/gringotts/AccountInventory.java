@@ -50,7 +50,7 @@ public class AccountInventory {
         	if (denom.value <= remaining) {
         		ItemStack stack = new ItemStack(denom.type);
         		int stacksize = stack.getMaxStackSize();
-        		long denomItemCount = remaining / denom.value;
+        		long denomItemCount = denom.value > 0? remaining / denom.value : 0;
         		
         		// add stacks in this denomination until stuff is returned
         		while (denomItemCount > 0) {

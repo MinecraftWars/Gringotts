@@ -50,7 +50,7 @@ public class Account {
         }
 
         // convert to total cents
-        return balance + (config.currencyFractional? dao.getCents(this) : 0);
+        return balance + dao.getCents(this);
     }
 
     /**

@@ -31,9 +31,6 @@ public enum Configuration {
     /** Rate tax on every player-to-player transaction. This is a fraction, e.g. 0.1 means 10% tax. */ 
     public double transactionTaxRate = 0;
     
-    /** Support (virtual) fractional currency values. */
-    public boolean currencyFractional;
-    
     /** Use container vaults (chest, dispenser, furnace). */
     public boolean usevaultContainer;
     
@@ -49,7 +46,6 @@ public enum Configuration {
     	
         String version = Bukkit.getBukkitVersion();
 
-        
         if (Util.versionAtLeast(version, "1.3.1")) {
         	log.info("Found Bukkit version: "+version+". All features enabled.");
     		
@@ -61,10 +57,15 @@ public enum Configuration {
             config.usevaultEnderchest = false;
         }
         
+        // legacy parameter sets digits to 0 (false) or 2 (true)
+        int digits = savedConfig.getBoolean("currency.fractional", true) ? 2 : 0;
+        // digits param overrides fractional if available
+        digits = savedConfig.getInt("currency.digits", digits);
+        
         String currencyNameSingular, currencyNamePlural;
     	currencyNameSingular = savedConfig.getString("currency.name.singular", "Emerald");
         currencyNamePlural = savedConfig.getString("currency.name.plural", currencyNameSingular+"s");
-        currency = new Currency(currencyNameSingular, currencyNamePlural, 100); // TODO make unit configurable
+        currency = new Currency(currencyNameSingular, currencyNamePlural, digits);
         
     	// legacy currency config, overrides defaults if available
     	int currencyType = savedConfig.getInt("currency.type",-1);
@@ -80,7 +81,7 @@ public enum Configuration {
     	}
         
         
-        config.currencyFractional = savedConfig.getBoolean("currency.fractional", true);
+        
 
         config.transactionTaxFlat = savedConfig.getDouble("transactiontax.flat", 0);
         config.transactionTaxRate = savedConfig.getDouble("transactiontax.rate", 0);
@@ -103,14 +104,11 @@ public enum Configuration {
 			String[] parts = denomStr.split(";");
 			int type = 0;
 			short dmg = 0;
-			byte data = 0;
 			try {
 				// a denomination needs at least a valid item type
 				type = Integer.parseInt(parts[0]);
     			if (parts.length >=2) dmg = Short.parseShort(parts[1]);
-    			if (parts.length >=3) data = Byte.parseByte(parts[2]);
     			ItemStack denomType = new ItemStack(type, 1, dmg);
-    			denomType.setData(new MaterialData(type, data));
     			
     			double value = denomSection.getDouble(denomStr);
     			currency.addDenomination(denomType, value);

@@ -71,7 +71,7 @@ public class Util {
      */
     public static String format(double value) {
     	Currency cur = Configuration.config.currency;
-    	String formatString = cur.unit > 1? "%.2f %s" : "%.0f %s";
+    	String formatString = "%."+cur.digits+"f %s";
     	return String.format(formatString, value, value==1.0? cur.name : cur.namePlural);
     }
 }

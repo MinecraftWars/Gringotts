@@ -20,6 +20,7 @@ public class Currency {
 	
 	// yes, I want to be able to get the key from the key.
 	// this is because I want to find a denomination's value based on its type.
+	// TODO considering there are usually only very few denominations.. simplify this using just a simple friggin list or array
 	private final Map<Denomination,Denomination> denoms = new HashMap<Denomination,Denomination>();
 	private final List<Denomination> sortedDenoms = new ArrayList<Denomination>();
 	
@@ -36,14 +37,27 @@ public class Currency {
      */
 	public final int unit;
 	
+	public final int digits;
+	
 	public Currency(String name) {
 		this(name, name+'s', 100);
 	}
 	
-	public Currency(String name, String namePlural, int unit) {
+	/**
+	 * Create currency.
+	 * @param name name of currency
+	 * @param namePlural plural of currency name
+	 * @param unit currency unit divisor
+	 */
+	public Currency(String name, String namePlural, int digits) {
 		this.name = name;
 		this.namePlural = namePlural;
-		this.unit = unit;
+		this.digits = digits;
+
+        // calculate the "unit" from digits. It's just a power of 10!
+        int d=digits, u = 1;
+        while (d-->0) u*=10;
+        this.unit = u;
 	}
 	
 	/**
@@ -75,13 +89,18 @@ public class Currency {
 	
 	/**
 	 * The display value for a given cent value.
-	 * @param value
-	 * @return
+	 * @param value value to calculate display value for
+	 * @return user representation of value
 	 */
 	public double displayValue(long value) {
 		return (double)value / unit;
 	}
 	
+	/**
+	 * The internal calculation value of a display value.
+	 * @param value
+	 * @return
+	 */
 	public long centValue(double value) {
 		return Math.round(value * unit);
 	}
