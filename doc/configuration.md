@@ -30,7 +30,7 @@ This is the default configuration which uses emeralds as currency, with emeralds
 * `digits` Decimal digits used in representation and calculation of the currency. Set this to 0 to use only whole number values.
 * `denominations` A key-value map, defining the [item id](http://www.minecraftwiki.net/wiki/Data_values#Item_IDs) of the actual item type to use as currency, and the value of the item. The keys may be either a single number for the item id, or two numbers in the format "id;damage", where "damage" is the damage aka data value of the item. The value can be a whole or fractional number denoting the value of a denomination. However the number of fractional digits in a currency value should not exceed the number defined as `digits`.
 
-#### Example Denomination setup with fractionals 
+#### Example denomination setup with fractional values and items with data values
 
 The following setup shows how to specify a currency with Lapis Lazuli as minor denomination with a value of 0.05, Skeleton Heads with a value of 10 and Creeper Heads with a value of 60:
 
