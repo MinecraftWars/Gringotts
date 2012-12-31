@@ -47,13 +47,13 @@ public class VaultEconomy implements Economy {
     }
 
     @Override
-    public boolean hasBankSupport(){
+    public boolean hasBankSupport() {
         return false;
     }
 
     @Override
-    public int fractionalDigits(){
-        return 2;
+    public int fractionalDigits() {
+        return currency.digits;
     }
 
     @Override

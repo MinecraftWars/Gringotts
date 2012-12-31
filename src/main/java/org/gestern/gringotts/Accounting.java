@@ -61,7 +61,7 @@ public class Accounting {
     	
     	// if there is an invalid stored chest on location of new chest, remove it from storage.
     	if (allChests.contains(chest) && !chest.valid()) {
-    		log.info("[Gringotts][Accounting] removing orphaned vault: " + chest);
+    		log.info("removing orphaned vault: " + chest);
     		dao.destroyAccountChest(chest);
     		allChests.remove(chest);
     	}
