@@ -6,5 +6,24 @@ package org.gestern.gringotts.api;
  *
  */
 public enum TransactionResult {
-	SUCCESS, INSUFFICIENT_FUNDS, INSUFFICIENT_SPACE, ERROR;
+	/**
+	 * Transaction was successful.
+	 */
+	SUCCESS, 
+	/**
+	 * Transaction failed due to insufficient funds of an account that money was to be taken from.
+	 */
+	INSUFFICIENT_FUNDS, 
+	/**
+	 * Transaction failed due to insufficient space in an account that money was to be deposited to.
+	 */
+	INSUFFICIENT_SPACE, 
+	/**
+	 * Transaction operation not supported.
+	 */
+	UNSUPPORTED,
+	/**
+	 * An error occurred while trying to process the transaction.
+	 */
+	ERROR;
 }
