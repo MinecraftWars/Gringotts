@@ -1,15 +1,21 @@
 package org.gestern.gringotts.api.impl;
 
-import static org.gestern.gringotts.api.TransactionResult.*;
+import static org.gestern.gringotts.api.TransactionResult.ERROR;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import org.gestern.gringotts.Configuration;
 import org.gestern.gringotts.DAO;
+import org.gestern.gringotts.Gringotts;
 import org.gestern.gringotts.GringottsAccount;
 import org.gestern.gringotts.accountholder.AccountHolder;
 import org.gestern.gringotts.accountholder.AccountHolderFactory;
 import org.gestern.gringotts.api.Account;
+import org.gestern.gringotts.api.BankAccount;
 import org.gestern.gringotts.api.Currency;
 import org.gestern.gringotts.api.Eco;
+import org.gestern.gringotts.api.Transaction;
 import org.gestern.gringotts.api.TransactionResult;
 import org.gestern.gringotts.currency.GringottsCurrency;
 
@@ -18,6 +24,16 @@ public class GringottsEco implements Eco {
 	private final AccountHolderFactory accountOwners = new AccountHolderFactory();
 	private final Curr curr = new Curr(Configuration.config.currency);
 	private final DAO dao = DAO.getDao();
+	
+	@Override
+	public Account account(String id) {
+		AccountHolder owner = accountOwners.get(id);
+		if (owner == null) return new InvalidAccount("virtual", id);
+		
+		GringottsAccount gAccount = Gringotts.gringotts.accounting.getAccount(owner);
+		return new ValidAccount(gAccount);
+		
+	}
 
 	@Override
     public Account player(String name) {
@@ -25,15 +41,16 @@ public class GringottsEco implements Eco {
     }
 
 	@Override
-    public Account bank(String name) {
+    public BankAccount bank(String name) {
 		throw new RuntimeException("Banks not implemented yet in Gringotts");
     }
 
 	@Override
     public Account custom(String type, String id) {
 	    AccountHolder owner = accountOwners.get(type, id);
+	    if (owner == null) return new InvalidAccount(type, id);
 	    GringottsAccount acc = new GringottsAccount(owner);
-	    return new Acc(acc);
+	    return new ValidAccount(acc);
     }
 
 	@Override
@@ -59,21 +76,93 @@ public class GringottsEco implements Eco {
 
 	@Override
     public boolean supportsBanks() {
-	    // TODO Auto-generated method stub
-	    return false;
+	    return true;
     }
 	
-	private class Acc implements Account {
+	private class InvalidAccount implements Account {
+		
+		private final String type;
+		private final String id;
+		
+		InvalidAccount(String type, String id) {
+			this.type = type;
+			this.id = id;
+		}
+
+		@Override
+        public boolean exists() {
+	        return false;
+        }
+
+		@Override
+        public Account create() {
+			// TODO if account type allows virtual accounts, create it
+			return this;
+        }
+
+		@Override
+        public Account delete() {
+	        return this; // delete invalid account is still invalid
+        }
+
+		@Override
+        public double balance() {
+	        return 0; // invalid account has 0 balance
+        }
+
+		@Override
+        public boolean has(double value) {
+	        return false; // invalid account has nothing
+        }
+
+		@Override
+        public TransactionResult setBalance(double newBalance) {
+	        return ERROR;
+        }
+
+		@Override
+        public TransactionResult add(double value) {
+	        return ERROR;
+        }
+
+		@Override
+        public TransactionResult remove(double value) {
+	        return ERROR;
+        }
+
+		@Override
+        public Transaction send(double value) {
+			return new GringottsTransaction(this, value);
+        }
+
+		@Override
+        public String type() {
+	        return type;
+        }
+
+		@Override
+        public String id() {
+	        return id;
+        }
+
+		@Override
+        public void message(String message) {
+			// do nothing - no owner on this
+        }
+		
+	}
+	
+	private class ValidAccount implements Account {
 		
 		GringottsAccount acc;
 		
-		public Acc(GringottsAccount acc) {
+		public ValidAccount(GringottsAccount acc) {
 			this.acc = acc;
 		}
 
 		@Override
         public boolean exists() {
-	        // Gringotts accounts implicitly exist 
+			// since this is a valid account, returns true
 			return true;
         }
 
@@ -116,22 +205,9 @@ public class GringottsEco implements Eco {
         }
 
 		@Override
-        public TransactionResult sendTo(double value, Account recipient) {
-			if (value < 0) return ERROR;
-			TransactionResult removed = remove(value);
-			if (removed == SUCCESS) {
-				TransactionResult added = recipient.add(value);
-				
-				if (added != SUCCESS)
-					// adding failed, refund this account
-					this.add(value);
-				
-				// returns success or reason add failed
-				return added;
-			}
-			// return reason remove failed
-	        return removed;
-        }
+		public Transaction send(double value) {
+			return new GringottsTransaction(this, value);
+		}
 
 		@Override
         public String type() {
@@ -181,5 +257,11 @@ public class GringottsEco implements Eco {
         }
 		
 	}
+
+	@Override
+    public Set<String> getBanks() {
+	    // TODO implement banks
+	    return new HashSet<String>();
+    }
 
 }

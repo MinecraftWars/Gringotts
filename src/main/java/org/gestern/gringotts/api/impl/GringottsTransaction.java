@@ -56,8 +56,6 @@ public class GringottsTransaction implements Transaction {
 	public TaxedTransaction withTaxes() {
 		
 		Configuration conf = Configuration.config;
-        
-        // FIXME take the damn business logic out of the command handler
         double tax = conf.transactionTaxFlat + value * conf.transactionTaxRate;
         return new GringottsTaxedTransaction(this, tax);
 	}
