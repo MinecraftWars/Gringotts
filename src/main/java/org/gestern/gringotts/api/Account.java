@@ -1,5 +1,9 @@
 package org.gestern.gringotts.api;
 
+/**
+ * Defines actions possible on an account in an economy.
+ *
+ */
 public interface Account {
 
 	/**
@@ -9,15 +13,15 @@ public interface Account {
 	boolean exists();
 	
 	/**
-	 * Create this account, if it does not exist.
-	 * The Account object returned as result of this method must return true to exists().
+	 * Create this account, if it does not exist, and creation is possible.
+	 * If creation was successful, the Account object returned as result of this method must return true to exists().
 	 * @return Representation of this account after it has been created.
 	 */
 	Account create();
 	
 	/**
-	 * Delete this account from the economy system.
-	 * The Account object returned as result of this method must return true to exists().
+	 * Delete this account from the economy system, if it exists, and account deletion is possible.
+	 * If deletion was successful, the Account object returned as result of this method must return false to exists().
 	 * @return Representation of this account after it has been deleted.
 	 */
 	Account delete();
@@ -60,17 +64,16 @@ public interface Account {
 	
 	/**
 	 * Send an amount to another account. If the transfer fails, both sender and recipient will 
-	 * have unchanged account balance.
+	 * have unchanged account balance. To complete the transaction, use the to(Account) method on the result of this call. 
+	 * Before sending, it is possible to apply taxes with the withTaxes() method.
 	 * @param value amount to be transferred
-	 * @param recipient of the transfer
-	 * @return result of this transaction. Can be SUCCESS if successful, 
-	 * INSUFFICIENT_FUNDS if it failed because the sender lacks funds or
-	 * INSUFFICIENT_SPACE if the recipient lacked space to receive the money. 
+	 * @return A transaction object, which may be used to complete the transaction or add additional properties. 
 	 */
-	TransactionResult sendTo(double value, Account recipient);
+	Transaction send(double value);
 	
 	/**
-	 * Return the type of this account. Default account types are "player" and "bank".
+	 * Return the type of this account. Default account types are "player" and "bank". 
+	 * The economy plugin specifies any other types.
 	 * The method call Eco.custom(type,id) result in this account for parameters this.type() and this.id().
 	 * @return the type of this account.
 	 */

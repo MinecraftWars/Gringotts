@@ -21,5 +21,10 @@ public interface Currency {
 	 * @return the formatted currency value.
 	 */
 	String format(double value);
+	
+	/**
+	 * Get the amount of fractional digits supported by this currency.
+	 * @return the amount of fractional digits supported by this currency
+	 */
 	int fractionalDigits();
 }
