@@ -93,7 +93,7 @@ public class AccountListener implements Listener {
         Block signBlock = event.getBlock();
         Block chestBlock = signBlock.getRelative(BlockFace.DOWN);
         if (AccountChest.validContainer(chestBlock.getType())) {
-            Account account = accounting.getAccount(chestOwner);
+            GringottsAccount account = accounting.getAccount(chestOwner);
             // create account chest
             AccountChest accountChest = new AccountChest((Sign)signBlock.getState(), account);
             

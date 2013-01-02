@@ -28,23 +28,23 @@ public interface Eco {
 	Account custom(String type, String id);
 	
 	/**
-	 * Access a faction account with the given id.
+	 * Access a Factions faction account with the given id.
 	 * @param id
 	 * @return
 	 */
 	Account faction(String id);
 	
 	/**
-	 * Access a towny town account with the given id.
-	 * @param id
-	 * @return
+	 * Access a Towny town account with the given id.
+	 * @param id/name of a Towny town
+	 * @return account for a Towny town
 	 */
 	Account town(String id);
 	
 	/**
-	 * Access a towny nation account with the given id.
-	 * @param id
-	 * @return
+	 * Access a Towny nation account with the given id.
+	 * @param id id/name of a Towny nation
+	 * @return account for a Towny nation with the given id.
 	 */
 	Account nation(String id);
 	
@@ -53,4 +53,10 @@ public interface Eco {
 	 * @return
 	 */
 	Currency currency();
+	
+	/**
+	 * Return whether this economy supports banks.
+	 * @return true if this economy has bank support, false otherwise.
+	 */
+	boolean supportsBanks();
 }

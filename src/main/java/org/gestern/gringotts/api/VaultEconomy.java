@@ -8,12 +8,12 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
 
-import org.gestern.gringotts.Account;
+import org.gestern.gringotts.GringottsAccount;
 import org.gestern.gringotts.Configuration;
 import org.gestern.gringotts.Gringotts;
 import org.gestern.gringotts.Util;
 import org.gestern.gringotts.accountholder.AccountHolder;
-import org.gestern.gringotts.currency.Currency;
+import org.gestern.gringotts.currency.GringottsCurrency;
 
 /** 
  * Provides the vault interface, so that the economy adapter in vault does not need to be changed. 
@@ -28,7 +28,7 @@ public class VaultEconomy implements Economy {
 
     private final String name = "Gringotts";
     private final Gringotts gringotts;
-    private final Currency currency;
+    private final GringottsCurrency currency;
 
     public VaultEconomy(Gringotts gringotts) {
     	this.gringotts = gringotts;
@@ -83,7 +83,7 @@ public class VaultEconomy implements Economy {
     public double getBalance(String playerName){
         AccountHolder owner = gringotts.accountHolderFactory.get(playerName);
         if (owner == null) return 0;
-        Account account = gringotts.accounting.getAccount(owner);
+        GringottsAccount account = gringotts.accounting.getAccount(owner);
         return currency.displayValue(account.balance());
     }
 
@@ -103,7 +103,7 @@ public class VaultEconomy implements Economy {
         if (accountHolder == null) 
             return new EconomyResponse(0, 0, ResponseType.FAILURE, playerName + " is not a valid account holder.");
 
-        Account account = gringotts.accounting.getAccount( accountHolder );
+        GringottsAccount account = gringotts.accounting.getAccount( accountHolder );
 
         
         TransactionResult removed = account.remove(currency.centValue(amount));
@@ -127,7 +127,7 @@ public class VaultEconomy implements Economy {
         if (accountHolder == null) 
             return new EconomyResponse(0, 0, ResponseType.FAILURE, playerName + " is not a valid account holder.");
 
-        Account account = gringotts.accounting.getAccount( accountHolder );
+        GringottsAccount account = gringotts.accounting.getAccount( accountHolder );
 
         TransactionResult added = account.add(currency.centValue(amount));
         if (added==TransactionResult.SUCCESS)

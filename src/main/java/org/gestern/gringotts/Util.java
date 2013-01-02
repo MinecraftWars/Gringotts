@@ -2,7 +2,7 @@ package org.gestern.gringotts;
 
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.gestern.gringotts.currency.Currency;
+import org.gestern.gringotts.currency.GringottsCurrency;
 
 public class Util {
     
@@ -70,7 +70,7 @@ public class Util {
      * @return formatted currency value
      */
     public static String format(double value) {
-    	Currency cur = Configuration.config.currency;
+    	GringottsCurrency cur = Configuration.config.currency;
     	String formatString = "%."+cur.digits+"f %s";
     	return String.format(formatString, value, value==1.0? cur.name : cur.namePlural);
     }

@@ -8,7 +8,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
-import org.gestern.gringotts.currency.Currency;
+import org.gestern.gringotts.currency.GringottsCurrency;
 
 /**
  * Singleton for global configuration information. 
@@ -23,7 +23,7 @@ public enum Configuration {
     private final Logger log = Gringotts.gringotts.getLogger();
 
     /** Currency item types. The item types are ordered by their respective unit value. */
-    public Currency currency;
+    public GringottsCurrency currency;
 
     /** Flat tax on every player-to-player transaction. This is a value in currency units. */
     public double transactionTaxFlat = 0;
@@ -65,7 +65,7 @@ public enum Configuration {
         String currencyNameSingular, currencyNamePlural;
     	currencyNameSingular = savedConfig.getString("currency.name.singular", "Emerald");
         currencyNamePlural = savedConfig.getString("currency.name.plural", currencyNameSingular+"s");
-        currency = new Currency(currencyNameSingular, currencyNamePlural, digits);
+        currency = new GringottsCurrency(currencyNameSingular, currencyNamePlural, digits);
         
     	// legacy currency config, overrides defaults if available
     	int currencyType = savedConfig.getInt("currency.type",-1);

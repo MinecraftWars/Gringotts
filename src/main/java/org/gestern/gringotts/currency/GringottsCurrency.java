@@ -16,7 +16,7 @@ import org.bukkit.inventory.ItemStack;
  * 
  * @author jast
  */
-public class Currency {
+public class GringottsCurrency {
 	
 	// yes, I want to be able to get the key from the key.
 	// this is because I want to find a denomination's value based on its type.
@@ -39,7 +39,7 @@ public class Currency {
 	
 	public final int digits;
 	
-	public Currency(String name) {
+	public GringottsCurrency(String name) {
 		this(name, name+'s', 100);
 	}
 	
@@ -49,7 +49,7 @@ public class Currency {
 	 * @param namePlural plural of currency name
 	 * @param unit currency unit divisor
 	 */
-	public Currency(String name, String namePlural, int digits) {
+	public GringottsCurrency(String name, String namePlural, int digits) {
 		this.name = name;
 		this.namePlural = namePlural;
 		this.digits = digits;

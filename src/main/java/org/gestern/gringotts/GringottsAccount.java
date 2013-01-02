@@ -12,7 +12,7 @@ import org.gestern.gringotts.accountholder.PlayerAccountHolder;
 import org.gestern.gringotts.api.TransactionResult;
 
 
-public class Account {
+public class GringottsAccount {
 
     @SuppressWarnings("unused")
 	private final Logger log = Gringotts.gringotts.getLogger();
@@ -22,7 +22,7 @@ public class Account {
     
 	private final Configuration config = Configuration.config;
 
-    public Account(AccountHolder owner) {
+    public GringottsAccount(AccountHolder owner) {
     	if (owner == null) {
     		throw new IllegalArgumentException("owner parameter to Account constructor may not be null");
     	}
@@ -155,7 +155,7 @@ public class Account {
      * @param other account to transfer funds to.
      * @return false if this account had insufficient funds.
      */
-    public TransactionResult transfer(long value, Account other) {
+    public TransactionResult transfer(long value, GringottsAccount other) {
 
         // First try to deduct the amount from this account
     	TransactionResult removed = this.remove(value);

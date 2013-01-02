@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.gestern.gringotts.currency.Currency;
+import org.gestern.gringotts.currency.GringottsCurrency;
 import org.gestern.gringotts.currency.Denomination;
 
 /**
@@ -27,7 +27,7 @@ public class AccountInventory {
 	 * @return current balance of this inventory in cents
 	 */
 	public long balance() {
-		Currency cur = Configuration.config.currency;
+		GringottsCurrency cur = Configuration.config.currency;
 		long count = 0;	
         for (ItemStack stack : inventory)
     		count += cur.value(stack);
@@ -85,7 +85,7 @@ public class AccountInventory {
 		// avoid dealing with negatives
 		if (value <= 0) return 0;
 		
-		Currency cur = Configuration.config.currency;
+		GringottsCurrency cur = Configuration.config.currency;
         long remaining = value;
         
         // try denominations from smallest to largest

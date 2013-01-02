@@ -83,6 +83,11 @@ public interface Account {
 	 */
 	String id();
 	
+	/**
+	 * Send a message to the owner or owners of this account.
+	 * Depending on the type of account, no player is the owner of an account. In this case, send the message to the console.
+	 * @param message Message to send.
+	 */
 	void message(String message);
 
 }

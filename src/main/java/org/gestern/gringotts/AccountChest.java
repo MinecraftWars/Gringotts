@@ -28,14 +28,14 @@ public class AccountChest {
     public final Sign sign;
     
     /** Account this chest belongs to. */
-    public final Account account;
+    public final GringottsAccount account;
 
     /**
      * Create Account chest based on a sign marking its position and belonging to an account.
      * @param sign
      * @param account
      */
-    public AccountChest(Sign sign, Account account) {
+    public AccountChest(Sign sign, GringottsAccount account) {
     	if (sign == null || account == null)
     		throw new IllegalArgumentException("null arguments to AccountChest() not allowed. args were: sign: " + sign + ", account: " + account);
         this.sign = sign;
@@ -265,7 +265,7 @@ public class AccountChest {
 		return false;
 	}
 
-	public Account getAccount() {
+	public GringottsAccount getAccount() {
 		return account;
 	}
 	

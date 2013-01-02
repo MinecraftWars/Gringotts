@@ -22,10 +22,10 @@ public class Accounting {
      * @param owner account holder
      * @return account associated with an account holder
      */
-    public Account getAccount(AccountHolder owner) {
-        Account account = dao.getAccount(owner);
+    public GringottsAccount getAccount(AccountHolder owner) {
+        GringottsAccount account = dao.getAccount(owner);
         if (account == null) {
-            account = new Account(owner);
+            account = new GringottsAccount(owner);
             dao.storeAccount(account);
         }
 
@@ -55,7 +55,7 @@ public class Accounting {
      * a registered chest. true if the association was successful. 
      * @throws GringottsStorageException when saving of account chest failed 
      */
-    public boolean addChest(Account account, AccountChest chest) {
+    public boolean addChest(GringottsAccount account, AccountChest chest) {
     	
     	Set<AccountChest> allChests = dao.getChests();
     	

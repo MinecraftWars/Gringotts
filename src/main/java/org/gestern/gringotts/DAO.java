@@ -159,7 +159,7 @@ public class DAO {
      * @throws GringottsStorageException when storage failed
      */
     public boolean storeAccountChest(AccountChest chest) {
-    	Account account = chest.getAccount();
+    	GringottsAccount account = chest.getAccount();
     	Location loc = chest.sign.getLocation();
     	
     	log.info("storing account chest: " + chest + " for account: " + account);
@@ -218,7 +218,7 @@ public class DAO {
      * @param account
      * @return true if an account was stored, false if it already existed
      */
-    public boolean storeAccount(Account account) {
+    public boolean storeAccount(GringottsAccount account) {
     	AccountHolder owner = account.owner;
 
     	if (getAccount(owner) != null)
@@ -244,7 +244,7 @@ public class DAO {
      * @param accountHolder
      * @return account belonging to the given owner, or null if the owner has no account
      */
-    public Account getAccount(AccountHolder accountHolder) {
+    public GringottsAccount getAccount(AccountHolder accountHolder) {
 
     	AccountHolderFactory ahf = new AccountHolderFactory();
     	
@@ -261,7 +261,7 @@ public class DAO {
 				String ownerName = result.getString("owner");
 		    	AccountHolder owner = ahf.get(type, ownerName);
 		    	
-				return new Account(owner);
+				return new GringottsAccount(owner);
 			} else return null;
 			
 		} catch (SQLException e) {
@@ -305,7 +305,7 @@ public class DAO {
 						log.info("AccountHolder "+type+":"+ownerId+" is not valid. Deleting associated account chest at " + signBlock.getLocation());
 						deleteAccountChest(signBlock.getWorld().getName(), signBlock.getX(), signBlock.getY(), signBlock.getZ());
 					} else {
-						Account ownerAccount = new Account(owner);
+						GringottsAccount ownerAccount = new GringottsAccount(owner);
 						Sign sign = (Sign) signBlock.getState();
 						chests.add(new AccountChest(sign, ownerAccount));
 					}
@@ -330,7 +330,7 @@ public class DAO {
      * @param account account to fetch chests for.
      * @return
      */
-    public Set<AccountChest> getChests(Account account) {
+    public Set<AccountChest> getChests(GringottsAccount account) {
 	
 		AccountHolder owner = account.owner;
 		Set<AccountChest> chests = new HashSet<AccountChest>();
@@ -375,7 +375,7 @@ public class DAO {
 	 * @param amount
 	 * @return true if storing was successful, false otherwise.
 	 */
-	public boolean storeCents(Account account, long amount) {
+	public boolean storeCents(GringottsAccount account, long amount) {
 		try {
 			checkConnection();
     		
@@ -396,7 +396,7 @@ public class DAO {
 	 * @param account
 	 * @return amount of cents stored in the account, 0 if the account is not stored
 	 */
-	public long getCents(Account account) {
+	public long getCents(GringottsAccount account) {
 		
 		ResultSet result = null;
 		try {

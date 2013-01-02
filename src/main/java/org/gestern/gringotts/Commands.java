@@ -13,7 +13,7 @@ import org.gestern.gringotts.accountholder.AccountHolder;
 import org.gestern.gringotts.accountholder.AccountHolderFactory;
 import org.gestern.gringotts.accountholder.PlayerAccountHolder;
 import org.gestern.gringotts.api.TransactionResult;
-import org.gestern.gringotts.currency.Currency;
+import org.gestern.gringotts.currency.GringottsCurrency;
 
 
 /**
@@ -54,7 +54,7 @@ public class Commands {
 	        }
 	        
             AccountHolder accountOwner = new PlayerAccountHolder(player);
-            Account account = accounting.getAccount(accountOwner);
+            GringottsAccount account = accounting.getAccount(accountOwner);
             
             if (args.length == 0) {
                 // same as balance
@@ -89,9 +89,9 @@ public class Commands {
                 		return true;
                 	}
                     
-                    Account recipientAccount = accounting.getAccount(recipient);
+                    GringottsAccount recipientAccount = accounting.getAccount(recipient);
                     
-                    Currency cur = Configuration.config.currency;
+                    GringottsCurrency cur = Configuration.config.currency;
                     
                     // FIXME take the damn business logic out of the command handler
                     double tax = conf.transactionTaxFlat + value * conf.transactionTaxRate;
@@ -165,7 +165,7 @@ public class Commands {
                 		invalidAccount(sender, targetAccountHolderStr);
                 		return true;
                 	}
-                	Account targetAccount = accounting.getAccount(targetAccountHolder);
+                	GringottsAccount targetAccount = accounting.getAccount(targetAccountHolder);
                 	String formattedBalance = format(conf.currency.displayValue(targetAccount.balance()));
                 	if (command.equalsIgnoreCase("b")) {
 	                	sender.sendMessage("Balance of account " + targetAccountHolder.getName() + ": " + formattedBalance);
@@ -188,7 +188,7 @@ public class Commands {
                 		return true;
                 	}
                 	
-                	Account targetAccount = accounting.getAccount(targetAccountHolder);
+                	GringottsAccount targetAccount = accounting.getAccount(targetAccountHolder);
                 	
                 	String formatValue = format(value);
                 	long valueCents = conf.currency.centValue(value);
@@ -242,7 +242,7 @@ public class Commands {
     }
 
     
-    private static void balanceMessage(Account account, AccountHolder owner) {
+    private static void balanceMessage(GringottsAccount account, AccountHolder owner) {
     	long balance = account.balance();
         owner.sendMessage("Your current balance: " + format(Configuration.config.currency.displayValue(balance)) + ".");
     }
