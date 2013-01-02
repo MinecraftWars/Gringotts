@@ -3,7 +3,9 @@ package org.gestern.gringotts.api;
 public interface Eco {
 
 	/**
-	 * Access a player account for the player with given name.
+	 * Access a player account for the player with given name. If a player can have multiple accounts,
+	 * the account returned is defined by the economy plugin. For example, if the economy supports one account per world,
+	 * return the account associated with the world the player is currently in.
 	 * The representation of the money of a player account may be in-game items or virtual.
 	 * @param name The name of the player owning the account.
 	 * @return The player account representation

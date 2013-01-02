@@ -435,7 +435,6 @@ public class DAO {
 		try {			
 			log.info("shutting down database connection");
 			// disconnect from derby completely
-//			String disconnectString = dbString+";shutdown=true";
 			String disconnectString = "jdbc:derby:;shutdown=true";
 			DriverManager.getConnection(disconnectString);
 			
@@ -449,5 +448,14 @@ public class DAO {
     @Override
     public void finalize() {
     	shutdown();
+    }
+
+    /**
+     * Delete an account and associated data from the storage.
+     * @param acc
+     */
+	public void deleteAccount(GringottsAccount acc) {
+	    // TODO Auto-generated method stub
+	    throw new RuntimeException("delete account not yet implemented");
     }
 }
