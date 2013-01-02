@@ -12,7 +12,7 @@ import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.ServicesManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.gestern.gringotts.accountholder.AccountHolderFactory;
-import org.gestern.gringotts.api.VaultEconomy;
+import org.gestern.gringotts.api.impl.VaultConnector;
 import org.gestern.gringotts.dependency.Dependency;
 import org.mcstats.MetricsLite;
 
@@ -89,7 +89,7 @@ public class Gringotts extends JavaPlugin {
 	private void registerEconomy() {
 		if (Dependency.D.vault != null) {
 			final ServicesManager sm = getServer().getServicesManager();
-			sm.register(Economy.class, new VaultEconomy(gringotts), this, ServicePriority.Highest);
+			sm.register(Economy.class, new VaultConnector(), this, ServicePriority.Highest);
 			log.info("Registered Vault interface.");
 		} else {
 			log.info("Vault not found. Other plugins may not be able to access Gringotts accounts.");
