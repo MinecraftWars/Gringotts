@@ -3,10 +3,11 @@ Gringotts Changelog
 
 v1.4.0
 ------
-* support multiple denominations. New installations will use emeralds and emerald blocks by default. See configuration on how to set them up.
-* removed capacity methods. With multiple denominations a single capacity cannot always be defined.
-* configuration option `currency.fractional` deprecated in favor or `currency.digits`, which specifies the amount of decimal digits to use, and consequently the smallest possible currency value
-* Gringotts registers its own Vault compatible Economy service provider now
+* support multiple denominations. New installations will use emeralds and emerald blocks by default. See configuration on how to set them up. Old installations will retain their configuration. 
+* denominations can now use the "damage" value of item types.
+* removed capacity methods. With multiple denominations a single capacity number cannot always be defined.
+* configuration option `currency.fractional` deprecated in favor or `currency.digits`, which specifies the amount of decimal digits to use, and consequently the smallest possible currency value.
+* Gringotts registers its own Vault compatible Economy service provider now. Minor changes in functionality exposed to Vault (supports configured decimal digits)
 * lots of internal changes you needn't worry about
 
 v1.3.2
