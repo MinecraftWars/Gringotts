@@ -15,7 +15,7 @@ import com.palmergames.bukkit.towny.Towny;
 import static org.gestern.gringotts.Util.versionAtLeast;
 
 /**
- * Manages optional plugin dependencies.
+ * Manages plugin dependencies.
  * 
  * @author jast
  *
@@ -26,20 +26,20 @@ public enum Dependency {
 	D;
 	
 	private final Logger log = Gringotts.gringotts.getLogger();
-		
-	public final P factions;
-	public final Towny towny;
-	public final Vault vault;
+	
+	public final FactionsHandler factions;
+	public final TownyHandler towny;
+	public final DependencyHandler vault;
+	
 	
 	
 	/**
 	 * Initialize plugin dependencies. We expect them to have loaded before this is called.
 	 */
-	private Dependency() {
-		
-		factions = (P)hookPlugin("Factions", "com.massivecraft.factions.P","1.6.9.1");
-		towny = (Towny)hookPlugin("Towny","com.palmergames.bukkit.towny.Towny","0.82.0.0");
-		vault = (Vault)hookPlugin("Vault","net.milkbowl.vault.Vault","1.2.17");
+	private Dependency() {		
+		factions = new FactionsHandler((P)hookPlugin("Factions", "com.massivecraft.factions.P","1.6.9.1"));
+		towny = TownyHandler.getTownyHandler((Towny)hookPlugin("Towny","com.palmergames.bukkit.towny.Towny","0.82.0.0"));
+		vault = new GenericHandler((Vault)hookPlugin("Vault","net.milkbowl.vault.Vault","1.2.17"));
 	}
 	
 
@@ -89,5 +89,7 @@ public enum Dependency {
             return false;
         }
     }
+    
+    
     
 }

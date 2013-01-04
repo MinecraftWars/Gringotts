@@ -7,8 +7,15 @@ import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.Factions;
+import com.massivecraft.factions.P;
 
 public class FactionsHandler implements DependencyHandler {
+	
+	private final P plugin;
+	
+	public FactionsHandler(P plugin) {
+		this.plugin = plugin;
+	}
 
 	/**
 	 * Get a FactionAccountHolder for the faction of which player is a member, if any.
@@ -49,5 +56,25 @@ public class FactionsHandler implements DependencyHandler {
         
         return null;
 	}
+	
+	/**
+	 * Get a FactionAccountHolder by id of the faction.
+	 * @param id
+	 * @return
+	 */
+	public FactionAccountHolder getAccountHolderById(String id) {
+		Faction faction = Factions.i.get(id);
+		return faction !=null? new FactionAccountHolder(faction) : null;
+	}
+
+	@Override
+    public boolean enabled() {
+	    return plugin!=null && plugin.isEnabled();
+    }
+
+	@Override
+    public boolean exists() {
+	    return plugin != null;
+    }
 
 }

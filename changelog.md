@@ -1,6 +1,10 @@
 Gringotts Changelog
 ===================
 
+v1.4.1b
+------
+* fix a dependency loop with factions and possible dependency issues
+
 v1.4.0
 ------
 * support multiple denominations. New installations will use emeralds and emerald blocks by default. See configuration on how to set them up. Old installations will retain their configuration. 

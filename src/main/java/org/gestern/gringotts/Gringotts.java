@@ -1,5 +1,7 @@
 package org.gestern.gringotts;
 
+import static org.gestern.gringotts.dependency.Dependency.D;
+
 import java.io.IOException;
 import java.util.logging.Logger;
 
@@ -13,7 +15,6 @@ import org.bukkit.plugin.ServicesManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.gestern.gringotts.accountholder.AccountHolderFactory;
 import org.gestern.gringotts.api.VaultEconomy;
-import org.gestern.gringotts.dependency.Dependency;
 import org.mcstats.MetricsLite;
 
 
@@ -87,7 +88,7 @@ public class Gringotts extends JavaPlugin {
 	 * Register Gringotts as economy provider for vault.
 	 */
 	private void registerEconomy() {
-		if (Dependency.D.vault != null) {
+		if (D.vault.exists()) {
 			final ServicesManager sm = getServer().getServicesManager();
 			sm.register(Economy.class, new VaultEconomy(gringotts), this, ServicePriority.Highest);
 			log.info("Registered Vault interface.");
