@@ -1,15 +1,12 @@
 package org.gestern.gringotts.accountholder;
 
+import static org.gestern.gringotts.dependency.Dependency.D;
+
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.gestern.gringotts.Gringotts;
-import org.gestern.gringotts.dependency.Dependency;
-import org.gestern.gringotts.dependency.FactionsHandler;
-import org.gestern.gringotts.dependency.TownyHandler;
-
-import com.massivecraft.factions.Factions;
 
 /**
  * Manages creating various types of AccountHolder centrally.
@@ -33,15 +30,13 @@ public class AccountHolderFactory {
             return new PlayerAccountHolder(player);
         }
 
-        if (Dependency.D.factions != null) {
-        	FactionsHandler handler = new FactionsHandler();
-        	AccountHolder holder = handler.getAccountHolderByName(owner);
+        if (D.factions.enabled()) {
+        	AccountHolder holder = D.factions.getAccountHolderByName(owner);
         	if (holder != null) return holder;
         }
         
-        if (Dependency.D.towny != null) {
-    		TownyHandler handler = new TownyHandler();
-    		AccountHolder holder = handler.getAccountHolderByAccountName(owner);
+        if (D.towny.enabled()) {
+    		AccountHolder holder = D.towny.getAccountHolderByAccountName(owner);
     		if (holder!=null) return holder;
         }
         
@@ -69,15 +64,14 @@ public class AccountHolderFactory {
             else return null;
     	}
     	
-    	if (Dependency.D.factions != null && type.equals("faction")) {
-            if (Factions.i.exists(owner))
-                return new FactionAccountHolder(Factions.i.get(owner));
-            else return null;
+    	if (D.factions.enabled() && type.equals("faction")) {
+    		AccountHolder holder = D.factions.getAccountHolderById(owner); // try by id first, then by "faction-id" form name
+    		if (holder==null) holder = D.factions.getAccountHolderByName(owner); // maybe a bit hacky? whatever.
+    		if (holder!=null) return holder;
     	}
     	
-    	if (Dependency.D.towny != null && type.equals("towny")) {
-    		TownyHandler handler = new TownyHandler();
-    		AccountHolder holder = handler.getAccountHolderByAccountName(owner);
+    	if (D.towny.enabled() && type.equals("towny")) {
+    		AccountHolder holder = D.towny.getAccountHolderByAccountName(owner);
     		if (holder!=null) return holder;
     	} 
     	
