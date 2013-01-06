@@ -24,7 +24,7 @@ public class Gringotts extends JavaPlugin {
 	/** The Gringotts plugin instance. */
 	public static Gringotts gringotts;
 	
-	private Logger log = getLogger();
+	private Logger log;
 	
     private PluginManager pluginmanager;
         
