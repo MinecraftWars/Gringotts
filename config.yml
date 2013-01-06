@@ -2,7 +2,7 @@ currency:
   name:
     singular: Emerald
     plural: Emeralds
-  fractional: true
+  digits: 2
   denominations:
     388: 1
     133: 9
