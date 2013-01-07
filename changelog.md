@@ -1,6 +1,12 @@
 Gringotts Changelog
 ===================
 
+v1.4.2
+------
+* fix enderchest content being included in balance despite being disabled in config
+* minor fix to maintain Tekkit compatibility
+
+
 v1.4.1b
 ------
 * fix a dependency loop with factions and possible dependency issues
