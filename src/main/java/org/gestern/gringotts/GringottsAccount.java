@@ -45,7 +45,7 @@ public class GringottsAccount {
         if (player != null) {
         	if (usevault_inventory.allowed(player))
         		balance += new AccountInventory(player.getInventory()).balance();
-        	if (usevault_enderchest.allowed(player))
+        	if (config.usevaultEnderchest && usevault_enderchest.allowed(player))
         		balance += new AccountInventory(player.getEnderChest()).balance();
         }
 
@@ -129,7 +129,7 @@ public class GringottsAccount {
         if (player != null) {
         	if (usevault_inventory.allowed(player))
         		remaining -= new AccountInventory(player.getInventory()).remove(remaining);
-        	if (Configuration.config.usevaultEnderchest && usevault_enderchest.allowed(player))
+        	if (config.usevaultEnderchest && usevault_enderchest.allowed(player))
         		remaining -= new AccountInventory(player.getEnderChest()).remove(remaining);
         }
         
