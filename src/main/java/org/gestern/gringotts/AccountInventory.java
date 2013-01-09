@@ -120,14 +120,4 @@ public class AccountInventory {
         return value - remaining;
 	}
 	
-	
-	/**
-	 * TODO: Find a good distribution of denominations to represent the value.
-	 * The implementation should minimize the amount of stacks used.
-	 * @param value
-	 * @return
-	 */
-//	private Map<Integer, Integer> stacking(long value) {
-//		return null;
-//	}
 }

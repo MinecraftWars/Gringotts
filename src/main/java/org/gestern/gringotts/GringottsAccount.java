@@ -15,7 +15,7 @@ import org.gestern.gringotts.api.TransactionResult;
 public class GringottsAccount {
 
     @SuppressWarnings("unused")
-	private final Logger log = Gringotts.gringotts.getLogger();
+	private final Logger log = Gringotts.G.getLogger();
     private final DAO dao = DAO.getDao(); 
 
     public final AccountHolder owner;

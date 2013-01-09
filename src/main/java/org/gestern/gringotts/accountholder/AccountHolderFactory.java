@@ -16,7 +16,7 @@ import org.gestern.gringotts.Gringotts;
  */
 public class AccountHolderFactory {
 	
-	private final Logger log = Gringotts.gringotts.getLogger();
+	private final Logger log = Gringotts.G.getLogger();
 
 	/**
 	 * Get an account holder with automatically determined type, based on the owner's name.

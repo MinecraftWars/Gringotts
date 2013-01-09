@@ -41,7 +41,7 @@ public class DAO {
 	/** Singleton DAO instance. */
 	private static final DAO dao = new DAO();
 	
-	private final Logger log = Gringotts.gringotts.getLogger();
+	private final Logger log = Gringotts.G.getLogger();
 	
 	private final Driver driver;
 	private Connection connection;
@@ -58,7 +58,7 @@ public class DAO {
 	
 	private DAO() {
 		
-		String dbPath = Gringotts.gringotts.getDataFolder().getAbsolutePath();
+		String dbPath = Gringotts.G.getDataFolder().getAbsolutePath();
 		dbString = "jdbc:derby:" + dbPath+"/"+dbName;
 		String connectString = dbString + ";create=true";
 

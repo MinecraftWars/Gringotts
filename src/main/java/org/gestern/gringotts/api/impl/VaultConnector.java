@@ -32,7 +32,7 @@ public class VaultConnector implements Economy {
 
     @Override
     public boolean isEnabled(){
-        return Gringotts.gringotts != null && Gringotts.gringotts.isEnabled();
+        return Gringotts.G != null && Gringotts.G.isEnabled();
     }
 
     @Override

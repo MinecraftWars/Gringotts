@@ -13,7 +13,7 @@ import org.gestern.gringotts.accountholder.AccountHolder;
  */
 public class Accounting {
 
-	private final Logger log = Gringotts.gringotts.getLogger();
+	private final Logger log = Gringotts.G.getLogger();
     private final DAO dao = DAO.getDao();
     
 

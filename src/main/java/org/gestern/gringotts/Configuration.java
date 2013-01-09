@@ -20,7 +20,7 @@ import org.gestern.gringotts.currency.GringottsCurrency;
 public enum Configuration {
     config;
     
-    private final Logger log = Gringotts.gringotts.getLogger();
+    private final Logger log = Gringotts.G.getLogger();
 
     /** Currency item types. The item types are ordered by their respective unit value. */
     public GringottsCurrency currency;

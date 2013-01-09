@@ -20,7 +20,7 @@ import org.bukkit.inventory.InventoryHolder;
  */
 public class AccountChest {
 
-	private final Logger log = Gringotts.gringotts.getLogger();
+	private final Logger log = Gringotts.G.getLogger();
     
     private final DAO dao = DAO.getDao();
 

@@ -22,7 +22,7 @@ import org.gestern.gringotts.api.impl.GringottsEco;
  *
  */
 public class Commands {
-    Logger log = Gringotts.gringotts.getLogger();
+    Logger log = Gringotts.G.getLogger();
 
     private Gringotts plugin;
     private Configuration conf = Configuration.config;

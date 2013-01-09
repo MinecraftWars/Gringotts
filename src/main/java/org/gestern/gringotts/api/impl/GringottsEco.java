@@ -30,7 +30,7 @@ public class GringottsEco implements Eco {
 		AccountHolder owner = accountOwners.get(id);
 		if (owner == null) return new InvalidAccount("virtual", id);
 		
-		GringottsAccount gAccount = Gringotts.gringotts.accounting.getAccount(owner);
+		GringottsAccount gAccount = Gringotts.G.accounting.getAccount(owner);
 		return new ValidAccount(gAccount);
 		
 	}

@@ -9,11 +9,9 @@ import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.ServicesManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.gestern.gringotts.accountholder.AccountHolderFactory;
 import org.gestern.gringotts.api.impl.VaultConnector;
 import org.mcstats.MetricsLite;
 
@@ -22,14 +20,11 @@ import org.mcstats.MetricsLite;
 public class Gringotts extends JavaPlugin {
 
 	/** The Gringotts plugin instance. */
-	public static Gringotts gringotts;
+	public static Gringotts G;
 	
 	private Logger log;
-	
-    private PluginManager pluginmanager;
         
     private Commands gcommand;
-    public AccountHolderFactory accountHolderFactory;
 
     /** Manages accounts. */
     public Accounting accounting;
@@ -38,12 +33,15 @@ public class Gringotts extends JavaPlugin {
     @Override
     public void onEnable() {
     	
-    	gringotts = this;
+    	G = this;
     	log = getLogger();
-    	pluginmanager = getServer().getPluginManager();
+    	
+        // load and init configuration
+        saveDefaultConfig(); // saves default configuration if no config.yml exists yet
+        FileConfiguration savedConfig = getConfig();
+        Configuration.config.readConfig(savedConfig);
     	
     	gcommand = new Commands(this);
-    	accountHolderFactory = new AccountHolderFactory();
     	 
         CommandExecutor playerCommands = gcommand.new Money();
         CommandExecutor moneyAdminCommands = gcommand.new Moneyadmin();
@@ -54,14 +52,9 @@ public class Gringotts extends JavaPlugin {
         getCommand("moneyadmin").setExecutor(moneyAdminCommands);
         getCommand("gringotts").setExecutor(adminCommands);
 
-        // load and init configuration
-        saveDefaultConfig(); // saves default configuration if no config.yml exists yet
-        FileConfiguration savedConfig = getConfig();
-        Configuration.config.readConfig(savedConfig);
-
         accounting = new Accounting();
 
-        registerEvents();
+        getServer().getPluginManager().registerEvents(new AccountListener(this), this);
         registerEconomy();
         
         try {
@@ -96,9 +89,5 @@ public class Gringotts extends JavaPlugin {
 			log.info("Vault not found. Other plugins may not be able to access Gringotts accounts.");
 		}
 	}
-
-    private void registerEvents() {
-        pluginmanager.registerEvents(new AccountListener(this), this);
-    }
 
 }

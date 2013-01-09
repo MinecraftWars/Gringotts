@@ -25,7 +25,7 @@ public enum Dependency {
 	/** Singleton instance. */
 	D;
 	
-	private final Logger log = Gringotts.gringotts.getLogger();
+	private final Logger log = Gringotts.G.getLogger();
 	
 	public final FactionsHandler factions;
 	public final TownyHandler towny;
