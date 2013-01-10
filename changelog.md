@@ -1,11 +1,16 @@
 Gringotts Changelog
 ===================
 
+v1.5.0
+------
+* add commands `/money withdraw` and `/money deposit` to withdraw money from vaults to inventory and vice versa.
+* new alias for `/money`: `/m`
+* backend-wise: an API for Gringotts transactions. Currently only documented per Javadoc in source.
+
 v1.4.2
 ------
 * fix enderchest content being included in balance despite being disabled in config
 * minor fix to maintain Tekkit compatibility
-
 
 v1.4.1b
 ------

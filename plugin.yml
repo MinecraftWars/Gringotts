@@ -86,6 +86,7 @@ permissions:
   gringotts.command.deposit:
     description: Allow deposit of money to chest storage from inventory.
     default: true
+
   gringotts.admin:
     description: Use all /moneyadmin commands
     default: op
