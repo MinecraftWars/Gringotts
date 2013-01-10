@@ -21,7 +21,7 @@ public interface Eco {
 	 * @param name The name of the player owning the account.
 	 * @return The player account representation
 	 */
-	Account player(String name);
+	PlayerAccount player(String name);
 	
 	/**
 	 * Access a bank account with given name.
