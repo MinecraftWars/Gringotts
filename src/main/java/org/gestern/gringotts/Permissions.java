@@ -11,7 +11,9 @@ public enum Permissions {
 	createvault_town("gringotts.createvault.town"),
 	createvault_nation("gringotts.createvault.nation"),
 	
-	transfer("gringotts.transfer")
+	transfer("gringotts.transfer"),
+	command_withdraw("gringotts.command.withdraw"),
+	command_deposit("gringotts.command.deposit")
 	;
 	
 	public final String node;

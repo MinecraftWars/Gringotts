@@ -16,7 +16,7 @@ commands:
     usage: /balance
     aliases: money
   money:
-    aliases: [money]
+    aliases: [money, m]
     description: Money actions
     usage: |
       /money
@@ -56,6 +56,7 @@ permissions:
   gringotts.createvault.nation:
     description: Create nation vaults (Towny only)
     default: true
+
   gringotts.usevault:
     description: Use any type of vault
     default: true
@@ -68,8 +69,22 @@ permissions:
   gringotts.usevault.enderchest:
     description: Use player's enderchest inventory as vault
     default: true
+
+  gringotts.command:
+    description: Allow all user transaction commands
+    default: true
+    children:
+      gringotts.transfer: true
+      gringotts.command.withdraw: true
+      gringotts.command.deposit: true
   gringotts.transfer:
     description: Allow money transfer commands
+    default: true
+  gringotts.command.withdraw:
+    description: Allow withdrawal of money from chest storage to inventory.
+    default: true
+  gringotts.command.deposit:
+    description: Allow deposit of money to chest storage from inventory.
     default: true
   gringotts.admin:
     description: Use all /moneyadmin commands

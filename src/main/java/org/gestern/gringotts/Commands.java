@@ -1,6 +1,7 @@
 package org.gestern.gringotts;
 
-import static org.gestern.gringotts.api.TransactionResult.SUCCESS;
+import static org.gestern.gringotts.api.TransactionResult.*;
+import static org.gestern.gringotts.Permissions.*;
 
 import java.util.logging.Logger;
 
@@ -64,59 +65,94 @@ public class Commands {
             if (args.length >= 2) {
                 try { value = Double.parseDouble(args[1]); } 
                 catch (NumberFormatException e) { return false; }
+                
+                if (command.equals("withdraw")) {
+                	withdraw(player, value);
+                	return true;
+                } else if (command.equals("deposit")) {
+                	deposit(player, value);
+                	return true;
+                }
             } 
 
             if(args.length == 3) {
                 // /money pay <amount> <player>
-                if (command.equals("pay")) {
-                	if (!Permissions.transfer.allowed(player)) {
-                		player.sendMessage("You do not have permission to transfer money.");
-                		return true;
-                	}
-                	
-                    String recipientName = args[2];
-                    
-                    Account from = eco.player(player.getName());
-                    Account to = eco.player(recipientName);
-                    
-                    TaxedTransaction transaction = eco.player(player.getName()).send(value).withTaxes();
-                    TransactionResult result = eco.player(player.getName()).send(value).withTaxes().to(eco.player(recipientName));
-                    
-                    double tax = transaction.tax();
-                    double valueAdded = value + tax;
-                    
-                    String formattedBalance = eco.currency().format(from.balance());
-                    String formattedValue = eco.currency().format(valueAdded);
-                    
-                    switch (result) {
-	                    case SUCCESS:
-	                    	String taxMessage = "Transaction tax deducted from your account: " + formattedValue;
-	                        from.message("Sent " + formattedValue + " to " + recipientName +". " + (tax>0? taxMessage : ""));
-	                        to.message("Received " + formattedValue + " from " + player.getName() +".");
-	                    	return true;
-	                    case INSUFFICIENT_FUNDS:
-	                    	from.message(
-	                                "Your account has insufficient balance. Current balance: " + formattedBalance 
-	                                + ". Required: " + formattedValue);
-	                    	return true;
-	                    case INSUFFICIENT_SPACE:
-	                    	from.message(recipientName + " has insufficient storage space for "+formattedValue);
-	                    	to.message(from.id() + " tried to send "+formattedValue+", but you don't have enough space for that amount.");
-	                    	return true;
-	                    	
-	                    default:
-	                    	from.message("Your attempt to send "+formattedValue+" to "+recipientName+" failed for unknown reasons.");
-	                    	return true;
-	                    }
-                    }
-                    
+                if (command.equals("pay"))
+                	return pay(player, value, args);
             }
             
             return false;
     	}
     }
+    	
     
-    /**
+    
+    private boolean pay(Player player, double value, String[] args) {
+    	if (!Permissions.transfer.allowed(player)) {
+    		player.sendMessage("You do not have permission to transfer money.");
+    		return true;
+    	}
+    	
+        String recipientName = args[2];
+        
+        Account from = eco.player(player.getName());
+        Account to = eco.player(recipientName);
+        
+        TaxedTransaction transaction = eco.player(player.getName()).send(value).withTaxes();
+        TransactionResult result = eco.player(player.getName()).send(value).withTaxes().to(eco.player(recipientName));
+        
+        double tax = transaction.tax();
+        double valueAdded = value + tax;
+        
+        String formattedBalance = eco.currency().format(from.balance());
+        String formattedValue = eco.currency().format(valueAdded);
+        
+        switch (result) {
+            case SUCCESS:
+            	String taxMessage = "Transaction tax deducted from your account: " + formattedValue;
+                from.message("Sent " + formattedValue + " to " + recipientName +". " + (tax>0? taxMessage : ""));
+                to.message("Received " + formattedValue + " from " + player.getName() +".");
+            	return true;
+            case INSUFFICIENT_FUNDS:
+            	from.message(
+                        "Your account has insufficient balance. Current balance: " + formattedBalance 
+                        + ". Required: " + formattedValue);
+            	return true;
+            case INSUFFICIENT_SPACE:
+            	from.message(recipientName + " has insufficient storage space for "+formattedValue);
+            	to.message(from.id() + " tried to send "+formattedValue+", but you don't have enough space for that amount.");
+            	return true;
+            	
+            default:
+            	from.message("Your attempt to send "+formattedValue+" to "+recipientName+" failed for unknown reasons.");
+            	return true;
+    	}
+    }
+    
+    private void deposit(Player player, double value) {
+    	
+    	if (command_deposit.allowed(player)) {
+    		TransactionResult result = eco.player(player.getName()).deposit(value);
+    		String formattedValue = eco.currency().format(value);
+    		if (result == SUCCESS)
+    			player.sendMessage(String.format("Deposited %s to your storage.", formattedValue));
+    		else
+    			player.sendMessage(String.format("Unable to deposit %s to your storage.", formattedValue));
+    	}
+    }
+    
+    private void withdraw(Player player, double value) {
+    	if (command_withdraw.allowed(player)) {
+    		TransactionResult result = eco.player(player.getName()).withdraw(value);
+    		String formattedValue = eco.currency().format(value);
+    		if (result == SUCCESS)
+    			player.sendMessage(String.format("Withdrew %s from your storage.", formattedValue));
+    		else
+    			player.sendMessage(String.format("Unable to withdraw %s from your storage.", formattedValue));
+    	}
+    }
+
+	/**
      * Admin commands for managing ingame aspects.
      */
     public class Moneyadmin implements CommandExecutor {
