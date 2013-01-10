@@ -5,7 +5,8 @@ v1.5.0
 ------
 * add commands `/money withdraw` and `/money deposit` to withdraw money from vaults to inventory and vice versa.
 * new alias for `/money`: `/m`
-* backend-wise: an API for Gringotts transactions. Currently only documented per Javadoc in source.
+* backend-wise: an API for Gringotts transactions. Currently only documented per Javadoc in source and incomplete.
+* fix issues woth `/gringotts reload` not affecting all operations in Gringotts
 
 v1.4.2
 ------
