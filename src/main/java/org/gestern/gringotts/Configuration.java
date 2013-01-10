@@ -99,6 +99,8 @@ public enum Configuration {
     private void parseCurrency(ConfigurationSection denomSection) {
     	
     	Set<String> denoms = denomSection.getKeys(false);
+    	if (denoms.isEmpty())
+    		throw new GringottsConfigurationException("No denominations configured. Please check your Gringotts configuration.");
     	
 		for (String denomStr : denoms) {
 			String[] parts = denomStr.split(";");
@@ -113,7 +115,7 @@ public enum Configuration {
     			double value = denomSection.getDouble(denomStr);
     			currency.addDenomination(denomType, value);
 			} catch (Exception e) {
-				throw new RuntimeException("Encountered an error parsing currency. Please check your Gringotts configuration.", e);
+				throw new GringottsConfigurationException("Encountered an error parsing currency. Please check your Gringotts configuration.", e);
 			}
 		}
     	

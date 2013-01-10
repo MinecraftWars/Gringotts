@@ -86,6 +86,7 @@ public class GringottsAccount {
         
         // allow largest denom value as threshold for available space
     	// TODO make maximum virtual amount configurable
+        // this is under the assumption that there is always at least 1 denomination
     	long largestDenomValue = config.currency.denominations().get(0).value;
     	if (remaining < largestDenomValue) {
     		dao.storeCents(this, remaining);
