@@ -48,9 +48,6 @@ Pay an amount to a player. The transaction will only succeed if your account has
     /moneyadmin b <account>
 Get the balance of a player's account.
 
-    /moneyadmin c <account>
-Get the available capacity of a player's account.
-
     /moneyadmin add <amount> <account>
 Add an amount of money to a player's account.
 
@@ -60,114 +57,13 @@ Remove an amount of money from a player's account.
     /gringotts reload
 Reload Gringotts config.yml and apply any changed settings.
 
-Installation
-------------
-* download [Gringotts v1.3.0](http://dev.bukkit.org/media/files/642/288/Gringotts-1.3.0.jar) and place it in your craftbukkit/plugins folder
+
+Installation and Configuration
+------------------------------
+* download [Gringotts](http://dev.bukkit.org/server-mods/gringotts/files/) and place it in your craftbukkit/plugins folder
 * download [Apache Derby](http://repo1.maven.org/maven2/org/apache/derby/derby/10.9.1.0/derby-10.9.1.0.jar) and place it in your craftbukkit/lib folder
 
-
-
-Configuration
--------------
-As usual with Bukkit plugins, the configuration is in the config.yml in the plugin's directory. A config.yml with the default settings is is created after starting and stopping the server with the plugin for the first time.
-
-### Currency ###
-Per default Gringotts uses emeralds as currency, but this can be changed to any other type of item.
-To use Gringotts with Tekkit, you will need to adjust this to a 1.2.5-compatible item (eg gold ingots, id 266) or a Tekkit item (eg industrial credits, id 30186)
-
-Example configuration section:
-
-    currency:
-      type: 388
-      datavalue: 0
-      name:
-        singular: Emerald
-        plural: Emeralds
-      fractional: true
-
-
-#### Individual settings
-
-* `type` The [item id](http://www.minecraftwiki.net/wiki/Data_values#Item_IDs) of the actual item type to use as currency.
-* `datavalue` Some items, such as dyes, have different subtypes. To specify the exact item type, set this field appropriately. For example, to use Lapis Lazuli, set `type` to `351` and `datavalue` to `4`.
-* `name` Name of the currency to be used in messages to players. Please enter both a singular and plural version.
-* `fractional` Whether to allow fractional values. `true` or `false`
-
-### Taxes ###
-
-Gringotts supports two types of taxes on transactions done via `/money pay` command: `flat` and `rate`. Flat taxes are a flat amount added to any transaction, while rate adds a percentage of the actual transaction. These can be used individually or combined.
-
-Example configuration section:
-
-    transactiontax:
-      flat: 1.0
-      rate: 0.05
-
-This would add to every transaction 1 plus 5% of the transaction value. For instance, if you had issued the command `/money pay 200 notch` it would remove 211 emeralds from your account, and add 200 emeralds to notch's account.
-
-### Misc ###
-
-    usevault:
-      container: true
-      enderchest: true
-
-Globally enable use of specific kinds of vault:
-* `container` Enable the use of container vaults: chests, dispensers and furnaces. If this is `false`, only player's inventory and/or enderchests will serve as a player "vault".
-* `enderchest` Enable use of enderchest as vault for players globally. The permission `gringotts.usevault.enderchest` may still be used to disable this on a per-player/world basis.
-
-
-Permissions
------------
-
-    gringotts.createvault:
-      default: true
-
-Allow players to create any type of vault.
-
-    gringotts.createvault.player:
-      default: true
-
-Allow players to create vaults for their own account.
-
-    gringotts.createvault.faction:
-      default: true
-
-Allow players to create vaults for their faction (Factions only).
-
-    gringotts.createvault.town:
-      default: true
-
-Allow players to create vaults for their town (Towny only).
-
-    gringotts.createvault.nation:
-      default: true
-
-Allow players to create vaults for their nation (Towny only).
-
-    gringotts.usevault
-      default: true
-
-Use player inventory and player's enderchest as vault when player is online.
-
-    gringotts.usevault.inventory
-      default: true
-
-Use player inventory as vault when player is online.
-
-    gringotts.usevault.enderchest
-      default:true
-
-Use player's enderchest as vault when player is online.
-
-    gringotts.transfer:
-      default: true
-
-Allow players to transfer money to other accounts via `/money pay`
-
-    gringotts.admin:
-      default: op
-
-Allow use of all `/moneyadmin` commands
+Please see the [Configuration and Permissions](https://github.com/MinecraftWars/Gringotts/blob/master/doc/configuration.md) document on how to configure Gringotts.
 
 
 Development

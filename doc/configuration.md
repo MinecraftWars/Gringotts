@@ -65,6 +65,8 @@ Globally enable use of specific kinds of vault:
 Permissions
 -----------
 
+### Vault creation
+
     gringotts.createvault:
       default: true
 
@@ -88,6 +90,8 @@ Allow players to create vaults for their town (Towny only).
     gringotts.createvault.nation:
       default: true
 
+### Vault usage
+
 Allow players to create vaults for their nation (Towny only).
 
     gringotts.usevault
@@ -101,12 +105,30 @@ Use player inventory and player's enderchest as vault when player is online.
 Use player inventory as vault when player is online.
 
     gringotts.usevault.enderchest
-      default:true
+      default: true
+
+### User commands
 
 Use player's enderchest as vault when player is online.
 
+    gringotts.command
+      default: true
+
+Allow all user transaction commands (pay, deposit, withdraw)
+
+    gringotts.command.withdraw:
+      default: true
+
+Allow withdrawal of money from chest storage to inventory via `/money withdraw`.
+    
+    gringotts.command.deposit:
+      default: true
+Allow deposit of money to chest storage from inventory via `/money deposit`.
+    
     gringotts.transfer:
       default: true
+
+### Admin permissions
 
 Allow players to transfer money to other accounts via `/money pay`
 
