@@ -1,20 +1,25 @@
 package org.gestern.gringotts.api.impl;
 
-import static org.gestern.gringotts.api.TransactionResult.ERROR;
+import static org.gestern.gringotts.api.TransactionResult.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.gestern.gringotts.AccountInventory;
 import org.gestern.gringotts.Configuration;
 import org.gestern.gringotts.DAO;
 import org.gestern.gringotts.Gringotts;
 import org.gestern.gringotts.GringottsAccount;
 import org.gestern.gringotts.accountholder.AccountHolder;
 import org.gestern.gringotts.accountholder.AccountHolderFactory;
+import org.gestern.gringotts.accountholder.PlayerAccountHolder;
 import org.gestern.gringotts.api.Account;
 import org.gestern.gringotts.api.BankAccount;
 import org.gestern.gringotts.api.Currency;
 import org.gestern.gringotts.api.Eco;
+import org.gestern.gringotts.api.PlayerAccount;
 import org.gestern.gringotts.api.Transaction;
 import org.gestern.gringotts.api.TransactionResult;
 import org.gestern.gringotts.currency.GringottsCurrency;
@@ -36,13 +41,17 @@ public class GringottsEco implements Eco {
 	}
 
 	@Override
-    public Account player(String name) {
-		return custom ("player", name);
+    public PlayerAccount player(String name) {
+		AccountHolder owner = accountOwners.get("player", name);
+		if (owner instanceof PlayerAccountHolder)
+			return new ValidPlayerAccount(Gringotts.G.accounting.getAccount(owner));
+		
+		return new InvalidAccount("player", name);
     }
 
 	@Override
     public BankAccount bank(String name) {
-		throw new RuntimeException("Banks not implemented yet in Gringotts");
+		return new InvalidAccount("bank", name);
     }
 
 	@Override
@@ -79,7 +88,7 @@ public class GringottsEco implements Eco {
 	    return true;
     }
 	
-	private class InvalidAccount implements Account {
+	private class InvalidAccount implements Account, BankAccount, PlayerAccount {
 		
 		private final String type;
 		private final String id;
@@ -149,12 +158,42 @@ public class GringottsEco implements Eco {
         public void message(String message) {
 			// do nothing - no owner on this
         }
+
+		@Override
+        public BankAccount addOwner(String player) {
+	        return this;
+        }
+
+		@Override
+        public BankAccount addMember(String player) {
+	        return this;
+        }
+
+		@Override
+        public boolean isOwner(String player) {
+	        return false;
+        }
+
+		@Override
+        public boolean isMember(String player) {
+	        return false;
+        }
+
+		@Override
+        public TransactionResult deposit(double value) {
+	        return ERROR;
+        }
+
+		@Override
+        public TransactionResult withdraw(double value) {
+	        return ERROR;
+        }
 		
 	}
 	
 	private class ValidAccount implements Account {
 		
-		GringottsAccount acc;
+		protected GringottsAccount acc;
 		
 		public ValidAccount(GringottsAccount acc) {
 			this.acc = acc;
@@ -222,6 +261,47 @@ public class GringottsEco implements Eco {
 		@Override
         public void message(String message) {
 	        acc.owner.sendMessage(message);
+        }
+		
+	}
+	
+	private class ValidPlayerAccount extends ValidAccount implements PlayerAccount {
+
+		public ValidPlayerAccount(GringottsAccount acc) {
+	        super(acc);
+        }
+
+		@Override
+        public TransactionResult deposit(double value) {
+			PlayerAccountHolder owner = (PlayerAccountHolder) acc.owner;
+			Player player = Bukkit.getPlayer(owner.getId());
+			AccountInventory playerInventory = new AccountInventory(player.getInventory());
+			long centValue = curr.gcurr.centValue(value);
+			
+			long toDeposit = playerInventory.remove(centValue);
+			if (toDeposit > centValue) 
+				toDeposit -= playerInventory.add(toDeposit - centValue);
+			
+			TransactionResult result = player(player.getName()).add(curr.gcurr.displayValue(toDeposit));
+			if (result != SUCCESS)
+				playerInventory.add(toDeposit);
+			
+			return result;
+        }
+
+		@Override
+        public TransactionResult withdraw(double value) {
+			PlayerAccountHolder owner = (PlayerAccountHolder) acc.owner;
+			Player player = Bukkit.getPlayer(owner.getId());
+			AccountInventory playerInventory = new AccountInventory(player.getInventory());
+			long centValue = curr.gcurr.centValue(value);
+			
+			TransactionResult remove = acc.remove(centValue);
+			if (remove == SUCCESS) {
+				long withdrawn = playerInventory.add(centValue);
+				return acc.add(centValue-withdrawn); // add possible leftovers back to account
+			}
+			return remove;
         }
 		
 	}
