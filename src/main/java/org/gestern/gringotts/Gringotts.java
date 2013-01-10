@@ -66,6 +66,9 @@ public class Gringotts extends JavaPlugin {
         	log.info("Failed to submit PluginMetrics stats");
         }
         
+        // just call DAO once to ensure it's loaded before startup is complete
+        DAO.getDao();
+        
         log.fine("enabled");
     }
 
