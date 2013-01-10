@@ -2,6 +2,7 @@ package org.gestern.gringotts;
 
 import static org.gestern.gringotts.Permissions.*;
 import static org.gestern.gringotts.api.TransactionResult.*;
+import static org.gestern.gringotts.Configuration.CONF;
 
 import java.util.logging.Logger;
 
@@ -19,8 +20,6 @@ public class GringottsAccount {
     private final DAO dao = DAO.getDao(); 
 
     public final AccountHolder owner;
-    
-	private final Configuration config = Configuration.config;
 
     public GringottsAccount(AccountHolder owner) {
     	if (owner == null) {
@@ -36,7 +35,7 @@ public class GringottsAccount {
     public long balance() {
         long balance = 0;
         
-        if (config.usevaultContainer) {
+        if (CONF.usevaultContainer) {
 	        for (AccountChest chest : dao.getChests(this))
 	            balance += chest.balance();
         }
@@ -45,7 +44,7 @@ public class GringottsAccount {
         if (player != null) {
         	if (usevault_inventory.allowed(player))
         		balance += new AccountInventory(player.getInventory()).balance();
-        	if (config.usevaultEnderchest && usevault_enderchest.allowed(player))
+        	if (CONF.usevaultEnderchest && usevault_enderchest.allowed(player))
         		balance += new AccountInventory(player.getEnderChest()).balance();
         }
 
@@ -68,7 +67,7 @@ public class GringottsAccount {
         long remaining = amount + centsStored;
 
         // add currency to account's vaults
-        if (config.usevaultContainer) {
+        if (CONF.usevaultContainer) {
 	        for (AccountChest chest : dao.getChests(this)) {
 	        	remaining -= chest.add(remaining);
 	            if (remaining <= 0) break;
@@ -80,14 +79,14 @@ public class GringottsAccount {
         if (player != null) {
         	if (usevault_inventory.allowed(player))
         		remaining -= new AccountInventory(player.getInventory()).add(remaining);
-        	if (Configuration.config.usevaultEnderchest && usevault_enderchest.allowed(player))
+        	if (CONF.usevaultEnderchest && usevault_enderchest.allowed(player))
         		remaining -= new AccountInventory(player.getEnderChest()).add(remaining);
         }
         
         // allow largest denom value as threshold for available space
     	// TODO make maximum virtual amount configurable
         // this is under the assumption that there is always at least 1 denomination
-    	long largestDenomValue = config.currency.denominations().get(0).value;
+    	long largestDenomValue = CONF.currency.denominations().get(0).value;
     	if (remaining < largestDenomValue) {
     		dao.storeCents(this, remaining);
     		remaining = 0;
@@ -121,7 +120,7 @@ public class GringottsAccount {
         long remaining = amount;
 
         // Now remove the physical amount left
-        if (config.usevaultContainer) {
+        if (CONF.usevaultContainer) {
 	        for (AccountChest chest : dao.getChests(this))
 	            remaining -= chest.remove(remaining);
         }
@@ -130,7 +129,7 @@ public class GringottsAccount {
         if (player != null) {
         	if (usevault_inventory.allowed(player))
         		remaining -= new AccountInventory(player.getInventory()).remove(remaining);
-        	if (config.usevaultEnderchest && usevault_enderchest.allowed(player))
+        	if (CONF.usevaultEnderchest && usevault_enderchest.allowed(player))
         		remaining -= new AccountInventory(player.getEnderChest()).remove(remaining);
         }
         

@@ -1,6 +1,8 @@
 package org.gestern.gringotts.api.impl;
 
-import static org.gestern.gringotts.api.TransactionResult.*;
+import static org.gestern.gringotts.Configuration.CONF;
+import static org.gestern.gringotts.api.TransactionResult.ERROR;
+import static org.gestern.gringotts.api.TransactionResult.SUCCESS;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -8,7 +10,6 @@ import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.gestern.gringotts.AccountInventory;
-import org.gestern.gringotts.Configuration;
 import org.gestern.gringotts.DAO;
 import org.gestern.gringotts.Gringotts;
 import org.gestern.gringotts.GringottsAccount;
@@ -27,7 +28,6 @@ import org.gestern.gringotts.currency.GringottsCurrency;
 public class GringottsEco implements Eco {
 	
 	private final AccountHolderFactory accountOwners = new AccountHolderFactory();
-	private final Curr curr = new Curr(Configuration.config.currency);
 	private final DAO dao = DAO.getDao();
 	
 	@Override
@@ -80,7 +80,7 @@ public class GringottsEco implements Eco {
 
 	@Override
     public Currency currency() {
-	    return curr;
+	    return new Curr(CONF.currency);
     }
 
 	@Override
@@ -218,12 +218,12 @@ public class GringottsEco implements Eco {
 
 		@Override
         public double balance() {
-	        return curr.gcurr.displayValue(acc.balance());
+	        return CONF.currency.displayValue(acc.balance());
         }
 
 		@Override
         public boolean has(double value) {
-			return acc.balance() >= curr.gcurr.centValue(value);
+			return acc.balance() >= CONF.currency.centValue(value);
         }
 
 		@Override
@@ -234,13 +234,13 @@ public class GringottsEco implements Eco {
 		@Override
         public TransactionResult add(double value) {
 			if (value < 0) return remove(-value);
-			return acc.add(curr.gcurr.centValue(value));
+			return acc.add(CONF.currency.centValue(value));
         }
 
 		@Override
         public TransactionResult remove(double value) {
 			if (value < 0) return add(-value);
-			return acc.remove(curr.gcurr.centValue(value));
+			return acc.remove(CONF.currency.centValue(value));
         }
 
 		@Override
@@ -276,13 +276,13 @@ public class GringottsEco implements Eco {
 			PlayerAccountHolder owner = (PlayerAccountHolder) acc.owner;
 			Player player = Bukkit.getPlayer(owner.getId());
 			AccountInventory playerInventory = new AccountInventory(player.getInventory());
-			long centValue = curr.gcurr.centValue(value);
+			long centValue = CONF.currency.centValue(value);
 			
 			long toDeposit = playerInventory.remove(centValue);
 			if (toDeposit > centValue) 
 				toDeposit -= playerInventory.add(toDeposit - centValue);
 			
-			TransactionResult result = player(player.getName()).add(curr.gcurr.displayValue(toDeposit));
+			TransactionResult result = player(player.getName()).add(CONF.currency.displayValue(toDeposit));
 			if (result != SUCCESS)
 				playerInventory.add(toDeposit);
 			
@@ -294,7 +294,7 @@ public class GringottsEco implements Eco {
 			PlayerAccountHolder owner = (PlayerAccountHolder) acc.owner;
 			Player player = Bukkit.getPlayer(owner.getId());
 			AccountInventory playerInventory = new AccountInventory(player.getInventory());
-			long centValue = curr.gcurr.centValue(value);
+			long centValue = CONF.currency.centValue(value);
 			
 			TransactionResult remove = acc.remove(centValue);
 			if (remove == SUCCESS) {

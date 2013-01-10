@@ -1,6 +1,6 @@
 package org.gestern.gringotts;
 
-import static org.gestern.gringotts.dependency.Dependency.D;
+import static org.gestern.gringotts.dependency.Dependency.DEP;
 
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -14,6 +14,8 @@ import org.bukkit.plugin.ServicesManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.gestern.gringotts.api.impl.VaultConnector;
 import org.mcstats.MetricsLite;
+
+import static org.gestern.gringotts.Configuration.CONF;
 
 
 
@@ -39,7 +41,7 @@ public class Gringotts extends JavaPlugin {
         // load and init configuration
         saveDefaultConfig(); // saves default configuration if no config.yml exists yet
         FileConfiguration savedConfig = getConfig();
-        Configuration.config.readConfig(savedConfig);
+        CONF.readConfig(savedConfig);
     	
     	gcommand = new Commands(this);
     	 
@@ -81,7 +83,7 @@ public class Gringotts extends JavaPlugin {
 	 * Register Gringotts as economy provider for vault.
 	 */
 	private void registerEconomy() {
-		if (D.vault.exists()) {
+		if (DEP.vault.exists()) {
 			final ServicesManager sm = getServer().getServicesManager();
 			sm.register(Economy.class, new VaultConnector(), this, ServicePriority.Highest);
 			log.info("Registered Vault interface.");

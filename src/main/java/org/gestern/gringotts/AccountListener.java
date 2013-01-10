@@ -4,7 +4,7 @@ import static org.gestern.gringotts.Permissions.createvault_faction;
 import static org.gestern.gringotts.Permissions.createvault_nation;
 import static org.gestern.gringotts.Permissions.createvault_player;
 import static org.gestern.gringotts.Permissions.createvault_town;
-import static org.gestern.gringotts.dependency.Dependency.D;
+import static org.gestern.gringotts.dependency.Dependency.DEP;
 
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -48,38 +48,38 @@ public class AccountListener implements Listener {
         		return;
         	}
             chestOwner = new PlayerAccountHolder(player);
-        } else if (D.factions.enabled() && line0.equalsIgnoreCase("[faction vault]")) {
+        } else if (DEP.factions.enabled() && line0.equalsIgnoreCase("[faction vault]")) {
         	if (!createvault_faction.allowed(player)) {
         		noPermission(player);
         		return;
         	}
         	
-        	AccountHolder holder = D.factions.getFactionAccountHolder(player);
+        	AccountHolder holder = DEP.factions.getFactionAccountHolder(player);
         	if (holder==null) {
         		player.sendMessage("Cannot create faction vault: You are not in a faction.");
             	return;
         	}
             chestOwner = holder;
-        } else if (D.towny.enabled()  && line0.equalsIgnoreCase("[town vault]")) {
+        } else if (DEP.towny.enabled()  && line0.equalsIgnoreCase("[town vault]")) {
         	if (!createvault_town.allowed(player)) {
         		noPermission(player);
         		return;
         	}
         	
         	
-        	chestOwner = D.towny.getTownAccountHolder(player);
+        	chestOwner = DEP.towny.getTownAccountHolder(player);
         	if (chestOwner == null) {
         		player.sendMessage("Cannot create town vault: You are not resident of a town.");
 				return;
         	}
         	
-        } else if (D.towny.enabled()  && line0.equalsIgnoreCase("[nation vault]")) {
+        } else if (DEP.towny.enabled()  && line0.equalsIgnoreCase("[nation vault]")) {
         	if (!createvault_nation.allowed(player)) {
         		noPermission(player);
         		return;
         	}
         	
-        	chestOwner = D.towny.getNationAccountHolder(player);
+        	chestOwner = DEP.towny.getNationAccountHolder(player);
         	if (chestOwner == null) {
         		player.sendMessage("Cannot create nation vault.");
 				return;

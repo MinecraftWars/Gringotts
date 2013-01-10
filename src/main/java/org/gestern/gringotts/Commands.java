@@ -15,6 +15,8 @@ import org.gestern.gringotts.api.TaxedTransaction;
 import org.gestern.gringotts.api.TransactionResult;
 import org.gestern.gringotts.api.impl.GringottsEco;
 
+import static org.gestern.gringotts.Configuration.CONF;
+
 
 /**
  * Handlers for player and console commands.
@@ -26,7 +28,6 @@ public class Commands {
     Logger log = Gringotts.G.getLogger();
 
     private Gringotts plugin;
-    private Configuration conf = Configuration.config;
 	
 	Eco eco = new GringottsEco();
 
@@ -242,7 +243,7 @@ public class Commands {
 
 			if (args.length >=1 && "reload".equalsIgnoreCase(args[0])) {
 				plugin.reloadConfig();
-				conf.readConfig(plugin.getConfig());
+				CONF.readConfig(plugin.getConfig());
 				sender.sendMessage("Gringotts: Reloaded configuration!");
 				return true;
 			}

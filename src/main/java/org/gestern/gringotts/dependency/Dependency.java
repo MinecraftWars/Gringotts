@@ -22,8 +22,8 @@ import static org.gestern.gringotts.Util.versionAtLeast;
  */
 public enum Dependency {
 	
-	/** Singleton instance. */
-	D;
+	/** Singleton dependency manager instance. */
+	DEP;
 	
 	private final Logger log = Gringotts.G.getLogger();
 	

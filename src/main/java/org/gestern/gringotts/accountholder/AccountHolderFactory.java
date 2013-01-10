@@ -1,6 +1,6 @@
 package org.gestern.gringotts.accountholder;
 
-import static org.gestern.gringotts.dependency.Dependency.D;
+import static org.gestern.gringotts.dependency.Dependency.DEP;
 
 import java.util.logging.Logger;
 
@@ -30,13 +30,13 @@ public class AccountHolderFactory {
             return new PlayerAccountHolder(player);
         }
 
-        if (D.factions.enabled()) {
-        	AccountHolder holder = D.factions.getAccountHolderByName(owner);
+        if (DEP.factions.enabled()) {
+        	AccountHolder holder = DEP.factions.getAccountHolderByName(owner);
         	if (holder != null) return holder;
         }
         
-        if (D.towny.enabled()) {
-    		AccountHolder holder = D.towny.getAccountHolderByAccountName(owner);
+        if (DEP.towny.enabled()) {
+    		AccountHolder holder = DEP.towny.getAccountHolderByAccountName(owner);
     		if (holder!=null) return holder;
         }
         
@@ -64,14 +64,14 @@ public class AccountHolderFactory {
             else return null;
     	}
     	
-    	if (D.factions.enabled() && type.equals("faction")) {
-    		AccountHolder holder = D.factions.getAccountHolderById(owner); // try by id first, then by "faction-id" form name
-    		if (holder==null) holder = D.factions.getAccountHolderByName(owner); // maybe a bit hacky? whatever.
+    	if (DEP.factions.enabled() && type.equals("faction")) {
+    		AccountHolder holder = DEP.factions.getAccountHolderById(owner); // try by id first, then by "faction-id" form name
+    		if (holder==null) holder = DEP.factions.getAccountHolderByName(owner); // maybe a bit hacky? whatever.
     		if (holder!=null) return holder;
     	}
     	
-    	if (D.towny.enabled() && type.equals("towny")) {
-    		AccountHolder holder = D.towny.getAccountHolderByAccountName(owner);
+    	if (DEP.towny.enabled() && type.equals("towny")) {
+    		AccountHolder holder = DEP.towny.getAccountHolderByAccountName(owner);
     		if (holder!=null) return holder;
     	} 
     	

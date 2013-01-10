@@ -1,9 +1,9 @@
 package org.gestern.gringotts.api.impl;
 
+import static org.gestern.gringotts.Configuration.CONF;
 import static org.gestern.gringotts.api.TransactionResult.ERROR;
 import static org.gestern.gringotts.api.TransactionResult.SUCCESS;
 
-import org.gestern.gringotts.Configuration;
 import org.gestern.gringotts.api.Account;
 import org.gestern.gringotts.api.TaxedTransaction;
 import org.gestern.gringotts.api.Transaction;
@@ -55,8 +55,7 @@ public class GringottsTransaction implements Transaction {
 	
 	public TaxedTransaction withTaxes() {
 		
-		Configuration conf = Configuration.config;
-        double tax = conf.transactionTaxFlat + value * conf.transactionTaxRate;
+        double tax = CONF.transactionTaxFlat + value * CONF.transactionTaxRate;
         return new GringottsTaxedTransaction(this, tax);
 	}
 	

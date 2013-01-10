@@ -18,7 +18,9 @@ import org.gestern.gringotts.currency.GringottsCurrency;
  *
  */
 public enum Configuration {
-    config;
+	
+	/** Central configuration instance. */
+    CONF;
     
     private final Logger log = Gringotts.G.getLogger();
 
@@ -49,12 +51,12 @@ public enum Configuration {
         if (Util.versionAtLeast(version, "1.3.1")) {
         	log.info("Found Bukkit version: "+version+". All features enabled.");
     		
-        	config.usevaultEnderchest = savedConfig.getBoolean("usevault.enderchest", true);
+        	CONF.usevaultEnderchest = savedConfig.getBoolean("usevault.enderchest", true);
             
         } else {
         	log.info("Found Bukkit version: "+version+". Disabling 1.3+ features.");
         	
-            config.usevaultEnderchest = false;
+            CONF.usevaultEnderchest = false;
         }
         
         // legacy parameter sets digits to 0 (false) or 2 (true)
@@ -83,10 +85,10 @@ public enum Configuration {
         
         
 
-        config.transactionTaxFlat = savedConfig.getDouble("transactiontax.flat", 0);
-        config.transactionTaxRate = savedConfig.getDouble("transactiontax.rate", 0);
+        CONF.transactionTaxFlat = savedConfig.getDouble("transactiontax.flat", 0);
+        CONF.transactionTaxRate = savedConfig.getDouble("transactiontax.rate", 0);
         
-        config.usevaultContainer = savedConfig.getBoolean("usevault.container", true);
+        CONF.usevaultContainer = savedConfig.getBoolean("usevault.container", true);
     }
     
     /**

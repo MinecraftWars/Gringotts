@@ -8,6 +8,8 @@ import org.bukkit.inventory.ItemStack;
 import org.gestern.gringotts.currency.GringottsCurrency;
 import org.gestern.gringotts.currency.Denomination;
 
+import static org.gestern.gringotts.Configuration.CONF;
+
 /**
  * Account inventories define operations that can be used on all inventories belonging to an account.
  * 
@@ -27,7 +29,7 @@ public class AccountInventory {
 	 * @return current balance of this inventory in cents
 	 */
 	public long balance() {
-		GringottsCurrency cur = Configuration.config.currency;
+		GringottsCurrency cur = CONF.currency;
 		long count = 0;	
         for (ItemStack stack : inventory)
     		count += cur.value(stack);
@@ -46,7 +48,7 @@ public class AccountInventory {
         long remaining = value;
         
         // try denominations from largest to smallest
-        for(Denomination denom : Configuration.config.currency.denominations()) {
+        for(Denomination denom : CONF.currency.denominations()) {
         	if (denom.value <= remaining) {
         		ItemStack stack = new ItemStack(denom.type);
         		int stacksize = stack.getMaxStackSize();
@@ -85,7 +87,7 @@ public class AccountInventory {
 		// avoid dealing with negatives
 		if (value <= 0) return 0;
 		
-		GringottsCurrency cur = Configuration.config.currency;
+		GringottsCurrency cur = CONF.currency;
         long remaining = value;
         
         // try denominations from smallest to largest
