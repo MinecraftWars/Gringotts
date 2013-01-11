@@ -1,7 +1,7 @@
 Gringotts
 =========
 
-Gringotts is an item-based economy plugin for the Bukkit Minecraft server platform. Unlike earlier economy plugins such as iConomy, all currency value and money transactions are based on actual items in Minecraft, per default emeralds. The goals are to add a greater level of immersion, a generally more Minecraft-like feeling, and in the case of a PvP environment, making the currency itself vulnerable to raiding.
+Gringotts is an item-based economy plugin for the Bukkit Minecraft server platform. Unlike earlier economy plugins, all currency value and money transactions are based on actual items in Minecraft, per default emeralds. The goals are to add a greater level of immersion, a generally more Minecraft-like feeling, and in the case of a PvP environment, making the currency itself vulnerable to raiding.
 
 Gringotts was created for the [Minecraft Wars](http://www.minecraft-wars.com/) PvP/survival server.
 

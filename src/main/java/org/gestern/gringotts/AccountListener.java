@@ -6,6 +6,7 @@ import static org.gestern.gringotts.Permissions.createvault_player;
 import static org.gestern.gringotts.Permissions.createvault_town;
 import static org.gestern.gringotts.dependency.Dependency.DEP;
 
+import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
@@ -96,6 +97,7 @@ public class AccountListener implements Listener {
             
             // check for existence / add to tracking
             if (accounting.addChest(account, accountChest)) {
+            	event.setLine(0, ChatColor.BOLD + line0);
                 event.setLine(2, chestOwner.getName());
                 player.sendMessage("Created a vault for your account.");
 
