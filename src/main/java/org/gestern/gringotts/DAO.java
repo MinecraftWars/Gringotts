@@ -34,7 +34,7 @@ public class DAO {
 		try {
 			Class.forName(driver);
 		} catch (ClassNotFoundException e) {
-			throw new GringottsStorageException("Could not initialize database driver.", e);
+			throw new GringottsStorageException("Could not initialize database driver. Is the derby jar in your craftbukkit/lib folder?", e);
 		}
 	}
 	
