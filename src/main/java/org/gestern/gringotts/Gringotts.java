@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import net.milkbowl.vault.economy.Economy;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.ServicePriority;
@@ -36,47 +37,69 @@ public class Gringotts extends JavaPlugin {
     public void onEnable() {
     	
     	G = this;
-    	log = getLogger();
     	
-        // load and init configuration
-        saveDefaultConfig(); // saves default configuration if no config.yml exists yet
-        FileConfiguration savedConfig = getConfig();
-        CONF.readConfig(savedConfig);
-    	
-    	gcommand = new Commands(this);
-    	 
-        CommandExecutor playerCommands = gcommand.new Money();
-        CommandExecutor moneyAdminCommands = gcommand.new Moneyadmin();
-        CommandExecutor adminCommands = gcommand.new GringottsCmd();
-
-        getCommand("balance").setExecutor(playerCommands);
-        getCommand("money").setExecutor(playerCommands);
-        getCommand("moneyadmin").setExecutor(moneyAdminCommands);
-        getCommand("gringotts").setExecutor(adminCommands);
-
-        accounting = new Accounting();
-
-        getServer().getPluginManager().registerEvents(new AccountListener(this), this);
-        registerEconomy();
-        
-        try {
-            MetricsLite metrics = new MetricsLite(this);
-            metrics.start();
-        } catch (IOException e) {
-        	log.info("Failed to submit PluginMetrics stats");
+    	try {
+	    	log = getLogger();
+	    	
+	        // load and init configuration
+	        saveDefaultConfig(); // saves default configuration if no config.yml exists yet
+	        FileConfiguration savedConfig = getConfig();
+	        CONF.readConfig(savedConfig);
+	    	
+	    	gcommand = new Commands(this);
+	    	 
+	        CommandExecutor playerCommands = gcommand.new Money();
+	        CommandExecutor moneyAdminCommands = gcommand.new Moneyadmin();
+	        CommandExecutor adminCommands = gcommand.new GringottsCmd();
+	
+	        getCommand("balance").setExecutor(playerCommands);
+	        getCommand("money").setExecutor(playerCommands);
+	        getCommand("moneyadmin").setExecutor(moneyAdminCommands);
+	        getCommand("gringotts").setExecutor(adminCommands);
+	
+	        accounting = new Accounting();
+	
+	        getServer().getPluginManager().registerEvents(new AccountListener(this), this);
+	        registerEconomy();
+	        
+	        try {
+	            MetricsLite metrics = new MetricsLite(this);
+	            metrics.start();
+	        } catch (IOException e) {
+	        	log.info("Failed to submit PluginMetrics stats");
+	        }
+	        
+	        // just call DAO once to ensure it's loaded before startup is complete
+	        DAO.getDao();
+	        
+    	} catch(GringottsStorageException e) { 
+        	log.severe(e.getMessage()); 
+        	disable();
+        } catch(GringottsConfigurationException e) {
+        	log.severe(e.getMessage());
+        	disable();
+        } catch (RuntimeException e) {
+        	disable();
+        	throw e;
         }
         
-        // just call DAO once to ensure it's loaded before startup is complete
-        DAO.getDao();
         
         log.fine("enabled");
+    }
+    
+    private void disable() {
+    	Bukkit.getPluginManager().disablePlugin(this);
+    	log.warning("Gringotts disabled due to startup errors.");
     }
 
 	@Override
     public void onDisable() {
         
         // shut down db connection
-        DAO.getDao().shutdown();
+        try{ DAO.getDao().shutdown(); }
+        catch (GringottsStorageException e) {
+        	log.severe(e.toString()); 
+        }
         
         log.info("disabled");
     }

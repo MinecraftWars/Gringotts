@@ -28,18 +28,8 @@ import org.gestern.gringotts.accountholder.AccountHolderFactory;
  */
 public class DAO {
 	
-	static {
-		// load derby embedded driver
-		String driver = "org.apache.derby.jdbc.EmbeddedDriver";
-		try {
-			Class.forName(driver);
-		} catch (ClassNotFoundException e) {
-			throw new GringottsStorageException("Could not initialize database driver. Is the derby jar in your craftbukkit/lib folder?", e);
-		}
-	}
-	
 	/** Singleton DAO instance. */
-	private static final DAO dao = new DAO();
+	private static DAO dao;
 	
 	private final Logger log = Gringotts.G.getLogger();
 	
@@ -425,6 +415,19 @@ public class DAO {
      * @return the DAO instance
      */
 	public static DAO getDao() {
+		
+		if (dao != null) return dao;
+		
+		// load derby embedded driver
+		String driver = "org.apache.derby.jdbc.EmbeddedDriver";
+		try {
+			Class.forName(driver);
+		} catch (ClassNotFoundException e) {
+			throw new GringottsStorageException("Could not initialize database driver. Is the derby jar in your craftbukkit/lib folder?", e);
+		}
+		
+		dao = new DAO();
+		
     	return dao;
     }
 	
