@@ -116,72 +116,81 @@ public class VaultConnector implements Economy {
 
     @Override
     public EconomyResponse createBank(String name, String player) {
-        BankAccount bank = eco.bank(name).addOwner(player);
-        if (bank.exists())
-        	return new EconomyResponse(0, 0, ResponseType.FAILURE, "Unable to create bank!");
-        else
-        	return new EconomyResponse(0, 0, ResponseType.SUCCESS, "Created bank " + name);
+    	return new EconomyResponse(0,0, ResponseType.NOT_IMPLEMENTED, "Gringotts does not support banks");
+//        BankAccount bank = eco.bank(name).addOwner(player);
+//        if (bank.exists())
+//        	return new EconomyResponse(0, 0, ResponseType.FAILURE, "Unable to create bank!");
+//        else
+//        	return new EconomyResponse(0, 0, ResponseType.SUCCESS, "Created bank " + name);
     }
 
     @Override
     public EconomyResponse deleteBank(String name) {
-    	Account deleted = eco.bank(name).delete();
-    	if (deleted.exists())
-    		return new EconomyResponse(0, 0, ResponseType.FAILURE, "Unable to delete bank account!");
-    	else
-    		return new EconomyResponse(0, 0, ResponseType.SUCCESS, "Deleted bank account (or it didn't exist)");
+    	return new EconomyResponse(0,0, ResponseType.NOT_IMPLEMENTED, "Gringotts does not support banks");
+//    	Account deleted = eco.bank(name).delete();
+//    	if (deleted.exists())
+//    		return new EconomyResponse(0, 0, ResponseType.FAILURE, "Unable to delete bank account!");
+//    	else
+//    		return new EconomyResponse(0, 0, ResponseType.SUCCESS, "Deleted bank account (or it didn't exist)");
     }
 
     @Override
     public EconomyResponse bankBalance(String name) {
-    	double balance = eco.bank(name).balance();
-        return new EconomyResponse(0, balance, 
-        		ResponseType.SUCCESS, "Balance of bank "+ name +": "+ balance);
+    	return new EconomyResponse(0,0, ResponseType.NOT_IMPLEMENTED, "Gringotts does not support banks");
+//    	double balance = eco.bank(name).balance();
+//        return new EconomyResponse(0, balance, 
+//        		ResponseType.SUCCESS, "Balance of bank "+ name +": "+ balance);
     }
 
     @Override
     public EconomyResponse bankHas(String name, double amount) {
-    	BankAccount bank = eco.bank(name);
-    	double balance = bank.balance();
-    	if (bank.has(amount))
-    		return new EconomyResponse(0, balance, ResponseType.SUCCESS, "Bank " + name + " has at least " + amount );
-    	else
-    		return new EconomyResponse(0, balance, ResponseType.FAILURE, "Bank " + name + " does not have at least " + amount );
+    	return new EconomyResponse(0,0, ResponseType.NOT_IMPLEMENTED, "Gringotts does not support banks");
+//    	BankAccount bank = eco.bank(name);
+//    	double balance = bank.balance();
+//    	if (bank.has(amount))
+//    		return new EconomyResponse(0, balance, ResponseType.SUCCESS, "Bank " + name + " has at least " + amount );
+//    	else
+//    		return new EconomyResponse(0, balance, ResponseType.FAILURE, "Bank " + name + " does not have at least " + amount );
     }
 
     @Override
     public EconomyResponse bankWithdraw(String name, double amount) {
-    	BankAccount bank = eco.bank(name);
-    	TransactionResult result = bank.remove(amount);
-    	if (result == TransactionResult.SUCCESS)
-    		return new EconomyResponse(amount, bank.balance(), ResponseType.SUCCESS, "Removed " + amount + " from bank " + name);
-    	else 
-    		return new EconomyResponse(0, bank.balance(), ResponseType.SUCCESS, "Failed to remove " + amount + " from bank " + name);
+    	return new EconomyResponse(0,0, ResponseType.NOT_IMPLEMENTED, "Gringotts does not support banks");
+//    	BankAccount bank = eco.bank(name);
+//    	TransactionResult result = bank.remove(amount);
+//    	if (result == TransactionResult.SUCCESS)
+//    		return new EconomyResponse(amount, bank.balance(), ResponseType.SUCCESS, "Removed " + amount + " from bank " + name);
+//    	else 
+//    		return new EconomyResponse(0, bank.balance(), ResponseType.SUCCESS, "Failed to remove " + amount + " from bank " + name);
     }
 
     @Override
     public EconomyResponse bankDeposit(String name, double amount) {
-    	BankAccount bank = eco.bank(name);
-    	TransactionResult result = bank.add(amount);
-    	if (result == TransactionResult.SUCCESS)
-    		return new EconomyResponse(amount, bank.balance(), ResponseType.SUCCESS, "Added " + amount + " to bank " + name);
-    	else 
-    		return new EconomyResponse(0, bank.balance(), ResponseType.SUCCESS, "Failed to add " + amount + " to bank " + name);
+    	return new EconomyResponse(0,0, ResponseType.NOT_IMPLEMENTED, "Gringotts does not support banks");
+//    	BankAccount bank = eco.bank(name);
+//    	TransactionResult result = bank.add(amount);
+//    	if (result == TransactionResult.SUCCESS)
+//    		return new EconomyResponse(amount, bank.balance(), ResponseType.SUCCESS, "Added " + amount + " to bank " + name);
+//    	else 
+//    		return new EconomyResponse(0, bank.balance(), ResponseType.SUCCESS, "Failed to add " + amount + " to bank " + name);
     }
 
     @Override
     public EconomyResponse isBankOwner(String name, String playerName) {
-        return new EconomyResponse(0, 0, eco.bank(name).isOwner(playerName)? ResponseType.SUCCESS : FAILURE, "");
+    	return new EconomyResponse(0,0, ResponseType.NOT_IMPLEMENTED, "Gringotts does not support banks");
+//        return new EconomyResponse(0, 0, eco.bank(name).isOwner(playerName)? ResponseType.SUCCESS : FAILURE, "");
     }
 
     @Override
     public EconomyResponse isBankMember(String name, String playerName) {
-    	return new EconomyResponse(0, 0, eco.bank(name).isMember(playerName)? ResponseType.SUCCESS : FAILURE, "");
+    	return new EconomyResponse(0,0, ResponseType.NOT_IMPLEMENTED, "Gringotts does not support banks");
+//    	return new EconomyResponse(0, 0, eco.bank(name).isMember(playerName)? ResponseType.SUCCESS : FAILURE, "");
     }
 
     @Override
     public List<String> getBanks() {
-        return new ArrayList<String>(eco.getBanks());
+    	return new ArrayList<String>();
+//        return new ArrayList<String>(eco.getBanks());
     }
 
     @Override
