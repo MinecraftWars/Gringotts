@@ -38,11 +38,18 @@ If it was created correctly, the sign will display your town's or nation's tag o
 
 
 ### User commands ###
+
     /money
-Display your account's current balance.
+Display your account's current balance. Alias `/m`
 
     /money pay <amount> <player>
 Pay an amount to a player. The transaction will only succeed if your account has at least the given amount plus any taxes that apply, and the receiving account has enough capacity for the amount.
+
+    /money withdraw <amount>
+Withdraw an amount from chest storage into inventory.
+
+    /money deposit <amount>
+Deposit an amount from inventory into chest storage. 
 
 ### Admin commands ###
     /moneyadmin b <account>
