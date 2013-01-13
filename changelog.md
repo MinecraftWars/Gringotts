@@ -7,6 +7,10 @@ v1.6.0
 * for devs: added an event system for vault creation. Gringotts throws a `PlayerVaultCreationEvent` when a player attempts
 to create a vault in the world. Plugins can register an event handler and supply their information for Gringotts to create their own vault types.
 
+v1.5.1
+------
+* fix vaults with bold marked signs getting destroyed at any transaction
+
 v1.5.0
 ------
 * add commands `/money withdraw` and `/money deposit` to withdraw money from vaults to inventory and vice versa.
