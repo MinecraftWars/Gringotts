@@ -30,5 +30,10 @@ public class TownyAccountHolder implements AccountHolder {
 	public String getId() {
 		return owner.getEconomyName();
 	}
+	
+	@Override
+	public String toString() {
+		return "TownyAccountHolder("+owner.getName()+")";
+	}
 
 }
