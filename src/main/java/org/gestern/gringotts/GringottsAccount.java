@@ -12,7 +12,12 @@ import org.gestern.gringotts.accountholder.AccountHolder;
 import org.gestern.gringotts.accountholder.PlayerAccountHolder;
 import org.gestern.gringotts.api.TransactionResult;
 
-
+/**
+ * Implementation of inventory-based accounts with a virtual overflow capacity. 
+ * Has support for player accounts specifically and works with any other container storage.
+ * 
+ * @author jast
+ */
 public class GringottsAccount {
 
     @SuppressWarnings("unused")

@@ -1,0 +1,49 @@
+package org.gestern.gringotts.event;
+
+import org.bukkit.ChatColor;
+import org.bukkit.block.Sign;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.SignChangeEvent;
+import org.gestern.gringotts.AccountChest;
+import org.gestern.gringotts.Accounting;
+import org.gestern.gringotts.Gringotts;
+import org.gestern.gringotts.GringottsAccount;
+import org.gestern.gringotts.accountholder.AccountHolder;
+
+public class VaultCreator implements Listener {
+	
+	private final Accounting accounting = Gringotts.G.accounting; 
+	
+	/**
+	 * If the event was properly handled and an AccountHolder supplied, it will be created here.
+	 * @param event
+	 */
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void registerVault(PlayerVaultCreationEvent event) {
+		// event has been marked invalid, ignore
+		if (! event.isValid()) return;
+		
+		AccountHolder owner = event.getOwner();
+		if (owner == null) return;
+		
+		GringottsAccount account = accounting.getAccount(owner);
+		
+		SignChangeEvent cause = event.getCause();
+        // create account chest
+        AccountChest accountChest = new AccountChest((Sign)cause.getBlock().getState(), account);
+        
+        // check for existence / add to tracking
+        if (accounting.addChest(account, accountChest)) {
+        	cause.setLine(0, ChatColor.BOLD + "["+ event.getType() +" vault]");
+        	cause.setLine(2, owner.getName());
+            cause.getPlayer().sendMessage("Created a vault for your account.");
+
+        } else {
+            cause.setCancelled(true);
+            cause.getPlayer().sendMessage("Failed to create vault.");
+        }
+	}
+
+}

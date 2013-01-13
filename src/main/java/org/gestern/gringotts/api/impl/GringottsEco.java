@@ -27,7 +27,7 @@ import org.gestern.gringotts.currency.GringottsCurrency;
 
 public class GringottsEco implements Eco {
 	
-	private final AccountHolderFactory accountOwners = new AccountHolderFactory();
+	private final AccountHolderFactory accountOwners = Gringotts.G.accountHolderFactory;
 	private final DAO dao = DAO.getDao();
 	
 	@Override

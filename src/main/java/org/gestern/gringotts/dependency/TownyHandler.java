@@ -1,8 +1,12 @@
 package org.gestern.gringotts.dependency;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.gestern.gringotts.Gringotts;
+import org.gestern.gringotts.accountholder.AccountHolderProvider;
 import org.gestern.gringotts.accountholder.TownyAccountHolder;
+import org.gestern.gringotts.event.TownyListener;
 
 import com.palmergames.bukkit.towny.Towny;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
@@ -34,7 +38,6 @@ public abstract class TownyHandler implements DependencyHandler {
 /**
  * Dummy implementation of towny handler, if the plugin cannot be loaded.
  * @author jast
- *
  */
 class InvalidTownyHandler extends TownyHandler {
 
@@ -65,12 +68,15 @@ class InvalidTownyHandler extends TownyHandler {
 	
 }
 
-class ValidTownyHandler extends TownyHandler {
+class ValidTownyHandler extends TownyHandler implements AccountHolderProvider {
 	
 	private final Towny plugin;
 
 	public ValidTownyHandler(Towny plugin) {
 	    this.plugin = plugin;
+	    Bukkit.getPluginManager().registerEvents(new TownyListener(), Gringotts.G);
+	    Gringotts.G.registerAccountHolderProvider("town", this);
+	    Gringotts.G.registerAccountHolderProvider("nation", this);
     }
 
 	/**
@@ -148,6 +154,11 @@ class ValidTownyHandler extends TownyHandler {
 	@Override
     public boolean exists() {
 	    return plugin!=null;
+    }
+
+	@Override
+    public TownyAccountHolder getAccountHolder(String id) {
+	    return getAccountHolderByAccountName(id);
     }
 
 }

@@ -20,7 +20,7 @@ import org.gestern.gringotts.accountholder.AccountHolder;
 import org.gestern.gringotts.accountholder.AccountHolderFactory;
 
 /**
- * The Data Access Object provides accees to the datastore.
+ * The Data Access Object provides access to the datastore.
  * This implementation uses the Apache Derby embedded DB.
  * 
  * @author jast
@@ -235,8 +235,6 @@ public class DAO {
      * @return account belonging to the given owner, or null if the owner has no account
      */
     public GringottsAccount getAccount(AccountHolder accountHolder) {
-
-    	AccountHolderFactory ahf = new AccountHolderFactory();
     	
     	ResultSet result = null;
     	try {
@@ -249,7 +247,7 @@ public class DAO {
 			if (result.next()) {
 				String type = result.getString("type");
 				String ownerName = result.getString("owner");
-		    	AccountHolder owner = ahf.get(type, ownerName);
+		    	AccountHolder owner = Gringotts.G.accountHolderFactory.get(type, ownerName);
 		    	
 				return new GringottsAccount(owner);
 			} else return null;
@@ -268,7 +266,6 @@ public class DAO {
      * @return set of all chests registered with Gringotts
      */
     public Set<AccountChest> getChests() {
-    	AccountHolderFactory ahf = new AccountHolderFactory();
     	Set<AccountChest> chests = new HashSet<AccountChest>();
     	ResultSet result = null;
     	try {
@@ -290,7 +287,7 @@ public class DAO {
 				
 				Block signBlock = loc.getBlock();
 		    	if (Util.isSignBlock(signBlock)) {
-					AccountHolder owner = ahf.get(type, ownerId);
+					AccountHolder owner = Gringotts.G.accountHolderFactory.get(type, ownerId);
 					if (owner == null) {
 						log.info("AccountHolder "+type+":"+ownerId+" is not valid. Deleting associated account chest at " + signBlock.getLocation());
 						deleteAccountChest(signBlock.getWorld().getName(), signBlock.getX(), signBlock.getY(), signBlock.getZ());
