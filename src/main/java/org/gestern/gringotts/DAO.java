@@ -17,7 +17,6 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.gestern.gringotts.accountholder.AccountHolder;
-import org.gestern.gringotts.accountholder.AccountHolderFactory;
 
 /**
  * The Data Access Object provides access to the datastore.

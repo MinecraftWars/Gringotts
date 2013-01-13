@@ -36,7 +36,9 @@ public class VaultCreator implements Listener {
         
         // check for existence / add to tracking
         if (accounting.addChest(account, accountChest)) {
-        	cause.setLine(0, ChatColor.BOLD + "["+ event.getType() +" vault]");
+        	// only embolden if the bold marker doesn't increase line length beyond 15
+        	if (cause.getLine(0).length() <= 13)
+        		cause.setLine(0, ChatColor.BOLD + "["+ event.getType() +" vault]");
         	cause.setLine(2, owner.getName());
             cause.getPlayer().sendMessage("Created a vault for your account.");
 

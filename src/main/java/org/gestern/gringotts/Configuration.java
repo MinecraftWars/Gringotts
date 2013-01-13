@@ -39,6 +39,10 @@ public enum Configuration {
     /** Use ender chests as player vaults. */
     public boolean usevaultEnderchest;
     
+    /** Regular expression defining what patterns on a sign will create a valid vault. Subpattern 1 denotes the type of the vault. */
+    // TODO make this actually configurable(?)
+    public String vaultPattern = "[^\\[]*\\[(\\w*) ?vault\\]";
+    
     
     /**
      * Set configuration form values in a file configuration.

@@ -11,6 +11,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 import org.gestern.gringotts.AccountChest;
 
+import static org.gestern.gringotts.Configuration.CONF;
+
 /**
  * Listens for chest creation and destruction events.
  * 
@@ -19,7 +21,7 @@ import org.gestern.gringotts.AccountChest;
  */
 public class AccountListener implements Listener { 
 
-    private final Pattern vaultPattern = Pattern.compile("\\[(\\w*) ?vault\\]", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+    private final Pattern vaultPattern = Pattern.compile(CONF.vaultPattern, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
     
     /**
      * Create an account chest by adding a sign marker over it.

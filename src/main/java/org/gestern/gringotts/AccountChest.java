@@ -1,5 +1,7 @@
 package org.gestern.gringotts;
 
+import static org.gestern.gringotts.Configuration.CONF;
+
 import java.util.logging.Logger;
 
 import org.bukkit.Location;
@@ -159,7 +161,8 @@ public class AccountChest {
     	// TODO refactor: common definition of valid vault types
     	String[] lines = sign.getLines();
     	String line0 = lines[0].toLowerCase();
-    	if ( ! line0.matches("[^\\[]*\\[\\w* *vault\\]")) 
+    	
+    	if ( ! line0.matches(CONF.vaultPattern)) 
     		return false;
     	if ( lines[1] == null || lines[2].length() == 0) return false;
   
