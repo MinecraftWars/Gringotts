@@ -1,6 +1,10 @@
 Gringotts Changelog
 ===================
 
+v1.5.1
+------
+* fix vaults with bold marked signs getting destroyed at any transaction
+
 v1.5.0
 ------
 * add commands `/money withdraw` and `/money deposit` to withdraw money from vaults to inventory and vice versa.

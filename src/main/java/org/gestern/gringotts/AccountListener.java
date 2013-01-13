@@ -61,7 +61,7 @@ public class AccountListener implements Listener {
             	return;
         	}
             chestOwner = holder;
-        } else if (DEP.towny.enabled()  && line0.equalsIgnoreCase("[town vault]")) {
+        } else if (DEP.towny.enabled() && line0.equalsIgnoreCase("[town vault]")) {
         	if (!createvault_town.allowed(player)) {
         		noPermission(player);
         		return;
@@ -97,7 +97,8 @@ public class AccountListener implements Listener {
             
             // check for existence / add to tracking
             if (accounting.addChest(account, accountChest)) {
-            	event.setLine(0, ChatColor.BOLD + line0);
+            	if(line0.length() <= 13)
+            		event.setLine(0, ChatColor.BOLD + line0);
                 event.setLine(2, chestOwner.getName());
                 player.sendMessage("Created a vault for your account.");
 

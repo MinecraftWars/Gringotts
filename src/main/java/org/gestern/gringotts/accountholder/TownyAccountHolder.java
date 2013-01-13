@@ -19,6 +19,7 @@ public class TownyAccountHolder implements AccountHolder {
 	@Override
 	public void sendMessage(String message) {
 		// TODO is it possible to send a message to a town?
+		// TODO maybe just manually send to online residents
 	}
 
 	@Override
