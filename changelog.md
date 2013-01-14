@@ -1,8 +1,9 @@
 Gringotts Changelog
 ===================
 
-v1.5.1
-------
+v1.5.1a
+-------
+* fix Vault connector not handling requests properly for non-player accounts
 * fix vaults with bold marked signs getting destroyed at any transaction
 
 v1.5.0

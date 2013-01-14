@@ -1,7 +1,5 @@
 package org.gestern.gringotts.api.impl;
 
-import static net.milkbowl.vault.economy.EconomyResponse.ResponseType.FAILURE;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +9,6 @@ import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
 
 import org.gestern.gringotts.Gringotts;
 import org.gestern.gringotts.api.Account;
-import org.gestern.gringotts.api.BankAccount;
 import org.gestern.gringotts.api.Eco;
 import org.gestern.gringotts.api.TransactionResult;
 
@@ -67,23 +64,23 @@ public class VaultConnector implements Economy {
 
     @Override
     public boolean hasAccount(String playerName) {
-    	return eco.player(playerName).exists();
+    	return eco.account(playerName).exists();
     }
 
     @Override
     public double getBalance(String playerName){
-    	return eco.player(playerName).balance();
+    	return eco.account(playerName).balance();
     }
 
     @Override
     public boolean has(String playerName, double amount) {
-    	return eco.player(playerName).has(amount);
+    	return eco.account(playerName).has(amount);
     }
 
     @Override
     public EconomyResponse withdrawPlayer(String playerName, double amount) {
 
-    	Account account = eco.player(playerName);
+    	Account account = eco.account(playerName);
     	TransactionResult removed = account.remove(amount);
     	
     	switch (removed) {
@@ -100,7 +97,7 @@ public class VaultConnector implements Economy {
     @Override
     public EconomyResponse depositPlayer(String playerName, double amount){
 
-    	Account account = eco.player(playerName);
+    	Account account = eco.account(playerName);
     	TransactionResult added = account.add(amount);
     	
     	switch (added) {
