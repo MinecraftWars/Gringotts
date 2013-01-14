@@ -49,11 +49,20 @@ public class AccountChest {
      * @return
      */
     private InventoryHolder chest() {
-    	Block storage = sign.getBlock().getRelative(BlockFace.DOWN);
-    	if (validContainer(storage.getType()))
+        // TODO: Make container checking less redundant
+    	Block signBlock = sign.getBlock();
+    	org.bukkit.material.Sign signMat = (org.bukkit.material.Sign)signBlock.getState().getData();
+    	Block storage = signBlock.getRelative((BlockFace)signMat.getAttachedFace());
+    	if (validContainer(storage.getType())) {
     		return ((InventoryHolder)storage.getState());
-    	else
-    		return null;
+    	} else {
+        	storage = signBlock.getRelative(BlockFace.DOWN);
+
+        	if (validContainer(storage.getType()))
+        		return ((InventoryHolder)storage.getState());
+        	else
+        		return null;
+    	}
     }
     
     /** 
@@ -61,8 +70,20 @@ public class AccountChest {
      * @return
      */
     private Location chestLocation() {
-    	Block storage = sign.getBlock().getRelative(BlockFace.DOWN);
-    	return storage.getLocation();
+        // TODO: Make container checking less redundant
+    	Block signBlock = sign.getBlock();
+    	org.bukkit.material.Sign signMat = (org.bukkit.material.Sign)signBlock.getState().getData();
+    	Block storage = signBlock.getRelative((BlockFace)signMat.getAttachedFace());
+    	
+    	if(validContainer(storage.getType())) {
+    		return storage.getLocation();
+    	} else {
+    		storage = signBlock.getRelative(BlockFace.DOWN);
+        	if(validContainer(storage.getType()))
+        		return storage.getLocation();
+        	else
+        		return null;
+    	}
     }
     
     /**
