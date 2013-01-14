@@ -47,6 +47,7 @@ public class AccountListener implements Listener {
             BlockFace attached = sign.getAttachedFace();
             
             // allow either the block sign is attached to or the block below the sign as chest block. Prefer attached block.
+            // TODO: Make container checking less redundant
             Block blockAttached = signBlock.getRelative(attached);
             Block blockBelow = signBlock.getRelative(BlockFace.DOWN);
             if (! AccountChest.validContainer(blockAttached.getType()) &&
