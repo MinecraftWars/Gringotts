@@ -49,10 +49,10 @@ public class AccountListener implements Listener {
             // allow either the block sign is attached to or the block below the sign as chest block. Prefer attached block.
             Block blockAttached = signBlock.getRelative(attached);
             Block blockBelow = signBlock.getRelative(BlockFace.DOWN);
-            if (! AccountChest.validContainer(blockAttached.getType()) ||
+            if (! AccountChest.validContainer(blockAttached.getType()) &&
             	! AccountChest.validContainer(blockBelow.getType()))
             	return; // no valid container, ignore
-            
+                        
             // we made it this far, throw the event to manage vault creation
         	VaultCreationEvent creation = new PlayerVaultCreationEvent(type, event);
         	Bukkit.getServer().getPluginManager().callEvent(creation);
