@@ -57,7 +57,8 @@ public class FactionsHandler implements DependencyHandler, AccountHolderProvider
     }
 
 	/**
-	 * Get a FactionAccountHolder based on the name of the account. 
+	 * Get a FactionAccountHolder based on the name of the account.
+	 * Valid ids for this method are either raw faction ids, or faction ids or tags prefixed with "faction-" 
 	 * Only names beginning with "faction-" will be considered, and the rest of the string 
 	 * can be either a faction id or a faction tag.
 	 * @param name Name of the account.
@@ -65,7 +66,12 @@ public class FactionsHandler implements DependencyHandler, AccountHolderProvider
 	 */
 	@Override
     public FactionAccountHolder getAccountHolder(String id) {
-		// only a valid faction account name if owner starts with "faction-"
+		
+		// first try raw id
+		FactionAccountHolder owner = getAccountHolderById(id);
+		if (owner != null) return owner;
+		
+		// otherwise it's only a valid faction account name if owner starts with "faction-"
 		if ( ! id.startsWith("faction-")) return null;
 				
 		// not sure, but somehow this is sometimes id, sometimes tag??
