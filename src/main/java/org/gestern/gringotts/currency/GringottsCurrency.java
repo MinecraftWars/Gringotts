@@ -37,10 +37,18 @@ public class GringottsCurrency {
      */
 	public final int unit;
 	
+	/**
+	 * Fractional digits supported by this currency.
+	 * For example, with 2 digits the minimum currency value would be 0.01
+	 */
 	public final int digits;
 	
+	/**
+	 * Create a Currency with given name and default plural name and 2 fractional digits.
+	 * @param name name of currency
+	 */
 	public GringottsCurrency(String name) {
-		this(name, name+'s', 100);
+		this(name, name+'s', 2);
 	}
 	
 	/**
