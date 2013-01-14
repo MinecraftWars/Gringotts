@@ -17,6 +17,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.gestern.gringotts.accountholder.AccountHolder;
+import static org.gestern.gringotts.Configuration.CONF;
 
 /**
  * The Data Access Object provides access to the datastore.
@@ -116,7 +117,7 @@ public class DAO {
 		destroyAccountChest = connection.prepareStatement(
 				"delete from accountchest where world = ? and x = ? and y = ? and z = ?");
 		storeAccount = connection.prepareStatement(
-				"insert into account (type, owner, cents) values (?,?,0)");
+				"insert into account (type, owner, cents) values (?,?,?)");
 		getAccount = connection.prepareStatement(
 				"select * from account where owner = ? and type = ?");
 		getChests = connection.prepareStatement(
@@ -218,6 +219,23 @@ public class DAO {
     		
 			storeAccount.setString(1, owner.getType());
 			storeAccount.setString(2, owner.getId());
+			switch(account.owner.getType()) {
+			case "player":
+				storeAccount.setLong(3, CONF.currency.centValue(CONF.startBalancePlayer));
+				break;
+			case "faction":
+				storeAccount.setLong(3, CONF.currency.centValue(CONF.startBalanceFaction));
+				break;
+			case "town":
+				storeAccount.setLong(3, CONF.currency.centValue(CONF.startBalanceTown));
+				break;
+			case "nation":
+				storeAccount.setLong(3, CONF.currency.centValue(CONF.startBalanceNation));
+				break;
+			default:
+				storeAccount.setLong(3, 0);
+				break;
+			}
 			
 			int updated = storeAccount.executeUpdate();
 			return updated > 0;

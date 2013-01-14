@@ -9,6 +9,11 @@ currency:
 transactiontax:
   flat: 0.0
   rate: 0.0
+startingbalance:
+  player: 0
+  faction: 0
+  town: 0
+  nation: 0
 usevault:
   container: true
   enderchest: true

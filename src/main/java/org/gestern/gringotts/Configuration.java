@@ -33,6 +33,13 @@ public enum Configuration {
     /** Rate tax on every player-to-player transaction. This is a fraction, e.g. 0.1 means 10% tax. */ 
     public double transactionTaxRate = 0;
     
+    /** Amount of non-physical money to give to new players */
+    // An alternative to flooding new players' inventories with currency items
+    public long startBalancePlayer = 0;
+    public long startBalanceFaction = 0;
+    public long startBalanceTown = 0;
+    public long startBalanceNation = 0;
+    
     /** Use container vaults (chest, dispenser, furnace). */
     public boolean usevaultContainer;
     
@@ -91,6 +98,11 @@ public enum Configuration {
 
         CONF.transactionTaxFlat = savedConfig.getDouble("transactiontax.flat", 0);
         CONF.transactionTaxRate = savedConfig.getDouble("transactiontax.rate", 0);
+
+        CONF.startBalancePlayer = savedConfig.getLong("startingbalance.player", 0);
+        CONF.startBalanceFaction = savedConfig.getLong("startingbalance.faction", 0);
+        CONF.startBalanceTown = savedConfig.getLong("startingbalance.town", 0);
+        CONF.startBalanceNation = savedConfig.getLong("startingbalance.nation", 0);
         
         CONF.usevaultContainer = savedConfig.getBoolean("usevault.container", true);
     }
