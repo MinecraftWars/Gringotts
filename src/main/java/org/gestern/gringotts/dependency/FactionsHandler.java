@@ -67,22 +67,18 @@ public class FactionsHandler implements DependencyHandler, AccountHolderProvider
 	@Override
     public FactionAccountHolder getAccountHolder(String id) {
 		
+	    String factionId = id;
+	    if (id.startsWith("faction-"))
+	        // requested a prefixed id, cut off the prefix!
+	        factionId = id.substring(8);
+	    
 		// first try raw id
-		FactionAccountHolder owner = getAccountHolderById(id);
+		FactionAccountHolder owner = getAccountHolderById(factionId);
 		if (owner != null) return owner;
-		
-		// otherwise it's only a valid faction account name if owner starts with "faction-"
-		if ( ! id.startsWith("faction-")) return null;
 				
-		// not sure, but somehow this is sometimes id, sometimes tag??
-        String factionTag = id.substring(8);
-        Faction faction;
-        
-        // try id first
-        faction = Factions.i.get(factionTag);            
-        // and then tag
-        if (faction == null)
-        	faction = Factions.i.getByTag(factionTag);
+		// just in case, also try the tag
+        String factionTag = factionId.substring(8);
+        Faction faction = Factions.i.getByTag(factionTag);
         
         if (faction != null) 
             return new FactionAccountHolder(faction);
