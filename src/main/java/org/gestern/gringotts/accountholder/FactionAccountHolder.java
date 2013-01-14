@@ -88,7 +88,7 @@ public class FactionAccountHolder implements AccountHolder {
 
 	@Override
 	public String getId() {
-		return owner.getId();
+		return "faction-" + owner.getId();
 	}
 
 
