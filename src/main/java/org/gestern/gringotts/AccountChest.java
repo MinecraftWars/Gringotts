@@ -7,7 +7,6 @@ import java.util.logging.Logger;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
 import org.bukkit.inventory.DoubleChestInventory;
@@ -48,21 +47,9 @@ public class AccountChest {
      * The actual "chest" containing this account chest's stuff.
      * @return
      */
-    private InventoryHolder chest() {
-        // TODO: Make container checking less redundant
-    	Block signBlock = sign.getBlock();
-    	org.bukkit.material.Sign signMat = (org.bukkit.material.Sign)signBlock.getState().getData();
-    	Block storage = signBlock.getRelative((BlockFace)signMat.getAttachedFace());
-    	if (validContainer(storage.getType())) {
-    		return ((InventoryHolder)storage.getState());
-    	} else {
-        	storage = signBlock.getRelative(BlockFace.DOWN);
-
-        	if (validContainer(storage.getType()))
-        		return ((InventoryHolder)storage.getState());
-        	else
-        		return null;
-    	}
+    private InventoryHolder chest() { 
+        Block block = Util.chestBlock(sign);
+        return (InventoryHolder)block.getState();
     }
     
     /** 
@@ -70,20 +57,8 @@ public class AccountChest {
      * @return
      */
     private Location chestLocation() {
-        // TODO: Make container checking less redundant
-    	Block signBlock = sign.getBlock();
-    	org.bukkit.material.Sign signMat = (org.bukkit.material.Sign)signBlock.getState().getData();
-    	Block storage = signBlock.getRelative((BlockFace)signMat.getAttachedFace());
-    	
-    	if(validContainer(storage.getType())) {
-    		return storage.getLocation();
-    	} else {
-    		storage = signBlock.getRelative(BlockFace.DOWN);
-        	if(validContainer(storage.getType()))
-        		return storage.getLocation();
-        	else
-        		return null;
-    	}
+        Block block = Util.chestBlock(sign);
+        return block != null? block.getLocation() : null;
     }
     
     /**
@@ -185,7 +160,8 @@ public class AccountChest {
     	
     	if ( ! line0.matches(CONF.vaultPattern)) 
     		return false;
-    	if ( lines[1] == null || lines[2].length() == 0) return false;
+    	if ( lines[2] == null || lines[2].length() == 0) 
+    		return false;
   
     	if (chest() == null) return false;
     	

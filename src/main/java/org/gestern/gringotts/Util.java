@@ -1,6 +1,7 @@
 package org.gestern.gringotts;
 
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.gestern.gringotts.currency.GringottsCurrency;
 
@@ -73,5 +74,27 @@ public class Util {
     	GringottsCurrency cur = Configuration.CONF.currency;
     	String formatString = "%."+cur.digits+"f %s";
     	return String.format(formatString, value, value==1.0? cur.name : cur.namePlural);
+    }
+    
+    /**
+     * Find a valid container block for a given sign, if it exists.
+     * @param sign
+     * @return
+     */
+    public static Block chestBlock(Sign sign) {
+        // is sign attached to a valid vault container?
+        Block signBlock = sign.getBlock();
+        org.bukkit.material.Sign signData = (org.bukkit.material.Sign)signBlock.getState().getData();
+        BlockFace attached = signData.getAttachedFace();
+        
+        // allow either the block sign is attached to or the block below the sign as chest block. Prefer attached block.
+        Block blockAttached = signBlock.getRelative(attached);
+        Block blockBelow = signBlock.getRelative(BlockFace.DOWN);
+        if (AccountChest.validContainer(blockAttached.getType()))
+            return blockAttached;
+        if (AccountChest.validContainer(blockBelow.getType()))
+            return blockBelow;
+        
+        return null; // no valid container
     }
 }

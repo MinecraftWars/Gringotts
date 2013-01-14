@@ -1,17 +1,17 @@
 package org.gestern.gringotts.event;
 
+import static org.gestern.gringotts.Configuration.CONF;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bukkit.Bukkit;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Sign;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
-import org.gestern.gringotts.AccountChest;
-
-import static org.gestern.gringotts.Configuration.CONF;
+import org.gestern.gringotts.Util;
 
 /**
  * Listens for chest creation and destruction events.
@@ -42,21 +42,14 @@ public class AccountListener implements Listener {
         	if (type.isEmpty()) type = "player";
 
         	// is sign attached to a valid vault container?
-        	Block signBlock = event.getBlock();
-        	org.bukkit.material.Sign sign = (org.bukkit.material.Sign)signBlock.getState().getData();
-            BlockFace attached = sign.getAttachedFace();
-            
-            // allow either the block sign is attached to or the block below the sign as chest block. Prefer attached block.
-            // TODO: Make container checking less redundant
-            Block blockAttached = signBlock.getRelative(attached);
-            Block blockBelow = signBlock.getRelative(BlockFace.DOWN);
-            if (! AccountChest.validContainer(blockAttached.getType()) &&
-            	! AccountChest.validContainer(blockBelow.getType()))
-            	return; // no valid container, ignore
-                        
-            // we made it this far, throw the event to manage vault creation
-        	VaultCreationEvent creation = new PlayerVaultCreationEvent(type, event);
-        	Bukkit.getServer().getPluginManager().callEvent(creation);
+        	BlockState signBlock = event.getBlock().getState();
+        	if (signBlock instanceof Sign &&
+        	    Util.chestBlock((Sign)signBlock) != null) {
+        	    
+                // we made it this far, throw the event to manage vault creation
+            	VaultCreationEvent creation = new PlayerVaultCreationEvent(type, event);
+            	Bukkit.getServer().getPluginManager().callEvent(creation);
+        	}
         }
     }
 }
