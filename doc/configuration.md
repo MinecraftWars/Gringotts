@@ -53,6 +53,14 @@ This would add to every transaction 1 plus 5% of the transaction value. For inst
 
 ### Misc ###
 
+	startingbalance:
+	  player: 0
+	  faction: 0
+	  town: 0
+	  nation: 0
+	
+Amount of virtual money to gift to players on first join, or accounts with other plugins upon creation. This money may be spent as usual, but will not be backed by physical currency. Enable these if you want your players/factions/etc. to start with some money that can't be lost or stolen.  
+
     usevault:
       container: true
       enderchest: true
