@@ -18,6 +18,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.gestern.gringotts.accountholder.AccountHolderFactory;
 import org.gestern.gringotts.accountholder.AccountHolderProvider;
 import org.gestern.gringotts.api.impl.VaultConnector;
+import org.gestern.gringotts.data.DerbyDAO;
 import org.gestern.gringotts.event.AccountListener;
 import org.gestern.gringotts.event.PlayerVaultListener;
 import org.gestern.gringotts.event.VaultCreator;
@@ -70,7 +71,7 @@ public class Gringotts extends JavaPlugin {
 	        }
 	        
 	        // just call DAO once to ensure it's loaded before startup is complete
-	        DAO.getDao();
+	        DerbyDAO.getDao();
 	        
     	} catch(GringottsStorageException e) { 
         	log.severe(e.getMessage()); 
@@ -96,7 +97,7 @@ public class Gringotts extends JavaPlugin {
     public void onDisable() {
         
         // shut down db connection
-        try{ DAO.getDao().shutdown(); }
+        try{ DerbyDAO.getDao().shutdown(); }
         catch (GringottsStorageException e) {
         	log.severe(e.toString()); 
         }

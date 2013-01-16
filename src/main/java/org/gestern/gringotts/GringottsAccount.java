@@ -11,6 +11,8 @@ import org.bukkit.entity.Player;
 import org.gestern.gringotts.accountholder.AccountHolder;
 import org.gestern.gringotts.accountholder.PlayerAccountHolder;
 import org.gestern.gringotts.api.TransactionResult;
+import org.gestern.gringotts.data.DAO;
+import org.gestern.gringotts.data.DerbyDAO;
 
 /**
  * Implementation of inventory-based accounts with a virtual overflow capacity. 
@@ -22,7 +24,7 @@ public class GringottsAccount {
 
     @SuppressWarnings("unused")
 	private final Logger log = Gringotts.G.getLogger();
-    private final DAO dao = DAO.getDao(); 
+    private final DAO dao = DerbyDAO.getDao(); 
 
     public final AccountHolder owner;
 

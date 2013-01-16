@@ -4,6 +4,8 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import org.gestern.gringotts.accountholder.AccountHolder;
+import org.gestern.gringotts.data.DAO;
+import org.gestern.gringotts.data.DerbyDAO;
 
 /**
  * Manages accounts.
@@ -14,20 +16,19 @@ import org.gestern.gringotts.accountholder.AccountHolder;
 public class Accounting {
 
 	private final Logger log = Gringotts.G.getLogger();
-    private final DAO dao = DAO.getDao();
+    private final DAO dao = DerbyDAO.getDao();
     
 
     /**
      * Get the account associated with an account holder.
+     * If it was not yet stored in the data storage, it will be persisted.
      * @param owner account holder
      * @return account associated with an account holder
      */
     public GringottsAccount getAccount(AccountHolder owner) {
-        GringottsAccount account = dao.getAccount(owner);
-        if (account == null) {
-            account = new GringottsAccount(owner);
+        GringottsAccount account = new GringottsAccount(owner);
+        if (!dao.hasAccount(owner))  // TODO can we do this via idempotent store action instead?          
             dao.storeAccount(account);
-        }
 
         return account;
     }
@@ -57,6 +58,7 @@ public class Accounting {
      */
     public boolean addChest(GringottsAccount account, AccountChest chest) {
     	
+        // TODO refactor to do a more intelligent/quick query
     	Set<AccountChest> allChests = dao.getChests();
     	
     	// if there is an invalid stored chest on location of new chest, remove it from storage.

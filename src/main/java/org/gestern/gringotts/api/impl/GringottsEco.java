@@ -10,7 +10,6 @@ import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.gestern.gringotts.AccountInventory;
-import org.gestern.gringotts.DAO;
 import org.gestern.gringotts.Gringotts;
 import org.gestern.gringotts.GringottsAccount;
 import org.gestern.gringotts.accountholder.AccountHolder;
@@ -24,11 +23,13 @@ import org.gestern.gringotts.api.PlayerAccount;
 import org.gestern.gringotts.api.Transaction;
 import org.gestern.gringotts.api.TransactionResult;
 import org.gestern.gringotts.currency.GringottsCurrency;
+import org.gestern.gringotts.data.DAO;
+import org.gestern.gringotts.data.DerbyDAO;
 
 public class GringottsEco implements Eco {
 	
 	private final AccountHolderFactory accountOwners = Gringotts.G.accountHolderFactory;
-	private final DAO dao = DAO.getDao();
+	private final DAO dao = DerbyDAO.getDao();
 	
 	@Override
 	public Account account(String id) {

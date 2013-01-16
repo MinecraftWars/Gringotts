@@ -1,4 +1,4 @@
-package org.gestern.gringotts;
+package org.gestern.gringotts.data;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -16,6 +16,11 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.gestern.gringotts.AccountChest;
+import org.gestern.gringotts.Gringotts;
+import org.gestern.gringotts.GringottsAccount;
+import org.gestern.gringotts.GringottsStorageException;
+import org.gestern.gringotts.Util;
 import org.gestern.gringotts.accountholder.AccountHolder;
 
 /**
@@ -25,10 +30,10 @@ import org.gestern.gringotts.accountholder.AccountHolder;
  * @author jast
  *
  */
-public class DAO {
+public class DerbyDAO implements DAO {
 	
 	/** Singleton DAO instance. */
-	private static DAO dao;
+	private static DerbyDAO dao;
 	
 	private final Logger log = Gringotts.G.getLogger();
 	
@@ -45,7 +50,7 @@ public class DAO {
 	/** Full connection string for database, without connect options. */
 	private final String dbString;
 	
-	private DAO() {
+	private DerbyDAO() {
 		
 		String dbPath = Gringotts.G.getDataFolder().getAbsolutePath();
 		dbString = "jdbc:derby:" + dbPath+"/"+dbName;
@@ -141,12 +146,10 @@ public class DAO {
     }
 
 
-	/**
-     * Save an account chest to database. 
-     * @param chest
-     * @return true if chest was stored, false otherwise
-     * @throws GringottsStorageException when storage failed
+	/* (non-Javadoc)
+     * @see org.gestern.gringotts.data.DAO#storeAccountChest(org.gestern.gringotts.AccountChest)
      */
+    @Override
     public boolean storeAccountChest(AccountChest chest) {
     	GringottsAccount account = chest.getAccount();
     	Location loc = chest.sign.getLocation();
@@ -176,11 +179,10 @@ public class DAO {
 		}
     }
     
-    /**
-     * Remove an account chest from the datastore.
-     * @param chest
-     * @return true if the chest was deleted, false if no chest was deleted.
+    /* (non-Javadoc)
+     * @see org.gestern.gringotts.data.DAO#destroyAccountChest(org.gestern.gringotts.AccountChest)
      */
+    @Override
     public boolean destroyAccountChest(AccountChest chest) {
     	Location loc = chest.sign.getLocation();
     	try {
@@ -202,15 +204,15 @@ public class DAO {
 			return updated > 0;
     }
     
-    /**
-     * Store the given Account to DB.
-     * @param account
-     * @return true if an account was stored, false if it already existed
+    /* (non-Javadoc)
+     * @see org.gestern.gringotts.data.DAO#storeAccount(org.gestern.gringotts.GringottsAccount)
      */
+    @Override
     public boolean storeAccount(GringottsAccount account) {
     	AccountHolder owner = account.owner;
 
-    	if (getAccount(owner) != null)
+    	// don't store/overwrite if it's already there
+    	if (hasAccount(owner))
     		return false;
     	
     	try {
@@ -227,13 +229,11 @@ public class DAO {
     }
    
     
-    /**
-     * Get account belonging to a given account owner. 
-     * If an account seems to belong to an owner, but h
-     * @param accountHolder
-     * @return account belonging to the given owner, or null if the owner has no account
+    /* (non-Javadoc)
+     * @see org.gestern.gringotts.data.DAO#getAccount(org.gestern.gringotts.accountholder.AccountHolder)
      */
-    public GringottsAccount getAccount(AccountHolder accountHolder) {
+    @Override
+    public boolean hasAccount(AccountHolder accountHolder) {
     	
     	ResultSet result = null;
     	try {
@@ -243,13 +243,7 @@ public class DAO {
 			getAccount.setString(2, accountHolder.getType());
 			
 			result = getAccount.executeQuery();
-			if (result.next()) {
-				String type = result.getString("type");
-				String ownerName = result.getString("owner");
-		    	AccountHolder owner = Gringotts.G.accountHolderFactory.get(type, ownerName);
-		    	
-				return new GringottsAccount(owner);
-			} else return null;
+			return result.next();
 			
 		} catch (SQLException e) {
 			throw new GringottsStorageException("Failed to get account for owner: " + accountHolder, e);
@@ -259,11 +253,10 @@ public class DAO {
     }
 
     
-    /**
-     * Get set of all chests registered with Gringotts. 
-     * If a stored chest turns out to be invalid, that chest is removed from storage.
-     * @return set of all chests registered with Gringotts
+    /* (non-Javadoc)
+     * @see org.gestern.gringotts.data.DAO#getChests()
      */
+    @Override
     public Set<AccountChest> getChests() {
     	Set<AccountChest> chests = new HashSet<AccountChest>();
     	ResultSet result = null;
@@ -310,12 +303,10 @@ public class DAO {
     }
     
     
-    /**
-     * Get all chests belonging to the given account.
-     * If a stored chest turns out to be invalid, that chest is removed from storage.
-     * @param account account to fetch chests for.
-     * @return
+    /* (non-Javadoc)
+     * @see org.gestern.gringotts.data.DAO#getChests(org.gestern.gringotts.GringottsAccount)
      */
+    @Override
     public Set<AccountChest> getChests(GringottsAccount account) {
 	
 		AccountHolder owner = account.owner;
@@ -355,13 +346,11 @@ public class DAO {
 		return chests;
 	}
 
-    /**
-	 * Store an amount of cents to a given account.
-	 * @param account
-	 * @param amount
-	 * @return true if storing was successful, false otherwise.
-	 */
-	public boolean storeCents(GringottsAccount account, long amount) {
+    /* (non-Javadoc)
+     * @see org.gestern.gringotts.data.DAO#storeCents(org.gestern.gringotts.GringottsAccount, long)
+     */
+	@Override
+    public boolean storeCents(GringottsAccount account, long amount) {
 		try {
 			checkConnection();
     		
@@ -377,12 +366,11 @@ public class DAO {
 		}
 	}
 
-	/**
-	 * Get the cents stored for a given account.
-	 * @param account
-	 * @return amount of cents stored in the account, 0 if the account is not stored
-	 */
-	public long getCents(GringottsAccount account) {
+	/* (non-Javadoc)
+     * @see org.gestern.gringotts.data.DAO#getCents(org.gestern.gringotts.GringottsAccount)
+     */
+	@Override
+    public long getCents(GringottsAccount account) {
 		
 		ResultSet result = null;
 		try {
@@ -410,7 +398,7 @@ public class DAO {
      * Get a DAO instance.
      * @return the DAO instance
      */
-	public static DAO getDao() {
+	public static DerbyDAO getDao() {
 		
 		if (dao != null) return dao;
 		
@@ -422,15 +410,15 @@ public class DAO {
 			throw new GringottsStorageException("Could not initialize database driver. Is the derby jar in your craftbukkit/lib folder?", e);
 		}
 		
-		dao = new DAO();
+		dao = new DerbyDAO();
 		
     	return dao;
     }
 	
-	/**
-	 * Shutdown connection.
-	 */
-	public void shutdown() {
+	/* (non-Javadoc)
+     * @see org.gestern.gringotts.data.DAO#shutdown()
+     */
+    public void shutdown() {
 		try {			
 			log.info("shutting down database connection");
 			// disconnect from derby completely
@@ -444,17 +432,20 @@ public class DAO {
 		} 
 	}
     
+    /* (non-Javadoc)
+     * @see org.gestern.gringotts.data.DAO#finalize()
+     */
     @Override
     public void finalize() {
     	shutdown();
     }
 
-    /**
-     * Delete an account and associated data from the storage.
-     * @param acc
+    /* (non-Javadoc)
+     * @see org.gestern.gringotts.data.DAO#deleteAccount(org.gestern.gringotts.GringottsAccount)
      */
-	public void deleteAccount(GringottsAccount acc) {
-	    // TODO Auto-generated method stub
+	@Override
+    public void deleteAccount(GringottsAccount acc) {
+	    // TODO implement this, mayhaps?
 	    throw new RuntimeException("delete account not yet implemented");
     }
 }

@@ -12,6 +12,8 @@ import org.bukkit.block.Sign;
 import org.bukkit.inventory.DoubleChestInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.gestern.gringotts.data.DAO;
+import org.gestern.gringotts.data.DerbyDAO;
 
 /**
  * Represents a storage unit for an account.
@@ -23,7 +25,7 @@ public class AccountChest {
 
 	private final Logger log = Gringotts.G.getLogger();
     
-    private final DAO dao = DAO.getDao();
+    private final DAO dao = DerbyDAO.getDao();
 
     /** Sign marking the chest as an account chest. */
     public final Sign sign;
