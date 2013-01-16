@@ -221,23 +221,20 @@ public class DerbyDAO implements DAO {
     		
 			storeAccount.setString(1, owner.getType());
 			storeAccount.setString(2, owner.getId());
-			switch(account.owner.getType()) {
-			case "player":
-				storeAccount.setLong(3, CONF.currency.centValue(CONF.startBalancePlayer));
-				break;
-			case "faction":
-				storeAccount.setLong(3, CONF.currency.centValue(CONF.startBalanceFaction));
-				break;
-			case "town":
-				storeAccount.setLong(3, CONF.currency.centValue(CONF.startBalanceTown));
-				break;
-			case "nation":
-				storeAccount.setLong(3, CONF.currency.centValue(CONF.startBalanceNation));
-				break;
-			default:
-				storeAccount.setLong(3, 0);
-				break;
-			}
+			
+			// TODO this is business logic and should probably be outside of the DAO implementation.
+			// also find a more elegant way of handling different account types
+			double value = 0;
+			String type = account.owner.getType();
+			if (type.equals("player"))
+			    value = CONF.startBalancePlayer;
+			else if (type.equals("faction"))
+			    value = CONF.startBalanceFaction;
+			else if (type.equals("town"))
+			    value = CONF.startBalanceTown;
+			else if (type.equals("nation"))
+			    value = CONF.startBalanceNation;
+			storeAccount.setLong(3, CONF.currency.centValue(value));
 			
 			int updated = storeAccount.executeUpdate();
 			return updated > 0;
