@@ -1,0 +1,13 @@
+pay:
+    noperm: "You do not have permission to transfer money."
+    success:   
+        taxMessage: "Transaction tax deducted from your account: %value"
+        sentMessage: "Sent %value to %player. "
+        receivedMessage: "Received %value from %player."
+    insufficientFunds: "Your account has insufficient balance. Current balance: %balance. Required: %value"
+    insufficientSpace:
+        sentMessage: "%player has insufficient storage space for %value"
+        receivedMessage: "%player tried to send %value, but you don't have enough space for that amount."
+    error: "Your attempt to send %value to %player failed for unknown reasons."
+        
+
