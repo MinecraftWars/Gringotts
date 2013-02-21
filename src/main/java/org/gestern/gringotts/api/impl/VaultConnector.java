@@ -12,6 +12,8 @@ import org.gestern.gringotts.api.Account;
 import org.gestern.gringotts.api.Eco;
 import org.gestern.gringotts.api.TransactionResult;
 
+import static org.gestern.gringotts.Language.LANG;
+
 /** 
  * Provides the vault interface, so that the economy adapter in vault does not need to be changed. 
  * 
@@ -87,10 +89,10 @@ public class VaultConnector implements Economy {
 	    	case SUCCESS:
 	    		return new EconomyResponse(amount, account.balance(), ResponseType.SUCCESS, null);
 	    	case INSUFFICIENT_FUNDS:
-	    		return new EconomyResponse(0, account.balance(), ResponseType.FAILURE, "Insufficient funds.");
+	    		return new EconomyResponse(0, account.balance(), ResponseType.FAILURE, LANG.plugin_vault_insufficientFunds);
 	    	case ERROR:
 	    	default: 
-	    		return new EconomyResponse(0, account.balance(), ResponseType.FAILURE, "Unknown failure.");
+	    		return new EconomyResponse(0, account.balance(), ResponseType.FAILURE, LANG.plugin_vault_error);
     	}
     }
 
@@ -104,16 +106,16 @@ public class VaultConnector implements Economy {
 	    	case SUCCESS:
 	    		return new EconomyResponse(amount, account.balance(), ResponseType.SUCCESS, null);
 	    	case INSUFFICIENT_SPACE:
-	    		return new EconomyResponse(0, account.balance(), ResponseType.FAILURE, "Insufficient space.");
+	    		return new EconomyResponse(0, account.balance(), ResponseType.FAILURE, LANG.plugin_vault_insufficientSpace);
 	    	case ERROR:
 	    	default: 
-	    		return new EconomyResponse(0, account.balance(), ResponseType.FAILURE, "Unknown failure.");
+	    		return new EconomyResponse(0, account.balance(), ResponseType.FAILURE, LANG.plugin_vault_error);
     	}
     }
 
     @Override
     public EconomyResponse createBank(String name, String player) {
-    	return new EconomyResponse(0,0, ResponseType.NOT_IMPLEMENTED, "Gringotts does not support banks");
+    	return new EconomyResponse(0,0, ResponseType.NOT_IMPLEMENTED, LANG.plugin_vault_notImplemented);
 //        BankAccount bank = eco.bank(name).addOwner(player);
 //        if (bank.exists())
 //        	return new EconomyResponse(0, 0, ResponseType.FAILURE, "Unable to create bank!");
@@ -123,7 +125,7 @@ public class VaultConnector implements Economy {
 
     @Override
     public EconomyResponse deleteBank(String name) {
-    	return new EconomyResponse(0,0, ResponseType.NOT_IMPLEMENTED, "Gringotts does not support banks");
+    	return new EconomyResponse(0,0, ResponseType.NOT_IMPLEMENTED, LANG.plugin_vault_notImplemented);
 //    	Account deleted = eco.bank(name).delete();
 //    	if (deleted.exists())
 //    		return new EconomyResponse(0, 0, ResponseType.FAILURE, "Unable to delete bank account!");
@@ -133,7 +135,7 @@ public class VaultConnector implements Economy {
 
     @Override
     public EconomyResponse bankBalance(String name) {
-    	return new EconomyResponse(0,0, ResponseType.NOT_IMPLEMENTED, "Gringotts does not support banks");
+    	return new EconomyResponse(0,0, ResponseType.NOT_IMPLEMENTED, LANG.plugin_vault_notImplemented);
 //    	double balance = eco.bank(name).balance();
 //        return new EconomyResponse(0, balance, 
 //        		ResponseType.SUCCESS, "Balance of bank "+ name +": "+ balance);
@@ -141,7 +143,7 @@ public class VaultConnector implements Economy {
 
     @Override
     public EconomyResponse bankHas(String name, double amount) {
-    	return new EconomyResponse(0,0, ResponseType.NOT_IMPLEMENTED, "Gringotts does not support banks");
+    	return new EconomyResponse(0,0, ResponseType.NOT_IMPLEMENTED, LANG.plugin_vault_notImplemented);
 //    	BankAccount bank = eco.bank(name);
 //    	double balance = bank.balance();
 //    	if (bank.has(amount))
@@ -152,7 +154,7 @@ public class VaultConnector implements Economy {
 
     @Override
     public EconomyResponse bankWithdraw(String name, double amount) {
-    	return new EconomyResponse(0,0, ResponseType.NOT_IMPLEMENTED, "Gringotts does not support banks");
+    	return new EconomyResponse(0,0, ResponseType.NOT_IMPLEMENTED, LANG.plugin_vault_notImplemented);
 //    	BankAccount bank = eco.bank(name);
 //    	TransactionResult result = bank.remove(amount);
 //    	if (result == TransactionResult.SUCCESS)
@@ -163,7 +165,7 @@ public class VaultConnector implements Economy {
 
     @Override
     public EconomyResponse bankDeposit(String name, double amount) {
-    	return new EconomyResponse(0,0, ResponseType.NOT_IMPLEMENTED, "Gringotts does not support banks");
+    	return new EconomyResponse(0,0, ResponseType.NOT_IMPLEMENTED, LANG.plugin_vault_notImplemented);
 //    	BankAccount bank = eco.bank(name);
 //    	TransactionResult result = bank.add(amount);
 //    	if (result == TransactionResult.SUCCESS)
@@ -174,13 +176,13 @@ public class VaultConnector implements Economy {
 
     @Override
     public EconomyResponse isBankOwner(String name, String playerName) {
-    	return new EconomyResponse(0,0, ResponseType.NOT_IMPLEMENTED, "Gringotts does not support banks");
+    	return new EconomyResponse(0,0, ResponseType.NOT_IMPLEMENTED, LANG.plugin_vault_notImplemented);
 //        return new EconomyResponse(0, 0, eco.bank(name).isOwner(playerName)? ResponseType.SUCCESS : FAILURE, "");
     }
 
     @Override
     public EconomyResponse isBankMember(String name, String playerName) {
-    	return new EconomyResponse(0,0, ResponseType.NOT_IMPLEMENTED, "Gringotts does not support banks");
+    	return new EconomyResponse(0,0, ResponseType.NOT_IMPLEMENTED, LANG.plugin_vault_notImplemented);
 //    	return new EconomyResponse(0, 0, eco.bank(name).isMember(playerName)? ResponseType.SUCCESS : FAILURE, "");
     }
 

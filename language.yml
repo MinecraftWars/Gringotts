@@ -1,13 +1,69 @@
+# Here you can change the output of all messages sent to yout players via chat.
+# Todo so you just have to rewrite the values below. Just be sure to not put any %-variables in the message that were not there to begin with,
+# it will just be displayed as %whateveryouwrote in the message sent.
+#
+# %value stands for an amount of money
+# %player means either the player executing the command, the player you interact with or the player whose account you want to manipulate
+# %balance stands for the amount of money a player has
+#
+# sender stands for the message the one executing the command gets, target for the other person who is affected. 
+# Errors and other messages are only displayed for the one executing the command
+
+
+playeronly: "This command can only be run by a player."
+noperm: "You do not have permission to transfer money."
+balance: "Your current balance: %balance"
+invalidaccount: "Invalid account: %player"
+reload: "Gringotts: Reloaded configuration!"
+ 
 pay:
-    noperm: "You do not have permission to transfer money."
     success:   
-        taxMessage: "Transaction tax deducted from your account: %value"
-        sentMessage: "Sent %value to %player. "
-        receivedMessage: "Received %value from %player."
+        tax: "Transaction tax deducted from your account: %value"
+        sender: "Sent %value to %player. "
+        target: "Received %value from %player."
     insufficientFunds: "Your account has insufficient balance. Current balance: %balance. Required: %value"
     insufficientSpace:
-        sentMessage: "%player has insufficient storage space for %value"
-        receivedMessage: "%player tried to send %value, but you don't have enough space for that amount."
+        sender: "%player has insufficient storage space for %value"
+        target: "%player tried to send %value, but you don't have enough space for that amount."
     error: "Your attempt to send %value to %player failed for unknown reasons."
+    
+deposit:
+    success: "Deposited %value to your storage."
+    error: "Unable to deposit %value to your storage."
+    
+withdraw:
+    success: "Withdrew %value from your storage."
+    error: "Unable to withdraw %value from your storage."
         
-
+moneyadmin:
+    b: "Balance of account %player: %balance"
+    add: 
+        sender: "Added %value to account %player"
+        target: "Added to your account: %value"
+        error: "Could not add %value to account %player"
+    rm:
+        sender: "Removed %value from account %player"
+        target: "Removed from your account: %value"
+        error: "Could not remove %value from account %player"
+        
+vault:
+    created: "Created a vault for your account."
+    error: "Failed to create vault."
+    noVaultPerm: "You do not have permission to create vaults here."
+    
+plugins:
+    towny:
+        noTownVaultPerm: "You do not have permission to create town vaults here."
+        noTownResident: "Cannot create town vault: You are not resident of a town."
+        noNationVaultPerm: "You do not have permission to create nation vaults here."
+        notInNation: "Cannot create nation vault: You do not belong to a nation."
+    vault:
+        insufficientFunds: "Insufficient funds."
+        insufficientSpace: "Insufficient space."
+        unknownError: "Unknown failure."
+        notImplemented: "Gringotts does not support banks"
+    faction:
+        noFactionVaultPerm: "You do not have permission to create a faction vault here."
+        notInFaction: "Cannot create faction vault: You are not in a faction."
+        
+    

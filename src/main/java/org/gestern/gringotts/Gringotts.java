@@ -57,8 +57,9 @@ public class Gringotts extends JavaPlugin {
 	        saveDefaultConfig(); // saves default configuration if no config.yml exists yet
 	        FileConfiguration savedConfig = getConfig();
 	        CONF.readConfig(savedConfig);
-            ConfigAccessor test = new ConfigAccessor(this, "language.yml");
-            FileConfiguration language = test.getConfig();
+            ConfigAccessor languageConfig = new ConfigAccessor(this, "language.yml");
+            languageConfig.saveDefaultConfig();
+            FileConfiguration language = languageConfig.getConfig();
             LANG.readLanguage(language);
 	    	
 	    	gcommand = new Commands(this);
