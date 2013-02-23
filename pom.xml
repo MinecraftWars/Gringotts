@@ -166,6 +166,10 @@
             <name>Milkbowl</name>
             <url>http://ci.herocraftonline.com/plugin/repository/everything/</url>
         </repository>
+        <repository>
+            <id>sk89q</id>
+            <url>http://maven.sk89q.com/repo/</url>
+        </repository>
 		<repository>
 			<id>project.local</id>
 			<name>project.local</name>
