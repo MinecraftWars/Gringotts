@@ -1,5 +1,6 @@
 package org.gestern.gringotts.event;
 
+import com.avaje.ebeaninternal.server.expression.LLuceneRangeExpression;
 import static org.gestern.gringotts.Permissions.createvault_nation;
 import static org.gestern.gringotts.Permissions.createvault_town;
 import static org.gestern.gringotts.dependency.Dependency.DEP;
@@ -8,6 +9,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.gestern.gringotts.accountholder.AccountHolder;
+
+import static org.gestern.gringotts.Language.LANG;
 
 public class TownyListener implements Listener {
 
@@ -22,25 +25,25 @@ public class TownyListener implements Listener {
 		AccountHolder owner = null;
 		if (event.getType().equals("town")) {
         	if (!createvault_town.allowed(player)) {
-        		player.sendMessage("You do not have permission to create town vaults here.");
+        		player.sendMessage(LANG.plugin_towny_noTownVaultPerm);
         		return;
         	}
         	
         	owner = DEP.towny.getTownAccountHolder(player);
         	if (owner == null) {
-        		player.sendMessage("Cannot create town vault: You are not resident of a town.");
+        		player.sendMessage(LANG.plugin_towny_noTownResident);
 				return;
         	}
         	
         } else if (event.getType().equals("nation")) {
         	if (!createvault_nation.allowed(player)) {
-        		player.sendMessage("You do not have permission to create nation vaults here.");
+        		player.sendMessage(LANG.plugin_towny_noNationVaultPerm);
         		return;
         	}
         	
         	owner = DEP.towny.getNationAccountHolder(player);
         	if (owner == null) {
-        		player.sendMessage("Cannot create nation vault: You do not belong to a nation.");
+        		player.sendMessage(LANG.plugin_towny_notInNation);
 				return;
         	}
         }

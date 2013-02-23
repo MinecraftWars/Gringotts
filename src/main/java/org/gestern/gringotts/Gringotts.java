@@ -24,6 +24,9 @@ import org.gestern.gringotts.event.PlayerVaultListener;
 import org.gestern.gringotts.event.VaultCreator;
 import org.mcstats.MetricsLite;
 
+import org.gestern.gringotts.ConfigAccessor;
+import static org.gestern.gringotts.Language.LANG;
+
 
 public class Gringotts extends JavaPlugin {
 
@@ -54,6 +57,10 @@ public class Gringotts extends JavaPlugin {
 	        saveDefaultConfig(); // saves default configuration if no config.yml exists yet
 	        FileConfiguration savedConfig = getConfig();
 	        CONF.readConfig(savedConfig);
+            ConfigAccessor languageConfig = new ConfigAccessor(this, "language.yml");
+            languageConfig.saveDefaultConfig();
+            FileConfiguration language = languageConfig.getConfig();
+            LANG.readLanguage(language);
 	    	
 	    	gcommand = new Commands(this);
 	

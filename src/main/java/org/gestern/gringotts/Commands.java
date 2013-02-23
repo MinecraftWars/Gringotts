@@ -16,6 +16,7 @@ import org.gestern.gringotts.api.TransactionResult;
 import org.gestern.gringotts.api.impl.GringottsEco;
 
 import static org.gestern.gringotts.Configuration.CONF;
+import static org.gestern.gringotts.Language.LANG;
 
 
 /**
@@ -46,7 +47,7 @@ public class Commands {
 	        if (sender instanceof Player) {
 	            player = (Player)sender;
 	        } else {
-	            sender.sendMessage("This command can only be run by a player.");
+	            sender.sendMessage(LANG.playerOnly);
 	            return false;
 	            // TODO actually, refactor the whole thing already!
 	        }
@@ -90,7 +91,7 @@ public class Commands {
     
     private boolean pay(Player player, double value, String[] args) {
     	if (!Permissions.transfer.allowed(player)) {
-    		player.sendMessage("You do not have permission to transfer money.");
+    		player.sendMessage(LANG.noperm);
     		return true;
     	}
     	
@@ -110,22 +111,25 @@ public class Commands {
         
         switch (result) {
             case SUCCESS:
-            	String taxMessage = "Transaction tax deducted from your account: " + formattedValue;
-                from.message("Sent " + formattedValue + " to " + recipientName +". " + (tax>0? taxMessage : ""));
-                to.message("Received " + formattedValue + " from " + player.getName() +".");
+                String succ_taxMessage = LANG.pay_success_tax.replace("%value", formattedValue);
+                String succ_sentMessage = LANG.pay_success_sender.replace("%value", formattedValue).replace("%player", recipientName);
+                from.message(succ_sentMessage + (tax>0? succ_taxMessage : ""));
+                String succ_receivedMessage = LANG.pay_success_target.replace("%value", formattedValue).replace("%player", player.getName());
+                to.message(succ_receivedMessage);
             	return true;
             case INSUFFICIENT_FUNDS:
-            	from.message(
-                        "Your account has insufficient balance. Current balance: " + formattedBalance 
-                        + ". Required: " + formattedValue);
+                String insF_Message = LANG.pay_insufficientFunds.replace("%balance", formattedBalance).replace("%value", formattedValue);
+                from.message(insF_Message);
             	return true;
             case INSUFFICIENT_SPACE:
-            	from.message(recipientName + " has insufficient storage space for "+formattedValue);
-            	to.message(from.id() + " tried to send "+formattedValue+", but you don't have enough space for that amount.");
-            	return true;
-            	
+                String insS_sentMessage = LANG.pay_insS_sender.replace("%player", recipientName).replace("%value", formattedValue);
+            	from.message(insS_sentMessage);
+                String insS_receiveMessage = LANG.pay_insS_target.replace("%player", from.id()).replace("%value", formattedValue);
+            	to.message(insS_receiveMessage);
+                return true;
             default:
-            	from.message("Your attempt to send "+formattedValue+" to "+recipientName+" failed for unknown reasons.");
+                String error = LANG.pay_error.replace("%value", formattedValue).replace("%player", recipientName);
+            	from.message(error);
             	return true;
     	}
     }
@@ -135,10 +139,14 @@ public class Commands {
     	if (command_deposit.allowed(player)) {
     		TransactionResult result = eco.player(player.getName()).deposit(value);
     		String formattedValue = eco.currency().format(value);
-    		if (result == SUCCESS)
-    			player.sendMessage(String.format("Deposited %s to your storage.", formattedValue));
-    		else
-    			player.sendMessage(String.format("Unable to deposit %s to your storage.", formattedValue));
+    		if (result == SUCCESS){
+                String success = LANG.deposit_success.replace("%value", formattedValue);
+    			player.sendMessage(success);
+            }
+            else{
+                String error = LANG.deposit_error.replace("%value", formattedValue);
+    			player.sendMessage(error);
+            }
     	}
     }
     
@@ -146,11 +154,15 @@ public class Commands {
     	if (command_withdraw.allowed(player)) {
     		TransactionResult result = eco.player(player.getName()).withdraw(value);
     		String formattedValue = eco.currency().format(value);
-    		if (result == SUCCESS)
-    			player.sendMessage(String.format("Withdrew %s from your storage.", formattedValue));
-    		else
-    			player.sendMessage(String.format("Unable to withdraw %s from your storage.", formattedValue));
-    	}
+    		if (result == SUCCESS){
+                String success = LANG.withdraw_success.replace("%value", formattedValue);
+    			player.sendMessage(success);
+            }
+            else{
+                String error = LANG.withdraw_error.replace("%value", formattedValue);
+    			player.sendMessage(error);
+            }
+        }
     }
 
 	/**
@@ -182,7 +194,8 @@ public class Commands {
                 	
                 	if (command.equalsIgnoreCase("b")) {
                     	String formattedBalance = eco.currency().format(target.balance());
-	                	sender.sendMessage("Balance of account " + targetAccountHolderStr + ": " + formattedBalance);
+                        String senderMessage = LANG.moneyadmin_b.replace("%balance", formattedBalance).replace("%player", targetAccountHolderStr);
+	                	sender.sendMessage(senderMessage);
 	                	return true;
                 	} else
                 		return false;
@@ -207,10 +220,13 @@ public class Commands {
                 	if (command.equalsIgnoreCase("add")) {
                 		TransactionResult added = target.add(value);
                         if (added == SUCCESS) {
-                        	sender.sendMessage("Added " + formatValue + " to account " + target.id());
-                        	target.message("Added to your account: " + formatValue);
+                            String senderMessage = LANG.moneyadmin_add_sender.replace("%value", formatValue).replace("%player", target.id());
+                        	sender.sendMessage(senderMessage);
+                            String targetMessage = LANG.moneyadmin_add_target.replace("%value", formatValue);
+                        	target.message(targetMessage);
                         } else {
-                        	sender.sendMessage("Could not add " + formatValue + " to account " + target.id());
+                            String errorMessage = LANG.moneyadmin_add_error.replace("%value", formatValue).replace("%player", target.id());
+                        	sender.sendMessage(errorMessage);
                         }
                         
                         return true;
@@ -218,10 +234,13 @@ public class Commands {
                 	} else if (command.equalsIgnoreCase("rm")) {
                 		TransactionResult removed = target.remove(value); 
                         if (removed == SUCCESS) {
-                        	sender.sendMessage("Removed " + formatValue + " from account " + target.id());
-                        	target.message("Removed from your account: " + formatValue);
+                        	String senderMessage = LANG.moneyadmin_rm_sender.replace("%value", formatValue).replace("%player", target.id());
+                        	sender.sendMessage(senderMessage);
+                            String targetMessage = LANG.moneyadmin_rm_target.replace("%value", formatValue);
+                        	target.message(targetMessage);
                         } else {
-                        	sender.sendMessage("Could not remove " + formatValue + " from account " + target.id());
+                            String errorMessage = LANG.moneyadmin_rm_error.replace("%value", formatValue).replace("%player", target.id());
+                        	sender.sendMessage(errorMessage);
                         }
                         
                         return true;
@@ -244,7 +263,7 @@ public class Commands {
 			if (args.length >=1 && "reload".equalsIgnoreCase(args[0])) {
 				plugin.reloadConfig();
 				CONF.readConfig(plugin.getConfig());
-				sender.sendMessage("Gringotts: Reloaded configuration!");
+				sender.sendMessage(LANG.reload);
 				return true;
 			}
 			
@@ -255,11 +274,11 @@ public class Commands {
 
     
     private void balanceMessage(Account account) {
-        account.message("Your current balance: " + eco.currency().format(account.balance()) );
+        account.message(LANG.balance.replace("%balance", eco.currency().format(account.balance()) ));
     }
     
     private static void invalidAccount(CommandSender sender, String accountName) {
-    	sender.sendMessage("Invalid account: " + accountName);
+    	sender.sendMessage(LANG.invalid_account.replace("%player", accountName));
     }
 
 }

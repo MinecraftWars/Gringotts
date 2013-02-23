@@ -12,6 +12,8 @@ import org.gestern.gringotts.Gringotts;
 import org.gestern.gringotts.GringottsAccount;
 import org.gestern.gringotts.accountholder.AccountHolder;
 
+import static org.gestern.gringotts.Language.LANG;
+
 public class VaultCreator implements Listener {
 	
 	private final Accounting accounting = Gringotts.G.accounting; 
@@ -40,11 +42,11 @@ public class VaultCreator implements Listener {
         	if (cause.getLine(0).length() <= 13)
         		cause.setLine(0, ChatColor.BOLD + cause.getLine(0));
         	cause.setLine(2, owner.getName());
-            cause.getPlayer().sendMessage("Created a vault for your account.");
+            cause.getPlayer().sendMessage(LANG.vault_created);
 
         } else {
             cause.setCancelled(true);
-            cause.getPlayer().sendMessage("Failed to create vault.");
+            cause.getPlayer().sendMessage(LANG.vault_error);
         }
 	}
 
