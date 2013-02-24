@@ -1,7 +1,9 @@
 package org.gestern.gringotts.dependency;
 
+import com.avaje.ebeaninternal.server.expression.LLuceneRangeExpression;
 import static org.gestern.gringotts.Permissions.createvault_faction;
 import static org.gestern.gringotts.dependency.Dependency.DEP;
+import static org.gestern.gringotts.Language.LANG;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -103,13 +105,13 @@ public class FactionsHandler implements DependencyHandler, AccountHolderProvider
 	        if (event.getType().equals("faction")) {
 	            Player player = event.getCause().getPlayer();
 	            if (!createvault_faction.allowed(player)) {
-	                player.sendMessage("You do not have permission to create a faction vault here.");
+	                player.sendMessage(LANG.plugin_faction_noVaultPerm);
 	                return;
 	            }
 	            
 	            AccountHolder owner = DEP.factions.getFactionAccountHolder(player);
 	            if (owner==null) {
-	                player.sendMessage("Cannot create faction vault: You are not in a faction.");
+	                player.sendMessage(LANG.plugin_faction_notInFaction);
 	                return;
 	            }
 	            
