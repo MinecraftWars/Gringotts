@@ -1,4 +1,4 @@
-playeronly: "Dies kann nur ein Spieler tun."
+playeronly: "Dieses Kommando kann nur von Spielern ausgeführt werden."
 noperm: "Du hast keine Berechtigung, Geld zu überweisen."
 balance: "Du hast zur Zeit %balance auf der Bank."
 invalidaccount: "Ungültiger Spieler: %player"
@@ -6,52 +6,52 @@ reload: "Gringotts: Einstellungen neu geladen!"
  
 pay:
     success:   
-        tax: "Geld von deinem Konto entfernt: %value"
-        sender: "%value zu %player gesendet. "
+        tax: "Transaktionssteuern erhoben: %value"
+        sender: "%value an %player überwiesen."
         target: "%value von %player bekommen."
     insufficientFunds: "Du hast nicht genug Geld auf der Bank. Du hast: %balance. Du brauchst: %value"
     insufficientSpace:
         sender: "%player hat nicht genug Platz für %value"
-        target: "%player hat versucht dir %value zu senden aber du hast nicht genug Platz dafür."
+        target: "%player hat versucht dir %value zu senden, aber du hast nicht genug Platz dafür."
     error: "Dein Versuch %player %value zu senden ist aus unbekannten Gründen gescheitert."
     
 deposit:
-    success: "%value auf die Bank gebracht."
-    error: "Es ist nicht möglich, %value auf die Bank zu bringen."
+    success: "Du hast %value auf dein Konto überwiesen."
+    error: "Es ist nicht möglich, %value auf dein Konto zu überweisen."
     
 withdraw:
-    success: "%value von der bank abgehoben."
-    error: "Es ist nicht möglich, %value von der Bank zu holen."
+    success: "%value von deinem Konto abgehoben."
+    error: "Es ist nicht möglich, %value deinem Konto abzuheben."
         
 moneyadmin:
-    b: "Geld von %player: %balance"
+    b: "Kontostand von %player: %balance"
     add: 
         sender: "%value auf %player's Konto eingezahlt."
         target: "Auf dein Konto wurde/n %value eingezahlt."
         error: "Es ist nicht möglich %value auf %player's Konto zu überweisen."
     rm:
-        sender: "%value von %player's Konto geholt."
-        target: "Von deinem Konto wurde/n %value abgehoben."
+        sender: "%value von %player's Konto entfernt."
+        target: "Von deinem Konto wurde/n %value entfernt."
         error: "Es ist nicht möglich, %value von %player's Konto abzuheben."
         
 vault:
     created: "Ein Bankkonto wurde erstellt."
-    error: "Fehler beim erstellen eines Kontos."
+    error: "Fehler beim Erstellen eines Kontos."
     noVaultPerm: "Du hast keine Erlaubnis hier ein Konto hinzustellen."
     
 plugins:
     towny:
-        noTownVaultPerm: "You do not have permission to create town vaults here."
-        noTownResident: "Cannot create town vault: You are not resident of a town."
-        noNationVaultPerm: "You do not have permission to create nation vaults here."
-        notInNation: "Cannot create nation vault: You do not belong to a nation."
+        noTownVaultPerm: "Du kannst hier keine Town-Vaults erstellen."
+        noTownResident: "Du kannst keine Town-Vault erstellen, weil du nicht Bürger einer Town bist."
+        noNationVaultPerm: "Du kannst hier keine Nation-Vaults erstellen."
+        notInNation: "Du kannst keine Nation-Vaults erstellen, weil du nicht Bürger einer Nation bist"
     vault:
-        insufficientFunds: "Insufficient funds."
-        insufficientSpace: "Insufficient space."
-        unknownError: "Unknown failure."
-        notImplemented: "Gringotts does not support banks"
+        insufficientFunds: "Nicht genug Geld."
+        insufficientSpace: "Nicht genug Platz."
+        unknownError: "Unbekannter Fehler."
+        notImplemented: "Gringotts unterstützt keine Banken."
     faction:
-        noFactionVaultPerm: "You do not have permission to create a faction vault here."
-        notInFaction: "Cannot create faction vault: You are not in a faction."
+        noFactionVaultPerm: "Du kannst hier keine Faction-Vault erstellen."
+        notInFaction: "Du kannst keine Faction-Vault erstellen, weil du nicht in einer Faction bist."
         
     
