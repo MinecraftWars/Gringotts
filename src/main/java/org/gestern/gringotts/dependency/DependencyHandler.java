@@ -10,15 +10,15 @@ package org.gestern.gringotts.dependency;
  */
 public interface DependencyHandler {
 
-	/**
-	 * Return whether the plugin handled by this handler is enabled.
-	 * @return whether the plugin handled by this handler is enabled.
-	 */
-	boolean enabled();
+    /**
+     * Return whether the plugin handled by this handler is enabled.
+     * @return whether the plugin handled by this handler is enabled.
+     */
+    boolean enabled();
 
-	/**
-	 * Return whether the dependency is loaded into classpath.
-	 * @return whether the dependency is loaded into classpath.
-	 */
-	boolean exists();
+    /**
+     * Return whether the dependency is loaded into classpath.
+     * @return whether the dependency is loaded into classpath.
+     */
+    boolean exists();
 }

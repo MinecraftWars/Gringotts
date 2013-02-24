@@ -4,37 +4,37 @@ package org.gestern.gringotts.accountholder;
 import com.palmergames.bukkit.towny.object.TownyEconomyObject;
 
 public class TownyAccountHolder implements AccountHolder {
-	
-	TownyEconomyObject owner;
-	
-	public TownyAccountHolder(TownyEconomyObject owner) {
-		this.owner = owner;
-	}
 
-	@Override
-	public String getName() {
-		return owner.getName();
-	}
+    TownyEconomyObject owner;
 
-	@Override
-	public void sendMessage(String message) {
-		// TODO is it possible to send a message to a town?
-		// TODO maybe just manually send to online residents
-	}
+    public TownyAccountHolder(TownyEconomyObject owner) {
+        this.owner = owner;
+    }
 
-	@Override
-	public String getType() {
-		return "towny";
-	}
+    @Override
+    public String getName() {
+        return owner.getName();
+    }
 
-	@Override
-	public String getId() {
-		return owner.getEconomyName();
-	}
-	
-	@Override
-	public String toString() {
-		return "TownyAccountHolder("+owner.getName()+")";
-	}
+    @Override
+    public void sendMessage(String message) {
+        // TODO is it possible to send a message to a town?
+        // TODO maybe just manually send to online residents
+    }
+
+    @Override
+    public String getType() {
+        return "towny";
+    }
+
+    @Override
+    public String getId() {
+        return owner.getEconomyName();
+    }
+
+    @Override
+    public String toString() {
+        return "TownyAccountHolder("+owner.getName()+")";
+    }
 
 }

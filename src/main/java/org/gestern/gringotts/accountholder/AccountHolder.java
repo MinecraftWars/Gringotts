@@ -12,14 +12,14 @@ package org.gestern.gringotts.accountholder;
  *
  */
 public interface AccountHolder {
-    /** 
+    /**
      * Return name of the account holder.
      * 
      * @return name of the account holder
      */
     String getName();
 
-    /** 
+    /**
      * Send message to the account holder. 
      * @param message to send
      * */
@@ -32,12 +32,12 @@ public interface AccountHolder {
      * Type of the account holder. For instance "faction" or "player".
      * @return account holder type
      */
-	String getType();
+    String getType();
 
-	/**
-	 * A unique identifier for the account holder.
-	 * For players, this is simply the name. For factions, it is their id.
-	 * @return unique account holder id
-	 */
-	String getId();
+    /**
+     * A unique identifier for the account holder.
+     * For players, this is simply the name. For factions, it is their id.
+     * @return unique account holder id
+     */
+    String getId();
 }

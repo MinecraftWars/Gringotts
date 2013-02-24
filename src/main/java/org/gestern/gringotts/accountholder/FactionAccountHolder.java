@@ -76,20 +76,20 @@ public class FactionAccountHolder implements AccountHolder {
         return true;
     }
 
-	@Override
-	public String getType() {
-		return "faction";
-	}
-	
-	@Override
-	public String toString() {
-		return "FactionAccountHolder("+getName()+")";
-	}
+    @Override
+    public String getType() {
+        return "faction";
+    }
 
-	@Override
-	public String getId() {
-		return owner.getId();
-	}
+    @Override
+    public String toString() {
+        return "FactionAccountHolder("+getName()+")";
+    }
+
+    @Override
+    public String getId() {
+        return owner.getId();
+    }
 
 
 }

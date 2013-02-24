@@ -15,7 +15,7 @@ import org.gestern.gringotts.data.DAO;
 import org.gestern.gringotts.data.DerbyDAO;
 
 /**
- * Implementation of inventory-based accounts with a virtual overflow capacity. 
+ * Implementation of inventory-based accounts with a virtual overflow capacity.
  * Has support for player accounts specifically and works with any other container storage.
  * 
  * @author jast
@@ -23,15 +23,15 @@ import org.gestern.gringotts.data.DerbyDAO;
 public class GringottsAccount {
 
     @SuppressWarnings("unused")
-	private final Logger log = Gringotts.G.getLogger();
+    private final Logger log = Gringotts.G.getLogger();
     private final DAO dao = DerbyDAO.getDao(); 
 
     public final AccountHolder owner;
 
     public GringottsAccount(AccountHolder owner) {
-    	if (owner == null) {
-    		throw new IllegalArgumentException("owner parameter to Account constructor may not be null");
-    	}
+        if (owner == null) {
+            throw new IllegalArgumentException("owner parameter to Account constructor may not be null");
+        }
         this.owner = owner;
     }
 
@@ -41,18 +41,18 @@ public class GringottsAccount {
      */
     public long balance() {
         long balance = 0;
-        
+
         if (CONF.usevaultContainer) {
-	        for (AccountChest chest : dao.getChests(this))
-	            balance += chest.balance();
+            for (AccountChest chest : dao.getChests(this))
+                balance += chest.balance();
         }
-        
+
         Player player = playerOwner();
         if (player != null) {
-        	if (usevault_inventory.allowed(player))
-        		balance += new AccountInventory(player.getInventory()).balance();
-        	if (CONF.usevaultEnderchest && usevault_enderchest.allowed(player))
-        		balance += new AccountInventory(player.getEnderChest()).balance();
+            if (usevault_inventory.allowed(player))
+                balance += new AccountInventory(player.getInventory()).balance();
+            if (CONF.usevaultEnderchest && usevault_enderchest.allowed(player))
+                balance += new AccountInventory(player.getEnderChest()).balance();
         }
 
         // convert to total cents
@@ -75,36 +75,36 @@ public class GringottsAccount {
 
         // add currency to account's vaults
         if (CONF.usevaultContainer) {
-	        for (AccountChest chest : dao.getChests(this)) {
-	        	remaining -= chest.add(remaining);
-	            if (remaining <= 0) break;
-	        }
+            for (AccountChest chest : dao.getChests(this)) {
+                remaining -= chest.add(remaining);
+                if (remaining <= 0) break;
+            }
         }
-        
+
         // add stuff to player's inventory and enderchest too, when they are online
         Player player = playerOwner();
         if (player != null) {
-        	if (usevault_inventory.allowed(player))
-        		remaining -= new AccountInventory(player.getInventory()).add(remaining);
-        	if (CONF.usevaultEnderchest && usevault_enderchest.allowed(player))
-        		remaining -= new AccountInventory(player.getEnderChest()).add(remaining);
+            if (usevault_inventory.allowed(player))
+                remaining -= new AccountInventory(player.getInventory()).add(remaining);
+            if (CONF.usevaultEnderchest && usevault_enderchest.allowed(player))
+                remaining -= new AccountInventory(player.getEnderChest()).add(remaining);
         }
-        
+
         // allow largest denom value as threshold for available space
-    	// TODO make maximum virtual amount configurable
+        // TODO make maximum virtual amount configurable
         // this is under the assumption that there is always at least 1 denomination
-    	long largestDenomValue = CONF.currency.denominations().get(0).value;
-    	if (remaining < largestDenomValue) {
-    		dao.storeCents(this, remaining);
-    		remaining = 0;
-    	}
-        
+        long largestDenomValue = CONF.currency.denominations().get(0).value;
+        if (remaining < largestDenomValue) {
+            dao.storeCents(this, remaining);
+            remaining = 0;
+        }
+
         if (remaining == 0) 
-        	return SUCCESS;
-        
+            return SUCCESS;
+
         // failed, remove the stuff added so far
         remove(amount-remaining);
-        
+
         return INSUFFICIENT_SPACE;
     }
 
@@ -128,26 +128,26 @@ public class GringottsAccount {
 
         // Now remove the physical amount left
         if (CONF.usevaultContainer) {
-	        for (AccountChest chest : dao.getChests(this))
-	            remaining -= chest.remove(remaining);
+            for (AccountChest chest : dao.getChests(this))
+                remaining -= chest.remove(remaining);
         }
-        
+
         Player player = playerOwner();
         if (player != null) {
-        	if (usevault_inventory.allowed(player))
-        		remaining -= new AccountInventory(player.getInventory()).remove(remaining);
-        	if (CONF.usevaultEnderchest && usevault_enderchest.allowed(player))
-        		remaining -= new AccountInventory(player.getEnderChest()).remove(remaining);
+            if (usevault_inventory.allowed(player))
+                remaining -= new AccountInventory(player.getInventory()).remove(remaining);
+            if (CONF.usevaultEnderchest && usevault_enderchest.allowed(player))
+                remaining -= new AccountInventory(player.getEnderChest()).remove(remaining);
         }
-        
+
         if (remaining < 0)
-        	// took too much, pay back the extra
-        	return add(-remaining);
-        
+            // took too much, pay back the extra
+            return add(-remaining);
+
         if (remaining > 0) {
-        	// cannot represent the leftover in our denominations, take them from the virtual reserve
-        	long cents = dao.getCents(this);
-        	dao.storeCents(this, cents - remaining);
+            // cannot represent the leftover in our denominations, take them from the virtual reserve
+            long cents = dao.getCents(this);
+            dao.storeCents(this, cents - remaining);
         }
 
         return SUCCESS;
@@ -165,10 +165,10 @@ public class GringottsAccount {
     public TransactionResult transfer(long value, GringottsAccount other) {
 
         // First try to deduct the amount from this account
-    	TransactionResult removed = this.remove(value);
+        TransactionResult removed = this.remove(value);
         if(removed == SUCCESS) {
             // Okay, now lets send it to the other account
-        	TransactionResult added = other.add(value);
+            TransactionResult added = other.add(value);
             if(added!=SUCCESS) {
                 // Oops, failed, better refund this account
                 this.add(value);
@@ -177,26 +177,26 @@ public class GringottsAccount {
         } 
         return removed;
     }
-    
+
     @Override
     public String toString() {
-    	return "Account ("+owner+")";
+        return "Account ("+owner+")";
     }
-    
+
     /**
      * Returns the player owning this account, if the owner is actually a player and online.
      * @return the player owning this account, if the owner is actually a player and online, otherwise null
      */
     private Player playerOwner() {
-    	if (owner instanceof PlayerAccountHolder) {
-        	OfflinePlayer player = ((PlayerAccountHolder) owner).accountHolder;
-        	return player.getPlayer();
+        if (owner instanceof PlayerAccountHolder) {
+            OfflinePlayer player = ((PlayerAccountHolder) owner).accountHolder;
+            return player.getPlayer();
         }
-    	
-    	return null;
+
+        return null;
     }
-    
-    
+
+
 
 
 }

@@ -10,24 +10,24 @@ import org.bukkit.event.block.SignChangeEvent;
  */
 public class PlayerVaultCreationEvent extends VaultCreationEvent {
 
-	private final SignChangeEvent cause;
-	
-	public PlayerVaultCreationEvent(String type, SignChangeEvent cause) {
-	    super(type);
-	    this.cause = cause;
+    private final SignChangeEvent cause;
+
+    public PlayerVaultCreationEvent(String type, SignChangeEvent cause) {
+        super(type);
+        this.cause = cause;
     }
-	
-	/**
-	 * Get the player involved in creating the vault.
-	 * @return
-	 */
-	public SignChangeEvent getCause() {
-		return cause;
-	}
-	
-	public static HandlerList getHandlerList() {
-	    return VaultCreationEvent.handlers;
-	    // TODO ensure we can actually have superclass handle these safely
-	}
+
+    /**
+     * Get the player involved in creating the vault.
+     * @return
+     */
+    public SignChangeEvent getCause() {
+        return cause;
+    }
+
+    public static HandlerList getHandlerList() {
+        return VaultCreationEvent.handlers;
+        // TODO ensure we can actually have superclass handle these safely
+    }
 
 }

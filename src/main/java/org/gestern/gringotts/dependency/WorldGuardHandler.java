@@ -17,12 +17,12 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 public class WorldGuardHandler implements DependencyHandler, AccountHolderProvider {
-    
+
     private final WorldGuardPlugin plugin;
-    
+
     public WorldGuardHandler(WorldGuardPlugin plugin) {
         this.plugin = plugin;
-        
+
         Bukkit.getPluginManager().registerEvents(new WorldGuardListener(), Gringotts.G);
         Gringotts.G.registerAccountHolderProvider("worldguard", this);
     }
@@ -36,7 +36,7 @@ public class WorldGuardHandler implements DependencyHandler, AccountHolderProvid
     public boolean exists() {
         return plugin != null;
     }
-    
+
 
     @Override
     public WorldGuardAccountHolder getAccountHolder(String id) {
@@ -47,12 +47,12 @@ public class WorldGuardHandler implements DependencyHandler, AccountHolderProvid
                 ProtectedRegion region = worldManager.getRegion(id);
                 return new WorldGuardAccountHolder(world.getName(), region);
             }
-                
+
         }
-        
+
         return null;
     }
-    
+
     /**
      * Get account holder for known world and region id/
      * @param world
@@ -64,27 +64,27 @@ public class WorldGuardHandler implements DependencyHandler, AccountHolderProvid
         if (w == null) return null;
         RegionManager manager = plugin.getRegionManager(w);
         if (manager == null) return null;
-        
+
         if (manager.hasRegion(id)) {
             ProtectedRegion region = manager.getRegion(id);
             return new WorldGuardAccountHolder(world, region);
         }
-        
+
         return null;
     }
 
     public class WorldGuardListener implements Listener {
-        
+
         @EventHandler
         public void vaultCreated(PlayerVaultCreationEvent event) {
             // some listener already claimed this event
             if (event.isValid()) return;
-            
+
             if (event.getType().equals("region")) {
                 Player player = event.getCause().getPlayer();
                 String regionId = event.getCause().getLine(2);
                 String[] regionComponents = regionId.split("-",1);
-                
+
                 WorldGuardAccountHolder owner = null;
                 if (regionComponents.length == 1) {
                     // try to guess the world
@@ -94,8 +94,8 @@ public class WorldGuardHandler implements DependencyHandler, AccountHolderProvid
                     String id = regionComponents[1];
                     owner = getAccountHolder(world, id);
                 }
-               
-                
+
+
                 if (owner != null && owner.region.hasMembersOrOwners()) {
                     DefaultDomain regionOwners = owner.region.getOwners();
                     if (regionOwners.contains(player.getName())) {
@@ -106,12 +106,12 @@ public class WorldGuardHandler implements DependencyHandler, AccountHolderProvid
             }
         }
     }
-    
+
     public static class WorldGuardAccountHolder implements AccountHolder {
-        
+
         private final String world;
         private final ProtectedRegion region;
-        
+
         public WorldGuardAccountHolder(String world, ProtectedRegion region) {
             this.world = world;
             this.region = region;
@@ -136,6 +136,6 @@ public class WorldGuardHandler implements DependencyHandler, AccountHolderProvid
         public String getId() {
             return world+"-"+region.getId();
         }
-        
+
     }
 }

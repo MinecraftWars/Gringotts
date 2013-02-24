@@ -11,10 +11,10 @@ package org.gestern.gringotts.accountholder;
  */
 public interface AccountHolderProvider {
 
-	/**
-	 * Get the AccountHolder object mapped to the given id for this provider.
-	 * @param id id of account holder
-	 * @return account holder for id
-	 */
-	public AccountHolder getAccountHolder(String id);
+    /**
+     * Get the AccountHolder object mapped to the given id for this provider.
+     * @param id id of account holder
+     * @return account holder for id
+     */
+    public AccountHolder getAccountHolder(String id);
 }

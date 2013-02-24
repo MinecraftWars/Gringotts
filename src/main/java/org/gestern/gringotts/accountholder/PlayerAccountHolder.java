@@ -84,18 +84,18 @@ public class PlayerAccountHolder implements AccountHolder {
         return true;
     }
 
-	@Override
-	public String getType() {
-		return "player";
-	}
-	
-	@Override
-	public String toString() {
-		return "PlayerAccountHolder("+getName()+")";
-	}
+    @Override
+    public String getType() {
+        return "player";
+    }
 
-	@Override
-	public String getId() {
-		return getName();
-	}
+    @Override
+    public String toString() {
+        return "PlayerAccountHolder("+getName()+")";
+    }
+
+    @Override
+    public String getId() {
+        return getName();
+    }
 }

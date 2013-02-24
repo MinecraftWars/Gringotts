@@ -28,7 +28,7 @@ import com.avaje.ebean.SqlUpdate;
 import com.avaje.ebean.validation.NotNull;
 
 public class EBeanDAO implements DAO {
-    
+
     private final EbeanServer db = Gringotts.G.getDatabase();
     private final Logger log = Gringotts.G.getLogger();
 
@@ -43,7 +43,7 @@ public class EBeanDAO implements DAO {
         storeChest.setParameter("z", mark.getZ());
         storeChest.setParameter("owner", chest.account.owner.getId());
         storeChest.setParameter("type", chest.account.owner.getType());
-        
+
         return storeChest.execute() > 0;
     }
 
@@ -71,21 +71,21 @@ public class EBeanDAO implements DAO {
     public Set<AccountChest> getChests() {
         List<SqlRow> result = db.createSqlQuery("SELECT ac.world, ac.x, ac.y, ac.z, a.type, a.owner " +
                 "FROM gringotts_accountchest ac JOIN gringotts_account a ON ac.account = a.id ").findList();
-       
+
         Set<AccountChest> chests = new HashSet<AccountChest>();
-        
+
         for (SqlRow c : result) {
             String worldName = c.getString("world");
             int x = c.getInteger("x");
             int y = c.getInteger("y");
             int z = c.getInteger("z");
-            
+
             String type = c.getString("type");
             String ownerId = c.getString("owner");
-            
+
             World world = Bukkit.getWorld(worldName);
             Location loc = new Location(world, x, y, z);
-            
+
             Block signBlock = loc.getBlock();
             if (Util.isSignBlock(signBlock)) {
                 AccountHolder owner = Gringotts.G.accountHolderFactory.get(type, ownerId);
@@ -102,7 +102,7 @@ public class EBeanDAO implements DAO {
                 deleteAccountChest(worldName, x, y, z);
             }
         }
-        
+
         return chests;      
     }
 
@@ -113,7 +113,7 @@ public class EBeanDAO implements DAO {
         deleteChest.setParameter("x", x);
         deleteChest.setParameter("y", y);
         deleteChest.setParameter("z", z);
-        
+
         return deleteChest.execute() > 0;
     }
 
@@ -122,20 +122,20 @@ public class EBeanDAO implements DAO {
         SqlQuery getChests = db.createSqlQuery("SELECT ac.world, ac.x, ac.y, ac.z " +
                 "FROM accountchest ac JOIN account a ON ac.account = a.id " +
                 "WHERE a.owner = :owner and a.type = :type");
-                
+
         getChests.setParameter("owner", account.owner.getId());
         getChests.setParameter("type", account.owner.getType());
-        
+
         Set<AccountChest> chests = new HashSet<AccountChest>();
         for (SqlRow result : getChests.findSet()) {
             String worldName = result.getString("world");
             int x = result.getInteger("x");
             int y = result.getInteger("y");
             int z = result.getInteger("z");
-        
+
             World world = Bukkit.getWorld(worldName);
             Location loc = new Location(world, x, y, z);
-            
+
             Block signBlock = loc.getBlock();
             if (Util.isSignBlock(signBlock)) {
                 Sign sign = (Sign) loc.getBlock().getState();
@@ -145,7 +145,7 @@ public class EBeanDAO implements DAO {
                 deleteAccountChest(worldName, x, y, z);
             }
         }
-        
+
         return chests;
     }
 
@@ -161,8 +161,8 @@ public class EBeanDAO implements DAO {
     public long getCents(GringottsAccount account) {
         // TODO can this NPE?
         return db.find(EBeanAccount.class)
-        .where().ieq("type", account.owner.getType()).ieq("name", account.owner.getName())
-        .findUnique().cents;
+                .where().ieq("type", account.owner.getType()).ieq("name", account.owner.getName())
+                .findUnique().cents;
     }
 
     @Override
@@ -171,45 +171,45 @@ public class EBeanDAO implements DAO {
         // TODO Auto-generated method stub
 
     }
-    
+
     @Entity
     @Table(name="gringotts_account")
     @UniqueConstraint(columnNames={"type","owner"})
     private static class EBeanAccount {
         @Id int id;
-        
+
         /** Type string. */
         @NotNull String type;
-        
+
         /** Owner id. */
         @NotNull String owner;
-        
+
         /** Virtual balance. */
         @NotNull long cents;
-        
+
         public EBeanAccount(String type, String owner, long balance) {
             this.owner = owner;
             this.type = type;
             this.cents = balance;
         }
-        
-        
+
+
     }
-    
+
     @Entity
     @Table(name="gringotts_accountchest")
     @UniqueConstraint(columnNames={"world","x","y","z"})
     private static class EBeanAccountChest {
         @Id int id;
-        
+
         @NotNull String world;
-        
+
         @NotNull int x;
         @NotNull int y;
         @NotNull int z;
-        
+
         @NotNull int account;
-        
+
         public EBeanAccountChest(String world, int x, int y, int z, int account) {
             this.world = world;
             this.x = x;
