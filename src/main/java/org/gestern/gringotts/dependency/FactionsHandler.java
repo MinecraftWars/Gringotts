@@ -1,9 +1,8 @@
 package org.gestern.gringotts.dependency;
 
-import com.avaje.ebeaninternal.server.expression.LLuceneRangeExpression;
+import static org.gestern.gringotts.Language.LANG;
 import static org.gestern.gringotts.Permissions.createvault_faction;
 import static org.gestern.gringotts.dependency.Dependency.DEP;
-import static org.gestern.gringotts.Language.LANG;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

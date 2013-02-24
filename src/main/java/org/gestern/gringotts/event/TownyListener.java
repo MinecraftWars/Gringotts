@@ -1,6 +1,6 @@
 package org.gestern.gringotts.event;
 
-import com.avaje.ebeaninternal.server.expression.LLuceneRangeExpression;
+import static org.gestern.gringotts.Language.LANG;
 import static org.gestern.gringotts.Permissions.createvault_nation;
 import static org.gestern.gringotts.Permissions.createvault_town;
 import static org.gestern.gringotts.dependency.Dependency.DEP;
@@ -9,8 +9,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.gestern.gringotts.accountholder.AccountHolder;
-
-import static org.gestern.gringotts.Language.LANG;
 
 public class TownyListener implements Listener {
 

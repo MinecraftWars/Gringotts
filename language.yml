@@ -1,5 +1,5 @@
-# Here you can change the output of all messages sent to yout players via chat.
-# Todo so you just have to rewrite the values below. Just be sure to not put any %-variables in the message that were not there to begin with,
+# Here you can change the output of all messages sent to your players via chat.
+# To do so you just have to rewrite the values below. Just be sure to not put any %-variables in the message that were not there to begin with,
 # it will just be displayed as %whateveryouwrote in the message sent.
 #
 # %value stands for an amount of money
