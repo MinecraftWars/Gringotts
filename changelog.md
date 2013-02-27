@@ -1,14 +1,15 @@
 Gringotts Changelog
 ===================
 
-v1.6.0 beta1
+v2.0 beta1
 ------------
-* can create a vault now by attaching the [vault] sign to a chest directly, instead of requiring it to be above the chest
+* can create a vault now by attaching the [vault] sign to a chest directly (shift+rightclick with a sign), instead of requiring it to be above the chest
 * added string customization / internationalization for messages to players (contributed by KanaYamamoto/Daenara)
 * German translation (contributed by KanaYamamoto/Daenara)
 * accounts can have a purely virtual starting balance (contributed by bezeek)
 * support for WorldGuard region vaults. Region owners may create a `[region vault]` with the id of the region on the third line.
-* for devs: added an event system for vault creation. Gringotts throws a `PlayerVaultCreationEvent` when a player attempts to create a vault in the world. Plugins can register an event handler and supply their information for Gringotts to create their own vault types.
+* /moneyadmin command now supports optional account type parameter. example: `/moneyadmin b foo faction`. This is primariliy intended for plugins that use worldguard for region management, as there are no player commands to handle these accounts.
+* for devs: added an event system for vault creation. Gringotts triggers a `PlayerVaultCreationEvent` when a player attempts to create a vault in the world. Plugins can register an event handler and supply their information for Gringotts to create their own vault types.
 
 v1.5.1a
 -------
