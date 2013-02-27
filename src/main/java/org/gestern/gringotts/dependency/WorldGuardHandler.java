@@ -40,6 +40,15 @@ public class WorldGuardHandler implements DependencyHandler, AccountHolderProvid
 
     @Override
     public WorldGuardAccountHolder getAccountHolder(String id) {
+        // FIXME use something more robust than - as world-id delimiter
+        // try explicit world+id first 
+        String[] parts = id.split("-", 2);
+        if (parts.length == 2) {
+            WorldGuardAccountHolder wgah = getAccountHolder(parts[0], parts[1]);
+            if (wgah != null) return wgah;
+        }
+
+        // try bare id in all worlds
         GlobalRegionManager manager = plugin.getGlobalRegionManager();
         for (World world: Bukkit.getWorlds()) {
             RegionManager worldManager = manager.get(world);
@@ -47,14 +56,13 @@ public class WorldGuardHandler implements DependencyHandler, AccountHolderProvid
                 ProtectedRegion region = worldManager.getRegion(id);
                 return new WorldGuardAccountHolder(world.getName(), region);
             }
-
         }
 
         return null;
     }
 
     /**
-     * Get account holder for known world and region id/
+     * Get account holder for known world and region id.
      * @param world
      * @param id
      * @return
