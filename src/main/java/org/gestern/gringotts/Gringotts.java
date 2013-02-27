@@ -142,12 +142,18 @@ public class Gringotts extends JavaPlugin {
         }
     }
 
+    /**
+     * Register an accountholder provider with Gringotts. This is necessary for Gringotts to find and create accountholders
+     * of any non-player type. If you create
+     * @param type
+     * @param provider
+     */
     public void registerAccountHolderProvider(String type, AccountHolderProvider provider) {
         accountHolderFactory.registerAccountHolderProvider(type, provider);
     }
 
     /**
-     * Get messages configured
+     * Get the configured player interaction messages.
      * @return
      */
     public FileConfiguration getMessages() {
@@ -173,11 +179,6 @@ public class Gringotts extends JavaPlugin {
         super.saveDefaultConfig();
         File defaultMessages = new File(getDataFolder(), "messages.yml");
         if (! defaultMessages.exists()) saveResource("messages.yml", false);
-    }
-
-    @Override
-    public void saveConfig() {
-        super.saveConfig();
     }
 
 }
