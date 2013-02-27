@@ -6,6 +6,7 @@ import static org.gestern.gringotts.dependency.Dependency.DEP;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.logging.Logger;
 
 import net.milkbowl.vault.economy.Economy;
@@ -158,11 +159,14 @@ public class Gringotts extends JavaPlugin {
      */
     public FileConfiguration getMessages() {
 
-        File dir = getDataFolder();
-        String langPath = "i18n/messages-" + CONF.language + ".yml";
-        File langFile = new File(dir, langPath); // try configured language first
-        if (!langFile.exists()) langFile = new File(dir, "messages.yml"); // use custom/default
 
+        String langPath = "i18n/messages_" + CONF.language + ".yml";
+        // try configured language first
+        InputStream langStream = getResource(langPath);
+        if (langStream != null) return YamlConfiguration.loadConfiguration(langStream);
+
+        // use custom/default
+        File langFile = new File(getDataFolder(), "messages.yml"); 
         return YamlConfiguration.loadConfiguration(langFile);
     }
 
