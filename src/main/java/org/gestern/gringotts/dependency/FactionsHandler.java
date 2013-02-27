@@ -84,8 +84,7 @@ public class FactionsHandler implements DependencyHandler, AccountHolderProvider
         if (owner != null) return owner;
 
         // just in case, also try the tag
-        String factionTag = factionId.substring(8);
-        Faction faction = Factions.i.getByTag(factionTag);
+        Faction faction = Factions.i.getByTag(id);
 
         if (faction != null) 
             return new FactionAccountHolder(faction);
