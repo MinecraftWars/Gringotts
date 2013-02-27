@@ -181,34 +181,34 @@ public class Commands {
                 } else return false;
 
                 // admin command: balance of player / faction
-                if (args.length == 2)  {
+                if (args.length >= 2 && command.equalsIgnoreCase("b"))  {
 
                     String targetAccountHolderStr = args[1];
-                    Account target = eco.player(targetAccountHolderStr);
+
+                    // explicit or automatic account type
+                    Account target = args.length==3? eco.custom(args[2], targetAccountHolderStr) : eco.account(targetAccountHolderStr);
 
                     if (! target.exists()) {
                         invalidAccount(sender, targetAccountHolderStr);
                         return false;
                     }
 
-                    if (command.equalsIgnoreCase("b")) {
-                        String formattedBalance = eco.currency().format(target.balance());
-                        String senderMessage = LANG.moneyadmin_b.replace("%balance", formattedBalance).replace("%player", targetAccountHolderStr);
-                        sender.sendMessage(senderMessage);
-                        return true;
-                    } else
-                        return false;
+                    String formattedBalance = eco.currency().format(target.balance());
+                    String senderMessage = LANG.moneyadmin_b.replace("%balance", formattedBalance).replace("%player", targetAccountHolderStr);
+                    sender.sendMessage(senderMessage);
+                    return true;
+
                 }
 
                 // moneyadmin add/remove
-                if (args.length == 3) {
+                if (args.length >= 3) {
                     String amountStr = args[1];
                     double value;
                     try { value = Double.parseDouble(amountStr); } 
                     catch(NumberFormatException x) { return false; }
 
                     String targetAccountHolderStr = args[2];
-                    Account target = eco.account(targetAccountHolderStr);
+                    Account target = args.length==4? eco.custom(args[3], targetAccountHolderStr) : eco.account(targetAccountHolderStr);
                     if (! target.exists()) {
                         invalidAccount(sender, targetAccountHolderStr);
                         return false;
