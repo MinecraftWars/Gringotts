@@ -23,8 +23,10 @@ public class WorldGuardHandler implements DependencyHandler, AccountHolderProvid
     public WorldGuardHandler(WorldGuardPlugin plugin) {
         this.plugin = plugin;
 
-        Bukkit.getPluginManager().registerEvents(new WorldGuardListener(), Gringotts.G);
-        Gringotts.G.registerAccountHolderProvider("worldguard", this);
+        if (plugin != null) {
+            Bukkit.getPluginManager().registerEvents(new WorldGuardListener(), Gringotts.G);
+            Gringotts.G.registerAccountHolderProvider("worldguard", this);
+        }
     }
 
     @Override
