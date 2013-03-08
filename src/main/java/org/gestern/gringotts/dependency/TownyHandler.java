@@ -48,15 +48,8 @@ public abstract class TownyHandler implements DependencyHandler {
  */
 class InvalidTownyHandler extends TownyHandler {
 
-    @Override
-    public boolean enabled() {
-        return false;
-    }
-
-    @Override
-    public boolean exists() {
-        return false;
-    }
+    @Override public boolean enabled() { return false; }
+    @Override public boolean exists() { return false; }
 
     @Override
     public TownyAccountHolder getTownAccountHolder(Player player) {

@@ -116,7 +116,7 @@ class FactionsListener implements Listener {
 
             event.setOwner(owner);
             event.setValid(true);
-        }
+        } 
     }
 }
 

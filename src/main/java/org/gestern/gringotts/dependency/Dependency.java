@@ -35,7 +35,8 @@ public enum Dependency {
 
 
     /**
-     * Initialize plugin dependencies. We expect them to have loaded before this is called.
+     * Initialize plugin dependencies. The plugins themselves do not need to be loaded before this is called, 
+     * but the classes must be visible to the classloader. 
      */
     private Dependency() {
         factions = new FactionsHandler((P)hookPlugin("Factions", "com.massivecraft.factions.P","1.6.9.1"));
@@ -43,7 +44,6 @@ public enum Dependency {
         vault = new GenericHandler((Vault)hookPlugin("Vault","net.milkbowl.vault.Vault","1.2.17"));
         worldguard = new WorldGuardHandler((WorldGuardPlugin)hookPlugin("WorldGuard", "com.sk89q.worldguard.bukkit.WorldGuardPlugin", "5.7"));
     }
-
 
     /**
      * Attempt to hook a plugin dependency.
@@ -91,6 +91,8 @@ public enum Dependency {
             return false;
         }
     }
+    
+
 
 
 
