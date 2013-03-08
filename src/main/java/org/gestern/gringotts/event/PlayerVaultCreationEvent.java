@@ -28,6 +28,7 @@ public class PlayerVaultCreationEvent extends VaultCreationEvent {
     public static HandlerList getHandlerList() {
         return VaultCreationEvent.handlers;
         // TODO ensure we can actually have superclass handle these safely
+        // TODO find out what I meant by that?
     }
 
 }

@@ -19,7 +19,7 @@ public class VaultCreator implements Listener {
     private final Accounting accounting = Gringotts.G.accounting; 
 
     /**
-     * If the event was properly handled and an AccountHolder supplied, it will be created here.
+     * If the vault creation event was properly handled and an AccountHolder supplied, it will be created here.
      * @param event
      */
     @EventHandler(priority = EventPriority.MONITOR)

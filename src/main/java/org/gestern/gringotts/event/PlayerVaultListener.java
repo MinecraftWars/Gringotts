@@ -1,3 +1,4 @@
+
 package org.gestern.gringotts.event;
 
 import static org.gestern.gringotts.Permissions.createvault_player;
@@ -8,7 +9,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.gestern.gringotts.accountholder.PlayerAccountHolder;
 
-
+/**
+ * This Vault listener handles vault creation events for player vaults.
+ * 
+ * @author jast
+ */
 public class PlayerVaultListener implements Listener {
 
     @EventHandler
