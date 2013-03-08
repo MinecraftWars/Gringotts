@@ -11,7 +11,6 @@ import org.bukkit.event.Listener;
 import org.gestern.gringotts.Gringotts;
 import org.gestern.gringotts.accountholder.AccountHolder;
 import org.gestern.gringotts.accountholder.AccountHolderProvider;
-import org.gestern.gringotts.accountholder.FactionAccountHolder;
 import org.gestern.gringotts.event.PlayerVaultCreationEvent;
 
 import com.massivecraft.factions.FPlayer;
@@ -27,8 +26,10 @@ public class FactionsHandler implements DependencyHandler, AccountHolderProvider
     public FactionsHandler(P plugin) {
         this.plugin = plugin;
 
-        Bukkit.getPluginManager().registerEvents(new FactionsListener(), Gringotts.G);
-        Gringotts.G.registerAccountHolderProvider("faction", this);
+        if (plugin != null) {
+            Bukkit.getPluginManager().registerEvents(new FactionsListener(), Gringotts.G);
+            Gringotts.G.registerAccountHolderProvider("faction", this);
+        }
     }
 
     /**
@@ -91,32 +92,102 @@ public class FactionsHandler implements DependencyHandler, AccountHolderProvider
 
         return null;
     }
+}
 
+class FactionsListener implements Listener {
 
-    public static class FactionsListener implements Listener {
+    @EventHandler
+    public void vaultCreated(PlayerVaultCreationEvent event) {
+        // some listener already claimed this event
+        if (event.isValid()) return;
 
-        @EventHandler
-        public void vaultCreated(PlayerVaultCreationEvent event) {
-            // some listener already claimed this event
-            if (event.isValid()) return;
+        if (event.getType().equals("faction")) {
+            Player player = event.getCause().getPlayer();
+            if (!createvault_faction.allowed(player)) {
+                player.sendMessage(LANG.plugin_faction_noVaultPerm);
+                return;
+            }
 
-            if (event.getType().equals("faction")) {
-                Player player = event.getCause().getPlayer();
-                if (!createvault_faction.allowed(player)) {
-                    player.sendMessage(LANG.plugin_faction_noVaultPerm);
-                    return;
-                }
+            AccountHolder owner = DEP.factions.getFactionAccountHolder(player);
+            if (owner==null) {
+                player.sendMessage(LANG.plugin_faction_notInFaction);
+                return;
+            }
 
-                AccountHolder owner = DEP.factions.getFactionAccountHolder(player);
-                if (owner==null) {
-                    player.sendMessage(LANG.plugin_faction_notInFaction);
-                    return;
-                }
-
-                event.setOwner(owner);
-                event.setValid(true);
-            } 
-        }
+            event.setOwner(owner);
+            event.setValid(true);
+        } 
     }
+}
+
+class FactionAccountHolder implements AccountHolder {
+
+    private final Faction owner;
+
+    /**
+     * Default ctor.
+     */
+    public FactionAccountHolder(Faction owner) {
+        this.owner = owner;
+    }
+
+    public FactionAccountHolder(String Id) {
+        Faction faction = Factions.i.get(Id);
+
+        if (faction != null)
+            this.owner = faction;
+        else throw new NullPointerException("Attempted to create account holder with null faction.");
+    }
+
+    @Override
+    public String getName() {
+        return owner.getTag();
+    }
+
+    @Override
+    public void sendMessage(String message) {
+        owner.sendMessage(message);
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((owner == null) ? 0 : owner.getId().hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        FactionAccountHolder other = (FactionAccountHolder) obj;
+        if (owner == null) {
+            if (other.owner != null)
+                return false;
+        } else if (!owner.getId().equals(other.owner.getId()))
+            return false;
+        return true;
+    }
+
+    @Override
+    public String getType() {
+        return "faction";
+    }
+
+    @Override
+    public String toString() {
+        return "FactionAccountHolder("+getName()+")";
+    }
+
+    @Override
+    public String getId() {
+        return owner.getId();
+    }
+
 
 }

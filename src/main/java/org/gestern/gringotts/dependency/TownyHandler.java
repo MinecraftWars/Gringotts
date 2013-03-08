@@ -1,12 +1,19 @@
 package org.gestern.gringotts.dependency;
 
+import static org.gestern.gringotts.Language.LANG;
+import static org.gestern.gringotts.Permissions.createvault_nation;
+import static org.gestern.gringotts.Permissions.createvault_town;
+import static org.gestern.gringotts.dependency.Dependency.DEP;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.gestern.gringotts.Gringotts;
+import org.gestern.gringotts.accountholder.AccountHolder;
 import org.gestern.gringotts.accountholder.AccountHolderProvider;
-import org.gestern.gringotts.accountholder.TownyAccountHolder;
-import org.gestern.gringotts.event.TownyListener;
+import org.gestern.gringotts.event.PlayerVaultCreationEvent;
 
 import com.palmergames.bukkit.towny.Towny;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
@@ -162,3 +169,82 @@ class ValidTownyHandler extends TownyHandler implements AccountHolderProvider {
     }
 
 }
+
+
+class TownyListener implements Listener {
+
+    @EventHandler
+    public void vaultCreated(PlayerVaultCreationEvent event) {
+        // some listener already claimed this event
+        if (event.isValid()) return;
+
+        if (! DEP.towny.enabled()) return;
+
+        Player player = event.getCause().getPlayer();
+        AccountHolder owner = null;
+        if (event.getType().equals("town")) {
+            if (!createvault_town.allowed(player)) {
+                player.sendMessage(LANG.plugin_towny_noTownVaultPerm);
+                return;
+            }
+
+            owner = DEP.towny.getTownAccountHolder(player);
+            if (owner == null) {
+                player.sendMessage(LANG.plugin_towny_noTownResident);
+                return;
+            }
+
+        } else if (event.getType().equals("nation")) {
+            if (!createvault_nation.allowed(player)) {
+                player.sendMessage(LANG.plugin_towny_noNationVaultPerm);
+                return;
+            }
+
+            owner = DEP.towny.getNationAccountHolder(player);
+            if (owner == null) {
+                player.sendMessage(LANG.plugin_towny_notInNation);
+                return;
+            }
+        }
+
+        event.setOwner(owner);
+        event.setValid(true);
+    }
+}
+
+class TownyAccountHolder implements AccountHolder {
+
+    TownyEconomyObject owner;
+
+    public TownyAccountHolder(TownyEconomyObject owner) {
+        this.owner = owner;
+    }
+
+    @Override
+    public String getName() {
+        return owner.getName();
+    }
+
+    @Override
+    public void sendMessage(String message) {
+        // TODO is it possible to send a message to a town?
+        // TODO maybe just manually send to online residents
+    }
+
+    @Override
+    public String getType() {
+        return "towny";
+    }
+
+    @Override
+    public String getId() {
+        return owner.getEconomyName();
+    }
+
+    @Override
+    public String toString() {
+        return "TownyAccountHolder("+owner.getName()+")";
+    }
+
+}
+
