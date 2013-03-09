@@ -98,9 +98,14 @@ Allow players to create vaults for their town (Towny only).
     gringotts.createvault.nation:
       default: true
 
-### Vault usage
-
 Allow players to create vaults for their nation (Towny only).
+
+    gringotts.createvault.worldguard:
+      default: true
+
+Allow players to create vaults for WorldGuard regions they are member of.
+
+### Vault usage
 
     gringotts.usevault
       default: true

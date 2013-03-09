@@ -10,6 +10,7 @@ public enum Permissions {
     createvault_faction("gringotts.createvault.faction"),
     createvault_town("gringotts.createvault.town"),
     createvault_nation("gringotts.createvault.nation"),
+    createvault_worldguard("gringotts.createvault.worldguard"),
 
     transfer("gringotts.transfer"),
     command_withdraw("gringotts.command.withdraw"),

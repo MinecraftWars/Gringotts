@@ -1,5 +1,8 @@
 package org.gestern.gringotts.dependency;
 
+import static org.gestern.gringotts.Language.LANG;
+import static org.gestern.gringotts.Permissions.createvault_worldguard;
+
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -92,6 +95,11 @@ public class WorldGuardHandler implements DependencyHandler, AccountHolderProvid
 
             if (event.getType().equals("region")) {
                 Player player = event.getCause().getPlayer();
+                if (createvault_worldguard.allowed(player)) {
+                    player.sendMessage(LANG.plugin_faction_noVaultPerm);
+                    return;
+                }
+
                 String regionId = event.getCause().getLine(2);
                 String[] regionComponents = regionId.split("-",1);
 
@@ -116,36 +124,36 @@ public class WorldGuardHandler implements DependencyHandler, AccountHolderProvid
             }
         }
     }
+}
 
-    public static class WorldGuardAccountHolder implements AccountHolder {
+class WorldGuardAccountHolder implements AccountHolder {
 
-        private final String world;
-        private final ProtectedRegion region;
+    final String world;
+    final ProtectedRegion region;
 
-        public WorldGuardAccountHolder(String world, ProtectedRegion region) {
-            this.world = world;
-            this.region = region;
-        }
-
-        @Override
-        public String getName() {
-            return region.getId();
-        }
-
-        @Override
-        public void sendMessage(String message) {
-            // TODO send message to all memebers?
-        }
-
-        @Override
-        public String getType() {
-            return "worldguard";
-        }
-
-        @Override
-        public String getId() {
-            return world+"-"+region.getId();
-        }
-
+    public WorldGuardAccountHolder(String world, ProtectedRegion region) {
+        this.world = world;
+        this.region = region;
     }
+
+    @Override
+    public String getName() {
+        return region.getId();
+    }
+
+    @Override
+    public void sendMessage(String message) {
+        // TODO send message to all memebers?
+    }
+
+    @Override
+    public String getType() {
+        return "worldguard";
+    }
+
+    @Override
+    public String getId() {
+        return world+"-"+region.getId();
+    }
+
 }
