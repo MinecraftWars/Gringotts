@@ -1,7 +1,7 @@
 package org.gestern.gringotts.dependency;
 
 import static org.gestern.gringotts.Language.LANG;
-import static org.gestern.gringotts.Permissions.createvault_worldguard;
+import static org.gestern.gringotts.Permissions.*;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -113,8 +113,7 @@ public class WorldGuardHandler implements DependencyHandler, AccountHolderProvid
                     owner = getAccountHolder(world, id);
                 }
 
-
-                if (owner != null && owner.region.hasMembersOrOwners()) {
+                if (owner != null && (owner.region.hasMembersOrOwners() || createvault_forothers.allowed(player))) {
                     DefaultDomain regionOwners = owner.region.getOwners();
                     if (regionOwners.contains(player.getName())) {
                         event.setOwner(owner);
