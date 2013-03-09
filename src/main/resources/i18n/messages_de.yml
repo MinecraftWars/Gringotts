@@ -3,7 +3,7 @@ noperm: "Du hast keine Berechtigung, Geld zu überweisen."
 balance: "Du hast zur Zeit %balance auf der Bank."
 invalidaccount: "Ungültiger Spieler: %player"
 reload: "Gringotts: Einstellungen neu geladen!"
- 
+
 pay:
     success:   
         tax: "Transaktionssteuern erhoben: %value"
@@ -14,15 +14,15 @@ pay:
         sender: "%player hat nicht genug Platz für %value"
         target: "%player hat versucht dir %value zu senden, aber du hast nicht genug Platz dafür."
     error: "Dein Versuch %player %value zu senden ist aus unbekannten Gründen gescheitert."
-    
+
 deposit:
     success: "Du hast %value auf dein Konto überwiesen."
     error: "Es ist nicht möglich, %value auf dein Konto zu überweisen."
-    
+
 withdraw:
     success: "%value von deinem Konto abgehoben."
     error: "Es ist nicht möglich, %value deinem Konto abzuheben."
-        
+
 moneyadmin:
     b: "Kontostand von %player: %balance"
     add: 
@@ -33,25 +33,23 @@ moneyadmin:
         sender: "%value von %player's Konto entfernt."
         target: "Von deinem Konto wurde/n %value entfernt."
         error: "Es ist nicht möglich, %value von %player's Konto abzuheben."
-        
+
 vault:
-    created: "Ein Bankkonto wurde erstellt."
-    error: "Fehler beim Erstellen eines Kontos."
-    noVaultPerm: "Du hast keine Erlaubnis hier ein Konto hinzustellen."
-    
+    created: "Ein Tresor wurde erstellt."
+    error: "Fehler beim Erstellen eines Tresors."
+    noVaultPerm: "Du hast keine Erlaubnis hier einen Tresor zu erstellen."
+
 plugins:
     towny:
-        noTownVaultPerm: "Du kannst hier keine Town-Vaults erstellen."
-        noTownResident: "Du kannst keine Town-Vault erstellen, weil du nicht Bürger einer Town bist."
-        noNationVaultPerm: "Du kannst hier keine Nation-Vaults erstellen."
-        notInNation: "Du kannst keine Nation-Vaults erstellen, weil du nicht Bürger einer Nation bist"
+        noTownVaultPerm: "Du kannst hier keinen Town-Tresor erstellen."
+        noTownResident: "Du kannst keine Town-Tresor erstellen, weil du nicht Bürger einer Town bist."
+        noNationVaultPerm: "Du kannst hier keine Nation-Tresore erstellen."
+        notInNation: "Du kannst keine Nation-Tresore erstellen, weil du nicht Bürger einer Nation bist"
     vault:
         insufficientFunds: "Nicht genug Geld."
         insufficientSpace: "Nicht genug Platz."
         unknownError: "Unbekannter Fehler."
         notImplemented: "Gringotts unterstützt keine Banken."
     faction:
-        noFactionVaultPerm: "Du kannst hier keine Faction-Vault erstellen."
-        notInFaction: "Du kannst keine Faction-Vault erstellen, weil du nicht in einer Faction bist."
-        
-    
+        noFactionVaultPerm: "Du kannst hier keinen Faction-Tresor erstellen."
+        notInFaction: "Du kannst keinen Faction-Tresor erstellen, weil du nicht in einer Faction bist."

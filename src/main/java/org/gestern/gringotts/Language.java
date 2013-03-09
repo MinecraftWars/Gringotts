@@ -97,7 +97,7 @@ public enum Language
         LANG.moneyadmin_rm_error = savedLanguage.getString("moneyadmin.rm.error", "Could not remove %value from account %player");
 
         //gringotts vaults
-        LANG.vault_created = savedLanguage.getString("vault.created", "Created a vault for your account.");
+        LANG.vault_created = savedLanguage.getString("vault.created", "Created vault successfully.");
         LANG.vault_noVaultPerm = savedLanguage.getString("vault.noVaultPerm", "You do not have permission to create vaults here.");
         LANG.vault_error = savedLanguage.getString("vault.error", "Failed to create vault.");
 

@@ -1,8 +1,7 @@
 package org.gestern.gringotts.dependency;
 
 import static org.gestern.gringotts.Language.LANG;
-import static org.gestern.gringotts.Permissions.createvault_nation;
-import static org.gestern.gringotts.Permissions.createvault_town;
+import static org.gestern.gringotts.Permissions.*;
 import static org.gestern.gringotts.dependency.Dependency.DEP;
 
 import org.bukkit.Bukkit;
@@ -135,12 +134,12 @@ class ValidTownyHandler extends TownyHandler implements AccountHolderProvider {
 
         if (name.startsWith("town-")) {
             try { teo = TownyUniverse.getDataSource().getTown(name.substring(5)); } 
-            catch (NotRegisteredException  e) { }
+            catch (NotRegisteredException e) { }
         }
 
         if (name.startsWith("nation-")) {
             try { teo = TownyUniverse.getDataSource().getNation(name.substring(7));
-            } catch (NotRegisteredException  e) { }
+            } catch (NotRegisteredException e) { }
         }
 
         return teo;
@@ -173,7 +172,10 @@ class TownyListener implements Listener {
 
         if (! DEP.towny.enabled()) return;
 
+        String ownername = event.getCause().getLine(2);
         Player player = event.getCause().getPlayer();
+        boolean forOther = ownername!=null && ownername.length()>0 && createvault_forothers.allowed(player);
+
         AccountHolder owner = null;
         if (event.getType().equals("town")) {
             if (!createvault_town.allowed(player)) {
@@ -181,7 +183,13 @@ class TownyListener implements Listener {
                 return;
             }
 
-            owner = DEP.towny.getTownAccountHolder(player);
+            if (forOther) {
+                owner = DEP.towny.getAccountHolderByAccountName("town-"+ownername);
+                if (owner==null) return;
+            } else {
+                owner = DEP.towny.getTownAccountHolder(player);
+            }
+
             if (owner == null) {
                 player.sendMessage(LANG.plugin_towny_noTownResident);
                 return;
@@ -193,7 +201,13 @@ class TownyListener implements Listener {
                 return;
             }
 
-            owner = DEP.towny.getNationAccountHolder(player);
+            if (forOther) {
+                owner = DEP.towny.getAccountHolderByAccountName("nation-"+ownername);
+                if (owner==null) return;
+            } else {
+                owner = DEP.towny.getNationAccountHolder(player);
+            }
+
             if (owner == null) {
                 player.sendMessage(LANG.plugin_towny_notInNation);
                 return;

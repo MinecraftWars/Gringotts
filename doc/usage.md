@@ -32,6 +32,10 @@ Third line: region's id
 
 Writing the region id manually is required because a player may be part of several regions. If the vault has been created corretly, you will receive a message that the vault has been created.
 
+### Creating vaults for other players/accounts ###
+
+The permission `createvault.forothers` allows you to create vaults for other players or factions, towns, etc. that do not belong to you. To create a vault for others, write the appropriate vault type on the first line and the designated owner on the third line (player, faction tag, town name). 
+
 Commands
 --------
 
