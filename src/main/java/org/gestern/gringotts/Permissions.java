@@ -6,6 +6,7 @@ public enum Permissions {
     usevault_inventory("gringotts.usevault.inventory"),
     usevault_enderchest("gringotts.usevault.enderchest"),
 
+    createvault_forothers("gringotts.createvault.admin"),
     createvault_player("gringotts.createvault.player"),
     createvault_faction("gringotts.createvault.faction"),
     createvault_town("gringotts.createvault.town"),

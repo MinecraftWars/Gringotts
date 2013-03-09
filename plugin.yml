@@ -44,6 +44,10 @@ permissions:
       gringotts.createvault.faction: true
       gringotts.createvault.town: true
       gringotts.createvault.nation: true
+
+  gringotts.createvault.forothers:
+    description: Create vault for other players/accounts
+    default: op
   gringotts.createvault.player:
     description: Create player vaults
     default: true
