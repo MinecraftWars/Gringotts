@@ -15,19 +15,22 @@ Features
 * direct account-to-account transfers
 * optional transaction taxes
 * fractional currency values (2 decimal digits)
-* [Factions](http://dev.bukkit.org/server-mods/factions/) support
-* [Towny](http://dev.bukkit.org/server-mods/towny-advanced/) support
+* Account support for [Factions](http://dev.bukkit.org/server-mods/factions/), [Towny](http://dev.bukkit.org/server-mods/towny-advanced/) and [WorldGuard](http://dev.bukkit.org/server-mods/worldguard/)
 * [Vault](http://dev.bukkit.org/server-mods/vault/) integration
 * Tekkit / 1.2.5 compatible
 
 Usage
 -----
-Storing money in an account requires a Gringotts vault. A vault consists of a container, which can be either chest, dispenser or furnace, and a sign above declaring it as a vault. A player or faction may claim any number of vaults. Vaults are not protected from access through other players. If you would like them to be, you may use additional plugins such as [LWC](http://dev.bukkit.org/server-mods/lwc/) or [WorldGuard](http://dev.bukkit.org/server-mods/worldguard/).
+Storing money in an account requires a Gringotts vault. A vault consists of a container, which can be either chest, dispenser or furnace, and a sign above or on it declaring it as a vault. A player or faction may claim any number of vaults. Vaults are not protected from access through other players. If you would like them to be, you may use additional plugins such as [LWC](http://dev.bukkit.org/server-mods/lwc/) or [WorldGuard](http://dev.bukkit.org/server-mods/worldguard/).
+
+For full usage documentation, please see [the usage page](https://github.com/MinecraftWars/Gringotts/blob/master/doc/usage.md)
 
 ### Player vaults ###
+
 Place a sign above a container block, with `[vault]` written on the first line. If it was created correctly, the sign will display your name on the third line and you will receive a message that the vault has been created.
 
 ### Faction vaults ###
+
 Place a sign above a container block, with `[faction vault]` written on the first line. If it was created correctly, the sign will display your faction's tag on the third line and you will receive a message that the vault has been created.
 
 ### Towny vaults ###
@@ -62,7 +65,7 @@ Add an amount of money to a player's account.
 Remove an amount of money from a player's account.
 
     /gringotts reload
-Reload Gringotts config.yml and apply any changed settings.
+Reload Gringotts config.yml and messages.yml and apply any changed settings.
 
 
 Installation and Configuration

@@ -1,10 +1,18 @@
+Configuration, Permissions, Localization
+========================================
+
 Configuration
 -------------
 As usual with Bukkit plugins, the configuration is in the config.yml in the plugin's directory. A config.yml with the default settings is is created after starting and stopping the server with the plugin for the first time.
 
+Please refer to the [default config.yml](https://github.com/MinecraftWars/Gringotts/blob/master/config.yml) for a complete example.
+
 ### Tekkit quick-start ###
 
 To run Gringotts on a Tekkit server, set `currency.denominations` to use only 1.2.5-compatible items (eg gold ingots, id 266) or Tekkit items (eg industrial credits, id 30186), and set usevault.enderchest to `false`.
+
+### Language ###
+The `language` option allows you to set one of Gringotts' supported language for interaction messages with players. Currently supported options are `custom` (default/english) and `de` (German). See below on how to modify custom messages to your preferences.
 
 ### Currency ###
 Per default Gringotts uses emeralds as currency, but this can be changed to any other type of item.
@@ -68,6 +76,14 @@ Amount of virtual money to gift to players on first join, or accounts with other
 Globally enable use of specific kinds of vault:
 * `container` Enable the use of container vaults: chests, dispensers and furnaces. If this is `false`, only player's inventory and/or enderchests will serve as a player "vault".
 * `enderchest` Enable use of enderchest as vault for players globally. The permission `gringotts.usevault.enderchest` may still be used to disable this on a per-player/world basis.
+
+
+Localization and message customization
+--------------------------------------
+On first start of Gringotts, a `messages.yml` file will be written to the Gringotts plugin folder.
+You can freely edit the available strings and also include text formatting (color) codes.
+
+Some messages contain variables, for example `%player` for the player's name or `%value` for the amount transferred in a transaction. It is important not to change or translate these variable names. They may only be used in messages where they are already present in the original version, but it is safe to omit them from a custom message.
 
 
 Permissions
