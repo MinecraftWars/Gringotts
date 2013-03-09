@@ -60,6 +60,9 @@ permissions:
   gringotts.createvault.nation:
     description: Create nation vaults (Towny only)
     default: true
+  gringotts.createvault.worldguard:
+    description: Create region vaults (WorldGuard only)
+    default: true
 
   gringotts.usevault:
     description: Use any type of vault

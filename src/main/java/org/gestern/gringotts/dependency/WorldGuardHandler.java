@@ -95,7 +95,7 @@ public class WorldGuardHandler implements DependencyHandler, AccountHolderProvid
 
             if (event.getType().equals("region")) {
                 Player player = event.getCause().getPlayer();
-                if (createvault_worldguard.allowed(player)) {
+                if (!createvault_worldguard.allowed(player)) {
                     player.sendMessage(LANG.plugin_faction_noVaultPerm);
                     return;
                 }
