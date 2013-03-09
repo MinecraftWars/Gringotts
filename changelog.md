@@ -1,8 +1,13 @@
 Gringotts Changelog
 ===================
 
+v2.0 beta2
+----------
+* ops/players with permission `createvault.forothers` can now create vaults for other players and other accounts by creating the vault as usual, but adding the owner's name/id on the thord line of the sign.
+* fix bug with worldguard vault creation permissions
+
 v2.0 beta1
-------------
+----------
 * can create a vault now by attaching the [vault] sign to a chest directly (shift+rightclick with a sign), instead of requiring it to be above the chest
 * added string customization / internationalization for messages to players (contributed by KanaYamamoto/Daenara)
 * German translation (contributed by KanaYamamoto/Daenara)
