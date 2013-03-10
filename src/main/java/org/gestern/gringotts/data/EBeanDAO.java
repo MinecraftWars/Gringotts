@@ -103,7 +103,7 @@ public class EBeanDAO implements DAO {
             }
         }
 
-        return chests;      
+        return chests;
     }
 
     private boolean deleteAccountChest(String world, int x, int y, int z) {
@@ -169,7 +169,6 @@ public class EBeanDAO implements DAO {
     public void deleteAccount(GringottsAccount acc) {
         throw new RuntimeException("delete account not supported yet in EBeanDAO");
         // TODO Auto-generated method stub
-
     }
 
     @Entity
