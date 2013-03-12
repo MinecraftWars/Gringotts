@@ -197,4 +197,40 @@ public class VaultConnector implements Economy {
         return hasAccount(playerName);
     }
 
+
+    @Override
+    public boolean createPlayerAccount(String playerName, String world) {
+        return hasAccount(playerName); // TODO multiworld support
+    }
+
+
+    @Override
+    public EconomyResponse depositPlayer(String player, String world, double amount) {
+        return depositPlayer(player, amount);
+    }
+
+
+    @Override
+    public double getBalance(String player, String world) {
+        return getBalance(player);
+    }
+
+
+    @Override
+    public boolean has(String player, String world, double amount) {
+        return has(player, amount);
+    }
+
+
+    @Override
+    public boolean hasAccount(String player, String world) {
+        return hasAccount(player);
+    }
+
+
+    @Override
+    public EconomyResponse withdrawPlayer(String player, String world, double amount) {
+        return withdrawPlayer(player, amount);
+    }
+
 }
