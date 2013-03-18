@@ -296,6 +296,7 @@ public class DerbyDAO implements DAO {
                 if (Util.isSignBlock(signBlock)) {
                     AccountHolder owner = Gringotts.G.accountHolderFactory.get(type, ownerId);
                     if (owner == null) {
+                        // FIXME this logic really doesn't belong in DAO, I think?
                         log.info("AccountHolder "+type+":"+ownerId+" is not valid. Deleting associated account chest at " + signBlock.getLocation());
                         deleteAccountChest(signBlock.getWorld().getName(), signBlock.getX(), signBlock.getY(), signBlock.getZ());
                     } else {

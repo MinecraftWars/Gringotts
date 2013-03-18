@@ -87,7 +87,7 @@ class ValidTownyHandler extends TownyHandler implements AccountHolderProvider {
         try {
             Resident resident = TownyUniverse.getDataSource().getResident(player.getName());
             Town town = resident.getTown();
-            return new TownyAccountHolder(town);
+            return new TownyAccountHolder(town, "town");
 
         } catch (NotRegisteredException e) { }
 
@@ -104,7 +104,7 @@ class ValidTownyHandler extends TownyHandler implements AccountHolderProvider {
             Resident resident = TownyUniverse.getDataSource().getResident(player.getName());
             Town town = resident.getTown();
             Nation nation = town.getNation();
-            return new TownyAccountHolder(nation);
+            return new TownyAccountHolder(nation, "nation");
 
         } catch (NotRegisteredException e) { }
 
@@ -119,31 +119,25 @@ class ValidTownyHandler extends TownyHandler implements AccountHolderProvider {
      * @return a TownyAccountHolder based on the name of the account
      */
     public TownyAccountHolder getAccountHolderByAccountName(String name) {
-        TownyEconomyObject teo = townyObject(name);
-        return teo!=null? new TownyAccountHolder(teo) : null;
-    }
-
-    /**
-     * Get a towny Town or Nation for a given name.
-     * @param name name of town or nation
-     * @return Town or Nation object for given name
-     */
-    private TownyEconomyObject townyObject(String name) {
-
-        TownyEconomyObject teo = null;
 
         if (name.startsWith("town-")) {
-            try { teo = TownyUniverse.getDataSource().getTown(name.substring(5)); } 
+            try { 
+                TownyEconomyObject teo = TownyUniverse.getDataSource().getTown(name.substring(5)); 
+                return new TownyAccountHolder(teo, "town");
+            } 
             catch (NotRegisteredException e) { }
         }
 
         if (name.startsWith("nation-")) {
-            try { teo = TownyUniverse.getDataSource().getNation(name.substring(7));
+            try { 
+                TownyEconomyObject teo = TownyUniverse.getDataSource().getNation(name.substring(7));
+                return new TownyAccountHolder(teo, "nation");
             } catch (NotRegisteredException e) { }
         }
 
-        return teo;
+        return null;
     }
+
 
     @Override
     public boolean enabled() {
@@ -221,10 +215,12 @@ class TownyListener implements Listener {
 
 class TownyAccountHolder implements AccountHolder {
 
-    TownyEconomyObject owner;
+    public final TownyEconomyObject owner;
+    public final String type;
 
-    public TownyAccountHolder(TownyEconomyObject owner) {
+    public TownyAccountHolder(TownyEconomyObject owner, String type) {
         this.owner = owner;
+        this.type = type;
     }
 
     @Override
@@ -240,7 +236,7 @@ class TownyAccountHolder implements AccountHolder {
 
     @Override
     public String getType() {
-        return "towny";
+        return type;
     }
 
     @Override
