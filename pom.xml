@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>minecraftwars</groupId>
   <artifactId>Gringotts</artifactId>
-  <version>1.5.1a</version>
+  <version>1.5.2</version>
 
 	<build>
 
@@ -80,7 +80,7 @@
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
-			<version>1.4.6-R0.3</version>
+			<version>1.5-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -99,7 +99,7 @@
 		<dependency>
 			<groupId>towny</groupId>
 			<artifactId>towny</artifactId>
-			<version>0.82.0.5</version>
+			<version>0.82.1.0</version>
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
