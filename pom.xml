@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>minecraftwars</groupId>
     <artifactId>Gringotts</artifactId>
-    <version>2.0-wip5</version>
+    <version>2.0-beta3</version>
 
     <build>
         <resources>

@@ -1,10 +1,15 @@
 Gringotts Changelog
 ===================
 
+v2.0 beta3
+----------
+* fix bug where Towny vaults would get deactivated on creation of other chests or deposits
+* update Vault connector to Vault v 1.2.24 -- this version of Gringotts may be incompatible with older versions of Vault
+
 v2.0 beta2
 ----------
 * ops/players with permission `createvault.forothers` can now create vaults for other players and other accounts by creating the vault as usual, but adding the owner's name/id on the thord line of the sign.
-* fix bug with worldguard vault creation permissions
+* fix bug with WorldGuard vault creation permissions
 
 v2.0 beta1
 ----------
