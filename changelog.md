@@ -1,6 +1,11 @@
 Gringotts Changelog
 ===================
 
+v1.5.2
+------
+* backport fix to towns losing vaults from 2.0-beta3
+* built against Bukkit 1.5
+
 v1.5.1a
 -------
 * fix Vault connector not handling requests properly for non-player accounts
