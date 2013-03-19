@@ -41,7 +41,7 @@ public enum Dependency {
     private Dependency() {
         factions = new FactionsHandler((P)hookPlugin("Factions", "com.massivecraft.factions.P","1.6.9.1"));
         towny = TownyHandler.getTownyHandler((Towny)hookPlugin("Towny","com.palmergames.bukkit.towny.Towny","0.82.0.0"));
-        vault = new GenericHandler((Vault)hookPlugin("Vault","net.milkbowl.vault.Vault","1.2.17"));
+        vault = new GenericHandler((Vault)hookPlugin("Vault","net.milkbowl.vault.Vault","1.2.24"));
         worldguard = new WorldGuardHandler((WorldGuardPlugin)hookPlugin("WorldGuard", "com.sk89q.worldguard.bukkit.WorldGuardPlugin", "5.7"));
     }
 
