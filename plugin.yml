@@ -2,7 +2,7 @@ name: Gringotts
 authors: [jasticE, squidicuz, eXeC64]
 website: https://github.com/MinecraftWars/Gringotts
 
-version: 1.5.1a
+version: 1.5.2
 main: org.gestern.gringotts.Gringotts
 load: startup
 
