@@ -13,9 +13,9 @@ import org.gestern.gringotts.accountholder.AccountHolder;
  */
 public class Accounting {
 
-	private final Logger log = Gringotts.G.getLogger();
+    private final Logger log = Gringotts.G.getLogger();
     private final DAO dao = DAO.getDao();
-    
+
 
     /**
      * Get the account associated with an account holder.
@@ -41,8 +41,8 @@ public class Accounting {
      */
     private boolean chestConnected(AccountChest chest, Set<AccountChest> allChests) {
         for (AccountChest ac : allChests) {
-        	if (ac.connected(chest))
-        		return true;
+            if (ac.connected(chest))
+                return true;
         }
         return false;
     }
@@ -56,21 +56,21 @@ public class Accounting {
      * @throws GringottsStorageException when saving of account chest failed 
      */
     public boolean addChest(GringottsAccount account, AccountChest chest) {
-    	
-    	Set<AccountChest> allChests = dao.getChests();
-    	
-    	// if there is an invalid stored chest on location of new chest, remove it from storage.
-    	if (allChests.contains(chest) && !chest.valid()) {
-    		log.info("removing orphaned vault: " + chest);
-    		dao.destroyAccountChest(chest);
-    		allChests.remove(chest);
-    	}
-    	
-    	if (chestConnected(chest, allChests) )
+
+        Set<AccountChest> allChests = dao.getChests();
+
+        // if there is an invalid stored chest on location of new chest, remove it from storage.
+        if (allChests.contains(chest) && !chest.valid()) {
+            log.info("removing orphaned vault: " + chest);
+            dao.destroyAccountChest(chest);
+            allChests.remove(chest);
+        }
+
+        if (chestConnected(chest, allChests) )
             return false;
 
         if ( ! dao.storeAccountChest(chest) )
-        	throw new GringottsStorageException("Could not save account chest: " + chest);
+            throw new GringottsStorageException("Could not save account chest: " + chest);
         return true;
     }
 
@@ -79,8 +79,8 @@ public class Accounting {
      * @param chest
      * @return
      */
-	public boolean validChest(AccountChest chest) {
-		return false;
-	}
+    public boolean validChest(AccountChest chest) {
+        return false;
+    }
 
 }

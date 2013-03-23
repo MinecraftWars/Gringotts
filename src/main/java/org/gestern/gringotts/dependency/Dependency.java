@@ -21,56 +21,56 @@ import static org.gestern.gringotts.Util.versionAtLeast;
  *
  */
 public enum Dependency {
-	
-	/** Singleton dependency manager instance. */
-	DEP;
-	
-	private final Logger log = Gringotts.G.getLogger();
-	
-	public final FactionsHandler factions;
-	public final TownyHandler towny;
-	public final DependencyHandler vault;
-	
-	
-	
-	/**
-	 * Initialize plugin dependencies. We expect them to have loaded before this is called.
-	 */
-	private Dependency() {		
-		factions = new FactionsHandler((P)hookPlugin("Factions", "com.massivecraft.factions.P","1.6.9.1"));
-		towny = TownyHandler.getTownyHandler((Towny)hookPlugin("Towny","com.palmergames.bukkit.towny.Towny","0.82.0.0"));
-		vault = new GenericHandler((Vault)hookPlugin("Vault","net.milkbowl.vault.Vault","1.2.17"));
-	}
-	
 
-	/**
-	 * Attempt to hook a plugin dependency.
-	 * @param name Name of the plugin.
-	 * @param classpath classpath to check for
-	 * @param minVersion minimum version of the plugin. The plugin will still be hooked if this version is not satisfied,
-	 * 		but a warning will mbe emitted.
-	 * @return the plugin object when hooked successfully, or null if not.
-	 */
-	private Plugin hookPlugin(String name, String classpath, String minVersion) {
-		Plugin plugin;
-		if (packagesExists(classpath)) {
-			plugin = Bukkit.getServer().getPluginManager().getPlugin(name);
-			log.info("Plugin "+name+" hooked.");
-			
-			PluginDescriptionFile desc = plugin.getDescription();
-			String version = desc.getVersion();
-			if (!versionAtLeast(version, minVersion)) {
-				log.warning("Plugin dependency "+ name +" is version " + version + 
-						". Expected at least "+ minVersion +" -- Errors may occur.");
-			}
-		} else {
-        	log.info("Unable to hook plugin " + name);
-        	plugin = null;
+    /** Singleton dependency manager instance. */
+    DEP;
+
+    private final Logger log = Gringotts.G.getLogger();
+
+    public final FactionsHandler factions;
+    public final TownyHandler towny;
+    public final DependencyHandler vault;
+
+
+
+    /**
+     * Initialize plugin dependencies. We expect them to have loaded before this is called.
+     */
+    private Dependency() {		
+        factions = new FactionsHandler((P)hookPlugin("Factions", "com.massivecraft.factions.P","1.6.9.1"));
+        towny = TownyHandler.getTownyHandler((Towny)hookPlugin("Towny","com.palmergames.bukkit.towny.Towny","0.82.0.0"));
+        vault = new GenericHandler((Vault)hookPlugin("Vault","net.milkbowl.vault.Vault","1.2.17"));
+    }
+
+
+    /**
+     * Attempt to hook a plugin dependency.
+     * @param name Name of the plugin.
+     * @param classpath classpath to check for
+     * @param minVersion minimum version of the plugin. The plugin will still be hooked if this version is not satisfied,
+     * 		but a warning will mbe emitted.
+     * @return the plugin object when hooked successfully, or null if not.
+     */
+    private Plugin hookPlugin(String name, String classpath, String minVersion) {
+        Plugin plugin;
+        if (packagesExists(classpath)) {
+            plugin = Bukkit.getServer().getPluginManager().getPlugin(name);
+            log.info("Plugin "+name+" hooked.");
+
+            PluginDescriptionFile desc = plugin.getDescription();
+            String version = desc.getVersion();
+            if (!versionAtLeast(version, minVersion)) {
+                log.warning("Plugin dependency "+ name +" is version " + version + 
+                        ". Expected at least "+ minVersion +" -- Errors may occur.");
+            }
+        } else {
+            log.info("Unable to hook plugin " + name);
+            plugin = null;
         }
-		
-		return plugin;
-	}
-	
+
+        return plugin;
+    }
+
     /**
      * Determines if all packages in a String array are within the Classpath
      * This is the best way to determine if a specific plugin exists and will be
@@ -89,7 +89,7 @@ public enum Dependency {
             return false;
         }
     }
-    
-    
-    
+
+
+
 }
