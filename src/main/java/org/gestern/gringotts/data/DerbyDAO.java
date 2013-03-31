@@ -423,19 +423,19 @@ public class DerbyDAO implements DAO {
         try {
             Class.forName(driver);
         } catch (ClassNotFoundException e) {
-            throw new GringottsStorageException("Could not initialize database driver. Is the derby jar in your craftbukkit/lib folder?", e);
+            return null;
         }
 
         dao = new DerbyDAO();
-
         return dao;
     }
 
     /* (non-Javadoc)
      * @see org.gestern.gringotts.data.DAO#shutdown()
      */
+    @Override
     public void shutdown() {
-        try {			
+        try {
             log.info("shutting down database connection");
             // disconnect from derby completely
             String disconnectString = "jdbc:derby:;shutdown=true";

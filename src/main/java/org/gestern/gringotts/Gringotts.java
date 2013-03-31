@@ -7,6 +7,7 @@ import static org.gestern.gringotts.dependency.Dependency.DEP;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.logging.Logger;
 
 import net.milkbowl.vault.economy.Economy;
@@ -22,17 +23,23 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.gestern.gringotts.accountholder.AccountHolderFactory;
 import org.gestern.gringotts.accountholder.AccountHolderProvider;
 import org.gestern.gringotts.api.impl.VaultConnector;
+import org.gestern.gringotts.data.DAO;
 import org.gestern.gringotts.data.DerbyDAO;
+import org.gestern.gringotts.data.EBeanDAO;
 import org.gestern.gringotts.event.AccountListener;
 import org.gestern.gringotts.event.PlayerVaultListener;
 import org.gestern.gringotts.event.VaultCreator;
 import org.mcstats.MetricsLite;
+
+import com.avaje.ebean.EbeanServer;
 
 
 public class Gringotts extends JavaPlugin {
 
     /** The Gringotts plugin instance. */
     public static Gringotts G;
+
+    public DAO dao;
 
     private Logger log;
 
@@ -54,6 +61,9 @@ public class Gringotts extends JavaPlugin {
         try {
             log = getLogger();
 
+            // just call DAO once to ensure it's loaded before startup is complete
+            dao = getDAO();
+
             // load and init configuration
             saveDefaultConfig(); // saves default configuration if no config.yml exists yet
             reloadConfig();
@@ -72,9 +82,6 @@ public class Gringotts extends JavaPlugin {
             } catch (IOException e) {
                 log.info("Failed to submit PluginMetrics stats");
             }
-
-            // just call DAO once to ensure it's loaded before startup is complete
-            DerbyDAO.getDao();
 
         } catch(GringottsStorageException e) { 
             log.severe(e.getMessage()); 
@@ -100,7 +107,7 @@ public class Gringotts extends JavaPlugin {
     public void onDisable() {
 
         // shut down db connection
-        try{ DerbyDAO.getDao().shutdown(); }
+        try{ dao.shutdown(); }
         catch (GringottsStorageException e) {
             log.severe(e.toString()); 
         }
@@ -182,6 +189,36 @@ public class Gringotts extends JavaPlugin {
         super.saveDefaultConfig();
         File defaultMessages = new File(getDataFolder(), "messages.yml");
         if (! defaultMessages.exists()) saveResource("messages.yml", false);
+    }
+
+    private DAO getDAO() {
+        // legacy support: use derby if available
+        DAO dao = DerbyDAO.getDao();
+        if (dao!=null) return dao;
+
+        setupEBean();
+        dao = EBeanDAO.getDao();
+
+        return dao;
+    }
+
+    @Override
+    public List<Class<?>> getDatabaseClasses() {
+        return EBeanDAO.getDatabaseClasses();
+    }
+
+    /**
+     * Some awkward ritual that Bukkit requires to initialize all the DB classes.
+     */
+    private void setupEBean() {
+        try {
+            EbeanServer db = getDatabase();
+            for (Class<?> c : getDatabaseClasses())
+                db.find(c).findRowCount();
+        } catch (Exception e) { 
+            getLogger().info("Initializing database tables.");
+            installDDL();
+        }
     }
 
 }

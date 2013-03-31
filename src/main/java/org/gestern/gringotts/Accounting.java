@@ -1,11 +1,12 @@
 package org.gestern.gringotts;
 
+import static org.gestern.gringotts.Gringotts.G;
+
 import java.util.Set;
 import java.util.logging.Logger;
 
 import org.gestern.gringotts.accountholder.AccountHolder;
 import org.gestern.gringotts.data.DAO;
-import org.gestern.gringotts.data.DerbyDAO;
 
 /**
  * Manages accounts.
@@ -15,9 +16,7 @@ import org.gestern.gringotts.data.DerbyDAO;
  */
 public class Accounting {
 
-    private final Logger log = Gringotts.G.getLogger();
-    private final DAO dao = DerbyDAO.getDao();
-
+    private final Logger log = G.getLogger();
 
     /**
      * Get the account associated with an account holder.
@@ -27,8 +26,8 @@ public class Accounting {
      */
     public GringottsAccount getAccount(AccountHolder owner) {
         GringottsAccount account = new GringottsAccount(owner);
-        if (!dao.hasAccount(owner))  // TODO can we do this via idempotent store action instead?          
-            dao.storeAccount(account);
+        if (!G.dao.hasAccount(owner))  // TODO can we do this via idempotent store action instead?          
+            G.dao.storeAccount(account);
 
         return account;
     }
@@ -59,19 +58,19 @@ public class Accounting {
     public boolean addChest(GringottsAccount account, AccountChest chest) {
 
         // TODO refactor to do a more intelligent/quick query
-        Set<AccountChest> allChests = dao.getChests();
+        Set<AccountChest> allChests = G.dao.getChests();
 
         // if there is an invalid stored chest on location of new chest, remove it from storage.
         if (allChests.contains(chest) && !chest.valid()) {
             log.info("removing orphaned vault: " + chest);
-            dao.destroyAccountChest(chest);
+            G.dao.destroyAccountChest(chest);
             allChests.remove(chest);
         }
 
         if (chestConnected(chest, allChests) )
             return false;
 
-        if ( ! dao.storeAccountChest(chest) )
+        if ( ! G.dao.storeAccountChest(chest) )
             throw new GringottsStorageException("Could not save account chest: " + chest);
         return true;
     }

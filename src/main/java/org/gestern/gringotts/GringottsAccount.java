@@ -1,5 +1,6 @@
 package org.gestern.gringotts;
 
+import static org.gestern.gringotts.Gringotts.G;
 import static org.gestern.gringotts.Permissions.*;
 import static org.gestern.gringotts.api.TransactionResult.*;
 import static org.gestern.gringotts.Configuration.CONF;
@@ -12,7 +13,6 @@ import org.gestern.gringotts.accountholder.AccountHolder;
 import org.gestern.gringotts.accountholder.PlayerAccountHolder;
 import org.gestern.gringotts.api.TransactionResult;
 import org.gestern.gringotts.data.DAO;
-import org.gestern.gringotts.data.DerbyDAO;
 
 /**
  * Implementation of inventory-based accounts with a virtual overflow capacity.
@@ -23,8 +23,8 @@ import org.gestern.gringotts.data.DerbyDAO;
 public class GringottsAccount {
 
     @SuppressWarnings("unused")
-    private final Logger log = Gringotts.G.getLogger();
-    private final DAO dao = DerbyDAO.getDao(); 
+    private final Logger log = G.getLogger();
+    private final DAO dao = G.dao;
 
     public final AccountHolder owner;
 

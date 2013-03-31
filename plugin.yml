@@ -5,6 +5,7 @@ website: https://github.com/MinecraftWars/Gringotts
 version: ${version}
 main: org.gestern.gringotts.Gringotts
 load: startup
+database: true
 
 depend: []
 softdepend: []

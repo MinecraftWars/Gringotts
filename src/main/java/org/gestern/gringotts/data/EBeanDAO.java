@@ -1,5 +1,6 @@
 package org.gestern.gringotts.data;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,6 +32,8 @@ public class EBeanDAO implements DAO {
 
     private final EbeanServer db = Gringotts.G.getDatabase();
     private final Logger log = Gringotts.G.getLogger();
+    
+    private static EBeanDAO dao;
 
     @Override
     public boolean storeAccountChest(AccountChest chest) {
@@ -55,7 +58,10 @@ public class EBeanDAO implements DAO {
 
     @Override
     public boolean storeAccount(GringottsAccount account) {
-        EBeanAccount acc = new EBeanAccount(account.owner.getType(), account.owner.getId(), 0);
+        EBeanAccount acc = new EBeanAccount();
+        acc.setOwner(account.owner.getId());
+        acc.setType(account.owner.getType());
+        acc.setCents(0);
         db.save(acc);
         return true;
     }
@@ -116,6 +122,12 @@ public class EBeanDAO implements DAO {
 
         return deleteChest.execute() > 0;
     }
+    
+    public static DAO getDao() {
+        if (dao!=null) return dao;
+        dao = new EBeanDAO();
+        return dao;
+    }
 
     @Override
     public Set<AccountChest> getChests(GringottsAccount account) {
@@ -151,7 +163,10 @@ public class EBeanDAO implements DAO {
 
     @Override
     public boolean storeCents(GringottsAccount account, long amount) {
-        EBeanAccount acc = new EBeanAccount(account.owner.getType(), account.owner.getId(), amount);
+        EBeanAccount acc = new EBeanAccount();
+        acc.setOwner(account.owner.getId());
+        acc.setType(account.owner.getType());
+        acc.setCents(amount);
         db.save(acc);
         // TODO does this do a proper update? or just a new insert?
         return true;
@@ -167,14 +182,46 @@ public class EBeanDAO implements DAO {
 
     @Override
     public void deleteAccount(GringottsAccount acc) {
+        // TODO implement deleteAccount, mayhaps?
         throw new RuntimeException("delete account not supported yet in EBeanDAO");
-        // TODO Auto-generated method stub
     }
 
     @Entity
     @Table(name="gringotts_account")
     @UniqueConstraint(columnNames={"type","owner"})
-    private static class EBeanAccount {
+    public static class EBeanAccount {
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public String getOwner() {
+            return owner;
+        }
+
+        public void setOwner(String owner) {
+            this.owner = owner;
+        }
+
+        public long getCents() {
+            return cents;
+        }
+
+        public void setCents(long cents) {
+            this.cents = cents;
+        }
+
         @Id int id;
 
         /** Type string. */
@@ -186,19 +233,60 @@ public class EBeanDAO implements DAO {
         /** Virtual balance. */
         @NotNull long cents;
 
-        public EBeanAccount(String type, String owner, long balance) {
-            this.owner = owner;
-            this.type = type;
-            this.cents = balance;
-        }
-
-
     }
 
     @Entity
     @Table(name="gringotts_accountchest")
     @UniqueConstraint(columnNames={"world","x","y","z"})
-    private static class EBeanAccountChest {
+    public static class EBeanAccountChest {
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public String getWorld() {
+            return world;
+        }
+
+        public void setWorld(String world) {
+            this.world = world;
+        }
+
+        public int getX() {
+            return x;
+        }
+
+        public void setX(int x) {
+            this.x = x;
+        }
+
+        public int getY() {
+            return y;
+        }
+
+        public void setY(int y) {
+            this.y = y;
+        }
+
+        public int getZ() {
+            return z;
+        }
+
+        public void setZ(int z) {
+            this.z = z;
+        }
+
+        public int getAccount() {
+            return account;
+        }
+
+        public void setAccount(int account) {
+            this.account = account;
+        }
+
         @Id int id;
 
         @NotNull String world;
@@ -209,13 +297,18 @@ public class EBeanDAO implements DAO {
 
         @NotNull int account;
 
-        public EBeanAccountChest(String world, int x, int y, int z, int account) {
-            this.world = world;
-            this.x = x;
-            this.y = y;
-            this.z = z;
-            this.account = account;
-        }
+    }
+
+    public static List<Class<?>> getDatabaseClasses() {
+        List<Class<?>> list = new ArrayList<Class<?>>();
+        list.add(EBeanAccount.class);
+        list.add(EBeanAccountChest.class);
+        return list;
+    }
+
+    @Override
+    public void shutdown() {
+        // probably handled by Bukkit?
     }
 
 }

@@ -74,4 +74,8 @@ public interface DAO {
      */
     void deleteAccount(GringottsAccount acc);
 
+    /**
+     * Shutdown the database connection.
+     */
+    void shutdown();
 }

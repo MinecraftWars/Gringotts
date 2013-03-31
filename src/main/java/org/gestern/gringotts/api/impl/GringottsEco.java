@@ -24,12 +24,11 @@ import org.gestern.gringotts.api.Transaction;
 import org.gestern.gringotts.api.TransactionResult;
 import org.gestern.gringotts.currency.GringottsCurrency;
 import org.gestern.gringotts.data.DAO;
-import org.gestern.gringotts.data.DerbyDAO;
 
 public class GringottsEco implements Eco {
 
     private final AccountHolderFactory accountOwners = Gringotts.G.accountHolderFactory;
-    private final DAO dao = DerbyDAO.getDao();
+    private final DAO dao = Gringotts.G.dao;
 
     @Override
     public Account account(String id) {
