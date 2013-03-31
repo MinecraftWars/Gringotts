@@ -189,6 +189,9 @@ class TownyListener implements Listener {
                 return;
             }
 
+            event.setOwner(owner);
+            event.setValid(true);
+
         } else if (event.getType().equals("nation")) {
             if (!createvault_nation.allowed(player)) {
                 player.sendMessage(LANG.plugin_towny_noNationVaultPerm);
@@ -206,10 +209,12 @@ class TownyListener implements Listener {
                 player.sendMessage(LANG.plugin_towny_notInNation);
                 return;
             }
+
+            event.setOwner(owner);
+            event.setValid(true);
         }
 
-        event.setOwner(owner);
-        event.setValid(true);
+
     }
 }
 
