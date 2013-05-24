@@ -1,6 +1,11 @@
 Gringotts Changelog
 ===================
 
+v2.0 beta4
+----------
+* fix vault creation breaking under some circumstances involving Towny
+* added support for built-in Bukkit database support. This means that the Derby library is no longer required. If the Derby jar is present, Gringotts will continue to use it, otherwise a DB will be created via the Bukkit API. This should also support MySQL if you configure it in bukkit.yml. Please see the [http://wiki.bukkit.org/Bukkit.yml#database](Bukkit Wiki) for details.
+
 v2.0 beta3
 ----------
 * fix bug where Towny vaults would get deactivated on creation of other chests or deposits

@@ -6,7 +6,6 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import org.gestern.gringotts.accountholder.AccountHolder;
-import org.gestern.gringotts.data.DAO;
 
 /**
  * Manages accounts.
