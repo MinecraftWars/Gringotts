@@ -1,6 +1,10 @@
 Gringotts Changelog
 ===================
 
+v2.0 beta5
+----------
+* fix NPE with trying to get a chest from a null block
+* fix NPE when you delete a world with chests in it
 v2.0 beta4
 ----------
 * fix vault creation breaking under some circumstances involving Towny

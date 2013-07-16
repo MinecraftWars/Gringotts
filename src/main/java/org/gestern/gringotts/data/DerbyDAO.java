@@ -98,7 +98,7 @@ public class DerbyDAO implements DAO {
 
         ResultSet rs2 = dbmd.getTables(null, null, "ACCOUNTCHEST", null);
         if(!rs2.next()) {
-            String createAccountChest =		
+            String createAccountChest =        
                     "create table accountchest (" +
                             "id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
                             "world varchar(64), x integer, y integer, z integer, account integer not null, " + 
@@ -292,6 +292,13 @@ public class DerbyDAO implements DAO {
                 World world = Bukkit.getWorld(worldName);
                 Location loc = new Location(world, x, y, z);
 
+                if (world == null || loc == null) {
+                    AccountHolder owner = Gringotts.G.accountHolderFactory.get(type, ownerId);
+                    deleteAccountChest(worldName, x, y, x); // FIXME: Isn't actually removing the non-existent vaults..
+                    Gringotts.G.getLogger().severe("Vault of " + owner + " located on a non-existent world. Deleteing Vault on world " + worldName);
+                    continue;
+                }
+
                 Block signBlock = loc.getBlock();
                 if (Util.isSignBlock(signBlock)) {
                     AccountHolder owner = Gringotts.G.accountHolderFactory.get(type, ownerId);
@@ -343,6 +350,12 @@ public class DerbyDAO implements DAO {
 
                 World world = Bukkit.getWorld(worldName);
                 Location loc = new Location(world, x, y, z);
+
+                if (world == null || loc == null) {
+                    deleteAccountChest(worldName, x, y, x); // FIXME: Isn't actually removing the non-existent vaults..
+                    Gringotts.G.getLogger().severe("Vault of " + account.owner.getName() + " located on a non-existent world. Deleteing Vault on world " + worldName);
+                    continue;
+                }
 
                 Block signBlock = loc.getBlock();
                 if (Util.isSignBlock(signBlock)) {
