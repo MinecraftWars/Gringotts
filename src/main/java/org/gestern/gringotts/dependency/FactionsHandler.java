@@ -14,17 +14,16 @@ import org.gestern.gringotts.accountholder.AccountHolder;
 import org.gestern.gringotts.accountholder.AccountHolderProvider;
 import org.gestern.gringotts.event.PlayerVaultCreationEvent;
 
-import com.massivecraft.factions.FPlayer;
-import com.massivecraft.factions.FPlayers;
-import com.massivecraft.factions.Faction;
+import com.massivecraft.factions.entity.UPlayer;
+import com.massivecraft.factions.entity.Faction;
+import com.massivecraft.factions.entity.FactionColls;
 import com.massivecraft.factions.Factions;
-import com.massivecraft.factions.P;
 
 public class FactionsHandler implements DependencyHandler, AccountHolderProvider {
 
-    private final P plugin;
+    private final Factions plugin;
 
-    public FactionsHandler(P plugin) {
+    public FactionsHandler(Factions plugin) {
         this.plugin = plugin;
 
         if (plugin != null) {
@@ -40,7 +39,7 @@ public class FactionsHandler implements DependencyHandler, AccountHolderProvider
      */
     public FactionAccountHolder getFactionAccountHolder(Player player) {
 
-        FPlayer fplayer = FPlayers.i.get(player);
+        UPlayer fplayer = UPlayer.get(player);
         Faction playerFaction = fplayer.getFaction();
         return playerFaction != null? new FactionAccountHolder(playerFaction) : null;
     }
@@ -51,7 +50,7 @@ public class FactionsHandler implements DependencyHandler, AccountHolderProvider
      * @return
      */
     public FactionAccountHolder getAccountHolderById(String id) {
-        Faction faction = Factions.i.get(id);
+        Faction faction = FactionColls.get().get2(id);
         return faction !=null? new FactionAccountHolder(faction) : null;
     }
 
@@ -86,7 +85,7 @@ public class FactionsHandler implements DependencyHandler, AccountHolderProvider
         if (owner != null) return owner;
 
         // just in case, also try the tag
-        Faction faction = Factions.i.getByTag(id);
+        Faction faction = FactionColls.get().get2(id);;
 
         if (faction != null) 
             return new FactionAccountHolder(faction);
@@ -142,8 +141,8 @@ class FactionAccountHolder implements AccountHolder {
         this.owner = owner;
     }
 
-    public FactionAccountHolder(String Id) {
-        Faction faction = Factions.i.get(Id);
+    public FactionAccountHolder(String id) {
+        Faction faction = FactionColls.get().get2(id);
 
         if (faction != null)
             this.owner = faction;
@@ -152,7 +151,7 @@ class FactionAccountHolder implements AccountHolder {
 
     @Override
     public String getName() {
-        return owner.getTag();
+        return owner.getName();
     }
 
     @Override
