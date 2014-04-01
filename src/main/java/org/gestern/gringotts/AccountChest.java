@@ -50,7 +50,11 @@ public class AccountChest {
      */
     private InventoryHolder chest() { 
         Block block = Util.chestBlock(sign);
-        return (InventoryHolder)block.getState();
+        if (block == null) {
+            return null;
+        } else {
+            return (InventoryHolder)block.getState();
+        }
     }
 
     /** 
