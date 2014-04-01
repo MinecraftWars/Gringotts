@@ -171,82 +171,77 @@ public class Commands {
 
         public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 
-            if (cmd.getName().equalsIgnoreCase("money") || cmd.getName().equalsIgnoreCase("balance")) {
+            String command;
+            if (args.length >= 2) {
+                command = args[0];
+            } else return false;
 
-            } else if (cmd.getName().equalsIgnoreCase("moneyadmin")) {
+            // admin command: x of player / faction
+            if (args.length >= 2 && command.equalsIgnoreCase("b"))  {
 
-                String command;
-                if (args.length >= 2) {
-                    command = args[0];
-                } else return false;
+                String targetAccountHolderStr = args[1];
 
-                // admin command: balance of player / faction
-                if (args.length >= 2 && command.equalsIgnoreCase("b"))  {
+                // explicit or automatic account type
+                Account target = args.length==3? eco.custom(args[2], targetAccountHolderStr) : eco.account(targetAccountHolderStr);
 
-                    String targetAccountHolderStr = args[1];
-
-                    // explicit or automatic account type
-                    Account target = args.length==3? eco.custom(args[2], targetAccountHolderStr) : eco.account(targetAccountHolderStr);
-
-                    if (! target.exists()) {
-                        invalidAccount(sender, targetAccountHolderStr);
-                        return false;
-                    }
-
-                    String formattedBalance = eco.currency().format(target.balance());
-                    String senderMessage = LANG.moneyadmin_b.replace("%balance", formattedBalance).replace("%player", targetAccountHolderStr);
-                    sender.sendMessage(senderMessage);
-                    return true;
-
+                if (! target.exists()) {
+                    invalidAccount(sender, targetAccountHolderStr);
+                    return false;
                 }
 
-                // moneyadmin add/remove
-                if (args.length >= 3) {
-                    String amountStr = args[1];
-                    double value;
-                    try { value = Double.parseDouble(amountStr); } 
-                    catch(NumberFormatException x) { return false; }
+                String formattedBalance = eco.currency().format(target.balance());
+                String senderMessage = LANG.moneyadmin_b.replace("%balance", formattedBalance).replace("%player", targetAccountHolderStr);
+                sender.sendMessage(senderMessage);
+                return true;
 
-                    String targetAccountHolderStr = args[2];
-                    Account target = args.length==4? eco.custom(args[3], targetAccountHolderStr) : eco.account(targetAccountHolderStr);
-                    if (! target.exists()) {
-                        invalidAccount(sender, targetAccountHolderStr);
-                        return false;
-                    }
-
-                    String formatValue = eco.currency().format(value);
-
-                    if (command.equalsIgnoreCase("add")) {
-                        TransactionResult added = target.add(value);
-                        if (added == SUCCESS) {
-                            String senderMessage = LANG.moneyadmin_add_sender.replace("%value", formatValue).replace("%player", target.id());
-                            sender.sendMessage(senderMessage);
-                            String targetMessage = LANG.moneyadmin_add_target.replace("%value", formatValue);
-                            target.message(targetMessage);
-                        } else {
-                            String errorMessage = LANG.moneyadmin_add_error.replace("%value", formatValue).replace("%player", target.id());
-                            sender.sendMessage(errorMessage);
-                        }
-
-                        return true;
-
-                    } else if (command.equalsIgnoreCase("rm")) {
-                        TransactionResult removed = target.remove(value); 
-                        if (removed == SUCCESS) {
-                            String senderMessage = LANG.moneyadmin_rm_sender.replace("%value", formatValue).replace("%player", target.id());
-                            sender.sendMessage(senderMessage);
-                            String targetMessage = LANG.moneyadmin_rm_target.replace("%value", formatValue);
-                            target.message(targetMessage);
-                        } else {
-                            String errorMessage = LANG.moneyadmin_rm_error.replace("%value", formatValue).replace("%player", target.id());
-                            sender.sendMessage(errorMessage);
-                        }
-
-                        return true;
-                    }
-                }
             }
 
+            // moneyadmin add/remove
+            if (args.length >= 3) {
+                String amountStr = args[1];
+                double value;
+                try { value = Double.parseDouble(amountStr); } 
+                catch(NumberFormatException x) { return false; }
+
+                String targetAccountHolderStr = args[2];
+                Account target = args.length==4? eco.custom(args[3], targetAccountHolderStr) : eco.account(targetAccountHolderStr);
+                if (! target.exists()) {
+                    invalidAccount(sender, targetAccountHolderStr);
+                    return false;
+                }
+
+                String formatValue = eco.currency().format(value);
+
+                if (command.equalsIgnoreCase("add")) {
+                    TransactionResult added = target.add(value);
+                    if (added == SUCCESS) {
+                        String senderMessage = LANG.moneyadmin_add_sender.replace("%value", formatValue).replace("%player", target.id());
+                        sender.sendMessage(senderMessage);
+                        String targetMessage = LANG.moneyadmin_add_target.replace("%value", formatValue);
+                        target.message(targetMessage);
+                    } else {
+                        String errorMessage = LANG.moneyadmin_add_error.replace("%value", formatValue).replace("%player", target.id());
+                        sender.sendMessage(errorMessage);
+                    }
+
+                    return true;
+
+                } else if (command.equalsIgnoreCase("rm")) {
+                    TransactionResult removed = target.remove(value); 
+                    if (removed == SUCCESS) {
+                        String senderMessage = LANG.moneyadmin_rm_sender.replace("%value", formatValue).replace("%player", target.id());
+                        sender.sendMessage(senderMessage);
+                        String targetMessage = LANG.moneyadmin_rm_target.replace("%value", formatValue);
+                        target.message(targetMessage);
+                    } else {
+                        String errorMessage = LANG.moneyadmin_rm_error.replace("%value", formatValue).replace("%player", target.id());
+                        sender.sendMessage(errorMessage);
+                    }
+
+                    return true;
+                }
+            }
+        
             return false; 
         }
     }
