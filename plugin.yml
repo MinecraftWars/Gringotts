@@ -35,8 +35,34 @@ commands:
     usage: |
       /gringotts reload
     permission: gringotts.admin
+  bank:
+    description: Banking actions
+    aliases: banking
+    usage: |
+      /bank found <bank name>
+      /bank reserve <bank name>
+      /bank appoint <bank name> <player>
+      /bank account <bank name>
+      /bank withdraw <bank name> <amount>
+      /bank deposit <bank name> <amount>
 
 permissions:
+  gringotts.banking:
+    description: All banking permissions
+    default: op
+    children:
+      gringotts.banking.foundbank: true
+      gringotts.banking.manage: true
+      gringotts.banking.use: true
+  gringotts.banking.foundbank:
+    description: Found banks
+    default: op
+  gringotts.banking.manage:
+    description: Manage banks
+    default: true
+  gringotts.banking.use:
+    description: Own and use a bank account
+    default: true
   gringotts.createvault:
     description: Create vaults
     default: true
@@ -45,7 +71,6 @@ permissions:
       gringotts.createvault.faction: true
       gringotts.createvault.town: true
       gringotts.createvault.nation: true
-
   gringotts.createvault.forothers:
     description: Create vault for other players/accounts
     default: op

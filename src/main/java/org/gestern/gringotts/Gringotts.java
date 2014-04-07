@@ -23,6 +23,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.gestern.gringotts.accountholder.AccountHolderFactory;
 import org.gestern.gringotts.accountholder.AccountHolderProvider;
 import org.gestern.gringotts.api.impl.VaultConnector;
+import org.gestern.gringotts.banking.Banker;
 import org.gestern.gringotts.data.DAO;
 import org.gestern.gringotts.data.DerbyDAO;
 import org.gestern.gringotts.data.EBeanDAO;
@@ -47,6 +48,7 @@ public class Gringotts extends JavaPlugin {
 
     /** Manages accounts. */
     public Accounting accounting;
+    public Banker banker;
 
     /** 
      * The account holder factory is the place to go if you need an AccountHolder instance for an id.
@@ -71,6 +73,7 @@ public class Gringotts extends JavaPlugin {
             gcommand = new Commands(this);
 
             accounting = new Accounting();
+            banker = new Banker(this);
 
             registerCommands();
             registerEvents();
@@ -80,6 +83,9 @@ public class Gringotts extends JavaPlugin {
                 MetricsLite metrics = new MetricsLite(this);
                 metrics.start();
             } catch (IOException e) {
+                log.info("Failed to submit PluginMetrics stats");
+            }
+            catch (NoClassDefFoundError error) {
                 log.info("Failed to submit PluginMetrics stats");
             }
 
@@ -119,11 +125,13 @@ public class Gringotts extends JavaPlugin {
         CommandExecutor playerCommands = gcommand.new Money();
         CommandExecutor moneyAdminCommands = gcommand.new Moneyadmin();
         CommandExecutor adminCommands = gcommand.new GringottsCmd();
+        CommandExecutor bankCommands = gcommand.new BankCmd();
 
         getCommand("balance").setExecutor(playerCommands);
         getCommand("money").setExecutor(playerCommands);
         getCommand("moneyadmin").setExecutor(moneyAdminCommands);
         getCommand("gringotts").setExecutor(adminCommands);
+        getCommand("bank").setExecutor(bankCommands);
     }
 
     private void registerEvents() {

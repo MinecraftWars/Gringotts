@@ -30,7 +30,7 @@ public interface Eco {
      * @param name The name or id of the bank.
      * @return The bank account representation.
      */
-    BankAccount bank(String name);
+    Account bank(String name);
 
     /**
      * Access custom account type. Implementors must support this method, but may choose to implement via another account type internally.
