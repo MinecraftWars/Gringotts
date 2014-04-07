@@ -50,8 +50,13 @@ public class GringottsEco implements Eco {
     }
 
     @Override
-    public BankAccount bank(String name) {
-        return new InvalidAccount("bank", name);
+    public Account bank(String id)
+    {
+        AccountHolder holder = this.accountOwners.get("bank", id);
+        if (holder == null) {
+            return new InvalidAccount("bank", id);
+        }
+        return new ValidAccount(Gringotts.G.accounting.getAccount(holder));
     }
 
     @Override

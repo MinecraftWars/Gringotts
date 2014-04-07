@@ -16,6 +16,7 @@ import org.gestern.gringotts.api.Eco;
 import org.gestern.gringotts.api.TaxedTransaction;
 import org.gestern.gringotts.api.TransactionResult;
 import org.gestern.gringotts.api.impl.GringottsEco;
+import org.gestern.gringotts.banking.Bank;
 
 
 /**
@@ -243,6 +244,51 @@ public class Commands {
             }
         
             return false; 
+        }
+    }
+
+    /**
+     * Banking commands
+     **/
+
+
+    public class BankCmd implements CommandExecutor
+    {
+        public BankCmd() {}
+
+        public boolean onCommand(CommandSender sender, Command cmd, String cmdName, String[] args)
+        {
+            if (args.length == 0) {
+                return false;
+            }
+            if (args[0].equalsIgnoreCase("list"))
+            {
+                sender.sendMessage("The following banks are currently loaded:");
+                for (String name : Gringotts.G.banker.listBanks()) {
+                    sender.sendMessage("name");
+                }
+                return true;
+            }
+            if ((args[0].equalsIgnoreCase("reserve")) || (args[0].equalsIgnoreCase("reserves")))
+            {
+                if (args.length != 2)
+                {
+                    sender.sendMessage("Command usage is: /bank reserve <bankName>");
+                    return true;
+                }
+                Bank bank = Gringotts.G.banker.getBank(args[1]);
+                String reserves = Commands.this.eco.currency().format(Commands.this.eco.bank("bankr-" + args[1]).balance());
+                if ((sender instanceof Player))
+                {
+                    Player player = (Player)sender;
+                    sender.sendMessage(args[1] + " has " + reserves + " in cash reserves.");
+                }
+                return true;
+            }
+            if (args[0].equalsIgnoreCase("trading")) {
+                return true;
+            }
+            return false;
         }
     }
 
