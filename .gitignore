@@ -4,5 +4,6 @@
 /.settings
 .classpath
 .project
+.idea
 .DS_Store
 dependency-reduced-pom.xml
