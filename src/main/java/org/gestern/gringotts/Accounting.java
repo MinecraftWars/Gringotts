@@ -32,7 +32,7 @@ public class Accounting {
     }
 
     /**
-     * Determine if a given accountchest would be connected to an accountchest already in storage.
+     * Determine if a given Accountchest would be connected to an accountchest already in storage.
      * Alas! need to call this every time we try to add an account chest, since chests can be added 
      * without us noticing ... 
      * @param chest
