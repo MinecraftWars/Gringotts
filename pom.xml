@@ -187,6 +187,10 @@
             <url>https://github.com/MinecraftWars/mcw-mvn-repo/raw/master/releases</url>
         </repository>
         <repository>
+            <id>mcw-repo snapshots</id>
+            <url>https://github.com/MinecraftWars/mcw-mvn-repo/raw/master/snapshots</url>
+        </repository>
+        <repository>
             <id>Plugin Metrics</id>
             <url>http://repo.mcstats.org/content/repositories/public</url>
         </repository>
