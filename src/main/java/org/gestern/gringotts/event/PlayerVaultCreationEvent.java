@@ -19,7 +19,7 @@ public class PlayerVaultCreationEvent extends VaultCreationEvent {
 
     /**
      * Get the player involved in creating the vault.
-     * @return
+     * @return the player involved in creating the vault
      */
     public SignChangeEvent getCause() {
         return cause;
