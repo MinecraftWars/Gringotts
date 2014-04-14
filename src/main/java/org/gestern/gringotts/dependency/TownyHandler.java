@@ -168,7 +168,7 @@ class TownyListener implements Listener {
 
         String ownername = event.getCause().getLine(2);
         Player player = event.getCause().getPlayer();
-        boolean forOther = ownername!=null && ownername.length()>0 && createvault_forothers.allowed(player);
+        boolean forOther = ownername!=null && ownername.length()>0 && createvault_admin.allowed(player);
 
         AccountHolder owner = null;
         if (event.getType().equals("town")) {

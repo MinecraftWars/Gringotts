@@ -2,7 +2,7 @@ package org.gestern.gringotts.dependency;
 
 import static org.gestern.gringotts.Language.LANG;
 import static org.gestern.gringotts.Permissions.createvault_faction;
-import static org.gestern.gringotts.Permissions.createvault_forothers;
+import static org.gestern.gringotts.Permissions.createvault_admin;
 import static org.gestern.gringotts.dependency.Dependency.DEP;
 
 import org.bukkit.Bukkit;
@@ -111,7 +111,7 @@ class FactionsListener implements Listener {
             AccountHolder owner = null;
 
             String ownername = event.getCause().getLine(2);
-            if (ownername != null && ownername.length() > 0 && createvault_forothers.allowed(player)) {
+            if (ownername != null && ownername.length() > 0 && createvault_admin.allowed(player)) {
                 // attempting to create account for named faction
                 owner = Gringotts.G.accountHolderFactory.get("faction", ownername);
                 if (owner==null) return;

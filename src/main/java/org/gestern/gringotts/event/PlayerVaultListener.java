@@ -38,7 +38,7 @@ public class PlayerVaultListener implements Listener {
         }
 
         AccountHolder owner = null;
-        if (ownername != null && ownername.length() > 0 && createvault_forothers.allowed(player)) {
+        if (ownername != null && ownername.length() > 0 && createvault_admin.allowed(player)) {
             // attempting to create account for other player
             owner = Gringotts.G.accountHolderFactory.get("player", ownername);
             if (owner==null) return;

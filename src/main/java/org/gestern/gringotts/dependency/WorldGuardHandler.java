@@ -113,7 +113,7 @@ public class WorldGuardHandler implements DependencyHandler, AccountHolderProvid
                     owner = getAccountHolder(world, id);
                 }
 
-                if (owner != null && (owner.region.hasMembersOrOwners() || createvault_forothers.allowed(player))) {
+                if (owner != null && (owner.region.hasMembersOrOwners() || createvault_admin.allowed(player))) {
                     DefaultDomain regionOwners = owner.region.getOwners();
                     if (regionOwners.contains(player.getName())) {
                         event.setOwner(owner);
