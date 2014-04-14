@@ -8,7 +8,7 @@ import org.gestern.gringotts.Gringotts;
 
 public class Bank {
     public final String name;
-    private final Set<OfflinePlayer> managers = new HashSet<OfflinePlayer>();
+    private final Set<OfflinePlayer> managers = new HashSet<>();
 
     public Bank(String name) {
         this.name = name;

@@ -73,7 +73,7 @@ public class Gringotts extends JavaPlugin {
             gcommand = new Commands(this);
 
             accounting = new Accounting();
-            banker = new Banker(this);
+            banker = new Banker();
 
             registerCommands();
             registerEvents();
@@ -82,18 +82,12 @@ public class Gringotts extends JavaPlugin {
             try {
                 MetricsLite metrics = new MetricsLite(this);
                 metrics.start();
-            } catch (IOException e) {
-                log.info("Failed to submit PluginMetrics stats");
-            }
-            catch (NoClassDefFoundError error) {
+            } catch (IOException | NoClassDefFoundError e) {
                 log.info("Failed to submit PluginMetrics stats");
             }
 
-        } catch(GringottsStorageException e) { 
+        } catch(GringottsStorageException | GringottsConfigurationException e) {
             log.severe(e.getMessage()); 
-            disable();
-        } catch(GringottsConfigurationException e) {
-            log.severe(e.getMessage());
             disable();
         } catch (RuntimeException e) {
             disable();
@@ -170,7 +164,7 @@ public class Gringotts extends JavaPlugin {
 
     /**
      * Get the configured player interaction messages.
-     * @return
+     * @return player interaction message configuration
      */
     public FileConfiguration getMessages() {
 
