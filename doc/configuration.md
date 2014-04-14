@@ -96,6 +96,11 @@ Permissions
 
 Allow players to create any type of vault.
 
+    gringotts.createvault.admin:
+      default: op
+
+Allow players to create vaults for other players.
+
     gringotts.createvault.player:
       default: true
 

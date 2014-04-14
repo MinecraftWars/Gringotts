@@ -12,12 +12,11 @@ Features
 * Item-backed economy (configurable, default emeralds)
 * multiple denominations with automatic conversion (for example, use emeralds and emerald blocks)
 * Storage of currency in chests and other containers, player inventory and ender chests (configurable)
-* direct account-to-account transfers
+* direct account-to-account transfers commands
 * optional transaction taxes
-* fractional currency values (2 decimal digits)
+* fractional currency values (fixed decimal digits)
 * Account support for [Factions](http://dev.bukkit.org/server-mods/factions/), [Towny](http://dev.bukkit.org/server-mods/towny-advanced/) and [WorldGuard](http://dev.bukkit.org/server-mods/worldguard/)
 * [Vault](http://dev.bukkit.org/server-mods/vault/) integration
-* Tekkit / 1.2.5 compatible
 
 Usage
 -----
@@ -70,8 +69,7 @@ Reload Gringotts config.yml and messages.yml and apply any changed settings.
 
 Installation and Configuration
 ------------------------------
-* download [Gringotts](http://dev.bukkit.org/server-mods/gringotts/files/) and place it in your craftbukkit/plugins folder
-* download [Apache Derby](http://repo1.maven.org/maven2/org/apache/derby/derby/10.9.1.0/derby-10.9.1.0.jar) and place it in your craftbukkit/lib folder
+Download [Gringotts](http://dev.bukkit.org/server-mods/gringotts/files/) and place it in your craftbukkit/plugins folder
 
 Please see the [Configuration and Permissions](https://github.com/MinecraftWars/Gringotts/blob/master/doc/configuration.md) document on how to configure Gringotts.
 

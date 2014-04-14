@@ -30,7 +30,7 @@ If it was created correctly, the sign will display your town's or nation's tag o
 First line: `[region vault]`
 Third line: region's id
 
-Writing the region id manually is required because a player may be part of several regions. If the vault has been created corretly, you will receive a message that the vault has been created.
+Writing the region id manually is required because a player may be part of several regions. If the vault has been created correctly, you will receive a message that the vault has been created.
 
 ### Creating vaults for other players/accounts ###
 

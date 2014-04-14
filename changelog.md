@@ -1,10 +1,16 @@
 Gringotts Changelog
 ===================
 
+v2.2
+----
+* use factions 2.x
+* build against bukkit 1.7.2
+
 v2.0 beta5
 ----------
 * fix NPE with trying to get a chest from a null block
 * fix NPE when you delete a world with chests in it
+
 v2.0 beta4
 ----------
 * fix vault creation breaking under some circumstances involving Towny
