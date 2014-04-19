@@ -187,7 +187,7 @@ public class GringottsEco implements Eco {
 
     private class ValidAccount implements Account {
 
-        protected GringottsAccount acc;
+        protected final GringottsAccount acc;
 
         public ValidAccount(GringottsAccount acc) {
             this.acc = acc;

@@ -4,7 +4,7 @@ package org.gestern.gringotts.accountholder;
 
 /**
  * An account holder. 
- * Can be a player or another type of entity able to partiticapte in the economy, for instance a faction.
+ * Can be a player or another type of entity able to participate in the economy, for instance a faction.
  * 
  * To function correctly within Gringotts, implementors must provide a working equals and hashCode method. 
  * 

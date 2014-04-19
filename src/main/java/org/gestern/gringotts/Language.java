@@ -83,7 +83,7 @@ public enum Language
         LANG.deposit_success = savedLanguage.getString("deposit.success", "Deposited %value to your storage.");
         LANG.deposit_error = savedLanguage.getString("deposit.error", "Unable to deposit %value to your storage.");
 
-        //withdrwa command
+        //withdraw command
         LANG.withdraw_success = savedLanguage.getString("withdraw.success", "Withdrew %value from your storage.");
         LANG.withdraw_error = savedLanguage.getString("withdraw.error", "Unable to withdraw %value from your storage.");
 

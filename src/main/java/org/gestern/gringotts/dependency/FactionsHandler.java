@@ -50,7 +50,7 @@ public class FactionsHandler implements DependencyHandler, AccountHolderProvider
      */
     public FactionAccountHolder getAccountHolderById(String id) {
         Faction faction = FactionColls.get().get2(id);
-        return faction !=null? new FactionAccountHolder(faction) : null;
+        return faction != null? new FactionAccountHolder(faction) : null;
     }
 
     @Override

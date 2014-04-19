@@ -24,9 +24,9 @@ import static org.gestern.gringotts.api.TransactionResult.SUCCESS;
  */
 class Commands {
 
-    private Gringotts plugin;
+    private final Gringotts plugin;
 
-    private Eco eco = new GringottsEco();
+    private final Eco eco = new GringottsEco();
 
 
     public Commands(Gringotts plugin) {

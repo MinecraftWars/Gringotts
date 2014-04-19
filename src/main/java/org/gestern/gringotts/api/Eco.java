@@ -9,7 +9,7 @@ public interface Eco {
      * The recommended behavior is to return a player account if a player of the name exists, and return any other type of account
      * if no player of that name is known to the economy.
      * @param id id of the account
-     * @return The accoutn representation.
+     * @return The account representation.
      */
     Account account(String id);
 
@@ -34,16 +34,16 @@ public interface Eco {
 
     /**
      * Access custom account type. Implementors must support this method, but may choose to implement via another account type internally.
-     * @param type
-     * @param id
-     * @return
+     * @param type type of account
+     * @param id account id
+     * @return an account of the given type and id
      */
     Account custom(String type, String id);
 
     /**
      * Access a Factions faction account with the given id.
-     * @param id
-     * @return
+     * @param id faction id
+     * @return the faction's account
      */
     Account faction(String id);
 
@@ -63,7 +63,7 @@ public interface Eco {
 
     /**
      * The currency for this Economy.
-     * @return
+     * @return The currency for this Economy.
      */
     Currency currency();
 

@@ -49,7 +49,7 @@ public class Gringotts extends JavaPlugin {
     /** 
      * The account holder factory is the place to go if you need an AccountHolder instance for an id.
      */
-    public AccountHolderFactory accountHolderFactory = new AccountHolderFactory();
+    public final AccountHolderFactory accountHolderFactory = new AccountHolderFactory();
 
     @Override
     public void onEnable() {

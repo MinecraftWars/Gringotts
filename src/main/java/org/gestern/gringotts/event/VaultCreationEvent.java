@@ -2,6 +2,7 @@ package org.gestern.gringotts.event;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.gestern.gringotts.Language;
 import org.gestern.gringotts.accountholder.AccountHolder;
 
 /**
@@ -49,8 +50,9 @@ public class VaultCreationEvent extends Event {
      * @return message sent to account owner on creation of this vault.
      */
     public String getMessage() {
-        return "Vault created!";
+        return Language.LANG.vault_created;
     }
+
 
     /**
      * Set valid status of vault being created. This is false by default.

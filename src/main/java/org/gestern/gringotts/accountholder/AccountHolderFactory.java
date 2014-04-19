@@ -17,7 +17,7 @@ public class AccountHolderFactory {
     private final Map<String, AccountHolderProvider> accountHolderProviders = new LinkedHashMap<>();
 
     public AccountHolderFactory() {
-        // linked hashmap maintains iteration order -> prefer player to be checked first
+        // linked HashMap maintains iteration order -> prefer player to be checked first
         accountHolderProviders.put("player", new PlayerAccountHolderProvider());
 
         // TODO support banks

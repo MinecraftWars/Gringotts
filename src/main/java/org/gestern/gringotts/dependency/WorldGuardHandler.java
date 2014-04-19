@@ -142,7 +142,7 @@ class WorldGuardAccountHolder implements AccountHolder {
 
     @Override
     public void sendMessage(String message) {
-        // TODO send message to all memebers?
+        // TODO send message to all members?
     }
 
     @Override

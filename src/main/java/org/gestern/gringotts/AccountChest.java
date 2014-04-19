@@ -68,7 +68,7 @@ public class AccountChest {
 
     /**
      * Get inventory of this account chest.
-     * @return inventory of this accountchest, if any. otherwise null.
+     * @return inventory of this AccountChest, if any. otherwise null.
      */
     private Inventory inventory() {
         InventoryHolder chest = chest();

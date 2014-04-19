@@ -52,7 +52,7 @@ public enum Configuration {
 
     /** Regular expression defining what patterns on a sign will create a valid vault. Subpattern 1 denotes the type of the vault. */
     // TODO make this actually configurable(?)
-    public String vaultPattern = "[^\\[]*\\[(\\w*) ?vault\\]";
+    public final String vaultPattern = "[^\\[]*\\[(\\w*) ?vault\\]";
 
 
 
@@ -117,7 +117,7 @@ public enum Configuration {
      * A currency definition consists of a map of denominations to value.
      * A denomination type is defined either as the item id, 
      * or a semicolon-separated string of item id; damage value; data value
-     * @param denomSection config section containaining denomination definition
+     * @param denomSection config section containing denomination definition
      */
     private void parseCurrency(ConfigurationSection denomSection) {
 

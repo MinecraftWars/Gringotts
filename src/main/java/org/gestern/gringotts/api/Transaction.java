@@ -13,7 +13,7 @@ public interface Transaction {
     /**
      * Apply taxes to this transaction, as configured by the economy plugin. 
      * Completing the transaction will fail if the taxes cannot be collected.
-     * @return
+     * @return transaction with applied taxes
      */
     TaxedTransaction withTaxes();
 }

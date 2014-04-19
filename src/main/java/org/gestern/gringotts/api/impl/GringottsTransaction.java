@@ -15,7 +15,7 @@ public class GringottsTransaction implements Transaction {
     protected final Account from;
 
     /** Base value of this transaction. */
-    protected double value;
+    protected final double value;
 
     /**
      * Create Transaction based on another (copy ctor).

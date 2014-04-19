@@ -32,12 +32,14 @@ public class Accounting {
     }
 
     /**
-     * Determine if a given Accountchest would be connected to an accountchest already in storage.
+     * Determine if a given AccountChest would be connected to an AccountChest already in storage.
      * Alas! need to call this every time we try to add an account chest, since chests can be added 
      * without us noticing ... 
-     * @param chest
-     * @return
+     * @param chest chest to check for connectedness
+     * @param allChests set of all chests that might be a candidate for connectedness
+     * @return whether given chest is connected to any existing chest
      */
+    // TODO perhaps this could be more elegantly done with block metadata
     private boolean chestConnected(AccountChest chest, Set<AccountChest> allChests) {
         for (AccountChest ac : allChests) {
             if (ac.connected(chest))
@@ -48,8 +50,8 @@ public class Accounting {
 
     /**
      * Associate an AccountChest with an Account. 
-     * @param account
-     * @param chest 
+     * @param account account to add the chest to
+     * @param chest chest to add to the account
      * @return false if the specified AccountChest is already registered or would be connected to 
      * a registered chest. true if the association was successful. 
      * @throws GringottsStorageException when saving of account chest failed 
@@ -72,15 +74,6 @@ public class Accounting {
         if ( ! G.dao.storeAccountChest(chest) )
             throw new GringottsStorageException("Could not save account chest: " + chest);
         return true;
-    }
-
-    /**
-     * Determine whether a chest is valid in the game world.
-     * @param chest
-     * @return
-     */
-    public boolean validChest(AccountChest chest) {
-        return false;
     }
 
 }

@@ -6,7 +6,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.*;
 
 /**
- * Representaiton of a currency. This contains information about the currency's denominations and their values.
+ * Representation of a currency. This contains information about the currency's denominations and their values.
  * The value is represented internally as "cents", that is, the smallest currency unit, and only gets transformed into display value
  * for communication with the user or vault.
  * 
