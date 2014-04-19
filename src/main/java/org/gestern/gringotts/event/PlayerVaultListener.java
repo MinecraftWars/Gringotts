@@ -1,9 +1,6 @@
 
 package org.gestern.gringotts.event;
 
-import static org.gestern.gringotts.Permissions.*;
-import static org.gestern.gringotts.Language.LANG;
-
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,6 +8,10 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.gestern.gringotts.Gringotts;
 import org.gestern.gringotts.accountholder.AccountHolder;
 import org.gestern.gringotts.accountholder.PlayerAccountHolder;
+
+import static org.gestern.gringotts.Language.LANG;
+import static org.gestern.gringotts.Permissions.createvault_admin;
+import static org.gestern.gringotts.Permissions.createvault_player;
 
 /**
  * This Vault listener handles vault creation events for player vaults.
@@ -37,7 +38,7 @@ public class PlayerVaultListener implements Listener {
             return;
         }
 
-        AccountHolder owner = null;
+        AccountHolder owner;
         if (ownername != null && ownername.length() > 0 && createvault_admin.allowed(player)) {
             // attempting to create account for other player
             owner = Gringotts.G.accountHolderFactory.get("player", ownername);

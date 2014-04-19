@@ -1,16 +1,16 @@
 package org.gestern.gringotts.data;
 
+import com.avaje.ebean.validation.NotNull;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import com.avaje.ebean.validation.NotNull;
-
 @Entity
 @Table(name="gringotts_accountchest")
 @UniqueConstraint(columnNames={"world","x","y","z"})
-public class EBeanAccountChest {
+class EBeanAccountChest {
     public int getId() {
         return id;
     }

@@ -9,7 +9,7 @@ public class Util {
 
     /**
      * Check whether a block is a sign or wall sign type.
-     * @param block
+     * @param block block to check
      * @return true if the block is a sign or wall sign
      */
     public static boolean isSignBlock(Block block) {
@@ -18,8 +18,8 @@ public class Util {
 
     /**
      * Compares whether a version string in standard format (dotted decimals) is greater than another.
-     * @param version
-     * @param atLeast
+     * @param version version string to check
+     * @param atLeast minimum expected version
      * @return true if version is greater than greaterThanVersion, false otherwise
      */
     public static boolean versionAtLeast(String version, String atLeast) {
@@ -45,8 +45,8 @@ public class Util {
 
     /**
      * Break a version string into parts.
-     * @param version
-     * @return
+     * @param version version string to handle
+     * @return array with dotted decimal strings turned into ints
      */
     public static int[] versionParts(String version) {
         String[] strparts = version.split("\\.");
@@ -57,7 +57,7 @@ public class Util {
             String number = strparts[i].replaceAll("(\\d+).*","$1");
             int part = 0;
             try { part = Integer.parseInt(number); }
-            catch(NumberFormatException e) {}
+            catch(NumberFormatException ignored) {}
 
             parts[i] = part;
         }
@@ -78,8 +78,8 @@ public class Util {
 
     /**
      * Find a valid container block for a given sign, if it exists.
-     * @param sign
-     * @return
+     * @param sign sign to check
+     * @return container for the sign if available, null otherwise.
      */
     public static Block chestBlock(Sign sign) {
         // is sign attached to a valid vault container?

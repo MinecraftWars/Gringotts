@@ -1,11 +1,11 @@
 package org.gestern.gringotts;
 
-import static org.gestern.gringotts.Gringotts.G;
+import org.gestern.gringotts.accountholder.AccountHolder;
 
 import java.util.Set;
 import java.util.logging.Logger;
 
-import org.gestern.gringotts.accountholder.AccountHolder;
+import static org.gestern.gringotts.Gringotts.G;
 
 /**
  * Manages accounts.

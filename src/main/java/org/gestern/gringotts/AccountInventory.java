@@ -1,12 +1,12 @@
 package org.gestern.gringotts;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.gestern.gringotts.currency.GringottsCurrency;
 import org.gestern.gringotts.currency.Denomination;
+import org.gestern.gringotts.currency.GringottsCurrency;
+
+import java.util.Collections;
+import java.util.List;
 
 import static org.gestern.gringotts.Configuration.CONF;
 

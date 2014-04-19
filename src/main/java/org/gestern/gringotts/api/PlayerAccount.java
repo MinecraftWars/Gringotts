@@ -11,7 +11,7 @@ public interface PlayerAccount extends Account {
 
     /**
      * Withdraw an amount from offline/chest storage to inventory or on-hand money.
-     * @param value
+     * @param value amount to withdraw
      * @return Result of transaction
      */
     TransactionResult withdraw(double value);

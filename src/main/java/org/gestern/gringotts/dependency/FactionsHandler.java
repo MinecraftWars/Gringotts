@@ -1,10 +1,9 @@
 package org.gestern.gringotts.dependency;
 
-import static org.gestern.gringotts.Language.LANG;
-import static org.gestern.gringotts.Permissions.createvault_faction;
-import static org.gestern.gringotts.Permissions.createvault_admin;
-import static org.gestern.gringotts.dependency.Dependency.DEP;
-
+import com.massivecraft.factions.Factions;
+import com.massivecraft.factions.entity.Faction;
+import com.massivecraft.factions.entity.FactionColls;
+import com.massivecraft.factions.entity.UPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,10 +13,10 @@ import org.gestern.gringotts.accountholder.AccountHolder;
 import org.gestern.gringotts.accountholder.AccountHolderProvider;
 import org.gestern.gringotts.event.PlayerVaultCreationEvent;
 
-import com.massivecraft.factions.entity.UPlayer;
-import com.massivecraft.factions.entity.Faction;
-import com.massivecraft.factions.entity.FactionColls;
-import com.massivecraft.factions.Factions;
+import static org.gestern.gringotts.Language.LANG;
+import static org.gestern.gringotts.Permissions.createvault_admin;
+import static org.gestern.gringotts.Permissions.createvault_faction;
+import static org.gestern.gringotts.dependency.Dependency.DEP;
 
 public class FactionsHandler implements DependencyHandler, AccountHolderProvider {
 
@@ -34,7 +33,7 @@ public class FactionsHandler implements DependencyHandler, AccountHolderProvider
 
     /**
      * Get a FactionAccountHolder for the faction of which player is a member, if any.
-     * @param player
+     * @param player player to get the faction for
      * @return FactionAccountHolder for the faction of which player is a member, if any. null otherwise.
      */
     public FactionAccountHolder getFactionAccountHolder(Player player) {
@@ -46,8 +45,8 @@ public class FactionsHandler implements DependencyHandler, AccountHolderProvider
 
     /**
      * Get a FactionAccountHolder by id of the faction.
-     * @param id
-     * @return
+     * @param id id to get the faction for
+     * @return faction account holder for given id
      */
     public FactionAccountHolder getAccountHolderById(String id) {
         Faction faction = FactionColls.get().get2(id);
@@ -69,7 +68,7 @@ public class FactionsHandler implements DependencyHandler, AccountHolderProvider
      * Valid ids for this method are either raw faction ids, or faction ids or tags prefixed with "faction-" 
      * Only names beginning with "faction-" will be considered, and the rest of the string 
      * can be either a faction id or a faction tag.
-     * @param name Name of the account.
+     * @param id Name of the account.
      * @return a FactionAccountHolder based on the name of the account, if a valid faction could be found. null otherwise.
      */
     @Override
@@ -85,7 +84,7 @@ public class FactionsHandler implements DependencyHandler, AccountHolderProvider
         if (owner != null) return owner;
 
         // just in case, also try the tag
-        Faction faction = FactionColls.get().get2(id);;
+        Faction faction = FactionColls.get().get2(id);
 
         if (faction != null) 
             return new FactionAccountHolder(faction);
@@ -108,7 +107,7 @@ class FactionsListener implements Listener {
                 return;
             }
 
-            AccountHolder owner = null;
+            AccountHolder owner;
 
             String ownername = event.getCause().getLine(2);
             if (ownername != null && ownername.length() > 0 && createvault_admin.allowed(player)) {

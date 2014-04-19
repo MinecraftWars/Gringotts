@@ -25,8 +25,8 @@ public enum Permissions {
 
     /**
      * Check if a player has this permission.
-     * @param player
-     * @return
+     * @param player player to check
+     * @return whether given player has this permission
      */
     public boolean allowed(Player player) {
         return player.hasPermission(this.node);

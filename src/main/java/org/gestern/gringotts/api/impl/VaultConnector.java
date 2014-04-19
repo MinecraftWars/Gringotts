@@ -1,16 +1,15 @@
 package org.gestern.gringotts.api.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
-
 import org.gestern.gringotts.Gringotts;
 import org.gestern.gringotts.api.Account;
 import org.gestern.gringotts.api.Eco;
 import org.gestern.gringotts.api.TransactionResult;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.gestern.gringotts.Language.LANG;
 
@@ -22,7 +21,6 @@ import static org.gestern.gringotts.Language.LANG;
  */
 public class VaultConnector implements Economy {
 
-    private final String name = "Gringotts";
     private final Eco eco = new GringottsEco();
 
     public VaultConnector() {
@@ -36,7 +34,7 @@ public class VaultConnector implements Economy {
 
     @Override
     public String getName() {
-        return name;
+        return "Gringotts";
     }
 
     @Override
@@ -188,7 +186,7 @@ public class VaultConnector implements Economy {
 
     @Override
     public List<String> getBanks() {
-        return new ArrayList<String>();
+        return new ArrayList<>();
         //        return new ArrayList<String>(eco.getBanks());
     }
 

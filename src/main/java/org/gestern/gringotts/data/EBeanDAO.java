@@ -1,12 +1,9 @@
 package org.gestern.gringotts.data;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Logger;
-
-
+import com.avaje.ebean.EbeanServer;
+import com.avaje.ebean.SqlQuery;
+import com.avaje.ebean.SqlRow;
+import com.avaje.ebean.SqlUpdate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -18,10 +15,11 @@ import org.gestern.gringotts.GringottsAccount;
 import org.gestern.gringotts.Util;
 import org.gestern.gringotts.accountholder.AccountHolder;
 
-import com.avaje.ebean.EbeanServer;
-import com.avaje.ebean.SqlQuery;
-import com.avaje.ebean.SqlRow;
-import com.avaje.ebean.SqlUpdate;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Logger;
 
 public class EBeanDAO implements DAO {
 
@@ -77,7 +75,7 @@ public class EBeanDAO implements DAO {
         List<SqlRow> result = db.createSqlQuery("SELECT ac.world, ac.x, ac.y, ac.z, a.type, a.owner " +
                 "FROM gringotts_accountchest ac JOIN gringotts_account a ON ac.account = a.id ").findList();
 
-        Set<AccountChest> chests = new HashSet<AccountChest>();
+        Set<AccountChest> chests = new HashSet<>();
 
         for (SqlRow c : result) {
             String worldName = c.getString("world");
@@ -137,7 +135,7 @@ public class EBeanDAO implements DAO {
         getChests.setParameter("owner", account.owner.getId());
         getChests.setParameter("type", account.owner.getType());
 
-        Set<AccountChest> chests = new HashSet<AccountChest>();
+        Set<AccountChest> chests = new HashSet<>();
         for (SqlRow result : getChests.findSet()) {
             String worldName = result.getString("world");
             int x = result.getInteger("x");
@@ -185,7 +183,7 @@ public class EBeanDAO implements DAO {
     }
 
     public static List<Class<?>> getDatabaseClasses() {
-        List<Class<?>> list = new ArrayList<Class<?>>();
+        List<Class<?>> list = new ArrayList<>();
         list.add(EBeanAccount.class);
         list.add(EBeanAccountChest.class);
         return list;

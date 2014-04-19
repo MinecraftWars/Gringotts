@@ -1,27 +1,18 @@
 package org.gestern.gringotts.data;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.logging.Logger;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.gestern.gringotts.AccountChest;
-import org.gestern.gringotts.Gringotts;
-import org.gestern.gringotts.GringottsAccount;
-import org.gestern.gringotts.GringottsStorageException;
-import org.gestern.gringotts.Util;
+import org.gestern.gringotts.*;
 import org.gestern.gringotts.accountholder.AccountHolder;
+
+import java.sql.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.logging.Logger;
+
 import static org.gestern.gringotts.Configuration.CONF;
 
 /**
@@ -71,7 +62,7 @@ public class DerbyDAO implements DAO {
             throw new GringottsStorageException("Failed to initialize database connection.", e);
         }
 
-    };
+    }
 
     /**
      * Configure DB for use with gringotts, if it isn't already.
@@ -195,6 +186,7 @@ public class DerbyDAO implements DAO {
         }
     }
 
+    @SuppressWarnings("SuspiciousNameCombination")
     private boolean deleteAccountChest(String world, int x, int y, int z) throws SQLException {
         destroyAccountChest.setString(1, world);
         destroyAccountChest.setInt(2, x);
@@ -226,14 +218,20 @@ public class DerbyDAO implements DAO {
             // also find a more elegant way of handling different account types
             double value = 0;
             String type = account.owner.getType();
-            if (type.equals("player"))
-                value = CONF.startBalancePlayer;
-            else if (type.equals("faction"))
-                value = CONF.startBalanceFaction;
-            else if (type.equals("town"))
-                value = CONF.startBalanceTown;
-            else if (type.equals("nation"))
-                value = CONF.startBalanceNation;
+            switch (type) {
+                case "player":
+                    value = CONF.startBalancePlayer;
+                    break;
+                case "faction":
+                    value = CONF.startBalanceFaction;
+                    break;
+                case "town":
+                    value = CONF.startBalanceTown;
+                    break;
+                case "nation":
+                    value = CONF.startBalanceNation;
+                    break;
+            }
             storeAccount.setLong(3, CONF.currency.centValue(value));
 
             int updated = storeAccount.executeUpdate();
@@ -263,7 +261,7 @@ public class DerbyDAO implements DAO {
         } catch (SQLException e) {
             throw new GringottsStorageException("Failed to get account for owner: " + accountHolder, e);
         } finally {
-            try { if (result!=null) result.close(); } catch (SQLException e) {}
+            try { if (result!=null) result.close(); } catch (SQLException ignored) {}
         }
     }
 
@@ -273,7 +271,7 @@ public class DerbyDAO implements DAO {
      */
     @Override
     public Set<AccountChest> getChests() {
-        Set<AccountChest> chests = new HashSet<AccountChest>();
+        Set<AccountChest> chests = new HashSet<>();
         ResultSet result = null;
         try {
             checkConnection();
@@ -292,7 +290,7 @@ public class DerbyDAO implements DAO {
                 World world = Bukkit.getWorld(worldName);
                 Location loc = new Location(world, x, y, z);
 
-                if (world == null || loc == null) {
+                if (world == null) {
                     AccountHolder owner = Gringotts.G.accountHolderFactory.get(type, ownerId);
                     deleteAccountChest(worldName, x, y, x); // FIXME: Isn't actually removing the non-existent vaults..
                     Gringotts.G.getLogger().severe("Vault of " + owner + " located on a non-existent world. Deleteing Vault on world " + worldName);
@@ -319,7 +317,7 @@ public class DerbyDAO implements DAO {
         } catch (SQLException e) {
             throw new GringottsStorageException("Failed to get list of all chests", e);
         } finally {
-            try { if (result!=null) result.close(); } catch (SQLException e) {}
+            try { if (result!=null) result.close(); } catch (SQLException ignored) {}
         }
 
         return chests;
@@ -333,7 +331,7 @@ public class DerbyDAO implements DAO {
     public Set<AccountChest> getChests(GringottsAccount account) {
 
         AccountHolder owner = account.owner;
-        Set<AccountChest> chests = new HashSet<AccountChest>();
+        Set<AccountChest> chests = new HashSet<>();
         ResultSet result = null;
         try {
             checkConnection();
@@ -351,7 +349,7 @@ public class DerbyDAO implements DAO {
                 World world = Bukkit.getWorld(worldName);
                 Location loc = new Location(world, x, y, z);
 
-                if (world == null || loc == null) {
+                if (world == null) {
                     deleteAccountChest(worldName, x, y, x); // FIXME: Isn't actually removing the non-existent vaults..
                     Gringotts.G.getLogger().severe("Vault of " + account.owner.getName() + " located on a non-existent world. Deleteing Vault on world " + worldName);
                     continue;
@@ -369,7 +367,7 @@ public class DerbyDAO implements DAO {
         } catch (SQLException e) {
             throw new GringottsStorageException("Failed to get list of all chests", e);
         } finally {
-            try { if (result!=null) result.close(); } catch (SQLException e) {}
+            try { if (result!=null) result.close(); } catch (SQLException ignored) {}
         }
 
         return chests;
@@ -419,7 +417,7 @@ public class DerbyDAO implements DAO {
         } catch (SQLException e) {
             throw new GringottsStorageException("Failed to get stored cents for account: " + account, e);
         } finally {
-            try { if (result!=null) result.close(); } catch (SQLException e) {}
+            try { if (result!=null) result.close(); } catch (SQLException ignored) {}
         }
     }
 
@@ -465,7 +463,8 @@ public class DerbyDAO implements DAO {
      * @see org.gestern.gringotts.data.DAO#finalize()
      */
     @Override
-    public void finalize() {
+    public void finalize() throws Throwable {
+        super.finalize();
         shutdown();
     }
 

@@ -1,12 +1,5 @@
 package org.gestern.gringotts.api.impl;
 
-import static org.gestern.gringotts.Configuration.CONF;
-import static org.gestern.gringotts.api.TransactionResult.ERROR;
-import static org.gestern.gringotts.api.TransactionResult.SUCCESS;
-
-import java.util.HashSet;
-import java.util.Set;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.gestern.gringotts.AccountInventory;
@@ -15,15 +8,16 @@ import org.gestern.gringotts.GringottsAccount;
 import org.gestern.gringotts.accountholder.AccountHolder;
 import org.gestern.gringotts.accountholder.AccountHolderFactory;
 import org.gestern.gringotts.accountholder.PlayerAccountHolder;
-import org.gestern.gringotts.api.Account;
-import org.gestern.gringotts.api.BankAccount;
-import org.gestern.gringotts.api.Currency;
-import org.gestern.gringotts.api.Eco;
-import org.gestern.gringotts.api.PlayerAccount;
-import org.gestern.gringotts.api.Transaction;
-import org.gestern.gringotts.api.TransactionResult;
+import org.gestern.gringotts.api.*;
 import org.gestern.gringotts.currency.GringottsCurrency;
 import org.gestern.gringotts.data.DAO;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.gestern.gringotts.Configuration.CONF;
+import static org.gestern.gringotts.api.TransactionResult.ERROR;
+import static org.gestern.gringotts.api.TransactionResult.SUCCESS;
 
 public class GringottsEco implements Eco {
 
@@ -341,7 +335,7 @@ public class GringottsEco implements Eco {
     @Override
     public Set<String> getBanks() {
         // TODO implement banks
-        return new HashSet<String>();
+        return new HashSet<>();
     }
 
 }

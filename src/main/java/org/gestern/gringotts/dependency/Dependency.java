@@ -1,17 +1,13 @@
 package org.gestern.gringotts.dependency;
 
-import java.util.logging.Logger;
-
-import net.milkbowl.vault.Vault;
-
+import com.massivecraft.factions.Factions;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.gestern.gringotts.Gringotts;
 
-import com.massivecraft.factions.Factions;
-import com.palmergames.bukkit.towny.Towny;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import java.util.logging.Logger;
 
 import static org.gestern.gringotts.Util.versionAtLeast;
 
@@ -40,8 +36,8 @@ public enum Dependency {
      */
     private Dependency() {
         factions = new FactionsHandler((Factions)hookPlugin("Factions", "com.massivecraft.factions.Factions","2.1.0"));
-        towny = TownyHandler.getTownyHandler((Towny)hookPlugin("Towny","com.palmergames.bukkit.towny.Towny","0.82.0.0"));
-        vault = new GenericHandler((Vault)hookPlugin("Vault","net.milkbowl.vault.Vault","1.2.24"));
+        towny = TownyHandler.getTownyHandler(hookPlugin("Towny","com.palmergames.bukkit.towny.Towny","0.82.0.0"));
+        vault = new GenericHandler(hookPlugin("Vault","net.milkbowl.vault.Vault","1.2.24"));
         worldguard = new WorldGuardHandler((WorldGuardPlugin)hookPlugin("WorldGuard", "com.sk89q.worldguard.bukkit.WorldGuardPlugin", "5.7"));
     }
 

@@ -1,18 +1,19 @@
 package org.gestern.gringotts;
 
-import static org.gestern.gringotts.Gringotts.G;
-import static org.gestern.gringotts.Permissions.*;
-import static org.gestern.gringotts.api.TransactionResult.*;
-import static org.gestern.gringotts.Configuration.CONF;
-
-import java.util.logging.Logger;
-
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.gestern.gringotts.accountholder.AccountHolder;
 import org.gestern.gringotts.accountholder.PlayerAccountHolder;
 import org.gestern.gringotts.api.TransactionResult;
 import org.gestern.gringotts.data.DAO;
+
+import java.util.logging.Logger;
+
+import static org.gestern.gringotts.Configuration.CONF;
+import static org.gestern.gringotts.Gringotts.G;
+import static org.gestern.gringotts.Permissions.usevault_enderchest;
+import static org.gestern.gringotts.Permissions.usevault_inventory;
+import static org.gestern.gringotts.api.TransactionResult.*;
 
 /**
  * Implementation of inventory-based accounts with a virtual overflow capacity.
@@ -61,7 +62,7 @@ public class GringottsAccount {
 
     /**
      * Add an amount in cents to this account if able to.
-     * @param amount
+     * @param amount amount in cents to add
      * @return Whether amount successfully added
      */
     public TransactionResult add(long amount) {
@@ -111,7 +112,7 @@ public class GringottsAccount {
     /**
      * Attempt to remove an amount in cents from this account. 
      * If the account contains less than the specified amount, returns false
-     * @param amount
+     * @param amount amount in cents to remove
      * @return amount actually removed.
      */
     public TransactionResult remove(long amount) {

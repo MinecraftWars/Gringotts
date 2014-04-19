@@ -21,7 +21,6 @@ public class VaultCreationEvent extends Event {
 
     private final String type;
     private boolean isValid = false;
-    private String message = "Vault created!";
     private AccountHolder owner;
 
     /**
@@ -50,7 +49,7 @@ public class VaultCreationEvent extends Event {
      * @return message sent to account owner on creation of this vault.
      */
     public String getMessage() {
-        return message;
+        return "Vault created!";
     }
 
     /**

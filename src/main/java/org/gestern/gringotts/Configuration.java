@@ -1,14 +1,14 @@
 package org.gestern.gringotts;
 
-import java.util.Set;
-import java.util.logging.Logger;
-
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.gestern.gringotts.currency.GringottsCurrency;
+
+import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * Singleton for global configuration information. 
@@ -58,8 +58,8 @@ public enum Configuration {
 
 
     /**
-     * Set configuration form values in a file configuration.
-     * @param savedConf
+     * Set configuration from values in a file configuration.
+     * @param savedConfig config to read and set values with
      */
     public void readConfig(FileConfiguration savedConfig) {
 
@@ -114,7 +114,7 @@ public enum Configuration {
 
     /**
      * Parse a multi-denomination currency from configuration.
-     * A currency definition consists of a map of demoninations to value. 
+     * A currency definition consists of a map of denominations to value.
      * A denomination type is defined either as the item id, 
      * or a semicolon-separated string of item id; damage value; data value
      * @param denomSection config section containaining denomination definition
@@ -127,7 +127,7 @@ public enum Configuration {
 
         for (String denomStr : denoms) {
             String[] parts = denomStr.split(";");
-            int type = 0;
+            int type;
             short dmg = 0;
             try {
                 // a denomination needs at least a valid item type

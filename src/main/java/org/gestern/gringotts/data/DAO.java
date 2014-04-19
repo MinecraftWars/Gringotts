@@ -1,11 +1,11 @@
 package org.gestern.gringotts.data;
 
-import java.util.Set;
-
 import org.gestern.gringotts.AccountChest;
 import org.gestern.gringotts.GringottsAccount;
 import org.gestern.gringotts.GringottsStorageException;
 import org.gestern.gringotts.accountholder.AccountHolder;
+
+import java.util.Set;
 
 public interface DAO {
 

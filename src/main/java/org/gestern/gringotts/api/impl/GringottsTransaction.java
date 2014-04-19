@@ -1,13 +1,13 @@
 package org.gestern.gringotts.api.impl;
 
-import static org.gestern.gringotts.Configuration.CONF;
-import static org.gestern.gringotts.api.TransactionResult.ERROR;
-import static org.gestern.gringotts.api.TransactionResult.SUCCESS;
-
 import org.gestern.gringotts.api.Account;
 import org.gestern.gringotts.api.TaxedTransaction;
 import org.gestern.gringotts.api.Transaction;
 import org.gestern.gringotts.api.TransactionResult;
+
+import static org.gestern.gringotts.Configuration.CONF;
+import static org.gestern.gringotts.api.TransactionResult.ERROR;
+import static org.gestern.gringotts.api.TransactionResult.SUCCESS;
 
 public class GringottsTransaction implements Transaction {
 
@@ -19,7 +19,7 @@ public class GringottsTransaction implements Transaction {
 
     /**
      * Create Transaction based on another (copy ctor).
-     * @param base
+     * @param base transaction to copy
      */
     protected GringottsTransaction(GringottsTransaction base) {
         this.from = base.from;
@@ -29,7 +29,7 @@ public class GringottsTransaction implements Transaction {
     /**
      * Create transaction with given source account and value.
      * @param from Account from which this transaction will withdraw money
-     * @param amount base amount of this transaction
+     * @param value base amount of this transaction
      */
     GringottsTransaction(Account from, double value) {
         this.from = from;

@@ -20,7 +20,7 @@ public class VaultCreator implements Listener {
 
     /**
      * If the vault creation event was properly handled and an AccountHolder supplied, it will be created here.
-     * @param event
+     * @param event event to handle
      */
     @EventHandler(priority = EventPriority.MONITOR)
     public void registerVault(PlayerVaultCreationEvent event) {

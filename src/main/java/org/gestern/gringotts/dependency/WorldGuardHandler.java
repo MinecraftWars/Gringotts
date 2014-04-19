@@ -1,8 +1,10 @@
 package org.gestern.gringotts.dependency;
 
-import static org.gestern.gringotts.Language.LANG;
-import static org.gestern.gringotts.Permissions.*;
-
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.domains.DefaultDomain;
+import com.sk89q.worldguard.protection.GlobalRegionManager;
+import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -13,11 +15,9 @@ import org.gestern.gringotts.accountholder.AccountHolder;
 import org.gestern.gringotts.accountholder.AccountHolderProvider;
 import org.gestern.gringotts.event.PlayerVaultCreationEvent;
 
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.domains.DefaultDomain;
-import com.sk89q.worldguard.protection.GlobalRegionManager;
-import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import static org.gestern.gringotts.Language.LANG;
+import static org.gestern.gringotts.Permissions.createvault_admin;
+import static org.gestern.gringotts.Permissions.createvault_worldguard;
 
 public class WorldGuardHandler implements DependencyHandler, AccountHolderProvider {
 
@@ -68,9 +68,9 @@ public class WorldGuardHandler implements DependencyHandler, AccountHolderProvid
 
     /**
      * Get account holder for known world and region id.
-     * @param world
-     * @param id
-     * @return
+     * @param world name of world
+     * @param id worldguard region id
+     * @return account holder for the region
      */
     public WorldGuardAccountHolder getAccountHolder(String world, String id) {
         World w = Bukkit.getWorld(world);
@@ -103,7 +103,7 @@ public class WorldGuardHandler implements DependencyHandler, AccountHolderProvid
                 String regionId = event.getCause().getLine(2);
                 String[] regionComponents = regionId.split("-",1);
 
-                WorldGuardAccountHolder owner = null;
+                WorldGuardAccountHolder owner;
                 if (regionComponents.length == 1) {
                     // try to guess the world
                     owner = getAccountHolder(regionComponents[0]);

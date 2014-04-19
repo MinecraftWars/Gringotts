@@ -1,10 +1,10 @@
 package org.gestern.gringotts.accountholder;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Manages creating various types of AccountHolder centrally.
@@ -14,11 +14,10 @@ import org.bukkit.OfflinePlayer;
  */
 public class AccountHolderFactory {
 
-    private final Map<String, AccountHolderProvider> accountHolderProviders;
+    private final Map<String, AccountHolderProvider> accountHolderProviders = new LinkedHashMap<>();
 
     public AccountHolderFactory() {
         // linked hashmap maintains iteration order -> prefer player to be checked first
-        accountHolderProviders = new LinkedHashMap<String, AccountHolderProvider>();
         accountHolderProviders.put("player", new PlayerAccountHolderProvider());
 
         // TODO support banks
@@ -27,7 +26,7 @@ public class AccountHolderFactory {
 
     /**
      * Get an account holder with automatically determined type, based on the owner's name.
-     * @param owner
+     * @param owner name of the account holder
      * @return account holder for the given owner name, or null if none could be determined
      */
     public AccountHolder get(String owner) {
@@ -42,8 +41,8 @@ public class AccountHolderFactory {
 
     /**
      * Get an account holder of known type.
-     * @param type
-     * @param owner
+     * @param type type of the account
+     * @param owner name of the account holder
      * @return account holder of given type with given owner name, or null if none could be determined or type is not supported.
      */
     public AccountHolder get(String type, String owner) {

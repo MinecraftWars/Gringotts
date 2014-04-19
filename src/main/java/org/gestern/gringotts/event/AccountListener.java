@@ -1,10 +1,5 @@
 package org.gestern.gringotts.event;
 
-import static org.gestern.gringotts.Configuration.CONF;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.bukkit.Bukkit;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
@@ -12,6 +7,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 import org.gestern.gringotts.Util;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static org.gestern.gringotts.Configuration.CONF;
 
 /**
  * Listens for chest creation and destruction events.

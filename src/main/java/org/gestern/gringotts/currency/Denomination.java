@@ -49,11 +49,7 @@ public class Denomination implements Comparable<Denomination> {
         if (getClass() != obj.getClass())
             return false;
         Denomination other = (Denomination) obj;
-        if (damage != other.damage)
-            return false;
-        if (id != other.id)
-            return false;
-        return true;
+        return damage == other.damage && id == other.id;
     }
 
     @Override

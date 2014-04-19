@@ -1,10 +1,10 @@
 package org.gestern.gringotts.api.impl;
 
-import static org.gestern.gringotts.api.TransactionResult.*;
-
 import org.gestern.gringotts.api.Account;
 import org.gestern.gringotts.api.TaxedTransaction;
 import org.gestern.gringotts.api.TransactionResult;
+
+import static org.gestern.gringotts.api.TransactionResult.SUCCESS;
 
 public class GringottsTaxedTransaction extends GringottsTransaction implements TaxedTransaction {
 
@@ -26,8 +26,8 @@ public class GringottsTaxedTransaction extends GringottsTransaction implements T
 
     /**
      * Create taxed transaction, adding given amount of taxes to the given base transaction
-     * @param base
-     * @param taxes
+     * @param base transaction on which the tax is based
+     * @param taxes taxes to apply to transaction
      */
     protected GringottsTaxedTransaction(GringottsTransaction base, double taxes) {
         super(base);

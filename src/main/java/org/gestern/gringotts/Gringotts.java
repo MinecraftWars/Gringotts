@@ -1,17 +1,7 @@
 package org.gestern.gringotts;
 
-import static org.gestern.gringotts.Configuration.CONF;
-import static org.gestern.gringotts.Language.LANG;
-import static org.gestern.gringotts.dependency.Dependency.DEP;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.logging.Logger;
-
+import com.avaje.ebean.EbeanServer;
 import net.milkbowl.vault.economy.Economy;
-
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -31,7 +21,15 @@ import org.gestern.gringotts.event.PlayerVaultListener;
 import org.gestern.gringotts.event.VaultCreator;
 import org.mcstats.MetricsLite;
 
-import com.avaje.ebean.EbeanServer;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.logging.Logger;
+
+import static org.gestern.gringotts.Configuration.CONF;
+import static org.gestern.gringotts.Language.LANG;
+import static org.gestern.gringotts.dependency.Dependency.DEP;
 
 
 public class Gringotts extends JavaPlugin {
@@ -83,11 +81,8 @@ public class Gringotts extends JavaPlugin {
                 log.info("Failed to submit PluginMetrics stats");
             }
 
-        } catch(GringottsStorageException e) { 
+        } catch(GringottsStorageException | GringottsConfigurationException e) {
             log.severe(e.getMessage()); 
-            disable();
-        } catch(GringottsConfigurationException e) {
-            log.severe(e.getMessage());
             disable();
         } catch (RuntimeException e) {
             disable();
@@ -162,7 +157,7 @@ public class Gringotts extends JavaPlugin {
 
     /**
      * Get the configured player interaction messages.
-     * @return
+     * @return the configured player interaction messages
      */
     public FileConfiguration getMessages() {
 

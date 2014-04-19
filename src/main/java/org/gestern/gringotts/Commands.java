@@ -1,12 +1,5 @@
 package org.gestern.gringotts;
 
-import static org.gestern.gringotts.Language.LANG;
-import static org.gestern.gringotts.Permissions.command_deposit;
-import static org.gestern.gringotts.Permissions.command_withdraw;
-import static org.gestern.gringotts.api.TransactionResult.SUCCESS;
-
-import java.util.logging.Logger;
-
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -17,6 +10,11 @@ import org.gestern.gringotts.api.TaxedTransaction;
 import org.gestern.gringotts.api.TransactionResult;
 import org.gestern.gringotts.api.impl.GringottsEco;
 
+import static org.gestern.gringotts.Language.LANG;
+import static org.gestern.gringotts.Permissions.command_deposit;
+import static org.gestern.gringotts.Permissions.command_withdraw;
+import static org.gestern.gringotts.api.TransactionResult.SUCCESS;
+
 
 /**
  * Handlers for player and console commands.
@@ -24,12 +22,11 @@ import org.gestern.gringotts.api.impl.GringottsEco;
  * @author jast
  *
  */
-public class Commands {
-    Logger log = Gringotts.G.getLogger();
+class Commands {
 
     private Gringotts plugin;
 
-    Eco eco = new GringottsEco();
+    private Eco eco = new GringottsEco();
 
 
     public Commands(Gringotts plugin) {

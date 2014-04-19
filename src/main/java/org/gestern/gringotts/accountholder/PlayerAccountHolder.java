@@ -1,21 +1,13 @@
 package org.gestern.gringotts.accountholder;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 
-
 public class PlayerAccountHolder implements AccountHolder {
 
-
+    /** Actual player owning the account. */
     public final OfflinePlayer accountHolder;
-
-    public PlayerAccountHolder(Map<String,Object> serialized) {
-        this((OfflinePlayer)serialized.get("owner"));
-    }
 
     public PlayerAccountHolder(OfflinePlayer player) {		
         if (player != null)
@@ -42,12 +34,6 @@ public class PlayerAccountHolder implements AccountHolder {
 
     }
 
-    public Map<String, Object> serialize() {
-        Map<String, Object> serialized = new HashMap<String, Object>();
-        serialized.put("owner", accountHolder);
-        return serialized;
-    }
-
 
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
@@ -56,8 +42,7 @@ public class PlayerAccountHolder implements AccountHolder {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result
-                + ((accountHolder == null) ? 0 : accountHolder.getName().hashCode());
+        result = prime * result + (accountHolder.getName().hashCode());
         return result;
     }
 
@@ -74,14 +59,7 @@ public class PlayerAccountHolder implements AccountHolder {
             return false;
 
         PlayerAccountHolder other = (PlayerAccountHolder) obj;
-        if (accountHolder == null) {
-            if (other.accountHolder == null)
-                return true;
-            if (other.accountHolder.getName() != null)
-                return false;
-        } else if (!accountHolder.getName().equals(other.accountHolder.getName()))
-            return false;
-        return true;
+        return accountHolder.getName().equals(other.accountHolder.getName());
     }
 
     @Override

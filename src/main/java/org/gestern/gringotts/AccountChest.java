@@ -1,9 +1,5 @@
 package org.gestern.gringotts;
 
-import static org.gestern.gringotts.Configuration.CONF;
-
-import java.util.logging.Logger;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -13,6 +9,10 @@ import org.bukkit.inventory.DoubleChestInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.gestern.gringotts.data.DAO;
+
+import java.util.logging.Logger;
+
+import static org.gestern.gringotts.Configuration.CONF;
 
 /**
  * Represents a storage unit for an account.
@@ -34,8 +34,8 @@ public class AccountChest {
 
     /**
      * Create Account chest based on a sign marking its position and belonging to an account.
-     * @param sign
-     * @param account
+     * @param sign the marker sign
+     * @param account the account
      */
     public AccountChest(Sign sign, GringottsAccount account) {
         if (sign == null || account == null)
@@ -46,7 +46,7 @@ public class AccountChest {
 
     /**
      * The actual "chest" containing this account chest's stuff.
-     * @return
+     * @return InventoryHolder for this account chest
      */
     private InventoryHolder chest() { 
         Block block = Util.chestBlock(sign);
@@ -59,7 +59,7 @@ public class AccountChest {
 
     /** 
      * Location of the storage block of this account chest.
-     * @return
+     * @return Location of the storage block of this account chest.
      */
     private Location chestLocation() {
         Block block = Util.chestBlock(sign);
@@ -77,7 +77,7 @@ public class AccountChest {
 
     /**
      * Get account inventory of this account chest, which is based on the container inventory.
-     * @return
+     * @return account inventory of this account chest
      */
     private AccountInventory accountInventory() {
         Inventory inv = inventory();	
@@ -133,7 +133,7 @@ public class AccountChest {
      * Attempts to remove given amount from this chest.
      * If the amount is larger than available items, everything is removed and the number of
      * removed items returned.
-     * @param value
+     * @param value amount to remove
      * @return amount actually removed from this chest
      */
     public long remove(long value) {
@@ -149,7 +149,7 @@ public class AccountChest {
 
     /**
      * Checks whether this chest is currently a valid vault.
-     * It is consideren valid when the sign block contains [vault] on the first line,
+     * It is considered valid when the sign block contains [vault] on the first line,
      * a name on the third line and has a chest below it.
      * 
      * @return true if the chest can be considered a valid vault
@@ -174,10 +174,9 @@ public class AccountChest {
     }
 
     /**
-     * Triggered on destruction of physical chest or sign
-     * @return Blocks belonging to this account chest.
+     * Triggered on destruction of physical chest or sign.
      */
-    public void destroy() {
+    void destroy() {
         dao.destroyAccountChest(this);
         sign.getBlock().breakNaturally();
     }
@@ -194,7 +193,7 @@ public class AccountChest {
 
     /**
      * Connected chests that comprise the inventory of this account chest.
-     * @return
+     * @return chest blocks connected to this chest, if any
      */
     private Chest[] connectedChests() {
         Inventory inv = inventory();
@@ -247,8 +246,8 @@ public class AccountChest {
 
     /**
      * Determine whether the chest of another AccountChest would be connected to this chest.
-     * @param chest
-     * @return
+     * @param chest another AccountChest
+     * @return whether the chest of another AccountChest would be connected to this chest
      */
     public boolean connected(AccountChest chest) {
 

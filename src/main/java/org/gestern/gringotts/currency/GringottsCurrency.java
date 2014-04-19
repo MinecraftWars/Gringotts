@@ -1,13 +1,9 @@
 package org.gestern.gringotts.currency;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.*;
 
 /**
  * Representaiton of a currency. This contains information about the currency's denominations and their values.
@@ -21,8 +17,8 @@ public class GringottsCurrency {
     // yes, I want to be able to get the key from the key.
     // this is because I want to find a denomination's value based on its type.
     // TODO considering there are usually only very few denominations.. simplify this using just a simple friggin list or array
-    private final Map<Denomination,Denomination> denoms = new HashMap<Denomination,Denomination>();
-    private final List<Denomination> sortedDenoms = new ArrayList<Denomination>();
+    private final Map<Denomination,Denomination> denoms = new HashMap<>();
+    private final List<Denomination> sortedDenoms = new ArrayList<>();
 
     /** Name of the currency. */
     public final String name;
@@ -44,18 +40,10 @@ public class GringottsCurrency {
     public final int digits;
 
     /**
-     * Create a Currency with given name and default plural name and 2 fractional digits.
-     * @param name name of currency
-     */
-    public GringottsCurrency(String name) {
-        this(name, name+'s', 2);
-    }
-
-    /**
      * Create currency.
      * @param name name of currency
      * @param namePlural plural of currency name
-     * @param unit currency unit divisor
+     * @param digits decimal digits used in currency
      */
     public GringottsCurrency(String name, String namePlural, int digits) {
         this.name = name;
@@ -70,7 +58,7 @@ public class GringottsCurrency {
 
     /**
      * Add a denomination and value to this currency.
-     * @param d the denomination
+     * @param type the denomination's item type
      * @param value the denomination's value
      */
     public void addDenomination(ItemStack type, double value) {
@@ -86,8 +74,8 @@ public class GringottsCurrency {
      * Get the value of an item stack in cents.
      * This is calculated by value_type * stacksize.
      * If the given item stack is not a valid denomination, the value is 0;
-     * @param type
-     * @return
+     * @param stack a stack of items
+     * @return the value of given stack of items
      */
     public long value(ItemStack stack) {
         if (stack == null || stack.getType() == Material.AIR) return 0;
@@ -106,8 +94,8 @@ public class GringottsCurrency {
 
     /**
      * The internal calculation value of a display value.
-     * @param value
-     * @return
+     * @param value display value
+     * @return Gringotts-internal value of given amount
      */
     public long centValue(double value) {
         return Math.round(value * unit);
@@ -116,15 +104,15 @@ public class GringottsCurrency {
 
     /**
      * List of denominations used in this currency, in order of descending value.
-     * @return
+     * @return List of denominations used in this currency, in order of descending value
      */
     public List<Denomination> denominations() {
-        return new ArrayList<Denomination>(sortedDenoms);
+        return new ArrayList<>(sortedDenoms);
     }
 
     /**
      * Get the denomination of an item stack.
-     * @param stack
+     * @param stack the stack to get the denomination for
      * @return denomination for the item stack, or null if there is no such denomination
      */
     private Denomination denominationOf(ItemStack stack) {

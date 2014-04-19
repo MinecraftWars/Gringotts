@@ -25,5 +25,5 @@ public enum TransactionResult {
     /**
      * An error occurred while trying to process the transaction.
      */
-    ERROR;
+    ERROR
 }
