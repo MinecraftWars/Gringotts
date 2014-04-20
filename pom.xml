@@ -122,13 +122,13 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>massivecraft</groupId>
+            <groupId>com.massivecraft</groupId>
             <artifactId>mcore</artifactId>
             <version>7.1.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>massivecraft</groupId>
+            <groupId>com.massivecraft</groupId>
             <artifactId>factions</artifactId>
             <version>2.3.1</version>
             <scope>provided</scope>
@@ -179,28 +179,8 @@
     </issueManagement>
     <repositories>
         <repository>
-            <id>bukkit-repo</id>
-            <url>http://repo.bukkit.org/content/groups/public/</url>
-        </repository>
-        <repository>
-            <id>mcw-repo</id>
-            <url>https://github.com/MinecraftWars/mcw-mvn-repo/raw/master/releases</url>
-        </repository>
-        <repository>
-            <id>mcw-repo snapshots</id>
-            <url>https://github.com/MinecraftWars/mcw-mvn-repo/raw/master/snapshots</url>
-        </repository>
-        <repository>
-            <id>Plugin Metrics</id>
-            <url>http://repo.mcstats.org/content/repositories/public</url>
-        </repository>
-        <repository>
-            <id>vault-repo</id>
-            <url>http://nexus.theyeticave.net/content/repositories/pub_releases</url>
-        </repository>
-        <repository>
-            <id>sk89q</id>
-            <url>http://maven.sk89q.com/repo/</url>
+            <id>znode</id>
+            <url>http://repo.zno.de/artifactory/repo/</url>
         </repository>
         <repository>
             <id>project.local</id>
