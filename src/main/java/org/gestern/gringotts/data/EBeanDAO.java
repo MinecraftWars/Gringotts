@@ -51,7 +51,6 @@ public class EBeanDAO implements DAO {
 
     @Override
     public boolean storeAccount(GringottsAccount account) {
-        
         if (hasAccount(account.owner))
             return false;
         
@@ -128,6 +127,7 @@ public class EBeanDAO implements DAO {
 
     @Override
     public Set<AccountChest> getChests(GringottsAccount account) {
+        // TODO ensure world interaction is done in sync task
         SqlQuery getChests = db.createSqlQuery("SELECT ac.world, ac.x, ac.y, ac.z " +
                 "FROM gringotts_accountchest ac JOIN gringotts_account a ON ac.account = a.id " +
                 "WHERE a.owner = :owner and a.type = :type");
@@ -170,7 +170,7 @@ public class EBeanDAO implements DAO {
 
     @Override
     public long getCents(GringottsAccount account) {
-        // TODO can this NPE?
+        // can this NPE? (probably doesn't)
         return db.find(EBeanAccount.class)
                 .where().ieq("type", account.owner.getType()).ieq("owner", account.owner.getId())
                 .findUnique().cents;

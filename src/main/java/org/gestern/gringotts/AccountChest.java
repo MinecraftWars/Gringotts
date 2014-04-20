@@ -149,7 +149,7 @@ public class AccountChest {
 
     /**
      * Checks whether this chest is currently a valid vault.
-     * It is considered valid when the sign block contains [vault] on the first line,
+     * It is considered valid when the sign block contains [vault] or [(type) vault] on the first line,
      * a name on the third line and has a chest below it.
      * 
      * @return true if the chest can be considered a valid vault
