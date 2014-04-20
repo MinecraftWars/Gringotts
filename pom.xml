@@ -193,4 +193,18 @@
         </repository>
     </repositories>
 
+    <distributionManagement>
+        <repository>
+            <id>znode-releases</id>
+            <name>znode-releases</name>
+            <url>http://repo.zno.de/artifactory/libs-release-local</url>
+        </repository>
+        <snapshotRepository>
+            <id>znode-snapshots</id>
+            <name>znode-snapshots</name>
+            <url>http://repo.zno.de/artifactory/libs-snapshot-local</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+
 </project>
