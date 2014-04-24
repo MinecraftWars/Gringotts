@@ -1,49 +1,64 @@
 package org.gestern.gringotts.banking;
 
-import java.util.Set;
-import java.util.HashSet;
+import java.util.TreeSet;
+import java.util.UUID;
 
 import org.bukkit.OfflinePlayer;
 import org.gestern.gringotts.Gringotts;
+import org.gestern.gringotts.accountholder.AccountHolder;
 
-public class Bank {
+public class Bank implements Corporation {
+
     public final String name;
-    private final Set<OfflinePlayer> managers = new HashSet<>();
+    private TreeSet<UUID> owners;
 
     public Bank(String name) {
         this.name = name;
+        owners = new TreeSet<UUID>();
     }
 
-    public Set<OfflinePlayer> getManagers() {
-        return this.managers;
+    @Override
+    public String getName() {
+        return name;
     }
 
-    public boolean isManager(OfflinePlayer player) {
-        return this.managers.contains(player);
+    @Override
+    public String getId() {
+        return "bank."+name+".reserve";
     }
 
-    public boolean addManager(OfflinePlayer player) {
-        this.managers.add(player);
+    @Override
+    public String getType() {
+        return "bank";
+    }
+
+    @Override
+    public TreeSet<UUID> getOwners() {
+        return owners;
+    }
+
+    @Override
+    public boolean isOwner(UUID id) {
+        return owners.contains(id);
+    }
+
+    @Override
+    public boolean addOwner(UUID id) {
+        if(owners.contains(id)) return false;
+        owners.add(id);
         return true;
     }
 
-    public boolean removeManager(OfflinePlayer player) {
-        if (this.managers.contains(player)) {
-            this.managers.remove(player);
+    @Override
+    public boolean removeOwner(UUID id) {
+        if (owners.contains(id)) {
+            owners.remove(id);
             return true;
         }
         return false;
     }
 
-    public FinanceHolder getReserve() {
-        return new FinanceHolder(this, "bankr");
-    }
-
-    public FinanceHolder getTrading() {
-        return new FinanceHolder(this, "bankt");
-    }
-
-    public BankAccountHolder getAccountHolder(String playerName) {
+    public AccountHolder getAccountHolder(String playerName) {
         if (playerName == null) {
             return null;
         }
@@ -53,5 +68,9 @@ public class Bank {
             return null;
         }
         return new BankAccountHolder(player, this);
+    }
+
+    public void sendMessage(String message) {
+
     }
 }
