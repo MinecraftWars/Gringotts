@@ -21,9 +21,8 @@ import org.gestern.gringotts.event.PlayerVaultListener;
 import org.gestern.gringotts.event.VaultCreator;
 import org.mcstats.MetricsLite;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -162,13 +161,20 @@ public class Gringotts extends JavaPlugin {
     public FileConfiguration getMessages() {
 
         String langPath = "i18n/messages_" + CONF.language + ".yml";
+
         // try configured language first
         InputStream langStream = getResource(langPath);
-        if (langStream != null) return YamlConfiguration.loadConfiguration(langStream);
+        final FileConfiguration conf;
+        if (langStream != null) {
+            Reader langReader = new InputStreamReader(getResource(langPath), Charset.forName("UTF-8"));
+            conf = YamlConfiguration.loadConfiguration(langReader);
+        } else {
+            // use custom/default
+            File langFile = new File(getDataFolder(), "messages.yml");
+            conf = YamlConfiguration.loadConfiguration(langFile);
+        }
 
-        // use custom/default
-        File langFile = new File(getDataFolder(), "messages.yml"); 
-        return YamlConfiguration.loadConfiguration(langFile);
+        return conf;
     }
 
     // override to handle custom config logic and language loading
