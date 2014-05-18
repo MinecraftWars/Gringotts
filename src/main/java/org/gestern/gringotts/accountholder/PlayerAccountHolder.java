@@ -35,10 +35,7 @@ public class PlayerAccountHolder implements AccountHolder {
      */
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (accountHolder.getName().hashCode());
-        return result;
+        return getUUID().hashCode();
     }
 
     /* (non-Javadoc)
@@ -54,7 +51,7 @@ public class PlayerAccountHolder implements AccountHolder {
             return false;
 
         PlayerAccountHolder other = (PlayerAccountHolder) obj;
-        return accountHolder.getName().equals(other.accountHolder.getName());
+        return getUUID().equals(other.getUUID());
     }
 
     @Override
