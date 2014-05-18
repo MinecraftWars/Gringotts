@@ -49,14 +49,13 @@ public class Accounting {
     }
 
     /**
-     * Associate an AccountChest with an Account. 
-     * @param account account to add the chest to
+     * Save an AccountChest to Account association.
      * @param chest chest to add to the account
      * @return false if the specified AccountChest is already registered or would be connected to 
      * a registered chest. true if the association was successful. 
      * @throws GringottsStorageException when saving of account chest failed 
      */
-    public boolean addChest(GringottsAccount account, AccountChest chest) {
+    public boolean addChest(AccountChest chest) {
 
         // TODO refactor to do a more intelligent/quick query
         Set<AccountChest> allChests = G.dao.getChests();

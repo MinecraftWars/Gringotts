@@ -37,7 +37,7 @@ public class VaultCreator implements Listener {
         AccountChest accountChest = new AccountChest((Sign)cause.getBlock().getState(), account);
 
         // check for existence / add to tracking
-        if (accounting.addChest(account, accountChest)) {
+        if (accounting.addChest(accountChest)) {
             // only embolden if the bold marker doesn't increase line length beyond 15
             if (cause.getLine(0).length() <= 13)
                 cause.setLine(0, ChatColor.BOLD + cause.getLine(0));
