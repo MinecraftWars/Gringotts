@@ -28,47 +28,29 @@ public class Banker
 
     public Banker() {
         G.accountHolderFactory.registerAccountHolderProvider("bank", this);
-        G.accountHolderFactory.registerAccountHolderProvider("bankr", this);
-        G.accountHolderFactory.registerAccountHolderProvider("bankt", this);
-        G.accountHolderFactory.registerAccountHolderProvider("bankp", this);
         G.getServer().getPluginManager().registerEvents(this, G);
     }
 
     public AccountHolder getAccountHolder(String id) {
-        if (id == null) return null;
-
-        String[] parsed = id.split("-");
-        if ((parsed.length < 2) || (parsed.length > 3)) return null;
-
+        if (id == null) {
+            return null;
+        }
+        String[] parsed = id.split(".");
+        if (parsed.length!=2) return null;
         String account = parsed[0];
         Bank bank = getBank(parsed[1]);
-        String playerName = null;
-        if (parsed.length == 3) {
-            playerName = parsed[2];
+        String ownerId = parsed[2];
+        if(ownerId.equalsIgnoreCase("reserve")) {
+            return bank;
         }
-        if (account.equalsIgnoreCase("bankr")) {
-            return bank.getReserve();
-        }
-        if (account.equalsIgnoreCase("bankt")) {
-            return bank.getTrading();
-        }
-        if (account.equalsIgnoreCase("bankp")) {
-            return bank.getAccountHolder(playerName);
-        }
-        return null;
+        else return bank.getAccountHolder(ownerId);
     }
 
     public Bank getBank(String name) {
-        if (name.contains("-")) {
+        if (name.contains(".")) {
             return null;
         }
         return new Bank(name);
-    }
-
-    public List<String> listBanks() {
-        LinkedList<String> bankNames = new LinkedList<String>();
-        // TODO get the banks to list
-        return bankNames;
     }
 
     @EventHandler
@@ -81,41 +63,9 @@ public class Banker
             if (bank == null) {
                 event.getCause().getPlayer().sendMessage("You must specify a valid bank name on line 3.");
             } else {
-                event.setOwner(bank.getReserve());
+                event.setOwner(bank);
             }
             event.setValid(true);
-        }
-        if (event.getType().equals("teller")) {
-            Bank bank = getBank(event.getCause().getLine(2));
-            if (bank == null) {
-                event.getCause().getPlayer().sendMessage("You must specify a valid bank name on line 3.");
-            } else {
-                event.setOwner(bank.getTrading());
-            }
-            event.setValid(true);
-        }
-    }
-
-    public void markTeller(Block tellerBlock) {
-        log.info("Marking blocktype " + tellerBlock.getState().getTypeId());
-        tellerBlock.setMetadata("GringottsTeller", new FixedMetadataValue(G, true));
-    }
-
-    private void unmarkTeller(Block tellerBlock) {
-        tellerBlock.removeMetadata("GringottsTeller", G);
-    }
-
-    private Set<AccountChest> getTellerChests() {
-        return null;
-    }
-
-    @EventHandler
-    public void accessTeller(InventoryOpenEvent event) {
-        if ((event.getInventory().getHolder() instanceof Chest)) {
-            Chest chest = (Chest) event.getInventory().getHolder();
-            if (chest.hasMetadata("GringottsTeller")) {
-                log.info("meep");
-            }
         }
     }
 }

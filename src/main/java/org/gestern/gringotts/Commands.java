@@ -261,14 +261,6 @@ public class Commands {
             if (args.length == 0) {
                 return false;
             }
-            if (args[0].equalsIgnoreCase("list"))
-            {
-                sender.sendMessage("The following banks are currently loaded:");
-                for (String name : Gringotts.G.banker.listBanks()) {
-                    sender.sendMessage("name");
-                }
-                return true;
-            }
             if ((args[0].equalsIgnoreCase("reserve")) || (args[0].equalsIgnoreCase("reserves")))
             {
                 if (args.length != 2)
