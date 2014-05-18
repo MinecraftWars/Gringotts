@@ -1,5 +1,6 @@
 package org.gestern.gringotts.currency;
 
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -16,7 +17,7 @@ public class Denomination implements Comparable<Denomination> {
 
     /** Item type of this denomination. */
     public final ItemStack type;
-    public final int id;
+    public final Material id;
     public final short damage;
     public final long value;
 
@@ -26,7 +27,7 @@ public class Denomination implements Comparable<Denomination> {
 
     public Denomination(ItemStack type, long value) {
         this.type = type;
-        this.id = type.getTypeId();
+        this.id = type.getType();
         this.damage = type.getDurability();
         this.value = value;
     }
@@ -36,7 +37,7 @@ public class Denomination implements Comparable<Denomination> {
         final int prime = 31;
         int result = 1;
         result = prime * result + damage;
-        result = prime * result + id;
+        result = prime * result + id.hashCode();
         return result;
     }
 
@@ -60,7 +61,7 @@ public class Denomination implements Comparable<Denomination> {
 
     @Override
     public String toString() {
-        return String.format("Denomination: %d;%d : %d", id, damage, value);
+        return String.format("Denomination: %s;%d : %d", id.toString(), damage, value);
     }
 
 }
