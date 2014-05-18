@@ -2,6 +2,8 @@ package org.gestern.gringotts.accountholder;
 
 import org.bukkit.OfflinePlayer;
 
+import java.util.UUID;
+
 
 public class PlayerAccountHolder implements AccountHolder {
 
@@ -68,5 +70,9 @@ public class PlayerAccountHolder implements AccountHolder {
     @Override
     public String getId() {
         return accountHolder.getUniqueId().toString();
+    }
+
+    public UUID getUUID() {
+        return accountHolder.getUniqueId();
     }
 }

@@ -268,7 +268,7 @@ public class GringottsEco implements Eco {
         @Override
         public TransactionResult deposit(double value) {
             PlayerAccountHolder owner = (PlayerAccountHolder) acc.owner;
-            Player player = Bukkit.getPlayer(owner.getId());
+            Player player = Bukkit.getPlayer(owner.getUUID());
             AccountInventory playerInventory = new AccountInventory(player.getInventory());
             long centValue = CONF.currency.centValue(value);
 
@@ -286,7 +286,7 @@ public class GringottsEco implements Eco {
         @Override
         public TransactionResult withdraw(double value) {
             PlayerAccountHolder owner = (PlayerAccountHolder) acc.owner;
-            Player player = Bukkit.getPlayer(owner.getId());
+            Player player = Bukkit.getPlayer(owner.getUUID());
             AccountInventory playerInventory = new AccountInventory(player.getInventory());
             long centValue = CONF.currency.centValue(value);
 
