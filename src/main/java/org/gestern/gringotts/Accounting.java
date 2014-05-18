@@ -62,7 +62,7 @@ public class Accounting {
         Set<AccountChest> allChests = G.dao.getChests();
 
         // if there is an invalid stored chest on location of new chest, remove it from storage.
-        if (allChests.contains(chest) && !chest.valid()) {
+        if (allChests.contains(chest) && chest.notValid()) {
             log.info("removing orphaned vault: " + chest);
             G.dao.destroyAccountChest(chest);
             allChests.remove(chest);

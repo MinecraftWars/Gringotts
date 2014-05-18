@@ -89,7 +89,7 @@ public class AccountChest {
      * @return true if valid, false if not and was removed from storage.
      */
     private boolean updateValid() {
-        if (!valid()) {
+        if (notValid()) {
             log.info("Destroying orphaned vault: " + this);
             destroy();
             return false;
@@ -152,25 +152,24 @@ public class AccountChest {
      * It is considered valid when the sign block contains [vault] or [(type) vault] on the first line,
      * a name on the third line and has a chest below it.
      * 
-     * @return true if the chest can be considered a valid vault
+     * @return false if the chest can be considered a valid vault
      */
-    public boolean valid() {
+    public boolean notValid() {
         // is it still a sign?
         if ( ! Util.isSignBlock(sign.getBlock()) ) 
-            return false;
+            return true;
 
         // TODO refactor: common definition of valid vault types
         String[] lines = sign.getLines();
         String line0 = lines[0].toLowerCase();
 
         if ( ! line0.matches(CONF.vaultPattern)) 
-            return false;
+            return true;
         if ( lines[2] == null || lines[2].length() == 0) 
-            return false;
+            return true;
 
-        if (chest() == null) return false;
+        return chest() == null;
 
-        return true;
     }
 
     /**
