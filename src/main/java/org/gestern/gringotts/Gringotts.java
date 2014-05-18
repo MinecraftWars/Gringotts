@@ -145,7 +145,7 @@ public class Gringotts extends JavaPlugin {
     }
 
     /**
-     * Register an accountholder provider with Gringotts. This is necessary for Gringotts to find and create accountholders
+     * Register an accountholder provider with Gringotts. This is necessary for Gringotts to find and create account holders
      * of any non-player type. Registering a provider for the same type twice will overwrite the previously registered provider.
      * @param type type id for an account type
      * @param provider provider for the account type

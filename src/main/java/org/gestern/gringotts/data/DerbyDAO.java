@@ -293,7 +293,7 @@ public class DerbyDAO implements DAO {
                 if (world == null) {
                     AccountHolder owner = Gringotts.G.accountHolderFactory.get(type, ownerId);
                     deleteAccountChest(worldName, x, y, x); // FIXME: Isn't actually removing the non-existent vaults..
-                    Gringotts.G.getLogger().severe("Vault of " + owner + " located on a non-existent world. Deleteing Vault on world " + worldName);
+                    Gringotts.G.getLogger().severe("Vault of " + owner + " located on a non-existent world. Deleting Vault on world " + worldName);
                     continue;
                 }
 
@@ -351,7 +351,7 @@ public class DerbyDAO implements DAO {
 
                 if (world == null) {
                     deleteAccountChest(worldName, x, y, x); // FIXME: Isn't actually removing the non-existent vaults..
-                    Gringotts.G.getLogger().severe("Vault of " + account.owner.getName() + " located on a non-existent world. Deleteing Vault on world " + worldName);
+                    Gringotts.G.getLogger().severe("Vault of " + account.owner.getName() + " located on a non-existent world. Deleting Vault on world " + worldName);
                     continue;
                 }
 

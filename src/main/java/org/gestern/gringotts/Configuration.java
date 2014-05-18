@@ -90,6 +90,7 @@ public enum Configuration {
         int currencyType = savedConfig.getInt("currency.type",-1);
         if (currencyType > 0) {
             byte currencyDataValue = (byte)savedConfig.getInt("currency.datavalue", 0);
+            // TODO use material name instead of id
             ItemStack legacyCurrency = new ItemStack(currencyType, 0, (short)0);
             legacyCurrency.setData(new MaterialData(currencyType, currencyDataValue));
             currency.addDenomination(legacyCurrency, 1);
@@ -131,6 +132,8 @@ public enum Configuration {
             short dmg = 0;
             try {
                 // a denomination needs at least a valid item type
+                // TODO parse material if possible, because of deprecation
+                // TODO support lore, displayName?
                 type = Integer.parseInt(parts[0]);
                 if (parts.length >=2) dmg = Short.parseShort(parts[1]);
                 ItemStack denomType = new ItemStack(type, 1, dmg);

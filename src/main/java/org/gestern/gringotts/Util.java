@@ -46,7 +46,7 @@ public class Util {
     /**
      * Break a version string into parts.
      * @param version version string to handle
-     * @return array with dotted decimal strings turned into ints
+     * @return array with dotted decimal strings turned into int values
      */
     public static int[] versionParts(String version) {
         String[] strparts = version.split("\\.");
