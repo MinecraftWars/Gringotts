@@ -5,6 +5,7 @@ import org.bukkit.OfflinePlayer;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Manages creating various types of AccountHolder centrally.
@@ -25,7 +26,7 @@ public class AccountHolderFactory {
     }
 
     /**
-     * Get an account holder with automatically determined type, based on the owner's name.
+     * Get an account holder with automatically determined type, based on the owner's id.
      * @param owner name of the account holder
      * @return account holder for the given owner name, or null if none could be determined
      */
@@ -63,8 +64,15 @@ public class AccountHolderFactory {
     private static class PlayerAccountHolderProvider implements AccountHolderProvider {
 
         @Override
-        public AccountHolder getAccountHolder(String id) {
-            OfflinePlayer player = Bukkit.getOfflinePlayer(id);
+        public AccountHolder getAccountHolder(String uuidOrName) {
+            OfflinePlayer player;
+            try {
+                UUID playerId = UUID.fromString(uuidOrName);
+                player = Bukkit.getOfflinePlayer(playerId);
+            } catch (IllegalArgumentException parseError) {
+                player = Bukkit.getOfflinePlayer(uuidOrName);
+            }
+
             // if this player has ever played on the server, they are a legit account holder
             if (player.isOnline() || player.hasPlayedBefore())
                 return new PlayerAccountHolder(player);

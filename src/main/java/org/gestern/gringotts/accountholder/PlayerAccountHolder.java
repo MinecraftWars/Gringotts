@@ -1,6 +1,5 @@
 package org.gestern.gringotts.accountholder;
 
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 
@@ -12,13 +11,7 @@ public class PlayerAccountHolder implements AccountHolder {
     public PlayerAccountHolder(OfflinePlayer player) {		
         if (player != null)
             this.accountHolder = player;
-        else throw new NullPointerException("Attempted to create account holder with null player.");
-    }
-
-    public PlayerAccountHolder(String name) {
-        this.accountHolder = Bukkit.getOfflinePlayer(name);
-        if (accountHolder == null)
-            throw new NullPointerException("Could not retrieve player for name: " + name);
+        else throw new IllegalArgumentException("Attempted to create account holder with null player.");
     }
 
     @Override
@@ -74,6 +67,6 @@ public class PlayerAccountHolder implements AccountHolder {
 
     @Override
     public String getId() {
-        return getName();
+        return accountHolder.getUniqueId().toString();
     }
 }
