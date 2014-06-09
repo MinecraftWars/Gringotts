@@ -10,7 +10,8 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name="gringotts_accountchest")
 @UniqueConstraint(columnNames={"world","x","y","z"})
-class EBeanAccountChest {
+public class EBeanAccountChest {
+
     public int getId() {
         return id;
     }
