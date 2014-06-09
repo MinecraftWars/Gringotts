@@ -3,6 +3,7 @@ package org.gestern.gringotts.api.impl;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
+import org.bukkit.OfflinePlayer;
 import org.gestern.gringotts.Gringotts;
 import org.gestern.gringotts.api.Account;
 import org.gestern.gringotts.api.Eco;
@@ -68,13 +69,28 @@ public class VaultConnector implements Economy {
     }
 
     @Override
+    public boolean hasAccount(OfflinePlayer offlinePlayer) {
+        return false;
+    }
+
+    @Override
     public double getBalance(String playerName){
         return eco.account(playerName).balance();
     }
 
     @Override
+    public double getBalance(OfflinePlayer offlinePlayer) {
+        return 0;
+    }
+
+    @Override
     public boolean has(String playerName, double amount) {
         return eco.account(playerName).has(amount);
+    }
+
+    @Override
+    public boolean has(OfflinePlayer offlinePlayer, double v) {
+        return false;
     }
 
     @Override
@@ -95,6 +111,11 @@ public class VaultConnector implements Economy {
     }
 
     @Override
+    public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, double v) {
+        return null;
+    }
+
+    @Override
     public EconomyResponse depositPlayer(String playerName, double amount){
 
         Account account = eco.account(playerName);
@@ -112,6 +133,11 @@ public class VaultConnector implements Economy {
     }
 
     @Override
+    public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, double v) {
+        return null;
+    }
+
+    @Override
     public EconomyResponse createBank(String name, String player) {
         return new EconomyResponse(0,0, ResponseType.NOT_IMPLEMENTED, LANG.plugin_vault_notImplemented);
         //        BankAccount bank = eco.bank(name).addOwner(player);
@@ -119,6 +145,11 @@ public class VaultConnector implements Economy {
         //        	return new EconomyResponse(0, 0, ResponseType.FAILURE, "Unable to create bank!");
         //        else
         //        	return new EconomyResponse(0, 0, ResponseType.SUCCESS, "Created bank " + name);
+    }
+
+    @Override
+    public EconomyResponse createBank(String s, OfflinePlayer offlinePlayer) {
+        return null;
     }
 
     @Override
@@ -179,9 +210,19 @@ public class VaultConnector implements Economy {
     }
 
     @Override
+    public EconomyResponse isBankOwner(String s, OfflinePlayer offlinePlayer) {
+        return null;
+    }
+
+    @Override
     public EconomyResponse isBankMember(String name, String playerName) {
         return new EconomyResponse(0,0, ResponseType.NOT_IMPLEMENTED, LANG.plugin_vault_notImplemented);
         //    	return new EconomyResponse(0, 0, eco.bank(name).isMember(playerName)? ResponseType.SUCCESS : FAILURE, "");
+    }
+
+    @Override
+    public EconomyResponse isBankMember(String s, OfflinePlayer offlinePlayer) {
+        return null;
     }
 
     @Override
@@ -195,10 +236,20 @@ public class VaultConnector implements Economy {
         return hasAccount(playerName);
     }
 
+    @Override
+    public boolean createPlayerAccount(OfflinePlayer offlinePlayer) {
+        return false;
+    }
+
 
     @Override
     public boolean createPlayerAccount(String playerName, String world) {
         return hasAccount(playerName); // TODO multiworld support
+    }
+
+    @Override
+    public boolean createPlayerAccount(OfflinePlayer offlinePlayer, String s) {
+        return false;
     }
 
 
@@ -207,10 +258,20 @@ public class VaultConnector implements Economy {
         return depositPlayer(player, amount);
     }
 
+    @Override
+    public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, String s, double v) {
+        return null;
+    }
+
 
     @Override
     public double getBalance(String player, String world) {
         return getBalance(player);
+    }
+
+    @Override
+    public double getBalance(OfflinePlayer offlinePlayer, String s) {
+        return 0;
     }
 
 
@@ -219,16 +280,31 @@ public class VaultConnector implements Economy {
         return has(player, amount);
     }
 
+    @Override
+    public boolean has(OfflinePlayer offlinePlayer, String s, double v) {
+        return false;
+    }
+
 
     @Override
     public boolean hasAccount(String player, String world) {
         return hasAccount(player);
     }
 
+    @Override
+    public boolean hasAccount(OfflinePlayer offlinePlayer, String s) {
+        return false;
+    }
+
 
     @Override
     public EconomyResponse withdrawPlayer(String player, String world, double amount) {
         return withdrawPlayer(player, amount);
+    }
+
+    @Override
+    public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, String s, double v) {
+        return null;
     }
 
 }
