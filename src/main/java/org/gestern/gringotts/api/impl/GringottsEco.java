@@ -313,7 +313,7 @@ public class GringottsEco implements Eco {
 
         Curr(GringottsCurrency curr) {
             this.gcurr = curr;
-            formatString = "%."+curr.digits+"f %s";
+            formatString = "%."+curr.digits+"f";
         }
 
         @Override
@@ -328,7 +328,7 @@ public class GringottsEco implements Eco {
 
         @Override
         public String format(double value) {
-            return String.format(formatString, value, value==1.0? gcurr.name : gcurr.namePlural);
+            return gcurr.format(formatString, value);
         }
 
         @Override

@@ -8,6 +8,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
+import org.gestern.gringotts.currency.Denomination;
 import org.gestern.gringotts.currency.GringottsCurrency;
 
 /**
@@ -59,7 +60,7 @@ public enum Configuration {
 
     /**
      * Set configuration form values in a file configuration.
-     * @param savedConf
+     * @param savedConfig
      */
     public void readConfig(FileConfiguration savedConfig) {
 
@@ -135,8 +136,20 @@ public enum Configuration {
                 if (parts.length >=2) dmg = Short.parseShort(parts[1]);
                 ItemStack denomType = new ItemStack(type, 1, dmg);
 
-                double value = denomSection.getDouble(denomStr);
-                currency.addDenomination(denomType, value);
+                // Check for simple values, or a map with custom names
+                if (denomSection.isDouble(denomStr) || denomSection.isInt(denomStr)) {
+                    double value = denomSection.getDouble(denomStr);
+                    currency.addDenomination(denomType, value);
+                } else {
+                    ConfigurationSection denomConfig = denomSection.getConfigurationSection(denomStr);
+
+                    // Support "inverse_value" for lower denominations
+                    double value = denomConfig.contains("inverse_value") ? 1.0 / denomConfig.getDouble("inverse_value") : denomConfig.getDouble("value");
+                    Denomination denomination = currency.addDenomination(denomType, value);
+                    denomination.name = denomConfig.getString("singular");
+                    denomination.namePlural = denomConfig.getString("plural");
+                }
+
             } catch (Exception e) {
                 throw new GringottsConfigurationException("Encountered an error parsing currency. Please check your Gringotts configuration.", e);
             }

@@ -73,12 +73,20 @@ public class GringottsCurrency {
      * @param d the denomination
      * @param value the denomination's value
      */
-    public void addDenomination(ItemStack type, double value) {
+    public Denomination addDenomination(ItemStack type, double value) {
         Denomination d = new Denomination(type, Math.round(centValue(value)));
+
+        // Special-case for backwards compatibility for named denominations
+        if (value == 1) {
+            d.name = name;
+            d.namePlural = namePlural;
+        }
         denoms.put(d, d);
         // infrequent insertion, so I don't mind sorting on every insert
         sortedDenoms.add(d);
         Collections.sort(sortedDenoms);
+
+        return d;
     }
 
 
@@ -132,5 +140,33 @@ public class GringottsCurrency {
         return denoms.get(d);
     }
 
+    public String format(String formatString, double value) {
+        String output = "";
+        String delimiter = "";
+        int denomCount = sortedDenoms.size();
+        for (int index = 0; index < denomCount; index++) {
+            Denomination denomination = sortedDenoms.get(index);
+            double denomationValue = denomination.value / unit;
+            // Skip over unnamed denominations
+            // This means the lowest denomination should probably have
+            // a name, or you may not get output sometimes.
+            // I think we'd need a list of just the named denominations
+            // to really fix this.
+            if (denomination.hasName()
+                // If we haven't output anything yet, always process the final denomination
+                && ((output.isEmpty() && index == denomCount -1 ) || value > denomationValue)
+                // Sanity-check to avoid divide by zero error on misconfigured denominations
+                && denomationValue != 0) {
+                double denomAmount = value / denomationValue;
+                value = value - Math.floor(denomAmount) * denomationValue;
 
+                // Special-case lowest denomination, which gets decimal places for remainder.
+                String formattedAmount = index == denomCount - 1 ? String.format(formatString, denomAmount) : Integer.toString((int)denomAmount);
+                output = output + delimiter + formattedAmount + " " + (denomAmount==1.0? denomination.name : denomination.namePlural);
+                delimiter = ", ";
+            }
+        }
+
+        return output;
+    }
 }

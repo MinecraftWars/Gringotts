@@ -19,6 +19,8 @@ public class Denomination implements Comparable<Denomination> {
     public final int id;
     public final short damage;
     public final long value;
+    public String name;
+    public String namePlural;
 
     public Denomination(ItemStack type) {
         this(type, 0);
@@ -64,7 +66,11 @@ public class Denomination implements Comparable<Denomination> {
 
     @Override
     public String toString() {
-        return String.format("Denomination: %d;%d : %d", id, damage, value);
+        return String.format("Denomination: (%s) %d;%d : %d", (name == null ? "" : name), id, damage, value);
     }
 
+    public boolean hasName() {
+        return this.namePlural != null && this.namePlural.length() > 0
+                && this.name != null && this.name.length() > 0;
+    }
 }
