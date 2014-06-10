@@ -70,7 +70,8 @@ public class VaultConnector implements Economy {
 
     @Override
     public boolean hasAccount(OfflinePlayer offlinePlayer) {
-        return false;
+
+        return eco.player(offlinePlayer.getUniqueId()).exists();
     }
 
     @Override
@@ -80,7 +81,7 @@ public class VaultConnector implements Economy {
 
     @Override
     public double getBalance(OfflinePlayer offlinePlayer) {
-        return 0;
+        return eco.player(offlinePlayer.getUniqueId()).balance();
     }
 
     @Override
@@ -89,52 +90,60 @@ public class VaultConnector implements Economy {
     }
 
     @Override
-    public boolean has(OfflinePlayer offlinePlayer, double v) {
-        return false;
+    public boolean has(OfflinePlayer offlinePlayer, double amount) {
+        return eco.account(offlinePlayer.getUniqueId().toString()).has(amount);
     }
 
     @Override
     public EconomyResponse withdrawPlayer(String playerName, double amount) {
-
         Account account = eco.account(playerName);
+        return withdrawPlayer(account, amount);
+    }
+
+    @Override
+    public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, double amount) {
+        Account account = eco.player(offlinePlayer.getUniqueId());
+        return withdrawPlayer(account, amount);
+    }
+
+    private EconomyResponse withdrawPlayer(Account account, double amount) {
         TransactionResult removed = account.remove(amount);
 
         switch (removed) {
-        case SUCCESS:
-            return new EconomyResponse(amount, account.balance(), ResponseType.SUCCESS, null);
-        case INSUFFICIENT_FUNDS:
-            return new EconomyResponse(0, account.balance(), ResponseType.FAILURE, LANG.plugin_vault_insufficientFunds);
-        case ERROR:
-        default: 
-            return new EconomyResponse(0, account.balance(), ResponseType.FAILURE, LANG.plugin_vault_error);
+            case SUCCESS:
+                return new EconomyResponse(amount, account.balance(), ResponseType.SUCCESS, null);
+            case INSUFFICIENT_FUNDS:
+                return new EconomyResponse(0, account.balance(), ResponseType.FAILURE, LANG.plugin_vault_insufficientFunds);
+            case ERROR:
+            default:
+                return new EconomyResponse(0, account.balance(), ResponseType.FAILURE, LANG.plugin_vault_error);
         }
     }
 
     @Override
-    public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, double v) {
-        return null;
+    public EconomyResponse depositPlayer(String playerName, double amount) {
+        Account account = eco.account(playerName);
+        return depositPlayer(account, amount);
     }
 
     @Override
-    public EconomyResponse depositPlayer(String playerName, double amount){
+    public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, double amount) {
+        Account account = eco.player(offlinePlayer.getUniqueId());
+        return depositPlayer(account, amount);
+    }
 
-        Account account = eco.account(playerName);
+    private EconomyResponse depositPlayer(Account account, double amount) {
         TransactionResult added = account.add(amount);
 
         switch (added) {
-        case SUCCESS:
-            return new EconomyResponse(amount, account.balance(), ResponseType.SUCCESS, null);
-        case INSUFFICIENT_SPACE:
-            return new EconomyResponse(0, account.balance(), ResponseType.FAILURE, LANG.plugin_vault_insufficientSpace);
-        case ERROR:
-        default: 
-            return new EconomyResponse(0, account.balance(), ResponseType.FAILURE, LANG.plugin_vault_error);
+            case SUCCESS:
+                return new EconomyResponse(amount, account.balance(), ResponseType.SUCCESS, null);
+            case INSUFFICIENT_SPACE:
+                return new EconomyResponse(0, account.balance(), ResponseType.FAILURE, LANG.plugin_vault_insufficientSpace);
+            case ERROR:
+            default:
+                return new EconomyResponse(0, account.balance(), ResponseType.FAILURE, LANG.plugin_vault_error);
         }
-    }
-
-    @Override
-    public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, double v) {
-        return null;
     }
 
     @Override
@@ -149,7 +158,7 @@ public class VaultConnector implements Economy {
 
     @Override
     public EconomyResponse createBank(String s, OfflinePlayer offlinePlayer) {
-        return null;
+        return new EconomyResponse(0,0, ResponseType.NOT_IMPLEMENTED, LANG.plugin_vault_notImplemented);
     }
 
     @Override
@@ -211,7 +220,7 @@ public class VaultConnector implements Economy {
 
     @Override
     public EconomyResponse isBankOwner(String s, OfflinePlayer offlinePlayer) {
-        return null;
+        return new EconomyResponse(0,0, ResponseType.NOT_IMPLEMENTED, LANG.plugin_vault_notImplemented);
     }
 
     @Override
@@ -222,7 +231,7 @@ public class VaultConnector implements Economy {
 
     @Override
     public EconomyResponse isBankMember(String s, OfflinePlayer offlinePlayer) {
-        return null;
+        return new EconomyResponse(0,0, ResponseType.NOT_IMPLEMENTED, LANG.plugin_vault_notImplemented);
     }
 
     @Override
@@ -238,7 +247,7 @@ public class VaultConnector implements Economy {
 
     @Override
     public boolean createPlayerAccount(OfflinePlayer offlinePlayer) {
-        return false;
+        return hasAccount(offlinePlayer);
     }
 
 
@@ -249,7 +258,7 @@ public class VaultConnector implements Economy {
 
     @Override
     public boolean createPlayerAccount(OfflinePlayer offlinePlayer, String s) {
-        return false;
+        return hasAccount(offlinePlayer); // TODO multiworld support
     }
 
 
@@ -259,8 +268,8 @@ public class VaultConnector implements Economy {
     }
 
     @Override
-    public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, String s, double v) {
-        return null;
+    public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, String world, double amount) {
+        return depositPlayer(offlinePlayer, amount);
     }
 
 
@@ -270,19 +279,19 @@ public class VaultConnector implements Economy {
     }
 
     @Override
-    public double getBalance(OfflinePlayer offlinePlayer, String s) {
-        return 0;
+    public double getBalance(OfflinePlayer offlinePlayer, String world) {
+        return getBalance(offlinePlayer); // TODO multiworld-support
     }
 
 
     @Override
     public boolean has(String player, String world, double amount) {
-        return has(player, amount);
+        return has(player, amount); // TODO multiworld-support
     }
 
     @Override
-    public boolean has(OfflinePlayer offlinePlayer, String s, double v) {
-        return false;
+    public boolean has(OfflinePlayer offlinePlayer, String world, double amount) {
+        return has(offlinePlayer, amount); // TODO multiworld-support
     }
 
 
@@ -292,19 +301,19 @@ public class VaultConnector implements Economy {
     }
 
     @Override
-    public boolean hasAccount(OfflinePlayer offlinePlayer, String s) {
-        return false;
+    public boolean hasAccount(OfflinePlayer offlinePlayer, String world) {
+        return hasAccount(offlinePlayer);
     }
 
 
     @Override
     public EconomyResponse withdrawPlayer(String player, String world, double amount) {
-        return withdrawPlayer(player, amount);
+        return withdrawPlayer(player, amount); // TODO multiworld-support
     }
 
     @Override
-    public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, String s, double v) {
-        return null;
+    public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, String world, double amount) {
+        return withdrawPlayer(offlinePlayer, amount); // TODO multiworld-support
     }
 
 }
