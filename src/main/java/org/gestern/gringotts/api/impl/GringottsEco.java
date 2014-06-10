@@ -14,6 +14,7 @@ import org.gestern.gringotts.data.DAO;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.gestern.gringotts.Configuration.CONF;
 import static org.gestern.gringotts.api.TransactionResult.ERROR;
@@ -41,6 +42,15 @@ public class GringottsEco implements Eco {
             return new ValidPlayerAccount(Gringotts.G.accounting.getAccount(owner));
 
         return new InvalidAccount("player", name);
+    }
+
+    @Override
+    public PlayerAccount player(UUID id) {
+        AccountHolder owner = accountOwners.get("player", id.toString());
+        if (owner instanceof PlayerAccountHolder)
+            return new ValidPlayerAccount(Gringotts.G.accounting.getAccount(owner));
+
+        return new InvalidAccount("player", id.toString());
     }
 
     @Override
@@ -276,7 +286,7 @@ public class GringottsEco implements Eco {
             if (toDeposit > centValue) 
                 toDeposit -= playerInventory.add(toDeposit - centValue);
 
-            TransactionResult result = player(player.getName()).add(CONF.currency.displayValue(toDeposit));
+            TransactionResult result = player(player.getUniqueId()).add(CONF.currency.displayValue(toDeposit));
             if (result != SUCCESS)
                 playerInventory.add(toDeposit);
 

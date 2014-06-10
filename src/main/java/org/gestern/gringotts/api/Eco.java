@@ -1,6 +1,7 @@
 package org.gestern.gringotts.api;
 
 import java.util.Set;
+import java.util.UUID;
 
 public interface Eco {
 
@@ -14,14 +15,27 @@ public interface Eco {
     Account account(String id);
 
     /**
-     * Access a player account for the player with given name. If a player can have multiple accounts,
-     * the account returned is defined by the economy plugin. For example, if the economy supports one account per world,
+     * Access a player account for the player with given name. If possible, it is recommended to use the player(UUID)
+     * method instead of this one.
+     * If a player can have multiple accounts, the account returned is defined by the economy plugin.
+     * For example, if the economy supports one account per world,
      * return the account associated with the world the player is currently in.
      * The representation of the money of a player account may be in-game items or virtual.
+     *
      * @param name The name of the player owning the account.
      * @return The player account representation
      */
     PlayerAccount player(String name);
+
+    /**
+     * Access a player account for the player with given uuid. If a player can have multiple accounts,
+     * the account returned is defined by the economy plugin. For example, if the economy supports one account per world,
+     * return the account associated with the world the player is currently in.
+     * The representation of the money of a player account may be in-game items or virtual.
+     * @param id The unique id of the player owning the account.
+     * @return The player account representation
+     */
+    PlayerAccount player(UUID id);
 
     /**
      * Access a bank account with given name.

@@ -4,10 +4,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.gestern.gringotts.api.Account;
-import org.gestern.gringotts.api.Eco;
-import org.gestern.gringotts.api.TaxedTransaction;
-import org.gestern.gringotts.api.TransactionResult;
+import org.gestern.gringotts.api.*;
 import org.gestern.gringotts.api.impl.GringottsEco;
 
 import static org.gestern.gringotts.Language.LANG;
@@ -93,11 +90,13 @@ class Commands {
 
         String recipientName = args[2];
 
-        Account from = eco.player(player.getName());
-        Account to = eco.player(recipientName);
+        Account from = eco.player(player.getUniqueId());
+        Account to = eco.account(recipientName);
 
-        TaxedTransaction transaction = eco.player(player.getName()).send(value).withTaxes();
-        TransactionResult result = eco.player(player.getName()).send(value).withTaxes().to(eco.player(recipientName));
+        PlayerAccount playerAccount = eco.player(player.getUniqueId());
+
+        TaxedTransaction transaction = playerAccount.send(value).withTaxes();
+        TransactionResult result = playerAccount.send(value).withTaxes().to(eco.player(recipientName));
 
         double tax = transaction.tax();
         double valueAdded = value + tax;
@@ -133,13 +132,12 @@ class Commands {
     private void deposit(Player player, double value) {
 
         if (command_deposit.allowed(player)) {
-            TransactionResult result = eco.player(player.getName()).deposit(value);
+            TransactionResult result = eco.player(player.getUniqueId()).deposit(value);
             String formattedValue = eco.currency().format(value);
-            if (result == SUCCESS){
+            if (result == SUCCESS) {
                 String success = LANG.deposit_success.replace("%value", formattedValue);
                 player.sendMessage(success);
-            }
-            else{
+            } else {
                 String error = LANG.deposit_error.replace("%value", formattedValue);
                 player.sendMessage(error);
             }
@@ -148,7 +146,7 @@ class Commands {
 
     private void withdraw(Player player, double value) {
         if (command_withdraw.allowed(player)) {
-            TransactionResult result = eco.player(player.getName()).withdraw(value);
+            TransactionResult result = eco.player(player.getUniqueId()).withdraw(value);
             String formattedValue = eco.currency().format(value);
             if (result == SUCCESS){
                 String success = LANG.withdraw_success.replace("%value", formattedValue);
