@@ -15,10 +15,7 @@ import org.gestern.gringotts.GringottsAccount;
 import org.gestern.gringotts.Util;
 import org.gestern.gringotts.accountholder.AccountHolder;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class EBeanDAO implements DAO {
@@ -182,11 +179,9 @@ public class EBeanDAO implements DAO {
         throw new RuntimeException("delete account not supported yet in EBeanDAO");
     }
 
+    /** The classes comprising the DB model, required for the EBean DDL ("data description language"). */
     public static List<Class<?>> getDatabaseClasses() {
-        List<Class<?>> list = new ArrayList<>();
-        list.add(EBeanAccount.class);
-        list.add(EBeanAccountChest.class);
-        return list;
+        return Arrays.asList(EBeanAccount.class, EBeanAccountChest.class);
     }
 
     @Override

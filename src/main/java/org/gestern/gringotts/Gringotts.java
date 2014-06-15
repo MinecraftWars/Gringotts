@@ -16,6 +16,7 @@ import org.gestern.gringotts.api.impl.VaultConnector;
 import org.gestern.gringotts.data.DAO;
 import org.gestern.gringotts.data.DerbyDAO;
 import org.gestern.gringotts.data.EBeanDAO;
+import org.gestern.gringotts.data.Migration;
 import org.gestern.gringotts.event.AccountListener;
 import org.gestern.gringotts.event.PlayerVaultListener;
 import org.gestern.gringotts.event.VaultCreator;
@@ -82,9 +83,9 @@ public class Gringotts extends JavaPlugin {
 
         } catch(GringottsStorageException | GringottsConfigurationException e) {
             log.severe(e.getMessage()); 
-            disable();
+            this.disable();
         } catch (RuntimeException e) {
-            disable();
+            this.disable();
             throw e;
         }
 
@@ -101,8 +102,9 @@ public class Gringotts extends JavaPlugin {
     public void onDisable() {
 
         // shut down db connection
-        try{ dao.shutdown(); }
-        catch (GringottsStorageException e) {
+        try{
+            if (dao !=null) dao.shutdown();
+        } catch (GringottsStorageException e) {
             log.severe(e.toString()); 
         }
 
@@ -194,11 +196,18 @@ public class Gringotts extends JavaPlugin {
 
     private DAO getDAO() {
         // legacy support: use derby if available
+        // TODO automatically migrate derby to ebeans if migration flag hasn't been set
         DAO dao = DerbyDAO.getDao();
         if (dao!=null) return dao;
 
         setupEBean();
         dao = EBeanDAO.getDao();
+        log.fine("testing player database migration");
+        Migration migration = new Migration();
+        if (!migration.isUUIDMigrated()) {
+            log.info("Player database not migrated to UUIDs yet. Attempting migration");
+            migration.doUUIDMigration();
+        }
 
         return dao;
     }
