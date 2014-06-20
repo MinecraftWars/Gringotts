@@ -78,15 +78,11 @@ Development
 -----------
 This section is intended to help out developers who wish to make changes to Gringotts themselves. If you have any changes that you would like included in the main branch, please submit a pull request.
 
-Gringotts uses the [Maven 3](http://maven.apache.org/) build system. To obtain a working plugin jar that includes all dependencies, build with the command
-
-    mvn compile assembly:single
-    
-This should put a jar with the required dependencies in the _target_ subdirectory
-
-For a build with only basic dependencies (plugin metrics), use
+Gringotts uses the [Maven 3](http://maven.apache.org/) build system. Build a working plugin jar with the command
 
     mvn compile package
+    
+This shades in some dependencies (such as plugin metrics). For this reason, creating a jar package manually or from an IDE may not work correctly.
 
 
 License
