@@ -1,16 +1,17 @@
 package org.gestern.gringotts.data;
 
 import com.avaje.ebean.EbeanServer;
-import com.mojang.api.profiles.HttpProfileRepository;
-import com.mojang.api.profiles.Profile;
-import com.mojang.api.profiles.ProfileRepository;
+import org.gestern.bukkitmigration.UUIDFetcher;
 import org.gestern.gringotts.Gringotts;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -69,15 +70,11 @@ public class Migration {
             }
         }
 
-        Map<String, String> nameUUIDs = new HashMap<>();;
+        Map<String, UUID> nameUUIDs;
         try {
-            ProfileRepository profileRepo = new HttpProfileRepository("minecraft");
-            Profile[] profiles = profileRepo.findProfilesByNames(names.toArray(new String[names.size()]));
-            for (Profile p : profiles)
-                nameUUIDs.put(p.getName(), p.getId());
-
+            nameUUIDs = new UUIDFetcher(names, true).call();
         } catch(Exception err) {
-            log.log(Level.WARNING, "Could not migrate player accounts to UUIDS: Unable to communicate with Mojang server.", err);
+            log.log(Level.WARNING, "Could not migrate player accounts to UUIDS.", err);
             return;
         }
 
@@ -88,7 +85,7 @@ public class Migration {
             for (EBeanAccount account : accounts) {
                 String name = account.getOwner();
                 if (nameUUIDs.containsKey(name)) {
-                    account.setOwner(nameUUIDs.get(name));
+                    account.setOwner(nameUUIDs.get(name).toString());
                     db.update(account);
                 } else {
                     log.info("No UUID found for player " + name);
@@ -105,7 +102,6 @@ public class Migration {
 
         try {
             uuidsMigratedFlag.createNewFile();
-            Files.setAttribute(uuidsMigratedFlag.toPath(), "dos:hidden", true);
             log.info("Players to UUIDs database migration complete.");
         } catch (IOException err) {
             log.log(Level.SEVERE,
