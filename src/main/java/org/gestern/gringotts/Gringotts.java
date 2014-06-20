@@ -195,15 +195,20 @@ public class Gringotts extends JavaPlugin {
     }
 
     private DAO getDAO() {
-        // legacy support: use derby if available
-        // TODO automatically migrate derby to ebeans if migration flag hasn't been set
-        DAO dao = DerbyDAO.getDao();
-        if (dao!=null) return dao;
 
         setupEBean();
         dao = EBeanDAO.getDao();
         log.fine("testing player database migration");
+
+        // legacy support: migrate derby if it hasn't happened yet
+        // automatically migrate derby to eBeans if db exists and migration flag hasn't been set
         Migration migration = new Migration();
+        DAO dao = DerbyDAO.getDao();
+        if (dao!=null && !migration.isDerbyMigrated()) {
+            log.info("Derby database detected. Migrating to Bukkit-supported database ...");
+            migration.doDerbyMigration();
+        }
+
         if (!migration.isUUIDMigrated()) {
             log.info("Player database not migrated to UUIDs yet. Attempting migration");
             migration.doUUIDMigration();
@@ -219,13 +224,14 @@ public class Gringotts extends JavaPlugin {
 
     /**
      * Some awkward ritual that Bukkit requires to initialize all the DB classes.
+     * Does nothing if they have already been set up.
      */
     private void setupEBean() {
         try {
             EbeanServer db = getDatabase();
             for (Class<?> c : getDatabaseClasses())
                 db.find(c).findRowCount();
-        } catch (Exception e) { 
+        } catch (Exception ignored) {
             getLogger().info("Initializing database tables.");
             installDDL();
         }
