@@ -88,5 +88,3 @@ This shades in some dependencies (such as plugin metrics). For this reason, crea
 License
 -------
 All code within Gringotts is licensed under the BSD 2-clause license. See `license.txt` for details.
-
-The jar with dependencies includes Apache Derby, which is licensed under the [Apache License Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
