@@ -69,7 +69,7 @@ public class AccountHolderFactory {
             try {
                 UUID playerId = UUID.fromString(uuidOrName);
                 player = Bukkit.getOfflinePlayer(playerId);
-            } catch (IllegalArgumentException parseError) {
+            } catch (IllegalArgumentException ignored) {
                 //noinspection deprecation
                 player = Bukkit.getOfflinePlayer(uuidOrName);
             }

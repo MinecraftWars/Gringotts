@@ -27,7 +27,7 @@ public class Migration {
     private final Logger log = Gringotts.G.getLogger();
 
     private final File gringottsFolder = Gringotts.G.getDataFolder();
-    private final File derbyMigratedFlag = new File(gringottsFolder,".derby-migrated");
+    private final File derbyMigratedFlag = new File(gringottsFolder, ".derby-migrated");
     private final File uuidsMigratedFlag = new File(Gringotts.G.getDataFolder(), ".uuids-migrated");
 
     /** Return whether the legacy derby db has been migrated to bukkit built-in sqlite / ebean. */
@@ -47,7 +47,7 @@ public class Migration {
         // create backup copy of Gringotts.db
         File dbFile = new File(gringottsFolder, "Gringotts.db");
         File dbBackup = new File(gringottsFolder, "Gringotts.db.bak");
-        if (!dbBackup.exists()) {
+        if (dbFile.exists() && !dbBackup.exists()) {
             // only create backup once, we don't want a bad file overwriting it
             try {
                 Files.copy(dbFile.toPath(), dbBackup.toPath(), StandardCopyOption.COPY_ATTRIBUTES);
@@ -111,7 +111,42 @@ public class Migration {
     }
 
     /** Migrate an existing Derby DB to Bukkit-internal EBean. */
-    public void doDerbyMigration() {
-        // TODO derby migration
+    public void doDerbyMigration(DerbyDAO derbyDAO, EBeanDAO eBeanDAO) {
+        log.info("Reading account data from Derby database ...");
+        List<DerbyDAO.DerbyAccount> accounts = derbyDAO.getAccountsRaw();
+        List<DerbyDAO.DerbyAccountChest> chests = derbyDAO.getChestsRaw();
+
+        db.beginTransaction();
+        for (DerbyDAO.DerbyAccount da : accounts) {
+            EBeanAccount acc = new EBeanAccount();
+            acc.setOwner(da.owner);
+            acc.setType(da.type);
+            acc.setCents(da.cents);
+
+            db.insert(acc);
+        }
+
+        for (DerbyDAO.DerbyAccountChest dac : chests) {
+            EBeanAccountChest chest = new EBeanAccountChest();
+            chest.setId(dac.id);
+            chest.setWorld(dac.world);
+            chest.setX(dac.x);
+            chest.setY(dac.y);
+            chest.setZ(dac.z);
+            chest.setAccount(dac.account);
+
+            db.insert(chest);
+        }
+        db.commitTransaction();
+
+
+        try {
+            derbyMigratedFlag.createNewFile();
+            log.info("Wrote account data to EBean-supported database. Migration complete.");
+        } catch (IOException err) {
+            log.log(Level.SEVERE,
+                    "Failed to set derby migration complete flag (but it probably completed anyway)",
+                    err);
+        }
     }
 }

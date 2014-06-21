@@ -10,6 +10,8 @@ import org.gestern.gringotts.accountholder.AccountHolder;
 
 import java.sql.*;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -33,9 +35,9 @@ public class DerbyDAO implements DAO {
     private Connection connection;
 
     private PreparedStatement 
-    storeAccountChest, destroyAccountChest, 
-    storeAccount, getAccount, getChests, 
-    getChestsForAccount, getCents, storeCents;
+        storeAccountChest, destroyAccountChest,
+        storeAccount, getAccount, getChests,
+        getChestsForAccount, getCents, storeCents;
 
     private static final String dbName = "GringottsDB";
 
@@ -265,6 +267,63 @@ public class DerbyDAO implements DAO {
         }
     }
 
+    /**
+     * Migration method: Get all accounts
+     * @return list of {{DerbyAccount}} describing the accounts
+     */
+    public List<DerbyAccount> getAccountsRaw() {
+
+        List<DerbyAccount> accounts = new LinkedList<>();
+        ResultSet result = null;
+        try {
+            checkConnection();
+            result = connection.createStatement().executeQuery("select * from account");
+
+            while (result.next()) {
+                int id = result.getInt("id");
+                String type = result.getString("type");
+                String owner = result.getString("owner");
+                long cents = result.getLong("cents");
+                accounts.add(new DerbyAccount(id, type, owner, cents));
+            }
+
+        } catch (SQLException e) {
+            throw new GringottsStorageException("Failed to get set of accounts", e);
+        } finally {
+            try { if (result!=null) result.close(); } catch (SQLException ignored) {}
+        }
+
+        return accounts;
+    }
+
+    public List<DerbyAccountChest> getChestsRaw() {
+        List<DerbyAccountChest> chests = new LinkedList<>();
+        ResultSet result = null;
+        try {
+            checkConnection();
+            result = connection.createStatement().executeQuery("select * from accountchest");
+
+            while (result.next()) {
+                int id = result.getInt("id");
+                String world = result.getString("world");
+                int x = result.getInt("x");
+                int y = result.getInt("y");
+                int z = result.getInt("z");
+                int account = result.getInt("account");
+
+                chests.add(new DerbyAccountChest(id,world,x,y,z,account));
+            }
+
+        } catch (SQLException e) {
+            throw new GringottsStorageException("Failed to get set of accounts", e);
+        } finally {
+            try { if (result!=null) result.close(); } catch (SQLException ignored) {}
+        }
+
+        return chests;
+
+    }
+
 
     /* (non-Javadoc)
      * @see org.gestern.gringotts.data.DAO#getChests()
@@ -291,9 +350,7 @@ public class DerbyDAO implements DAO {
                 Location loc = new Location(world, x, y, z);
 
                 if (world == null) {
-                    AccountHolder owner = Gringotts.G.accountHolderFactory.get(type, ownerId);
-                    deleteAccountChest(worldName, x, y, x); // FIXME: Isn't actually removing the non-existent vaults..
-                    Gringotts.G.getLogger().severe("Vault of " + owner + " located on a non-existent world. Deleting Vault on world " + worldName);
+                    Gringotts.G.getLogger().warning("Vault " + type + ":" + ownerId + " located on a non-existent world. Skipping.");
                     continue;
                 }
 
@@ -433,7 +490,7 @@ public class DerbyDAO implements DAO {
         String driver = "org.apache.derby.jdbc.EmbeddedDriver";
         try {
             Class.forName(driver);
-        } catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException ignored) {
             return null;
         }
 
@@ -475,5 +532,38 @@ public class DerbyDAO implements DAO {
     public void deleteAccount(GringottsAccount acc) {
         // TODO implement this, mayhaps?
         throw new RuntimeException("delete account not yet implemented");
+    }
+
+    /**
+     * Utility class to support migration of Derby database.
+     */
+    public static class DerbyAccount {
+        public final int id;
+        public final String type;
+        public final String owner;
+        public final long cents;
+
+        public DerbyAccount(int id, String type, String owner, long cents) {
+            this.id = id;
+            this.type = type;
+            this.owner = owner;
+            this.cents = cents;
+        }
+    }
+
+    public static class DerbyAccountChest {
+        public final int id;
+        public final String world;
+        public final int x, y, z;
+        public final int account;
+
+        public DerbyAccountChest(int id, String world, int x, int y, int z, int account) {
+            this.id = id;
+            this.world = world;
+            this.x = x;
+            this.y = y;
+            this.z = z;
+            this.account = account;
+        }
     }
 }

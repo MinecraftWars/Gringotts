@@ -25,6 +25,7 @@ import org.mcstats.MetricsLite;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.gestern.gringotts.Configuration.CONF;
@@ -77,8 +78,8 @@ public class Gringotts extends JavaPlugin {
             try {
                 MetricsLite metrics = new MetricsLite(this);
                 metrics.start();
-            } catch (IOException e) {
-                log.info("Failed to submit PluginMetrics stats");
+            } catch (IOException err) {
+                log.log(Level.INFO, "Failed to submit PluginMetrics stats", err);
             }
 
         } catch(GringottsStorageException | GringottsConfigurationException e) {
@@ -197,16 +198,17 @@ public class Gringotts extends JavaPlugin {
     private DAO getDAO() {
 
         setupEBean();
-        dao = EBeanDAO.getDao();
-        log.fine("testing player database migration");
 
         // legacy support: migrate derby if it hasn't happened yet
         // automatically migrate derby to eBeans if db exists and migration flag hasn't been set
         Migration migration = new Migration();
-        DAO dao = DerbyDAO.getDao();
-        if (dao!=null && !migration.isDerbyMigrated()) {
+
+        DerbyDAO derbyDAO;
+        if (!migration.isDerbyMigrated() &&
+                (derbyDAO = DerbyDAO.getDao()) != null) {
             log.info("Derby database detected. Migrating to Bukkit-supported database ...");
-            migration.doDerbyMigration();
+            EBeanDAO eBeanDAO = EBeanDAO.getDao();
+            migration.doDerbyMigration(derbyDAO, eBeanDAO);
         }
 
         if (!migration.isUUIDMigrated()) {
@@ -214,7 +216,7 @@ public class Gringotts extends JavaPlugin {
             migration.doUUIDMigration();
         }
 
-        return dao;
+        return EBeanDAO.getDao();
     }
 
     @Override
@@ -232,7 +234,7 @@ public class Gringotts extends JavaPlugin {
             for (Class<?> c : getDatabaseClasses())
                 db.find(c).findRowCount();
         } catch (Exception ignored) {
-            getLogger().info("Initializing database tables.");
+            log.info("Initializing database tables.");
             installDDL();
         }
     }

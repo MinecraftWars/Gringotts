@@ -46,7 +46,7 @@ public enum Dependency {
      * @param name Name of the plugin.
      * @param classpath classpath to check for
      * @param minVersion minimum version of the plugin. The plugin will still be hooked if this version is not satisfied,
-     * 		but a warning will mbe emitted.
+     * 		but a warning will be emitted.
      * @return the plugin object when hooked successfully, or null if not.
      */
     private Plugin hookPlugin(String name, String classpath, String minVersion) {

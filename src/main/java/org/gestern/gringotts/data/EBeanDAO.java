@@ -116,7 +116,7 @@ public class EBeanDAO implements DAO {
         return deleteChest.execute() > 0;
     }
 
-    public static DAO getDao() {
+    public static EBeanDAO getDao() {
         if (dao!=null) return dao;
         dao = new EBeanDAO();
         return dao;
