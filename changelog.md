@@ -1,6 +1,14 @@
 Gringotts Changelog
 ===================
 
+v2.3
+----
+* supports player UUIDs
+* old Derby databases will be automatically migrated to the Bukkit-internal database
+* player names in the database will be automatically migrated to UUIDs
+* built against Bukkit 1.7.9, Vault 1.4, Java 7. 
+  This version of Gringotts will no longer work with older versions of Bukkit, Vault and Java.
+
 v2.2
 ----
 * use factions 2.x
