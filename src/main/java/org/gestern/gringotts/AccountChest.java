@@ -273,8 +273,11 @@ public class AccountChest {
     public static boolean validContainer(Material material) {
         switch (material) {
         case CHEST:
+        case TRAPPED_CHEST:
         case DISPENSER:
         case FURNACE:
+        case HOPPER:
+        case DROPPER:
             return true;
         default:
             return false;
