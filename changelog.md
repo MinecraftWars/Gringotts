@@ -8,7 +8,9 @@ v2.3
 * player names in the database will be automatically migrated to UUIDs
 * built against Bukkit 1.7.9, Vault 1.4, Java 7. 
   This version of Gringotts will no longer work with older versions of Bukkit, Vault and Java.
+* vaults can now be created from most containers (chest, trapped chest, hopper, dropper, dispenser, furnace)
 * fix a bug preventing creation of vaults when the db still contained vaults in deleted worlds
+* fix a bug allowing to create multiple vaults on a single container
 
 v2.2
 ----
