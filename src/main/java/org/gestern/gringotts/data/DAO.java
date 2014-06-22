@@ -5,7 +5,7 @@ import org.gestern.gringotts.GringottsAccount;
 import org.gestern.gringotts.GringottsStorageException;
 import org.gestern.gringotts.accountholder.AccountHolder;
 
-import java.util.Set;
+import java.util.List;
 
 public interface DAO {
 
@@ -39,11 +39,11 @@ public interface DAO {
     boolean hasAccount(AccountHolder accountHolder);
 
     /**
-     * Get set of all chests registered with Gringotts. 
-     * If a stored chest turns out to be invalid, that chest is removed from storage.
+     * Get set of all chests registered with Gringotts.
+     * If a stored chest turns out to be invalid, that chest may be removed from storage.
      * @return set of all chests registered with Gringotts
      */
-    Set<AccountChest> getChests();
+    List<AccountChest> getChests();
 
     /**
      * Get all chests belonging to the given account.
@@ -51,7 +51,7 @@ public interface DAO {
      * @param account account to fetch chests for.
      * @return account to get chests for
      */
-    Set<AccountChest> getChests(GringottsAccount account);
+    List<AccountChest> getChests(GringottsAccount account);
 
     /**
      * Store an amount of cents to a given account.

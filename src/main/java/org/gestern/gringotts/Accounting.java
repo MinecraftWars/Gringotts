@@ -2,7 +2,7 @@ package org.gestern.gringotts;
 
 import org.gestern.gringotts.accountholder.AccountHolder;
 
-import java.util.Set;
+import java.util.List;
 import java.util.logging.Logger;
 
 import static org.gestern.gringotts.Gringotts.G;
@@ -40,7 +40,7 @@ public class Accounting {
      * @return whether given chest is connected to any existing chest
      */
     // TODO perhaps this could be more elegantly done with block metadata
-    private boolean chestConnected(AccountChest chest, Set<AccountChest> allChests) {
+    private boolean chestConnected(AccountChest chest, List<AccountChest> allChests) {
         for (AccountChest ac : allChests) {
             if (ac.connected(chest))
                 return true;
@@ -58,10 +58,10 @@ public class Accounting {
     public boolean addChest(AccountChest chest) {
 
         // TODO refactor to do a more intelligent/quick query
-        Set<AccountChest> allChests = G.dao.getChests();
+        List<AccountChest> allChests = G.dao.getChests();
 
         // if there is an invalid stored chest on location of new chest, remove it from storage.
-        if (allChests.contains(chest) && chest.notValid()) {
+        if (allChests.contains(chest)) {
             log.info("removing orphaned vault: " + chest);
             G.dao.destroyAccountChest(chest);
             allChests.remove(chest);

@@ -9,10 +9,8 @@ import org.gestern.gringotts.*;
 import org.gestern.gringotts.accountholder.AccountHolder;
 
 import java.sql.*;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import static org.gestern.gringotts.Configuration.CONF;
@@ -333,8 +331,8 @@ public class DerbyDAO implements DAO {
      * @see org.gestern.gringotts.data.DAO#getChests()
      */
     @Override
-    public Set<AccountChest> getChests() {
-        Set<AccountChest> chests = new HashSet<>();
+    public List<AccountChest> getChests() {
+        List<AccountChest> chests = new LinkedList<>();
         ResultSet result = null;
         try {
             checkConnection();
@@ -389,10 +387,10 @@ public class DerbyDAO implements DAO {
      * @see org.gestern.gringotts.data.DAO#getChests(org.gestern.gringotts.GringottsAccount)
      */
     @Override
-    public Set<AccountChest> getChests(GringottsAccount account) {
+    public List<AccountChest> getChests(GringottsAccount account) {
 
         AccountHolder owner = account.owner;
-        Set<AccountChest> chests = new HashSet<>();
+        List<AccountChest> chests = new LinkedList<>();
         ResultSet result = null;
         try {
             checkConnection();

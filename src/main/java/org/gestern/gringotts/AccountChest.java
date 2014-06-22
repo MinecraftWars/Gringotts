@@ -1,7 +1,6 @@
 package org.gestern.gringotts;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
@@ -150,7 +149,7 @@ public class AccountChest {
     /**
      * Checks whether this chest is currently a valid vault.
      * It is considered valid when the sign block contains [vault] or [(type) vault] on the first line,
-     * a name on the third line and has a chest below it.
+     * a name on the third line and has a chest associated with it.
      * 
      * @return false if the chest can be considered a valid vault
      */
@@ -240,7 +239,7 @@ public class AccountChest {
             return false;
 
         AccountChest other = (AccountChest) obj;
-        return sign.getLocation().equals(other.sign.getLocation());
+        return this.sign.getLocation().equals(other.sign.getLocation());
     }
 
     /**
@@ -254,7 +253,10 @@ public class AccountChest {
         if (! updateValid())
             return false;
 
-        // no double chest -> no connection possible
+        if (chestLocation().equals(chest.chestLocation()))
+            return true;
+
+        // no double chest -> no further connection possible
         if (! (inventory() instanceof DoubleChestInventory))
             return false;
 
@@ -268,20 +270,6 @@ public class AccountChest {
 
     public GringottsAccount getAccount() {
         return account;
-    }
-
-    public static boolean validContainer(Material material) {
-        switch (material) {
-        case CHEST:
-        case TRAPPED_CHEST:
-        case DISPENSER:
-        case FURNACE:
-        case HOPPER:
-        case DROPPER:
-            return true;
-        default:
-            return false;
-        }
     }
 
 }

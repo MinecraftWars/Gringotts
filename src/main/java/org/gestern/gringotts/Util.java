@@ -1,5 +1,6 @@
 package org.gestern.gringotts;
 
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
@@ -90,11 +91,30 @@ public class Util {
         // allow either the block sign is attached to or the block below the sign as chest block. Prefer attached block.
         Block blockAttached = signBlock.getRelative(attached);
         Block blockBelow = signBlock.getRelative(BlockFace.DOWN);
-        if (AccountChest.validContainer(blockAttached.getType()))
+        if (validContainer(blockAttached.getType()))
             return blockAttached;
-        if (AccountChest.validContainer(blockBelow.getType()))
+        if (validContainer(blockBelow.getType()))
             return blockBelow;
 
         return null; // no valid container
+    }
+
+    /**
+     * Return whether the given material is a valid container type for Gringotts vaults.
+     * @param material material to check
+     * @return whether the given material is a valid container type for Gringotts vaults
+     */
+    public static boolean validContainer(Material material) {
+        switch (material) {
+            case CHEST:
+            case TRAPPED_CHEST:
+            case DISPENSER:
+            case FURNACE:
+            case HOPPER:
+            case DROPPER:
+                return true;
+            default:
+                return false;
+        }
     }
 }

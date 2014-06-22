@@ -67,11 +67,11 @@ public class EBeanDAO implements DAO {
     }
 
     @Override
-    public Set<AccountChest> getChests() {
+    public List<AccountChest> getChests() {
         List<SqlRow> result = db.createSqlQuery("SELECT ac.world, ac.x, ac.y, ac.z, a.type, a.owner " +
                 "FROM gringotts_accountchest ac JOIN gringotts_account a ON ac.account = a.id ").findList();
 
-        Set<AccountChest> chests = new HashSet<>();
+        List<AccountChest> chests = new LinkedList<>();
 
         for (SqlRow c : result) {
             String worldName = c.getString("world");
@@ -124,7 +124,7 @@ public class EBeanDAO implements DAO {
     }
 
     @Override
-    public Set<AccountChest> getChests(GringottsAccount account) {
+    public List<AccountChest> getChests(GringottsAccount account) {
         // TODO ensure world interaction is done in sync task
         SqlQuery getChests = db.createSqlQuery("SELECT ac.world, ac.x, ac.y, ac.z " +
                 "FROM gringotts_accountchest ac JOIN gringotts_account a ON ac.account = a.id " +
@@ -133,7 +133,7 @@ public class EBeanDAO implements DAO {
         getChests.setParameter("owner", account.owner.getId());
         getChests.setParameter("type", account.owner.getType());
 
-        Set<AccountChest> chests = new HashSet<>();
+        List<AccountChest> chests = new LinkedList<>();
         for (SqlRow result : getChests.findSet()) {
             String worldName = result.getString("world");
             int x = result.getInteger("x");
