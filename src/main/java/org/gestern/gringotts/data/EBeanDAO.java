@@ -83,8 +83,9 @@ public class EBeanDAO implements DAO {
             String ownerId = c.getString("owner");
 
             World world = Bukkit.getWorld(worldName);
-            Location loc = new Location(world, x, y, z);
+            if (world == null) continue; // skip vaults in non-existing worlds
 
+            Location loc = new Location(world, x, y, z);
             Block signBlock = loc.getBlock();
             if (Util.isSignBlock(signBlock)) {
                 AccountHolder owner = Gringotts.G.accountHolderFactory.get(type, ownerId);
@@ -140,6 +141,7 @@ public class EBeanDAO implements DAO {
             int z = result.getInteger("z");
 
             World world = Bukkit.getWorld(worldName);
+            if (world==null) continue; // skip chest if it is in non-existent world
             Location loc = new Location(world, x, y, z);
 
             Block signBlock = loc.getBlock();
