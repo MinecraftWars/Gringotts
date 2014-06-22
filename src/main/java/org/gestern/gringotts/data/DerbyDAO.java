@@ -268,7 +268,7 @@ public class DerbyDAO implements DAO {
     }
 
     /**
-     * Migration method: Get all accounts
+     * Migration method: Get all account raw data.
      * @return list of {{DerbyAccount}} describing the accounts
      */
     public List<DerbyAccount> getAccountsRaw() {
@@ -296,6 +296,10 @@ public class DerbyDAO implements DAO {
         return accounts;
     }
 
+    /**
+     * Migration method: Get all accountchest raw data.
+     * @return ...
+     */
     public List<DerbyAccountChest> getChestsRaw() {
         List<DerbyAccountChest> chests = new LinkedList<>();
         ResultSet result = null;
