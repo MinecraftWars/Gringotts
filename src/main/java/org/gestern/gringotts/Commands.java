@@ -102,18 +102,20 @@ class Commands {
         double valueAdded = value + tax;
 
         String formattedBalance = eco.currency().format(from.balance());
-        String formattedValue = eco.currency().format(valueAdded);
-
+        String formattedValue = eco.currency().format(value);
+        String formattedValuePlusTax = eco.currency().format(valueAdded);
+        String formattedTax = eco.currency().format(tax);
+        
         switch (result) {
         case SUCCESS:
-            String succ_taxMessage = LANG.pay_success_tax.replace("%value", formattedValue);
+            String succ_taxMessage = LANG.pay_success_tax.replace("%value", formattedTax);
             String succ_sentMessage = LANG.pay_success_sender.replace("%value", formattedValue).replace("%player", recipientName);
             from.message(succ_sentMessage + (tax>0? succ_taxMessage : ""));
             String succ_receivedMessage = LANG.pay_success_target.replace("%value", formattedValue).replace("%player", player.getName());
             to.message(succ_receivedMessage);
             return true;
         case INSUFFICIENT_FUNDS:
-            String insF_Message = LANG.pay_insufficientFunds.replace("%balance", formattedBalance).replace("%value", formattedValue);
+            String insF_Message = LANG.pay_insufficientFunds.replace("%balance", formattedBalance).replace("%value", formattedValuePlusTax);
             from.message(insF_Message);
             return true;
         case INSUFFICIENT_SPACE:
