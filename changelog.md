@@ -11,6 +11,7 @@ v2.3
 * vaults can now be created from most containers (chest, trapped chest, hopper, dropper, dispenser, furnace)
 * fix a bug preventing creation of vaults when the db still contained vaults in deleted worlds
 * fix a bug allowing to create multiple vaults on a single container
+* fix messages on taxed transactions (thanks noidexe!)
 
 v2.2
 ----
