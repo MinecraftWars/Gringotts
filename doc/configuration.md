@@ -143,23 +143,24 @@ Use player inventory as vault when player is online.
 
 ### User commands
 
-Use player's enderchest as vault when player is online.
+Use Gringotts commands.
 
     gringotts.command
       default: true
 
-Allow all user transaction commands (pay, deposit, withdraw)
+Allow transfer command (pay)
 
-    gringotts.command.withdraw:
+    gringotts.transfer:
       default: true
 
 Allow withdrawal of money from chest storage to inventory via `/money withdraw`.
     
-    gringotts.command.deposit:
+    gringotts.command.withdraw:
       default: true
+      
 Allow deposit of money to chest storage from inventory via `/money deposit`.
     
-    gringotts.transfer:
+    gringotts.command.deposit:
       default: true
 
 ### Admin permissions
