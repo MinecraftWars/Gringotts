@@ -80,7 +80,7 @@ public interface Account {
     String type();
 
     /**
-     * Return the id of this account. For players, this is the player name. For banks, this is the name of the bank.
+     * Return the id of this account. For players, this is the player uuid. For banks, this is the name of the bank.
      * The method call Eco.custom(type,id) result in this account for parameters this.type() and this.id().
      * @return the id of this account
      */
