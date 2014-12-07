@@ -38,7 +38,7 @@ public class FactionsHandler implements DependencyHandler, AccountHolderProvider
      */
     public FactionAccountHolder getFactionAccountHolder(Player player) {
 
-        MPlayer fplayer = UPlayer.get(player);
+        MPlayer fplayer = MPlayer.get(player);
         Faction playerFaction = fplayer.getFaction();
         return playerFaction != null? new FactionAccountHolder(playerFaction) : null;
     }
