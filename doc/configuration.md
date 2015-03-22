@@ -7,9 +7,7 @@ As usual with Bukkit plugins, the configuration is in the config.yml in the plug
 
 Please refer to the [default config.yml](https://github.com/MinecraftWars/Gringotts/blob/master/config.yml) for a complete example.
 
-### Tekkit quick-start ###
-
-To run Gringotts on a Tekkit server, set `currency.denominations` to use only 1.2.5-compatible items (eg gold ingots, id 266) or Tekkit items (eg industrial credits, id 30186), and set usevault.enderchest to `false`.
+**Note: Gringotts will currently not work correctly with Towny if you set the `economy.closed_economy` in the Towny configuration.**
 
 ### Language ###
 The `language` option allows you to set one of Gringotts' supported language for interaction messages with players. Currently supported options are `custom` (default/english) and `de` (German). See below on how to modify custom messages to your preferences.
