@@ -1,6 +1,16 @@
 Gringotts Changelog
 ===================
 
+v2.4
+----
+* updates to dependency versions:
+    - Bukkit API 1.8.3-R0.1
+    - Vault API 1.5
+    - Factions / MassiveCore 2.7.5 (incompatible with older Factions versions)
+    - Towny 0.89.2.0
+    - WorldGuard 6.0 beta
+* minor fixes in message formatting
+
 v2.3
 ----
 * supports player UUIDs
