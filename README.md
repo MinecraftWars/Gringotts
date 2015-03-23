@@ -73,10 +73,19 @@ Download [Gringotts](http://dev.bukkit.org/server-mods/gringotts/files/) and pla
 
 Please see the [Configuration and Permissions](https://github.com/MinecraftWars/Gringotts/blob/master/doc/configuration.md) document on how to configure Gringotts.
 
+Problems? Questions?
+--------------------
+Have a look at the [Wiki](https://github.com/MinecraftWars/Gringotts/wiki). You're welcome to improve it, too!
+
 
 Development
 -----------
-This section is intended to help out developers who wish to make changes to Gringotts themselves. If you have any changes that you would like included in the main branch, please submit a pull request.
+Would you like to make changes to Gringotts yourself? Fork it!
+Pull requests are very welcome, but please make sure your changes fulfill the Gringotts quality baseline:
+
+* new features, settings, permissions are documented
+* required dependencies are all added to the build by Maven, not included in the repo
+* the project builds with Maven out-of-the-box
 
 Gringotts uses the [Maven 3](http://maven.apache.org/) build system. Build a working plugin jar with the command
 
