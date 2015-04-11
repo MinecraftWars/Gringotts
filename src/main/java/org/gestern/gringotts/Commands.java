@@ -59,7 +59,7 @@ class Commands {
             double value = 0;
             if (args.length >= 2) {
                 try { value = Double.parseDouble(args[1]); } 
-                catch (NumberFormatException e) { return false; }
+                catch (NumberFormatException ignored) { return false; }
 
                 if (command.equals("withdraw")) {
                     withdraw(player, value);
