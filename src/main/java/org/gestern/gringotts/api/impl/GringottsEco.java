@@ -124,6 +124,12 @@ public class GringottsEco implements Eco {
         }
 
         @Override
+        public double vaultBalance() { return 0; }
+
+        @Override
+        public double invBalance() { return 0; }
+
+        @Override
         public boolean has(double value) {
             return false; // invalid account has nothing
         }
@@ -223,6 +229,16 @@ public class GringottsEco implements Eco {
         @Override
         public double balance() {
             return CONF.currency.displayValue(acc.balance());
+        }
+
+        @Override
+        public double vaultBalance() {
+            return CONF.currency.displayValue(acc.vaultBalance());
+        }
+
+        @Override
+        public double invBalance() {
+            return CONF.currency.displayValue(acc.invBalance());
         }
 
         @Override

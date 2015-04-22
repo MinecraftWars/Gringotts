@@ -19,6 +19,8 @@ public enum Language
     public String noperm;
     public String playerOnly;
     public String balance;
+    public String vault_balance;
+    public String inv_balance;
     public String invalid_account;
     public String reload;
     //pay command
@@ -66,7 +68,9 @@ public enum Language
         //global
         LANG.noperm = savedLanguage.getString("noperm", "You do not have permission to transfer money.");
         LANG.playerOnly = savedLanguage.getString("playeronly", "This command can only be run by a player.");
-        LANG.balance = savedLanguage.getString("balance", "Your current balance: %balance");
+        LANG.balance = savedLanguage.getString("balance", "Your current total balance: %balance");
+        LANG.vault_balance = savedLanguage.getString("vault_balance", "Vault balance: %balance");
+        LANG.inv_balance = savedLanguage.getString("inv_balance", "Inventory balance: %balance");
         LANG.invalid_account = savedLanguage.getString("invalidaccount", "Invalid account: %player");
         LANG.reload = savedLanguage.getString("reload", "Gringotts: Reloaded configuration!");
 

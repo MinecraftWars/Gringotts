@@ -33,6 +33,18 @@ public interface Account {
     double balance();
 
     /**
+     * Return the vault balance of this account.
+     * @return the vault balance of this account.
+     */
+    double vaultBalance();
+
+    /**
+     * Return the inventory balance of this account.
+     * @return the inventory balance of this account.
+     */
+    double invBalance();
+
+    /**
      * Return whether this account has at least the specified amount.
      * @param value amount to check
      * @return whether this account has at least the specified amount.

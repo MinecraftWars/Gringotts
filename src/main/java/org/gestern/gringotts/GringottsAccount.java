@@ -61,6 +61,43 @@ public class GringottsAccount {
     }
 
     /**
+     * Current balance this account has in chest(s) in cents
+     * @return current balance this account has in chest(s) in cents
+     */
+    public long vaultBalance() {
+        long balance = 0;
+
+        if (CONF.usevaultContainer) {
+            for (AccountChest chest : dao.getChests(this))
+                balance += chest.balance();
+        }
+
+        Player player = playerOwner();
+        if (player != null) {
+            if (CONF.usevaultEnderchest && usevault_enderchest.allowed(player))
+                balance += new AccountInventory(player.getEnderChest()).balance();
+        }
+
+        return balance + dao.getCents(this);
+    }
+
+    /**
+     * Current balance this account has in inventory in cents
+     * @return current balance this account has in inventory in cents
+     */
+    public long invBalance() {
+        long balance = 0;
+
+        Player player = playerOwner();
+        if (player != null) {
+            if (usevault_inventory.allowed(player))
+                balance += new AccountInventory(player.getInventory()).balance();
+        }
+
+        return balance + dao.getCents(this);
+    }
+
+    /**
      * Add an amount in cents to this account if able to.
      * @param amount amount in cents to add
      * @return Whether amount successfully added
