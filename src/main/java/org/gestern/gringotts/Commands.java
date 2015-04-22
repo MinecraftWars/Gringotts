@@ -264,7 +264,7 @@ class Commands {
 
 
     private void balanceMessage(Account account) {
-        account.message(LANG.total_balance.replace("%balance", eco.currency().format(account.balance())));
+        account.message(LANG.balance.replace("%balance", eco.currency().format(account.balance())));
         account.message(LANG.vault_balance.replace("%balance", eco.currency().format(account.vaultBalance())));
         account.message(LANG.inv_balance.replace("%balance", eco.currency().format(account.invBalance())));
     }

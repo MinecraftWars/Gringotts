@@ -13,6 +13,8 @@
 playeronly: "This command can only be run by a player."
 noperm: "You do not have permission to transfer money."
 balance: "Your current balance: %balance"
+vault_balance: "Vault balance: %balance"
+inv_balance: "Inventory balance: %balance"
 invalidaccount: "Invalid account: %player"
 reload: "Gringotts: Reloaded configuration!"
 
