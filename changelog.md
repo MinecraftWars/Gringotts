@@ -1,6 +1,11 @@
 Gringotts Changelog
 ===================
 
+v2.5
+----
+* fix some currency requests causing internet accesses and thus lag spikes. Should fix some problems people have been having with Towny
+* /money now shows money in vaults and money in inventory in addition to total balance
+
 v2.4
 ----
 * updates to dependency versions:
