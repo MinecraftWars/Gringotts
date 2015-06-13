@@ -1,9 +1,12 @@
 package org.gestern.gringotts;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
 import org.gestern.gringotts.currency.GringottsCurrency;
 
@@ -49,6 +52,9 @@ public enum Configuration {
 
     /** Use ender chests as player vaults. */
     public boolean usevaultEnderchest;
+    
+    /** Allow money to be crafted / used in crafting */
+    public boolean isCraftable;
 
     /** Regular expression defining what patterns on a sign will create a valid vault. Subpattern 1 denotes the type of the vault. */
     // TODO make this actually configurable(?)
@@ -99,6 +105,7 @@ public enum Configuration {
             ConfigurationSection denomSection = savedConfig.getConfigurationSection("currency.denominations");
             parseCurrency(denomSection);
         }
+        CONF.isCraftable = savedConfig.getBoolean("currency.craftable", true);
 
         CONF.transactionTaxFlat = savedConfig.getDouble("transactiontax.flat", 0);
         CONF.transactionTaxRate = savedConfig.getDouble("transactiontax.rate", 0);
@@ -127,18 +134,25 @@ public enum Configuration {
             throw new GringottsConfigurationException("No denominations configured. Please check your Gringotts configuration.");
 
         for (String denomStr : denoms) {
-            String[] parts = denomStr.split(";");
-            int type;
+            String[] keyParts = denomStr.split(";");
+            String[] valueParts = denomSection.getString(denomStr).split(";");
+            Material type;
             short dmg = 0;
+            String name = "";
             try {
                 // a denomination needs at least a valid item type
-                // TODO parse material if possible, because of deprecation
-                // TODO support lore, displayName?
-                type = Integer.parseInt(parts[0]);
-                if (parts.length >=2) dmg = Short.parseShort(parts[1]);
+                // TODO support lore?
+                type = Material.valueOf(keyParts[0]);
+                if (keyParts.length >=2) dmg = Short.parseShort(keyParts[1]);
                 ItemStack denomType = new ItemStack(type, 1, dmg);
-
-                double value = denomSection.getDouble(denomStr);
+                if(valueParts.length >=2) name = ChatColor.translateAlternateColorCodes('&', valueParts[1]);
+                if(!name.isEmpty()) {
+                	ItemMeta meta = denomType.getItemMeta();
+                	meta.setDisplayName(name);
+                	denomType.setItemMeta(meta);
+                	Bukkit.getLogger().info(denomType.toString());
+                }
+                double value = Double.parseDouble(valueParts[0]);
                 currency.addDenomination(denomType, value);
             } catch (Exception e) {
                 throw new GringottsConfigurationException("Encountered an error parsing currency. Please check your Gringotts configuration.", e);

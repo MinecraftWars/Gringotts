@@ -20,6 +20,7 @@ public class Denomination implements Comparable<Denomination> {
     public final Material id;
     public final short damage;
     public final long value;
+    public final String name;
 
     public Denomination(ItemStack type) {
         this(type, 0);
@@ -30,6 +31,7 @@ public class Denomination implements Comparable<Denomination> {
         this.id = type.getType();
         this.damage = type.getDurability();
         this.value = value;
+        this.name = type.getItemMeta().hasDisplayName() ? type.getItemMeta().getDisplayName() : "";
     }
 
     @Override
@@ -38,6 +40,7 @@ public class Denomination implements Comparable<Denomination> {
         int result = 1;
         result = prime * result + damage;
         result = prime * result + id.hashCode();
+        result = prime * result + name.hashCode();
         return result;
     }
 
@@ -50,7 +53,7 @@ public class Denomination implements Comparable<Denomination> {
         if (getClass() != obj.getClass())
             return false;
         Denomination other = (Denomination) obj;
-        return damage == other.damage && id == other.id;
+        return damage == other.damage && id.equals(other.id) && name.equals(other.name);
     }
 
     @Override
@@ -61,7 +64,7 @@ public class Denomination implements Comparable<Denomination> {
 
     @Override
     public String toString() {
-        return String.format("Denomination: %s;%d : %d", id.toString(), damage, value);
+        return String.format("Denomination: %s;%d : %d;%s", id.toString(), damage, value, name);
     }
 
 }

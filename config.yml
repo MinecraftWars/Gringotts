@@ -13,8 +13,12 @@ currency:
 
   # value of individual denominations. default: emerald: 1, emerald block: 9
   denominations:
-    388: 1
-    133: 9
+    EMERALD: '1;&2Emerald'
+    EMERALD_BLOCK: '9;&2Emerald_Block'
+    
+  # True- Money can be used to craft
+  # False- Money cannot used to craft (only for custom named items)
+  craftable: false
 
 # tax on /money pay transactions
 transactiontax:
