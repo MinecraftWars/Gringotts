@@ -1,6 +1,11 @@
 Gringotts Changelog
 ===================
 
+v2.6
+----
+* adds display name support for currency items
+* option to disable crafting of currency items
+
 v2.5
 ----
 * fix some currency requests causing internet accesses and thus lag spikes. Should fix some problems people have been having with Towny
