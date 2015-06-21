@@ -1,7 +1,9 @@
 package org.gestern.gringotts;
 
 import com.avaje.ebean.EbeanServer;
+
 import net.milkbowl.vault.economy.Economy;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -18,6 +20,7 @@ import org.gestern.gringotts.data.DerbyDAO;
 import org.gestern.gringotts.data.EBeanDAO;
 import org.gestern.gringotts.data.Migration;
 import org.gestern.gringotts.event.AccountListener;
+import org.gestern.gringotts.event.CraftListener;
 import org.gestern.gringotts.event.PlayerVaultListener;
 import org.gestern.gringotts.event.VaultCreator;
 import org.mcstats.MetricsLite;
@@ -129,6 +132,7 @@ public class Gringotts extends JavaPlugin {
         manager.registerEvents(new AccountListener(), this);
         manager.registerEvents(new PlayerVaultListener(), this);
         manager.registerEvents(new VaultCreator(), this);
+        manager.registerEvents(new CraftListener(), this);
 
         // listeners for other account types are loaded with dependencies
     }
