@@ -13,12 +13,12 @@ currency:
 
   # value of individual denominations. default: emerald: 1, emerald block: 9
   denominations:
-    - item: emerald
+    - material: emerald
       value: 1
-      name: '&2Emerald'
-    - item: emerald_block
+      name: '§2Emerald'
+    - material: emerald_block
       value: 9
-      name: '&2Emerald Block'
+      name: '§2Emerald Block'
     
   # True- Money can be used to craft
   # False- Money cannot used to craft (only for custom named items)
