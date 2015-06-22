@@ -23,8 +23,12 @@ Example configuration section:
         plural: Emeralds
       digits: 2
       denominations:
-        388: 1
-        133: 9
+        - material: emerald
+          value: 1
+          name: '§2Emerald'
+        - material: emerald_block
+          value: 9
+          name: '§2Emerald Block'
 
 
 This is the default configuration which uses emeralds as currency, with emeralds having value 1, and emerald blocks value 9.
@@ -34,16 +38,40 @@ This is the default configuration which uses emeralds as currency, with emeralds
 * `name` Name of the currency to be used in messages to players. Please enter both a singular and plural version.
 * `fractional` Whether to allow fractional values. `true` or `false`
 * `digits` Decimal digits used in representation and calculation of the currency. Set this to 0 to use only whole number values.
-* `denominations` A key-value map, defining the [item id](http://www.minecraftwiki.net/wiki/Data_values#Item_IDs) of the actual item type to use as currency, and the value of the item. The keys may be either a single number for the item id, or two numbers in the format "id;damage", where "damage" is the damage aka data value of the item. The value can be a whole or fractional number denoting the value of a denomination. However the number of fractional digits in a currency value should not exceed the number defined as `digits`.
+* `denominations` A list of key-value mappings, defining the [material](http://kiwike.se/wiki/index.php/Item_Names) of the item type to use as currency, and the value of the item. 
 
-#### Example denomination setup with fractional values and items with data values
+
+
+#### Denominations 
+
+Denominations have the following format:
+ 
+     denominations:
+       - material: material name or id
+         damage: damage value of material (optional)
+         value: a number
+         name: a custom name for the currency item (optional)
+       - (optional: more denominations)
+       - ...
+       
+The keys may be either a single number for the item id, or two numbers in the format "id;damage", where "damage" is the damage aka data value of the item. The value can be a whole or fractional number denoting the value of a denomination. However the number of fractional digits in a currency value should not exceed the number defined as `digits`.
+
+##### Example denomination setup with fractional values and items with data values
 
 The following setup shows how to specify a currency with Lapis Lazuli as minor denomination with a value of 0.05, Skeleton Heads with a value of 10 and Creeper Heads with a value of 60:
 
     denominations:
-      351;4: 0.05
-      397: 10
-      397;4: 60
+      - material: ink_sack
+        damage: 4
+        value: 0.05
+        name: 'Blue Coin'
+      - material: skull_item
+        value: 10
+        name: 'Skull Coin'
+      - material: skull_item
+        damage: 4
+        value: 60
+        name: 'Danger Coin'
 
 ### Taxes ###
 
