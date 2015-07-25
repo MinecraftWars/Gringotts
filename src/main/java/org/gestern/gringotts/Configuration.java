@@ -144,7 +144,7 @@ public enum Configuration {
                     // matchMaterial also works for item ids
                     Material material = Material.matchMaterial(materialName);
 
-                    short damage = (short)denomConf.getInt("damage",0);
+                    short damage = (short)denomConf.getInt("damage"); // returns 0 when path is unset
 		            ItemStack denomType = new ItemStack(material, 1, damage);
 
                     ItemMeta meta = denomType.getItemMeta();
