@@ -1,12 +1,17 @@
 package org.gestern.gringotts;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
 import org.gestern.gringotts.currency.GringottsCurrency;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -90,14 +95,13 @@ public enum Configuration {
         int currencyType = savedConfig.getInt("currency.type",-1);
         if (currencyType > 0) {
             byte currencyDataValue = (byte)savedConfig.getInt("currency.datavalue", 0);
-            // TODO use material name instead of id
             ItemStack legacyCurrency = new ItemStack(currencyType, 0, (short)0);
             legacyCurrency.setData(new MaterialData(currencyType, currencyDataValue));
             currency.addDenomination(legacyCurrency, 1);
         } else {
             // regular currency configuration (multi-denomination)
             ConfigurationSection denomSection = savedConfig.getConfigurationSection("currency.denominations");
-            parseCurrency(denomSection);
+            parseCurrency(denomSection, savedConfig);
         }
 
         CONF.transactionTaxFlat = savedConfig.getDouble("transactiontax.flat", 0);
@@ -114,37 +118,98 @@ public enum Configuration {
     }
 
     /**
-     * Parse a multi-denomination currency from configuration.
+     * Parse currency list from configuration, if present.
      * A currency definition consists of a map of denominations to value.
      * A denomination type is defined either as the item id, 
      * or a semicolon-separated string of item id; damage value; data value
      * @param denomSection config section containing denomination definition
+     * @param savedConfig the entire config for if the denom section is "null"
      */
-    private void parseCurrency(ConfigurationSection denomSection) {
+	private void parseCurrency(ConfigurationSection denomSection, FileConfiguration savedConfig) {
+		//if the denom section is null, it means it doesn't have a dictionary
+		//thus we'll read it in the new list format
+		if(denomSection == null && savedConfig.isList("currency.denominations")) {
+			for(Map<?, ?> denomEntry : savedConfig.getMapList("currency.denominations")) {
 
-        Set<String> denoms = denomSection.getKeys(false);
-        if (denoms.isEmpty())
-            throw new GringottsConfigurationException("No denominations configured. Please check your Gringotts configuration.");
+	            try {
+                    MemoryConfiguration denomConf = new MemoryConfiguration();
+                    //noinspection unchecked
+                    denomConf.addDefaults((Map<String,Object>)denomEntry);
+
+                    String materialName = denomConf.getString("material");
+                    // matchMaterial also works for item ids
+                    Material material = Material.matchMaterial(materialName);
+
+                    short damage = (short)denomConf.getInt("damage"); // returns 0 when path is unset
+		            ItemStack denomType = new ItemStack(material, 1, damage);
+
+                    ItemMeta meta = denomType.getItemMeta();
+
+                    String name = denomConf.getString("displayname");
+                    if (name != null && !name.isEmpty())
+                        meta.setDisplayName(name);
+
+                    List<String> lore = denomConf.getStringList("lore");
+                    if (lore != null && !lore.isEmpty())
+                        meta.setLore(lore);
+
+                    denomType.setItemMeta(meta);
+
+                    double value = denomConf.getDouble("value");
+
+		            currency.addDenomination(denomType, value);
+
+	            } catch (Exception e) {
+	                throw new GringottsConfigurationException("Encountered an error parsing currency. Please check your Gringotts configuration.", e);
+	            }
+			}
+		}
+		else {
+			parseLegacyCurrency(denomSection);
+		}
+    }
+
+	/**
+	 * Parse a multi-denomination currency from configuration.
+     * A currency definition consists of a map of denominations to value.
+     * A denomination type is defined either as the item id, item name,
+     * or a semicolon-separated string of item id; damage value; data value
+     * @param denomSection config section containing denomination definition
+	 */
+	private void parseLegacyCurrency(ConfigurationSection denomSection) {
+		Set<String> denoms = denomSection.getKeys(false);
+        if (denoms.isEmpty()) {
+			throw new GringottsConfigurationException("No denominations configured. Please check your Gringotts configuration.");
+		}
 
         for (String denomStr : denoms) {
-            String[] parts = denomStr.split(";");
-            int type;
+            String[] keyParts = denomStr.split(";");
+            String[] valueParts = denomSection.getString(denomStr).split(";");
+            Material type;
             short dmg = 0;
+            String name = "";
             try {
                 // a denomination needs at least a valid item type
-                // TODO parse material if possible, because of deprecation
-                // TODO support lore, displayName?
-                type = Integer.parseInt(parts[0]);
-                if (parts.length >=2) dmg = Short.parseShort(parts[1]);
-                ItemStack denomType = new ItemStack(type, 1, dmg);
+	            type = Material.matchMaterial(keyParts[0]);
 
-                double value = denomSection.getDouble(denomStr);
-                currency.addDenomination(denomType, value);
+	            if (keyParts.length >= 2) {
+					dmg = Short.parseShort(keyParts[1]);
+				}
+	            ItemStack denomType = new ItemStack(type, 1, dmg);
+	            if(valueParts.length >= 2) {
+					name = valueParts[1];
+				}
+	            if(!name.isEmpty()) {
+	            	ItemMeta meta = denomType.getItemMeta();
+	            	meta.setDisplayName(name);
+	            	denomType.setItemMeta(meta);
+	            }
+	            double value = Double.parseDouble(valueParts[0]);
+	            currency.addDenomination(denomType, value);
             } catch (Exception e) {
                 throw new GringottsConfigurationException("Encountered an error parsing currency. Please check your Gringotts configuration.", e);
             }
         }
-
-    }
+	}
 
 }

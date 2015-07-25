@@ -1,5 +1,6 @@
 package org.gestern.gringotts.currency;
 
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -120,5 +121,7 @@ public class GringottsCurrency {
         return denoms.get(d);
     }
 
-
+    public String toString() {
+        return StringUtils.join(sortedDenoms, '\n');
+    }
 }
