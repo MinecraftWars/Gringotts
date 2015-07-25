@@ -1,7 +1,12 @@
 package org.gestern.gringotts.currency;
 
+import com.sk89q.worldguard.internal.flywaydb.core.internal.util.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Representation of a denomination within a currency.
@@ -17,10 +22,11 @@ public class Denomination implements Comparable<Denomination> {
 
     /** Item type of this denomination. */
     public final ItemStack type;
-    public final Material id;
+    public final Material material;
     public final short damage;
     public final long value;
-    public final String name;
+    public final String displayName;
+    public final List<String> lore;
 
     public Denomination(ItemStack type) {
         this(type, 0);
@@ -28,10 +34,13 @@ public class Denomination implements Comparable<Denomination> {
 
     public Denomination(ItemStack type, long value) {
         this.type = type;
-        this.id = type.getType();
+        this.material = type.getType();
         this.damage = type.getDurability();
         this.value = value;
-        this.name = type.getItemMeta().hasDisplayName() ? type.getItemMeta().getDisplayName() : "";
+
+        ItemMeta meta = type.getItemMeta();
+        this.displayName = meta.hasDisplayName() ? meta.getDisplayName() : "";
+        this.lore = meta.hasLore() ? meta.getLore() : new ArrayList<String>();
     }
 
     @Override
@@ -39,8 +48,9 @@ public class Denomination implements Comparable<Denomination> {
         final int prime = 31;
         int result = 1;
         result = prime * result + damage;
-        result = prime * result + id.hashCode();
-        result = prime * result + name.hashCode();
+        result = prime * result + material.hashCode();
+        result = prime * result + displayName.hashCode();
+        result = prime * result + lore.hashCode();
         return result;
     }
 
@@ -53,7 +63,10 @@ public class Denomination implements Comparable<Denomination> {
         if (getClass() != obj.getClass())
             return false;
         Denomination other = (Denomination) obj;
-        return damage == other.damage && id.equals(other.id) && name.equals(other.name);
+        return damage == other.damage &&
+                material.equals(other.material) &&
+                displayName.equals(other.displayName) &&
+                lore.equals(other.lore);
     }
 
     @Override
@@ -64,7 +77,7 @@ public class Denomination implements Comparable<Denomination> {
 
     @Override
     public String toString() {
-        return String.format("Denomination: %s;%d : %d;%s", id.toString(), damage, value, name);
-    }
+        String loreString = StringUtils.collectionToCommaDelimitedString(lore);
+        return String.format("[Denomination] %s - %s : %s;%d : %d", displayName, loreString, material.toString(), damage, value);    }
 
 }

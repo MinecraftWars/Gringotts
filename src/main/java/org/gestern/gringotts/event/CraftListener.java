@@ -30,7 +30,7 @@ public class CraftListener implements Listener {
 		//and that particular denomination is named, check that all the ingredients are denominations
 		//If so, make the result named like a denomination
 		Denomination similarDenomination = getSimilarDenomination(event.getRecipe().getResult());
-		if(similarDenomination != null && !similarDenomination.name.isEmpty()) {
+		if(similarDenomination != null && !similarDenomination.displayName.isEmpty()) {
 			craftNewMoney(event, similarDenomination);
 		}
 		
@@ -72,7 +72,7 @@ public class CraftListener implements Listener {
 		List<ItemStack> ingredients = Arrays.asList(event.getInventory().getMatrix());
 		for(Denomination denomination : denominations) {
 			ItemStack type = denomination.type;
-			String name = denomination.name;
+			String name = denomination.displayName;
 			//if one of the ingredients is a named denomination, set the result to null, effectively "canceling" the event
 			if(!name.isEmpty() && ingredients.contains(type)) {
 				event.getInventory().setResult(null);
