@@ -55,9 +55,6 @@ public enum Configuration {
     /** Use ender chests as player vaults. */
     public boolean usevaultEnderchest;
 
-    /** Allow money to be crafted / used in crafting */
-    public boolean isCraftable;
-
     /** Regular expression defining what patterns on a sign will create a valid vault. Subpattern 1 denotes the type of the vault. */
     // TODO make this actually configurable(?)
     public final String vaultPattern = "[^\\[]*\\[(\\w*) ?vault\\]";
@@ -106,7 +103,6 @@ public enum Configuration {
             ConfigurationSection denomSection = savedConfig.getConfigurationSection("currency.denominations");
             parseCurrency(denomSection, savedConfig);
         }
-        CONF.isCraftable = savedConfig.getBoolean("currency.craftable", true);
 
         CONF.transactionTaxFlat = savedConfig.getDouble("transactiontax.flat", 0);
         CONF.transactionTaxRate = savedConfig.getDouble("transactiontax.rate", 0);
