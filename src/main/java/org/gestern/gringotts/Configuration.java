@@ -54,7 +54,7 @@ public enum Configuration {
 
     /** Use ender chests as player vaults. */
     public boolean usevaultEnderchest;
-    
+
     /** Allow money to be crafted / used in crafting */
     public boolean isCraftable;
 

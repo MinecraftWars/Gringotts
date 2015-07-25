@@ -15,14 +15,11 @@ currency:
   denominations:
     - material: emerald
       value: 1
-      name: '§2Emerald'
     - material: emerald_block
       value: 9
-      name: '§2Emerald Block'
     
-  # True- Money can be used to craft
-  # False- Money cannot used to craft (only for custom named items)
-  craftable: false
+  # whether money items cannot be used for crafting
+  craftable: true
 
 # tax on /money pay transactions
 transactiontax:
