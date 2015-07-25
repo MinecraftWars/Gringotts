@@ -38,7 +38,7 @@ This is the default configuration which uses emeralds as currency, with emeralds
 * `name` Name of the currency to be used in messages to players. Please enter both a singular and plural version.
 * `fractional` Whether to allow fractional values. `true` or `false`
 * `digits` Decimal digits used in representation and calculation of the currency. Set this to 0 to use only whole number values.
-* `denominations` A list of key-value mappings, defining the [material](http://kiwike.se/wiki/index.php/Item_Names) of the item type to use as currency, and the value of the item. 
+* `denominations` A list of key-value mappings, defining the material and name of the item type to use as currency, and the value of the item. 
 
 
 
@@ -49,29 +49,33 @@ Denominations have the following format:
      denominations:
        - material: material name or id
          damage: damage value of material (optional)
+         displayname: a custom name for the currency item (optional)
+         lore: a custom item lore text (optional)
          value: a number
-         name: a custom name for the currency item (optional)
        - (optional: more denominations)
        - ...
        
-The keys may be either a single number for the item id, or two numbers in the format "id;damage", where "damage" is the damage aka data value of the item. The value can be a whole or fractional number denoting the value of a denomination. However the number of fractional digits in a currency value should not exceed the number defined as `digits`.
+* `material` can be an item id or a name from the [material list](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html)
+* `damage` is the modifier value for an item type. For example, all the dyes have the same item type, but different damage values.
+* `displayname` is a modified item name. Only items with this exact name, including colors, will count as the specified denomination. This does *not* automatically rename all items of this type, you can use a separate item renaming plugin for this.
+* `lore` is a list of custom lore lines that have to be present for an item to be counted as currency. Like `displayname`, it will only work if added by a third party plugin
+* `value` is a whole or fractional number denoting the value of a denomination. The number of fractional digits in a currency value should not exceed the number defined as `digits`.
 
 ##### Example denomination setup with fractional values and items with data values
 
-The following setup shows how to specify a currency with Lapis Lazuli as minor denomination with a value of 0.05, Skeleton Heads with a value of 10 and Creeper Heads with a value of 60:
+The following setup shows how to specify a currency with Lapis Lazuli as minor denomination with a value of 0.05, Skeleton Heads with a value of 10 and Creeper Heads renamed to "Danger Coin" with a value of 60.
 
     denominations:
       - material: ink_sack
         damage: 4
         value: 0.05
-        name: 'Blue Coin'
       - material: skull_item
         value: 10
-        name: 'Skull Coin'
       - material: skull_item
         damage: 4
+        displayname: 'Danger Coin'
+        lore: ['Awarded for stupidity in the face of danger','Handle with care']
         value: 60
-        name: 'Danger Coin'
 
 ### Taxes ###
 
