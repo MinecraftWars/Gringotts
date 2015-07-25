@@ -10,6 +10,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
 import org.gestern.gringotts.currency.GringottsCurrency;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -149,14 +150,19 @@ public enum Configuration {
                     short damage = (short)denomConf.getInt("damage",0);
 		            ItemStack denomType = new ItemStack(material, 1, damage);
 
-                    double value = denomConf.getDouble("value");
+                    ItemMeta meta = denomType.getItemMeta();
 
-		            String name = denomConf.getString("name");
-		            if(name != null && !name.isEmpty()) {
-		            	ItemMeta meta = denomType.getItemMeta();
-		            	meta.setDisplayName(name);
-		            	denomType.setItemMeta(meta);
-		            }
+                    String name = denomConf.getString("displayname");
+                    if (name != null && !name.isEmpty())
+                        meta.setDisplayName(name);
+
+                    List<String> lore = denomConf.getStringList("lore");
+                    if (lore != null && !lore.isEmpty())
+                        meta.setLore(lore);
+
+                    denomType.setItemMeta(meta);
+
+                    double value = denomConf.getDouble("value");
 
 		            currency.addDenomination(denomType, value);
 
