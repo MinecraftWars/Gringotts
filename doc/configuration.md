@@ -25,11 +25,8 @@ Example configuration section:
       denominations:
         - material: emerald
           value: 1
-          name: '§2Emerald'
         - material: emerald_block
           value: 9
-          name: '§2Emerald Block'
-
 
 This is the default configuration which uses emeralds as currency, with emeralds having value 1, and emerald blocks value 9.
 
@@ -50,7 +47,7 @@ Denominations have the following format:
        - material: material name or id
          damage: damage value of material (optional)
          displayname: a custom name for the currency item (optional)
-         lore: a custom item lore text (optional)
+         lore: a list of custom item lore text lines (optional)
          value: a number
        - (optional: more denominations)
        - ...
@@ -61,9 +58,9 @@ Denominations have the following format:
 * `lore` is a list of custom lore lines that have to be present for an item to be counted as currency. Like `displayname`, it will only work if added by a third party plugin
 * `value` is a whole or fractional number denoting the value of a denomination. The number of fractional digits in a currency value should not exceed the number defined as `digits`.
 
-##### Example denomination setup with fractional values and items with data values
+##### Example denomination setup with different features used for each denomination
 
-The following setup shows how to specify a currency with Lapis Lazuli as minor denomination with a value of 0.05, Skeleton Heads with a value of 10 and Creeper Heads renamed to "Danger Coin" with a value of 60.
+The following setup shows how to specify a currency with Lapis Lazuli as minor denomination with a value of 0.05, Skeleton Heads with a value of 10 and Creeper Heads renamed to "Danger Coin" and additional added lore with a value of 60.
 
     denominations:
       - material: ink_sack
