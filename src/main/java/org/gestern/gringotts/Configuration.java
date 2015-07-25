@@ -98,7 +98,6 @@ public enum Configuration {
         int currencyType = savedConfig.getInt("currency.type",-1);
         if (currencyType > 0) {
             byte currencyDataValue = (byte)savedConfig.getInt("currency.datavalue", 0);
-            // TODO use material name instead of id
             ItemStack legacyCurrency = new ItemStack(currencyType, 0, (short)0);
             legacyCurrency.setData(new MaterialData(currencyType, currencyDataValue));
             currency.addDenomination(legacyCurrency, 1);
@@ -142,7 +141,6 @@ public enum Configuration {
                     //noinspection unchecked
                     denomConf.addDefaults((Map<String,Object>)denomEntry);
 
-	            	// TODO support lore?
                     String materialName = denomConf.getString("material");
                     // matchMaterial also works for item ids
                     Material material = Material.matchMaterial(materialName);
