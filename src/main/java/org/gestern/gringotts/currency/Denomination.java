@@ -1,6 +1,6 @@
 package org.gestern.gringotts.currency;
 
-import com.sk89q.worldguard.internal.flywaydb.core.internal.util.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -77,7 +77,7 @@ public class Denomination implements Comparable<Denomination> {
 
     @Override
     public String toString() {
-        String loreString = StringUtils.collectionToCommaDelimitedString(lore);
-        return String.format("[Denomination] %s - %s : %s;%d : %d", displayName, loreString, material.toString(), damage, value);    }
+        String loreString = lore.isEmpty()? "" : " - " + StringUtils.join(lore, ", ");
+        return String.format("{Denomination} %s%s : %s;%d : %d", displayName, loreString, material.toString(), damage, value);    }
 
 }

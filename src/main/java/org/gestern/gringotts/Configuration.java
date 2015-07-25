@@ -129,7 +129,6 @@ public enum Configuration {
      * @param denomSection config section containing denomination definition
      * @param savedConfig the entire config for if the denom section is "null"
      */
-	@SuppressWarnings("deprecation")
 	private void parseCurrency(ConfigurationSection denomSection, FileConfiguration savedConfig) {
 		//if the denom section is null, it means it doesn't have a dictionary
 		//thus we'll read it in the new list format
@@ -181,7 +180,6 @@ public enum Configuration {
      * or a semicolon-separated string of item id; damage value; data value
      * @param denomSection config section containing denomination definition
 	 */
-    @SuppressWarnings("deprecation")
 	private void parseLegacyCurrency(ConfigurationSection denomSection) {
 		Set<String> denoms = denomSection.getKeys(false);
         if (denoms.isEmpty()) {
