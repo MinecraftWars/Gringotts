@@ -3,8 +3,9 @@ Gringotts Changelog
 
 v2.6
 ----
-* adds display name support for currency items
-* option to disable crafting of currency items
+* adds display name and lore support for currency items. See [configuration instructions](https://github.com/MinecraftWars/Gringotts/blob/master/doc/configuration.md) on how to configure this.
+  Thanks to dj5566 for contributing this feature!
+* `startingbalance` config option works again
 
 v2.5
 ----

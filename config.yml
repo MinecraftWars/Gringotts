@@ -13,6 +13,7 @@ currency:
 
   # value of individual denominations. default: emerald: 1, emerald block: 9
   denominations:
+
     - material: emerald
       value: 1
     - material: emerald_block
