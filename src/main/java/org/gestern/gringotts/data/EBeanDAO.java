@@ -18,6 +18,8 @@ import org.gestern.gringotts.accountholder.AccountHolder;
 import java.util.*;
 import java.util.logging.Logger;
 
+import static org.gestern.gringotts.Configuration.CONF;
+
 public class EBeanDAO implements DAO {
 
     private final EbeanServer db = Gringotts.G.getDatabase();
@@ -54,7 +56,27 @@ public class EBeanDAO implements DAO {
         EBeanAccount acc = new EBeanAccount();
         acc.setOwner(account.owner.getId());
         acc.setType(account.owner.getType());
-        acc.setCents(0);
+
+        // TODO this is business logic and should probably be outside of the DAO implementation.
+        // also find a more elegant way of handling different account types
+        double startValue = 0;
+        String type = account.owner.getType();
+        switch (type) {
+            case "player":
+                startValue = CONF.startBalancePlayer;
+                break;
+            case "faction":
+                startValue = CONF.startBalanceFaction;
+                break;
+            case "town":
+                startValue = CONF.startBalanceTown;
+                break;
+            case "nation":
+                startValue = CONF.startBalanceNation;
+                break;
+        }
+
+        acc.setCents(CONF.currency.centValue(startValue));
         db.save(acc);
         return true;
     }
