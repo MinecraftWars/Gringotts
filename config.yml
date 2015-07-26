@@ -19,9 +19,6 @@ currency:
       value: 1
     - material: emerald_block
       value: 9
-    
-  # whether money items cannot be used for crafting
-  craftable: true
 
 # tax on /money pay transactions
 transactiontax:
