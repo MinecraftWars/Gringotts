@@ -137,7 +137,7 @@ v1.2.0
 
 v1.1.0
 ------
-* New permissions: `gringotts.createvault`, `gringotts.createvault`
+* New permissions: `gringotts.createvault`
 * Bugfixes concerning vault destruction and disbanded factions
 
 v1.0.1

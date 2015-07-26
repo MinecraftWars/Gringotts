@@ -1,3 +1,5 @@
+# for details on configuration, see https://github.com/MinecraftWars/Gringotts/blob/master/doc/configuration.md
+
 # supported languages: "custom" (default, english) and "de" (german)
 language: custom
 
@@ -13,7 +15,6 @@ currency:
 
   # value of individual denominations. default: emerald: 1, emerald block: 9
   denominations:
-
     - material: emerald
       value: 1
     - material: emerald_block
