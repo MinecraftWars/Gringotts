@@ -1,13 +1,5 @@
 package org.gestern.gringotts.currency;
 
-import org.apache.commons.lang.StringUtils;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Representation of a denomination within a currency.
  * 
@@ -20,53 +12,32 @@ import java.util.List;
  */
 public class Denomination implements Comparable<Denomination> {
 
-    /** Item type of this denomination. */
-    public final ItemStack type;
-    public final Material material;
-    public final short damage;
+    /** Identification information for this denomination. */
+    public final DenominationKey key;
+
+    /** Value of one unit of this denomination in cents. */
     public final long value;
-    public final String displayName;
-    public final List<String> lore;
 
-    public Denomination(ItemStack type) {
-        this(type, 0);
-    }
+    /**
+     * The name of a single unit of this denomination. The unit name is determined by explicit configuration,
+     * configured displayName, or default item name (in this order).
+     */
+    public final String unitName;
 
-    public Denomination(ItemStack type, long value) {
-        this.type = type;
-        this.material = type.getType();
-        this.damage = type.getDurability();
+    /**
+     * The name for units of this denomination (plural). The unit name is determined by explicit configuration,
+     * configured displayName, or default item name (in this order).
+     */
+    public final String unitNamePlural;
+
+
+    public Denomination(DenominationKey key, long value) {
+        this.key = key;
         this.value = value;
 
-        ItemMeta meta = type.getItemMeta();
-        this.displayName = meta.hasDisplayName() ? meta.getDisplayName() : "";
-        this.lore = meta.hasLore() ? meta.getLore() : new ArrayList<String>();
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + damage;
-        result = prime * result + material.hashCode();
-        result = prime * result + displayName.hashCode();
-        result = prime * result + lore.hashCode();
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Denomination other = (Denomination) obj;
-        return damage == other.damage &&
-                material.equals(other.material) &&
-                displayName.equals(other.displayName) &&
-                lore.equals(other.lore);
+        // TODO get this from config if available
+        this.unitName = key.getName();
+        this.unitNamePlural = unitName + "s";
     }
 
     @Override
@@ -77,7 +48,6 @@ public class Denomination implements Comparable<Denomination> {
 
     @Override
     public String toString() {
-        String loreString = lore.isEmpty()? "" : " - " + StringUtils.join(lore, ", ");
-        return String.format("{Denomination} %s%s : %s;%d : %d", displayName, loreString, material.toString(), damage, value);    }
+        return String.format("{Denomination} %s : %d", key.type, value);    }
 
 }

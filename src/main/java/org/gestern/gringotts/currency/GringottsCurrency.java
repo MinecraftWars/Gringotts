@@ -18,7 +18,7 @@ public class GringottsCurrency {
     // yes, I want to be able to get the key from the key.
     // this is because I want to find a denomination's value based on its type.
     // TODO considering there are usually only very few denominations.. simplify this using just a simple friggin list or array
-    private final Map<Denomination,Denomination> denoms = new HashMap<>();
+    private final Map<DenominationKey,Denomination> denoms = new HashMap<>();
     private final List<Denomination> sortedDenoms = new ArrayList<>();
 
     /** Name of the currency. */
@@ -63,8 +63,9 @@ public class GringottsCurrency {
      * @param value the denomination's value
      */
     public void addDenomination(ItemStack type, double value) {
-        Denomination d = new Denomination(type, Math.round(centValue(value)));
-        denoms.put(d, d);
+        DenominationKey k = new DenominationKey(type);
+        Denomination d = new Denomination(k, Math.round(centValue(value)));
+        denoms.put(k, d);
         // infrequent insertion, so I don't mind sorting on every insert
         sortedDenoms.add(d);
         Collections.sort(sortedDenoms);
@@ -117,7 +118,7 @@ public class GringottsCurrency {
      * @return denomination for the item stack, or null if there is no such denomination
      */
     private Denomination denominationOf(ItemStack stack) {
-        Denomination d = new Denomination(stack);
+        DenominationKey d = new DenominationKey(stack);
         return denoms.get(d);
     }
 

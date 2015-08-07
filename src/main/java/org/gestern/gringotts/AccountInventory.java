@@ -50,7 +50,7 @@ public class AccountInventory {
         // try denominations from largest to smallest
         for(Denomination denom : CONF.currency.denominations()) {
             if (denom.value <= remaining) {
-                ItemStack stack = new ItemStack(denom.type);
+                ItemStack stack = new ItemStack(denom.key.type);
                 int stacksize = stack.getMaxStackSize();
                 long denomItemCount = denom.value > 0? remaining / denom.value : 0;
 
@@ -94,7 +94,7 @@ public class AccountInventory {
         List<Denomination> denoms = cur.denominations();
         Collections.reverse(denoms);
         for(Denomination denom : denoms) {
-            ItemStack stack = new ItemStack(denom.type);
+            ItemStack stack = new ItemStack(denom.key.type);
             int stacksize = stack.getMaxStackSize();
 
             // take 1 more than necessary if it doesn't round. add the extra later
