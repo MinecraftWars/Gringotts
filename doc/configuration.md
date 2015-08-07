@@ -38,7 +38,6 @@ This is the default configuration which uses emeralds as currency, with emeralds
 * `denominations` A list of key-value mappings, defining the material and name of the item type to use as currency, and the value of the item. 
 
 
-
 #### Denominations 
 
 Denominations have the following format:
@@ -54,9 +53,10 @@ Denominations have the following format:
        
 * `material` can be an item id or a name from the [material list](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html)
 * `damage` is the modifier value for an item type. For example, all the dyes have the same item type, but different damage values.
-* `displayname` is a modified item name. Only items with this exact name, including colors, will count as the specified denomination. This does *not* automatically rename all items of this type, you can use a separate item renaming plugin for this.
+* `displayname` is a modified item name. Only items with this exact name, including colors, will count as the specified denomination. **This does *not* automatically rename all items of this type, you need to use a separate item renaming plugin for this.** It will, however, create currency items based on these settings.
 * `lore` is a list of custom lore lines that have to be present for an item to be counted as currency. Like `displayname`, it will only work if added by a third party plugin
 * `value` is a whole or fractional number denoting the value of a denomination. The number of fractional digits in a currency value should not exceed the number defined as `digits`.
+
 
 ##### Example denomination setup with different features used for each denomination
 
@@ -73,6 +73,7 @@ The following setup shows how to specify a currency with Lapis Lazuli as minor d
         displayname: 'Danger Coin'
         lore: ['Awarded for stupidity in the face of danger','Handle with care']
         value: 60
+        
 
 ### Taxes ###
 
@@ -85,6 +86,7 @@ Example configuration section:
       rate: 0.05
 
 This would add to every transaction 1 plus 5% of the transaction value. For instance, if you had issued the command `/money pay 200 notch` it would remove 211 emeralds from your account, and add 200 emeralds to notch's account.
+
 
 ### Misc ###
 
