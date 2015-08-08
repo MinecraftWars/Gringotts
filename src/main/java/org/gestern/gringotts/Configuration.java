@@ -1,5 +1,7 @@
 package org.gestern.gringotts;
 
+import net.milkbowl.vault.item.ItemInfo;
+import net.milkbowl.vault.item.Items;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -33,7 +35,7 @@ public enum Configuration {
      * If a language is not supported by Gringotts, use user-configured or default (English) messages. */
     public String language = "custom";
 
-    /** Currency item types. The item types are ordered by their respective unit value. */
+    /** Currency configuration. */
     public GringottsCurrency currency;
 
     /** Flat tax on every player-to-player transaction. This is a value in currency units. */
@@ -61,7 +63,6 @@ public enum Configuration {
 
 
 
-
     /**
      * Set configuration from values in a file configuration.
      * @param savedConfig config to read and set values with
@@ -86,10 +87,12 @@ public enum Configuration {
         // digits param overrides fractional if available
         digits = savedConfig.getInt("currency.digits", digits);
 
+        boolean namedDenominations = savedConfig.getBoolean("currency.named-denominations", false);
+
         String currencyNameSingular, currencyNamePlural;
         currencyNameSingular = savedConfig.getString("currency.name.singular", "Emerald");
         currencyNamePlural = savedConfig.getString("currency.name.plural", currencyNameSingular+"s");
-        currency = new GringottsCurrency(currencyNameSingular, currencyNamePlural, digits);
+        currency = new GringottsCurrency(currencyNameSingular, currencyNamePlural, digits, namedDenominations);
 
         // legacy currency config, overrides defaults if available
         int currencyType = savedConfig.getInt("currency.type",-1);
@@ -97,7 +100,7 @@ public enum Configuration {
             byte currencyDataValue = (byte)savedConfig.getInt("currency.datavalue", 0);
             ItemStack legacyCurrency = new ItemStack(currencyType, 0, (short)0);
             legacyCurrency.setData(new MaterialData(currencyType, currencyDataValue));
-            currency.addDenomination(legacyCurrency, 1);
+            currency.addDenomination(legacyCurrency, 1, currencyNameSingular, currencyNamePlural);
         } else {
             // regular currency configuration (multi-denomination)
             ConfigurationSection denomSection = savedConfig.getConfigurationSection("currency.denominations");
@@ -137,11 +140,15 @@ public enum Configuration {
                     denomConf.addDefaults((Map<String,Object>)denomEntry);
 
                     String materialName = denomConf.getString("material");
-                    // matchMaterial also works for item ids
-                    Material material = Material.matchMaterial(materialName);
 
-                    short damage = (short)denomConf.getInt("damage"); // returns 0 when path is unset
-		            ItemStack denomType = new ItemStack(material, 1, damage);
+                    ItemStack denomType = itemByName(materialName);
+
+                    if (denomType == null) throw new GringottsConfigurationException("A denomination material could not be identified while setting up currency configuration. The material was: " + materialName);
+
+                    if (denomConf.contains("damage")) {
+                        short damage = (short)denomConf.getInt("damage"); // returns 0 when path is unset
+                        denomType.setDurability(damage);
+                    }
 
                     ItemMeta meta = denomType.getItemMeta();
 
@@ -157,9 +164,14 @@ public enum Configuration {
 
                     double value = denomConf.getDouble("value");
 
-		            currency.addDenomination(denomType, value);
+                    String unitName = denomConf.contains("unit-name") ? denomConf.getString("unit-name") : unitName(denomType);
+                    String unitNamePlural = denomConf.contains("unit-name-plural") ? denomConf.getString("unit-name-plural") : unitName + "s";
 
-	            } catch (Exception e) {
+		            currency.addDenomination(denomType, value, unitName, unitNamePlural);
+
+	            } catch (GringottsConfigurationException e) {
+                    throw e;
+                } catch (Exception e) {
 	                throw new GringottsConfigurationException("Encountered an error parsing currency. Please check your Gringotts configuration.", e);
 	            }
 			}
@@ -185,31 +197,65 @@ public enum Configuration {
         for (String denomStr : denoms) {
             String[] keyParts = denomStr.split(";");
             String[] valueParts = denomSection.getString(denomStr).split(";");
-            Material type;
-            short dmg = 0;
+
             String name = "";
             try {
                 // a denomination needs at least a valid item type
-	            type = Material.matchMaterial(keyParts[0]);
+                ItemStack denomType = itemByName(keyParts[0]);
 
 	            if (keyParts.length >= 2) {
-					dmg = Short.parseShort(keyParts[1]);
+					short dmg = Short.parseShort(keyParts[1]);
+                    denomType.setDurability(dmg);
 				}
-	            ItemStack denomType = new ItemStack(type, 1, dmg);
-	            if(valueParts.length >= 2) {
+
+	            if (valueParts.length >= 2) {
 					name = valueParts[1];
 				}
-	            if(!name.isEmpty()) {
+
+	            if (!name.isEmpty()) {
 	            	ItemMeta meta = denomType.getItemMeta();
 	            	meta.setDisplayName(name);
 	            	denomType.setItemMeta(meta);
 	            }
 	            double value = Double.parseDouble(valueParts[0]);
-	            currency.addDenomination(denomType, value);
+
+                String unitName = unitName(denomType);
+                String unitNamePlural = unitName + "s";
+
+	            currency.addDenomination(denomType, value, unitName, unitNamePlural);
+
             } catch (Exception e) {
                 throw new GringottsConfigurationException("Encountered an error parsing currency. Please check your Gringotts configuration.", e);
             }
         }
 	}
+
+    /**
+     * Attempt to identify an item by name. Prefers to use built-in Minecraft names,
+     * and uses Vault identification if available.
+     *
+     * @param name name of the item type.
+     * @return the identified item, if successful, or null otherwise.
+     */
+    private static ItemStack itemByName(String name) {
+        // matchMaterial also works for item ids
+        Material material = Material.matchMaterial(name);
+        // TODO check for Vault dependency
+        if (material != null) return new ItemStack(material,0);
+        else {
+            ItemInfo info = Items.itemByName(name);
+            return info.toStack();
+        }
+    }
+
+    /** Derived name for this denomination. */
+    private static String unitName(ItemStack type) {
+        String name = Items.itemByStack(type).getName(); // default
+        ItemMeta meta = type.getItemMeta();
+        if (type.hasItemMeta() && meta.hasDisplayName())
+            name = meta.getDisplayName();
+
+        return name;
+    }
 
 }

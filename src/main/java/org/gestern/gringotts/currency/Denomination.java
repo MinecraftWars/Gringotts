@@ -5,9 +5,6 @@ package org.gestern.gringotts.currency;
  * 
  * Note: this class has a natural ordering that is inconsistent with equals.
  * Specifically, the ordering is based purely on the value of the denomination, but not the type.
- * Conversely, the equality of denominations is based purely on their respective types, and their value is not regarded.
- * 
- * @author jast
  *
  */
 public class Denomination implements Comparable<Denomination> {
@@ -31,13 +28,13 @@ public class Denomination implements Comparable<Denomination> {
     public final String unitNamePlural;
 
 
-    public Denomination(DenominationKey key, long value) {
+    public Denomination(DenominationKey key, long value, String unitName, String unitNamePlural) {
         this.key = key;
         this.value = value;
 
         // TODO get this from config if available
-        this.unitName = key.getName();
-        this.unitNamePlural = unitName + "s";
+        this.unitName = unitName;
+        this.unitNamePlural = unitNamePlural;
     }
 
     @Override

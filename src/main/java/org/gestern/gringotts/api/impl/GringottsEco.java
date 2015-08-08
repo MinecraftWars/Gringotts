@@ -12,7 +12,7 @@ import org.gestern.gringotts.api.*;
 import org.gestern.gringotts.currency.GringottsCurrency;
 import org.gestern.gringotts.data.DAO;
 
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
 
@@ -329,7 +329,7 @@ public class GringottsEco implements Eco {
     private class Curr implements Currency {
 
         final GringottsCurrency gcurr;
-        final String formatString; 
+        final String formatString; // TODO this should be configurable
 
         Curr(GringottsCurrency curr) {
             this.gcurr = curr;
@@ -348,7 +348,7 @@ public class GringottsEco implements Eco {
 
         @Override
         public String format(double value) {
-            return String.format(formatString, value, value==1.0? gcurr.name : gcurr.namePlural);
+            return CONF.currency.format(formatString,value);
         }
 
         @Override
@@ -361,7 +361,7 @@ public class GringottsEco implements Eco {
     @Override
     public Set<String> getBanks() {
         // TODO implement banks
-        return new HashSet<>();
+        return Collections.emptySet();
     }
 
 }

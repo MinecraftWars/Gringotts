@@ -13,6 +13,9 @@ currency:
   # number of decimal digits supported by currency value (0 for whole numbers only)
   digits: 2
 
+  # Display account balances with individual denomination names
+  named-denominations: false
+
   # value of individual denominations. default: emerald: 1, emerald block: 9
   denominations:
     - material: emerald

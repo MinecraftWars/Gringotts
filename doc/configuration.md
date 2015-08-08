@@ -22,6 +22,7 @@ Example configuration section:
         singular: Emerald
         plural: Emeralds
       digits: 2
+      named-denominations: false
       denominations:
         - material: emerald
           value: 1
@@ -33,8 +34,8 @@ This is the default configuration which uses emeralds as currency, with emeralds
 #### Individual settings
 
 * `name` Name of the currency to be used in messages to players. Please enter both a singular and plural version.
-* `fractional` Whether to allow fractional values. `true` or `false`
 * `digits` Decimal digits used in representation and calculation of the currency. Set this to 0 to use only whole number values.
+* `named-denominations` Whether to display money values in messages split up over denomination values, or as a single sum.
 * `denominations` A list of key-value mappings, defining the material and name of the item type to use as currency, and the value of the item. 
 
 
@@ -48,14 +49,18 @@ Denominations have the following format:
          displayname: a custom name for the currency item (optional)
          lore: a list of custom item lore text lines (optional)
          value: a number
+         unit-name: a name for the denomination for display in messages (optional)
+         unit-name-plural: plural version of unit-name (optional)
        - (optional: more denominations)
        - ...
        
-* `material` can be an item id or a name from the [material list](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html)
-* `damage` is the modifier value for an item type. For example, all the dyes have the same item type, but different damage values.
+* `material` can be an item id, a name from the [material list](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html), or an item type parsable by Vault (see [Vault Items code](https://github.com/MilkBowl/VaultAPI/blob/master/src/main/java/net/milkbowl/vault/item/Items.java)), if Vault is installed.
+* `damage` is the modifier value or subtypoe for an item type. For example, all the dyes have the same item type, but different damage values.
 * `displayname` is a modified item name. Only items with this exact name, including colors, will count as the specified denomination. **This does *not* automatically rename all items of this type, you need to use a separate item renaming plugin for this.** It will, however, create currency items based on these settings.
 * `lore` is a list of custom lore lines that have to be present for an item to be counted as currency. Like `displayname`, it will only work if added by a third party plugin
 * `value` is a whole or fractional number denoting the value of a denomination. The number of fractional digits in a currency value should not exceed the number defined as `digits`.
+* `unit-name` sets the name for the denomination in messages to the player, such as account balance. If not set, uses the item's display name or regular name.
+* `unit-name-plural` is the plural version of `unit-name`. If not set, uses the singular unit name with 's' added.
 
 
 ##### Example denomination setup with different features used for each denomination
