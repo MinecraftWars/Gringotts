@@ -47,7 +47,7 @@ class Commands {
 
             if (args.length == 0) {
                 // same as balance
-                balanceMessage(eco.account(player.getName()));
+                balanceMessage(eco.player(player.getUniqueId()));
                 return true;
             } 
 

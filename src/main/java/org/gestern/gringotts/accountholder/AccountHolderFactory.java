@@ -65,6 +65,7 @@ public class AccountHolderFactory {
 
         @Override
         public AccountHolder getAccountHolder(String uuidOrName) {
+            if (uuidOrName == null) return null;
             OfflinePlayer player;
             try {
                 UUID playerId = UUID.fromString(uuidOrName);
@@ -73,7 +74,7 @@ public class AccountHolderFactory {
                 // don't use getOfflinePlayer(String) because that will do a blocking web request
                 // rather iterate this array, should be quick enough
                 for (OfflinePlayer p : Bukkit.getOfflinePlayers()) {
-                    if (p.getName().equals(uuidOrName)) return new PlayerAccountHolder(p);
+                    if (uuidOrName.equals(p.getName())) return new PlayerAccountHolder(p);
                 }
                 return null;
             }
