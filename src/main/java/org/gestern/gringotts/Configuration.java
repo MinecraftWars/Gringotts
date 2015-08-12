@@ -12,13 +12,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
 import org.gestern.gringotts.currency.GringottsCurrency;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Logger;
 
 import static org.gestern.gringotts.Util.translateColors;
+
+import static org.gestern.gringotts.dependency.Dependency.DEP;
 
 /**
  * Singleton for global configuration information. 
@@ -155,8 +154,6 @@ public enum Configuration {
 
                     ItemStack denomType = itemByName(materialName);
 
-                    if (denomType == null) throw new GringottsConfigurationException("A denomination material could not be identified while setting up currency configuration. The material was: " + materialName);
-
                     if (denomConf.contains("damage")) {
                         short damage = (short)denomConf.getInt("damage"); // returns 0 when path is unset
                         denomType.setDurability(damage);
@@ -168,7 +165,10 @@ public enum Configuration {
                     if (name != null && !name.isEmpty())
                         meta.setDisplayName(translateColors(name));
 
-                    List<String> lore = denomConf.getStringList("lore");
+                    List<String> lore = denomConf.isString("lore") ?
+                            // allow users to configure a single lore string
+                            Collections.singletonList(denomConf.getString("lore")) :
+                            denomConf.getStringList("lore");
                     if (lore != null && !lore.isEmpty()) {
                         List<String> loreTranslated = new ArrayList<>(lore.size());
                         for (String l: lore) loreTranslated.add(translateColors(l));
@@ -257,10 +257,12 @@ public enum Configuration {
         Material material = Material.matchMaterial(name);
         // TODO check for Vault dependency
         if (material != null) return new ItemStack(material,0);
-        else {
+        else if (DEP.vault.exists()){
             ItemInfo info = Items.itemByName(name);
-            return info.toStack();
+            if (info != null) return info.toStack();
         }
+
+        throw new GringottsConfigurationException("Unable to identify denomination item by name or id: " + name);
     }
 
     /** Derived name for this denomination. */
