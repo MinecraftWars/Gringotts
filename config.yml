@@ -39,3 +39,8 @@ startingbalance:
 usevault:
   container: true
   enderchest: true
+
+# whether money/balance commands show vault and inventory balance separately
+balance:
+  show-vault: true
+  show-inventory: true

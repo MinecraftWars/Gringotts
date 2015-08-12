@@ -2,6 +2,8 @@ package org.gestern.gringotts;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
+import static org.gestern.gringotts.Util.translateColors;
+
 /**
  * Deals with all the language Strings.
  * 
@@ -65,60 +67,76 @@ public enum Language
 
     public void readLanguage(FileConfiguration savedLanguage)
     {
+        ClosuresWouldBeCoolNow translator = new ClosuresWouldBeCoolNow(savedLanguage);
+        
         //global
-        LANG.noperm = savedLanguage.getString("noperm", "You do not have permission to transfer money.");
-        LANG.playerOnly = savedLanguage.getString("playeronly", "This command can only be run by a player.");
-        LANG.balance = savedLanguage.getString("balance", "Your current total balance: %balance");
-        LANG.vault_balance = savedLanguage.getString("vault_balance", "Vault balance: %balance");
-        LANG.inv_balance = savedLanguage.getString("inv_balance", "Inventory balance: %balance");
-        LANG.invalid_account = savedLanguage.getString("invalidaccount", "Invalid account: %player");
-        LANG.reload = savedLanguage.getString("reload", "Gringotts: Reloaded configuration!");
+        LANG.noperm = translator.read("noperm", "You do not have permission to transfer money.");
+        LANG.playerOnly = translator.read("playeronly", "This command can only be run by a player.");
+        LANG.balance = translator.read("balance", "Your current total balance: %balance");
+        LANG.vault_balance = translator.read("vault_balance", "Vault balance: %balance");
+        LANG.inv_balance = translator.read("inv_balance", "Inventory balance: %balance");
+        LANG.invalid_account = translator.read("invalidaccount", "Invalid account: %player");
+        LANG.reload = translator.read("reload", "Gringotts: Reloaded configuration!");
 
         //pay command
-        LANG.pay_success_sender = savedLanguage.getString("pay.success.sender", "Sent %value to %player. ");
-        LANG.pay_success_tax = savedLanguage.getString("pay.success.tax", "Received %value from %player.");
-        LANG.pay_success_target = savedLanguage.getString("pay.success.target", "Transaction tax deducted from your account: %value");
-        LANG.pay_error = savedLanguage.getString("pay.error", "Your attempt to send %value to %player failed for unknown reasons.");
-        LANG.pay_insufficientFunds = savedLanguage.getString("pay.insufficientFunds", "Your account has insufficient balance. Current balance: %balance. Required: %value");
-        LANG.pay_insS_sender = savedLanguage.getString("pay.insufficientSpace.sender", "%player has insufficient storage space for %value");
-        LANG.pay_insS_target = savedLanguage.getString("pay.insufficientSpace.target", "%player tried to send %value, but you don't have enough space for that amount.");
+        LANG.pay_success_sender = translator.read("pay.success.sender", "Sent %value to %player. ");
+        LANG.pay_success_tax = translator.read("pay.success.tax", "Received %value from %player.");
+        LANG.pay_success_target = translator.read("pay.success.target", "Transaction tax deducted from your account: %value");
+        LANG.pay_error = translator.read("pay.error", "Your attempt to send %value to %player failed for unknown reasons.");
+        LANG.pay_insufficientFunds = translator.read("pay.insufficientFunds", "Your account has insufficient balance. Current balance: %balance. Required: %value");
+        LANG.pay_insS_sender = translator.read("pay.insufficientSpace.sender", "%player has insufficient storage space for %value");
+        LANG.pay_insS_target = translator.read("pay.insufficientSpace.target", "%player tried to send %value, but you don't have enough space for that amount.");
 
         //deposit command
-        LANG.deposit_success = savedLanguage.getString("deposit.success", "Deposited %value to your storage.");
-        LANG.deposit_error = savedLanguage.getString("deposit.error", "Unable to deposit %value to your storage.");
+        LANG.deposit_success = translator.read("deposit.success", "Deposited %value to your storage.");
+        LANG.deposit_error = translator.read("deposit.error", "Unable to deposit %value to your storage.");
 
         //withdraw command
-        LANG.withdraw_success = savedLanguage.getString("withdraw.success", "Withdrew %value from your storage.");
-        LANG.withdraw_error = savedLanguage.getString("withdraw.error", "Unable to withdraw %value from your storage.");
+        LANG.withdraw_success = translator.read("withdraw.success", "Withdrew %value from your storage.");
+        LANG.withdraw_error = translator.read("withdraw.error", "Unable to withdraw %value from your storage.");
 
         //moneyadmin command
-        LANG.moneyadmin_b = savedLanguage.getString("moneyadmin.b", "Balance of account %player: %balance");
-        LANG.moneyadmin_add_sender = savedLanguage.getString("moneyadmin.add.sender", "Added %value to account %player");
-        LANG.moneyadmin_add_target = savedLanguage.getString("moneyadmin.add.target", "Added to your account: %value");
-        LANG.moneyadmin_add_error = savedLanguage.getString("moneyadmin.add.error", "Could not add %value to account %player");
-        LANG.moneyadmin_rm_sender = savedLanguage.getString("moneyadmin.rm.sender", "Removed %value from account %player");
-        LANG.moneyadmin_rm_target = savedLanguage.getString("moneyadmin.rm.target", "Removed from your account: %value");
-        LANG.moneyadmin_rm_error = savedLanguage.getString("moneyadmin.rm.error", "Could not remove %value from account %player");
+        LANG.moneyadmin_b = translator.read("moneyadmin.b", "Balance of account %player: %balance");
+        LANG.moneyadmin_add_sender = translator.read("moneyadmin.add.sender", "Added %value to account %player");
+        LANG.moneyadmin_add_target = translator.read("moneyadmin.add.target", "Added to your account: %value");
+        LANG.moneyadmin_add_error = translator.read("moneyadmin.add.error", "Could not add %value to account %player");
+        LANG.moneyadmin_rm_sender = translator.read("moneyadmin.rm.sender", "Removed %value from account %player");
+        LANG.moneyadmin_rm_target = translator.read("moneyadmin.rm.target", "Removed from your account: %value");
+        LANG.moneyadmin_rm_error = translator.read("moneyadmin.rm.error", "Could not remove %value from account %player");
 
         //gringotts vaults
-        LANG.vault_created = savedLanguage.getString("vault.created", "Created vault successfully.");
-        LANG.vault_noVaultPerm = savedLanguage.getString("vault.noVaultPerm", "You do not have permission to create vaults here.");
-        LANG.vault_error = savedLanguage.getString("vault.error", "Failed to create vault.");
+        LANG.vault_created = translator.read("vault.created", "Created vault successfully.");
+        LANG.vault_noVaultPerm = translator.read("vault.noVaultPerm", "You do not have permission to create vaults here.");
+        LANG.vault_error = translator.read("vault.error", "Failed to create vault.");
 
         //towny plugin
-        LANG.plugin_towny_noTownVaultPerm = savedLanguage.getString("plugins.towny.noTownPerm", "You do not have permission to create town vaults here.");
-        LANG.plugin_towny_noTownResident = savedLanguage.getString("plugins.towny.noTownResident", "Cannot create town vault: You are not resident of a town.");
-        LANG.plugin_towny_noNationVaultPerm = savedLanguage.getString("plugins.towny.NoNationVaultPerm", "You do not have permission to create nation vaults here.");
-        LANG.plugin_towny_notInNation = savedLanguage.getString("plugins.towny.notInNation", "Cannot create nation vault: You do not belong to a nation.");
+        LANG.plugin_towny_noTownVaultPerm = translator.read("plugins.towny.noTownPerm", "You do not have permission to create town vaults here.");
+        LANG.plugin_towny_noTownResident = translator.read("plugins.towny.noTownResident", "Cannot create town vault: You are not resident of a town.");
+        LANG.plugin_towny_noNationVaultPerm = translator.read("plugins.towny.NoNationVaultPerm", "You do not have permission to create nation vaults here.");
+        LANG.plugin_towny_notInNation = translator.read("plugins.towny.notInNation", "Cannot create nation vault: You do not belong to a nation.");
 
         //faction plugin
-        LANG.plugin_faction_noVaultPerm = savedLanguage.getString("plugins.faction.noFactionVaultPerm", "You do not have permission to create a faction vault here.");
-        LANG.plugin_faction_notInFaction = savedLanguage.getString("plugins.faction.notInFaction", "Cannot create faction vault: You are not in a faction.");
+        LANG.plugin_faction_noVaultPerm = translator.read("plugins.faction.noFactionVaultPerm", "You do not have permission to create a faction vault here.");
+        LANG.plugin_faction_notInFaction = translator.read("plugins.faction.notInFaction", "Cannot create faction vault: You are not in a faction.");
 
         //vault plugin
-        LANG.plugin_vault_insufficientFunds = savedLanguage.getString("plugins.vault.insufficientFunds", "Insufficient funds.");
-        LANG.plugin_vault_insufficientSpace = savedLanguage.getString("plugins.vault.insufficientSpace", "Insufficient space.");
-        LANG.plugin_vault_error = savedLanguage.getString("plugins.vault.unknownError", "Unknown failure.");
-        LANG.plugin_vault_notImplemented = savedLanguage.getString("plugins.vault.notImplemented", "Gringotts does not support banks");
+        LANG.plugin_vault_insufficientFunds = translator.read("plugins.vault.insufficientFunds", "Insufficient funds.");
+        LANG.plugin_vault_insufficientSpace = translator.read("plugins.vault.insufficientSpace", "Insufficient space.");
+        LANG.plugin_vault_error = translator.read("plugins.vault.unknownError", "Unknown failure.");
+        LANG.plugin_vault_notImplemented = translator.read("plugins.vault.notImplemented", "Gringotts does not support banks");
+    }
+
+    /**
+     * Ah yes, an object just to wrap the config so I don't have to repeat it as a parameter.
+     * <3 Java verbosity.
+     */
+    private static class ClosuresWouldBeCoolNow {
+        private final FileConfiguration savedLanguage;
+        private ClosuresWouldBeCoolNow(FileConfiguration savedLanguage) {
+            this.savedLanguage = savedLanguage; 
+        }
+        private String read(String path, String def) {
+            return translateColors(savedLanguage.getString(path,def));
+        }
     }
 }

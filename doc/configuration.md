@@ -101,7 +101,9 @@ This would add to every transaction 1 plus 5% of the transaction value. For inst
 	  town: 0
 	  nation: 0
 	
-Amount of virtual money to gift to players on first join, or accounts with other plugins upon creation. This money may be spent as usual, but will not be backed by physical currency. Enable these if you want your players/factions/etc. to start with some money that can't be lost or stolen.  
+Amount of virtual money to gift to players on first join, or accounts with other plugins upon creation. This money may be spent as usual, but will not be backed by physical currency. Enable these if you want your players/factions/etc. to start with some money that can't be lost or stolen.
+  
+---
 
     usevault:
       container: true
@@ -110,6 +112,14 @@ Amount of virtual money to gift to players on first join, or accounts with other
 Globally enable use of specific kinds of vault:
 * `container` Enable the use of container vaults: chests, dispensers and furnaces. If this is `false`, only player's inventory and/or enderchests will serve as a player "vault".
 * `enderchest` Enable use of enderchest as vault for players globally. The permission `gringotts.usevault.enderchest` may still be used to disable this on a per-player/world basis.
+
+---
+
+    balance:
+      show-inventory: true
+      show-vault: true
+      
+Show or hide messages information in inventory and vault balance, in addition to total balance. Disable these if you'd like your balance messages to be less verbose.
 
 
 Localization and message customization
@@ -130,25 +140,35 @@ Permissions
 
 Allow players to create any type of vault.
 
+---
+
     gringotts.createvault.admin:
       default: op
 
 Allow players to create vaults for other players.
+
+---
 
     gringotts.createvault.player:
       default: true
 
 Allow players to create vaults for their own account.
 
+---
+
     gringotts.createvault.faction:
       default: true
 
 Allow players to create vaults for their faction (Factions only).
 
+---
+
     gringotts.createvault.town:
       default: true
 
 Allow players to create vaults for their town (Towny only).
+
+---
 
     gringotts.createvault.nation:
       default: true
@@ -157,6 +177,8 @@ Allow players to create vaults for their nation (Towny only).
 
     gringotts.createvault.worldguard:
       default: true
+
+---
 
 Allow players to create vaults for WorldGuard regions they are member of.
 
@@ -167,11 +189,14 @@ Allow players to create vaults for WorldGuard regions they are member of.
 
 Use player inventory and player's enderchest as vault when player is online.
 
+---
+
     gringotts.usevault.inventory
       default: true
 
 Use player inventory as vault when player is online.
 
+--- 
     gringotts.usevault.enderchest
       default: true
 
@@ -182,16 +207,22 @@ Use Gringotts commands.
     gringotts.command
       default: true
 
+---
+ 
 Allow transfer command (pay)
 
     gringotts.transfer:
       default: true
 
+---
+
 Allow withdrawal of money from chest storage to inventory via `/money withdraw`.
     
     gringotts.command.withdraw:
       default: true
-      
+    
+---
+
 Allow deposit of money to chest storage from inventory via `/money deposit`.
     
     gringotts.command.deposit:

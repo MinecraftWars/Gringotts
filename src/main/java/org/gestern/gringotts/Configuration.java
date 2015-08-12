@@ -12,10 +12,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
 import org.gestern.gringotts.currency.GringottsCurrency;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+
+import static org.gestern.gringotts.Util.translateColors;
 
 /**
  * Singleton for global configuration information. 
@@ -52,10 +55,16 @@ public enum Configuration {
     public long startBalanceNation = 0;
 
     /** Use container vaults (chest, dispenser, furnace). */
-    public boolean usevaultContainer;
+    public boolean usevaultContainer = true;
 
     /** Use ender chests as player vaults. */
-    public boolean usevaultEnderchest;
+    public boolean usevaultEnderchest = true;
+
+    /** Balance command shows vault balance. */
+    public boolean balanceShowVault = true;
+
+    /** Balance command shows inventory balance. */
+    public boolean balanceShowInventory = true;
 
     /** Regular expression defining what patterns on a sign will create a valid vault. Subpattern 1 denotes the type of the vault. */
     // TODO make this actually configurable(?)
@@ -90,8 +99,8 @@ public enum Configuration {
         boolean namedDenominations = savedConfig.getBoolean("currency.named-denominations", false);
 
         String currencyNameSingular, currencyNamePlural;
-        currencyNameSingular = savedConfig.getString("currency.name.singular", "Emerald");
-        currencyNamePlural = savedConfig.getString("currency.name.plural", currencyNameSingular+"s");
+        currencyNameSingular = translateColors(savedConfig.getString("currency.name.singular", "Emerald"));
+        currencyNamePlural = translateColors(savedConfig.getString("currency.name.plural", currencyNameSingular+"s"));
         currency = new GringottsCurrency(currencyNameSingular, currencyNamePlural, digits, namedDenominations);
 
         // legacy currency config, overrides defaults if available
@@ -117,6 +126,9 @@ public enum Configuration {
 
         CONF.usevaultContainer = savedConfig.getBoolean("usevault.container", true);
 
+        CONF.balanceShowInventory = savedConfig.getBoolean("balance.show-inventory", true);
+        CONF.balanceShowVault = savedConfig.getBoolean("balance.show-vault", true);
+
         CONF.language = savedConfig.getString("language", "custom");
     }
 
@@ -129,8 +141,8 @@ public enum Configuration {
      * @param savedConfig the entire config for if the denom section is "null"
      */
 	private void parseCurrency(ConfigurationSection denomSection, FileConfiguration savedConfig) {
-		//if the denom section is null, it means it doesn't have a dictionary
-		//thus we'll read it in the new list format
+		// if the denom section is null, it means it doesn't have a dictionary
+		// thus we'll read it in the new list format
 		if(denomSection == null && savedConfig.isList("currency.denominations")) {
 			for(Map<?, ?> denomEntry : savedConfig.getMapList("currency.denominations")) {
 
@@ -154,11 +166,14 @@ public enum Configuration {
 
                     String name = denomConf.getString("displayname");
                     if (name != null && !name.isEmpty())
-                        meta.setDisplayName(name);
+                        meta.setDisplayName(translateColors(name));
 
                     List<String> lore = denomConf.getStringList("lore");
-                    if (lore != null && !lore.isEmpty())
-                        meta.setLore(lore);
+                    if (lore != null && !lore.isEmpty()) {
+                        List<String> loreTranslated = new ArrayList<>(lore.size());
+                        for (String l: lore) loreTranslated.add(translateColors(l));
+                        meta.setLore(loreTranslated);
+                    }
 
                     denomType.setItemMeta(meta);
 
@@ -167,7 +182,7 @@ public enum Configuration {
                     String unitName = denomConf.contains("unit-name") ? denomConf.getString("unit-name") : unitName(denomType);
                     String unitNamePlural = denomConf.contains("unit-name-plural") ? denomConf.getString("unit-name-plural") : unitName + "s";
 
-		            currency.addDenomination(denomType, value, unitName, unitNamePlural);
+		            currency.addDenomination(denomType, value, translateColors(unitName), translateColors(unitNamePlural));
 
 	            } catch (GringottsConfigurationException e) {
                     throw e;
@@ -222,7 +237,7 @@ public enum Configuration {
                 String unitName = unitName(denomType);
                 String unitNamePlural = unitName + "s";
 
-	            currency.addDenomination(denomType, value, unitName, unitNamePlural);
+	            currency.addDenomination(denomType, value, translateColors(unitName), translateColors(unitNamePlural));
 
             } catch (Exception e) {
                 throw new GringottsConfigurationException("Encountered an error parsing currency. Please check your Gringotts configuration.", e);
