@@ -1,5 +1,7 @@
 package org.gestern.gringotts.currency;
 
+import org.bukkit.ChatColor;
+
 /**
  * Representation of a denomination within a currency.
  * 
@@ -32,9 +34,8 @@ public class Denomination implements Comparable<Denomination> {
         this.key = key;
         this.value = value;
 
-        // TODO get this from config if available
-        this.unitName = unitName;
-        this.unitNamePlural = unitNamePlural;
+        this.unitName = unitName + ChatColor.RESET;
+        this.unitNamePlural = unitNamePlural + ChatColor.RESET;
     }
 
     @Override

@@ -125,13 +125,15 @@ public class GringottsCurrency {
                 long dv = cv / denom.value;
                 cv %= denom.value;
 
-                String display = dv + " " + (dv == 1l? denom.unitName : denom.unitNamePlural);
-                b.append(display);
-                if (cv > 0) b.append(", ");
+                if (dv > 0) {
+                    String display = dv + " " + (dv == 1l ? denom.unitName : denom.unitNamePlural);
+                    b.append(display);
+                    if (cv > 0) b.append(", ");
+                }
             }
 
             // might need this check for fractional values
-            if (cv > 0) {
+            if (cv > 0 || b.length() == 0) {
                 double displayVal = displayValue(cv);
                 b.append(String.format(formatString, displayVal, displayVal==1.0? name : namePlural));
             }
