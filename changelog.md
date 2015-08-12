@@ -1,6 +1,16 @@
 Gringotts Changelog
 ===================
 
+v2.7
+----
+* Named denominations: Each denomination can now have its own name, which will be shown in /balance messages and the like. To activate this feature, use the `named-denominations` config setting. By default this will use the denomination's displayname or regular item name, but you can define a custom name as well. See [configuration instructions](https://github.com/MinecraftWars/Gringotts/blob/master/doc/configuration.md) for details.
+* Balance messages can now be configured to show only regular balance or also vault/inventory balances. 
+* Now also supports `&` prefix to color codes in messages and item displayname/lore in addition to the default `§` prefix.
+* can now also used Vault-supported item names in denomination config, not only regular Bukkit names. This can make the config a bit more intuitive. (requires Vault)
+* lore config for denomination items now also allows a simple string instead of a string list.
+* configuration should now always be loaded as UTF8.
+* fixed an issue with `/money` commands failing on some servers.
+
 v2.6
 ----
 * adds display name and lore support for currency items. See [configuration instructions](https://github.com/MinecraftWars/Gringotts/blob/master/doc/configuration.md) on how to configure this.
