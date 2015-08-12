@@ -7,6 +7,9 @@ main: org.gestern.gringotts.Gringotts
 load: startup
 database: true
 
+awareness:
+- !@UTF8
+
 depend: []
 softdepend: []
 loadbefore: [Vault]
