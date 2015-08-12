@@ -17,8 +17,7 @@ public class DenominationKey {
      */
     public DenominationKey(ItemStack type) {
         this.type = new ItemStack(type);
-        type.setAmount(0);
-
+        this.type.setAmount(0);
     }
 
     @Override
