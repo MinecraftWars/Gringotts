@@ -33,6 +33,7 @@ public enum Configuration {
 
     private final Logger log = Gringotts.G.getLogger();
 
+    public boolean debug = false;
     /** Language to be used for messages. Should be an ISO 639-1 (alpha-2) code. 
      * If a language is not supported by Gringotts, use user-configured or default (English) messages. */
     public String language = "custom";
@@ -78,7 +79,7 @@ public enum Configuration {
     public void readConfig(FileConfiguration savedConfig) {
 
         String version = Bukkit.getBukkitVersion();
-
+        CONF.debug = savedConfig.getBoolean("debug", false);
         if (Util.versionAtLeast(version, "1.3.1")) {
             log.info("Found Bukkit version: "+version+". All features enabled.");
 

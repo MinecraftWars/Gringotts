@@ -4,6 +4,7 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
 import org.bukkit.OfflinePlayer;
+import org.gestern.gringotts.Configuration;
 import org.gestern.gringotts.Gringotts;
 import org.gestern.gringotts.api.Account;
 import org.gestern.gringotts.api.Eco;
@@ -11,6 +12,7 @@ import org.gestern.gringotts.api.TransactionResult;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import static org.gestern.gringotts.Language.LANG;
 
@@ -27,6 +29,9 @@ public class VaultConnector implements Economy {
     public VaultConnector() {
     }
 
+    private boolean debug() {
+        return Configuration.CONF.debug;
+    }
 
     @Override
     public boolean isEnabled(){
@@ -65,18 +70,24 @@ public class VaultConnector implements Economy {
 
     @Override
     public boolean hasAccount(String playerName) {
-        return eco.account(playerName).exists();
+
+        if (debug()) Gringotts.G.getLogger().log(Level.INFO, "Gringotts is receiving an inquiry as to whether " +playerName+ " has an account.");
+        boolean hA = eco.account(playerName).exists();
+        if (debug()) Gringotts.G.getLogger().log(Level.INFO,"Returning " + hA + ".");
+        return hA;
     }
 
     @Override
     public boolean hasAccount(OfflinePlayer offlinePlayer) {
-
         return eco.player(offlinePlayer.getUniqueId()).exists();
     }
 
     @Override
-    public double getBalance(String playerName){
-        return eco.account(playerName).balance();
+    public double getBalance(String playerName) {
+        if (debug()) Gringotts.G.getLogger().log(Level.INFO, "Gringotts is receiving a request for named account " +playerName+ "'s balance.");
+        double gB = eco.account(playerName).balance();
+        if (debug()) Gringotts.G.getLogger().log(Level.INFO, "Returning " +gB+ ".");
+        return gB;
     }
 
     @Override
