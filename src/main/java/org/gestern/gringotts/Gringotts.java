@@ -20,7 +20,6 @@ import org.gestern.gringotts.data.Migration;
 import org.gestern.gringotts.event.AccountListener;
 import org.gestern.gringotts.event.PlayerVaultListener;
 import org.gestern.gringotts.event.VaultCreator;
-import org.mcstats.MetricsLite;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -74,13 +73,6 @@ public class Gringotts extends JavaPlugin {
             registerCommands();
             registerEvents();
             registerEconomy();
-
-            try {
-                MetricsLite metrics = new MetricsLite(this);
-                metrics.start();
-            } catch (IOException err) {
-                log.log(Level.INFO, "Failed to submit PluginMetrics stats", err);
-            }
 
         } catch(GringottsStorageException | GringottsConfigurationException e) {
             log.severe(e.getMessage()); 
