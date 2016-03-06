@@ -84,7 +84,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.8.8-R0.1-SNAPSHOT</version>
+            <version>1.9-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -99,11 +99,6 @@
             <version>0.89.2.0</version>
             <scope>provided</scope>
             <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.mcstats.bukkit</groupId>
-            <artifactId>metrics-lite</artifactId>
-            <version>R7</version>
         </dependency>
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
@@ -168,6 +163,10 @@
         <url>https://github.com/MinecraftWars/Gringotts/issues</url>
     </issueManagement>
     <repositories>
+        <repository>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+        </repository>
         <repository>
             <id>znode</id>
             <url>http://repo.zno.de/artifactory/repo/</url>
