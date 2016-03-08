@@ -1,6 +1,5 @@
 package org.gestern.gringotts.dependency;
 
-import com.massivecraft.factions.Factions;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
@@ -35,7 +34,7 @@ public enum Dependency {
      * but the classes must be visible to the classloader. 
      */
     private Dependency() {
-        factions = new FactionsHandler((Factions)hookPlugin("Factions", "com.massivecraft.factions.Factions","2.7.0"));
+        factions = FactionsHandler.getFactionsHandler(hookPlugin("Factions", "com.massivecraft.factions.Factions","2.7.0"));
         towny = TownyHandler.getTownyHandler(hookPlugin("Towny","com.palmergames.bukkit.towny.Towny","0.89.0.0"));
         vault = new GenericHandler(hookPlugin("Vault","net.milkbowl.vault.Vault","1.5.0"));
         worldguard = new WorldGuardHandler((WorldGuardPlugin)hookPlugin("WorldGuard", "com.sk89q.worldguard.bukkit.WorldGuardPlugin", "6.0"));

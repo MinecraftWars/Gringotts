@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 import org.gestern.gringotts.Gringotts;
 import org.gestern.gringotts.accountholder.AccountHolder;
 import org.gestern.gringotts.accountholder.AccountHolderProvider;
@@ -18,11 +19,62 @@ import static org.gestern.gringotts.Permissions.createvault_admin;
 import static org.gestern.gringotts.Permissions.createvault_faction;
 import static org.gestern.gringotts.dependency.Dependency.DEP;
 
-public class FactionsHandler implements DependencyHandler, AccountHolderProvider {
+public abstract class FactionsHandler implements DependencyHandler, AccountHolderProvider {
+    abstract public FactionAccountHolder getFactionAccountHolder(Player player);
+    abstract public FactionAccountHolder getAccountHolderById(String id);
+
+    /**
+     * Get a valid Factions handler if the plugin instance is valid. Otherwise get a fake one.
+     * This is needed because HCFactions is a fork of Factions that uses some of the same classes,
+     * but trying to load it causes errors.
+     * @param factions Factions plugin instance
+     * @return a Factions handler
+     */
+    public static FactionsHandler getFactionsHandler(Plugin factions) {
+        if (factions instanceof Factions)
+            return new ValidFactionsHandler((Factions)factions);
+        else {
+            Gringotts.G.getLogger().warning(
+                    "Unable to load Factions handler because your version of Factions " +
+                    "is not compatible with Gringotts. Factions support will not work");
+            return new InvalidFactionsHandler();
+        }
+    }
+}
+
+class InvalidFactionsHandler extends FactionsHandler {
+
+    @Override
+    public FactionAccountHolder getFactionAccountHolder(Player player) {
+        return null;
+    }
+
+    @Override
+    public FactionAccountHolder getAccountHolderById(String id) {
+        return null;
+    }
+
+    @Override
+    public AccountHolder getAccountHolder(String id) {
+        return null;
+    }
+
+    @Override
+    public boolean enabled() {
+        return false;
+    }
+
+    @Override
+    public boolean exists() {
+        return false;
+    }
+}
+
+class ValidFactionsHandler extends FactionsHandler {
 
     private final Factions plugin;
 
-    public FactionsHandler(Factions plugin) {
+    public ValidFactionsHandler(Factions plugin) {
         this.plugin = plugin;
 
         if (plugin != null) {

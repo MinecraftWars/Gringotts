@@ -153,6 +153,7 @@ public class AccountChest {
      * 
      * @return false if the chest can be considered a valid vault
      */
+    @SuppressWarnings("SimplifiableIfStatement")
     public boolean notValid() {
         // is it still a sign?
         if ( ! Util.isSignBlock(sign.getBlock()) ) 
@@ -253,14 +254,19 @@ public class AccountChest {
         if (! updateValid())
             return false;
 
-        if (chestLocation().equals(chest.chestLocation()))
+        Location myLoc = chestLocation();
+
+        if (myLoc == null)
+            return false;
+
+        if (myLoc.equals(chest.chestLocation()))
             return true;
 
         // no double chest -> no further connection possible
         if (! (inventory() instanceof DoubleChestInventory))
             return false;
 
-        Location myLoc = chestLocation();
+
         for (Chest c : chest.connectedChests())
             if (c.getLocation().equals(myLoc))
                 return true;

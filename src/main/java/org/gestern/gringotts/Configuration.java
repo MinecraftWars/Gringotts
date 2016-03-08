@@ -187,7 +187,7 @@ public enum Configuration {
 	            } catch (GringottsConfigurationException e) {
                     throw e;
                 } catch (Exception e) {
-	                throw new GringottsConfigurationException("Encountered an error parsing currency. Please check your Gringotts configuration.", e);
+	                throw new GringottsConfigurationException("Encountered an error parsing currency. Please check your Gringotts configuration. Error was: " + e.getMessage(), e);
 	            }
 			}
 		}
@@ -240,7 +240,7 @@ public enum Configuration {
 	            currency.addDenomination(denomType, value, translateColors(unitName), translateColors(unitNamePlural));
 
             } catch (Exception e) {
-                throw new GringottsConfigurationException("Encountered an error parsing currency. Please check your Gringotts configuration.", e);
+                throw new GringottsConfigurationException("Encountered an error parsing currency. Please check your Gringotts configuration. Error was: " + e.getMessage(), e);
             }
         }
 	}

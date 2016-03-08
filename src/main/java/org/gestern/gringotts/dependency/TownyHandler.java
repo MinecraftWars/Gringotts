@@ -24,15 +24,17 @@ public abstract class TownyHandler implements DependencyHandler {
 
     /**
      * Get a valid towny handler if the plugin instance is valid. Otherwise get a fake one.
-     * Apparently Towny needs this special treatment, or it will throw exceptions with unavailable classes. 
-     * The same doesn't happen with Factions. I wonder why?
+     * Apparently Towny needs this special treatment, or it will throw exceptions with unavailable classes.
      * @param towny Towny plugin instance
      * @return a Towny handler
      */
     public static TownyHandler getTownyHandler(Plugin towny) {
         if (towny instanceof Towny)
             return new ValidTownyHandler((Towny)towny);
-        else return new InvalidTownyHandler();
+        else {
+            Gringotts.G.getLogger().warning("Unable to load Towny handler. Towny support will not work");
+            return new InvalidTownyHandler();
+        }
     }
 }
 

@@ -1,6 +1,12 @@
 Gringotts Changelog
 ===================
 
+v2.8
+------
+* built for Minecraft 1.9 and Factions 2.8. May not be compatible with older Factions versions!
+* unsupported versions of Factions should be handled more gracefully now.
+* updated to current version of Metrics-Lite. Fixes annoying error messages.
+
 v2.7
 ----
 * Named denominations: Each denomination can now have its own name, which will be shown in /balance messages and the like. To activate this feature, use the `named-denominations` config setting. By default this will use the denomination's displayname or regular item name, but you can define a custom name as well. See [configuration instructions](https://github.com/MinecraftWars/Gringotts/blob/master/doc/configuration.md) for details.
