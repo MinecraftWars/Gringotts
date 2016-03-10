@@ -8,8 +8,8 @@ import org.gestern.gringotts.api.*;
 import org.gestern.gringotts.api.impl.GringottsEco;
 
 import static org.gestern.gringotts.Language.LANG;
-import static org.gestern.gringotts.Permissions.command_deposit;
-import static org.gestern.gringotts.Permissions.command_withdraw;
+import static org.gestern.gringotts.Permissions.COMMAND_DEPOSIT;
+import static org.gestern.gringotts.Permissions.COMMAND_WITHDRAW;
 import static org.gestern.gringotts.api.TransactionResult.SUCCESS;
 
 
@@ -83,7 +83,7 @@ class Commands {
 
 
     private boolean pay(Player player, double value, String[] args) {
-        if (!Permissions.transfer.allowed(player)) {
+        if (!Permissions.TRANSFER.allowed(player)) {
             player.sendMessage(LANG.noperm);
             return true;
         }
@@ -133,7 +133,7 @@ class Commands {
 
     private void deposit(Player player, double value) {
 
-        if (command_deposit.allowed(player)) {
+        if (COMMAND_DEPOSIT.allowed(player)) {
             TransactionResult result = eco.player(player.getUniqueId()).deposit(value);
             String formattedValue = eco.currency().format(value);
             if (result == SUCCESS) {
@@ -147,7 +147,7 @@ class Commands {
     }
 
     private void withdraw(Player player, double value) {
-        if (command_withdraw.allowed(player)) {
+        if (COMMAND_WITHDRAW.allowed(player)) {
             TransactionResult result = eco.player(player.getUniqueId()).withdraw(value);
             String formattedValue = eco.currency().format(value);
             if (result == SUCCESS){

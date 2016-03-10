@@ -15,8 +15,8 @@ import org.gestern.gringotts.accountholder.AccountHolderProvider;
 import org.gestern.gringotts.event.PlayerVaultCreationEvent;
 
 import static org.gestern.gringotts.Language.LANG;
-import static org.gestern.gringotts.Permissions.createvault_admin;
-import static org.gestern.gringotts.Permissions.createvault_faction;
+import static org.gestern.gringotts.Permissions.CREATEVAULT_ADMIN;
+import static org.gestern.gringotts.Permissions.CREATEVAULT_FACTION;
 import static org.gestern.gringotts.dependency.Dependency.DEP;
 
 public abstract class FactionsHandler implements DependencyHandler, AccountHolderProvider {
@@ -154,7 +154,7 @@ class FactionsListener implements Listener {
 
         if (event.getType().equals("faction")) {
             Player player = event.getCause().getPlayer();
-            if (!createvault_faction.allowed(player)) {
+            if (!CREATEVAULT_FACTION.allowed(player)) {
                 player.sendMessage(LANG.plugin_faction_noVaultPerm);
                 return;
             }
@@ -162,7 +162,7 @@ class FactionsListener implements Listener {
             AccountHolder owner;
 
             String ownername = event.getCause().getLine(2);
-            if (ownername != null && ownername.length() > 0 && createvault_admin.allowed(player)) {
+            if (ownername != null && ownername.length() > 0 && CREATEVAULT_ADMIN.allowed(player)) {
                 // attempting to create account for named faction
                 owner = Gringotts.G.accountHolderFactory.get("faction", ownername);
                 if (owner==null) return;

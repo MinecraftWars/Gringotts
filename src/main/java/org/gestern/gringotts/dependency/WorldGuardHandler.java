@@ -16,8 +16,8 @@ import org.gestern.gringotts.accountholder.AccountHolderProvider;
 import org.gestern.gringotts.event.PlayerVaultCreationEvent;
 
 import static org.gestern.gringotts.Language.LANG;
-import static org.gestern.gringotts.Permissions.createvault_admin;
-import static org.gestern.gringotts.Permissions.createvault_worldguard;
+import static org.gestern.gringotts.Permissions.CREATEVAULT_ADMIN;
+import static org.gestern.gringotts.Permissions.CREATEVAULT_WORLDGUARD;
 
 public class WorldGuardHandler implements DependencyHandler, AccountHolderProvider {
 
@@ -95,7 +95,7 @@ public class WorldGuardHandler implements DependencyHandler, AccountHolderProvid
 
             if (event.getType().equals("region")) {
                 Player player = event.getCause().getPlayer();
-                if (!createvault_worldguard.allowed(player)) {
+                if (!CREATEVAULT_WORLDGUARD.allowed(player)) {
                     player.sendMessage(LANG.plugin_faction_noVaultPerm);
                     return;
                 }
@@ -113,7 +113,7 @@ public class WorldGuardHandler implements DependencyHandler, AccountHolderProvid
                     owner = getAccountHolder(world, id);
                 }
 
-                if (owner != null && (owner.region.hasMembersOrOwners() || createvault_admin.allowed(player))) {
+                if (owner != null && (owner.region.hasMembersOrOwners() || CREATEVAULT_ADMIN.allowed(player))) {
                     DefaultDomain regionOwners = owner.region.getOwners();
                     if (regionOwners.contains(player.getName())) {
                         event.setOwner(owner);

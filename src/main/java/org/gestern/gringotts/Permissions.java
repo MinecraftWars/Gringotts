@@ -3,19 +3,19 @@ package org.gestern.gringotts;
 import org.bukkit.entity.Player;
 
 public enum Permissions {
-    usevault_inventory("gringotts.usevault.inventory"),
-    usevault_enderchest("gringotts.usevault.enderchest"),
+    USEVAULT_INVENTORY("gringotts.usevault.inventory"),
+    USEVAULT_ENDERCHEST("gringotts.usevault.enderchest"),
 
-    createvault_admin("gringotts.createvault.admin"),
-    createvault_player("gringotts.createvault.player"),
-    createvault_faction("gringotts.createvault.faction"),
-    createvault_town("gringotts.createvault.town"),
-    createvault_nation("gringotts.createvault.nation"),
-    createvault_worldguard("gringotts.createvault.worldguard"),
+    CREATEVAULT_ADMIN("gringotts.createvault.admin"),
+    CREATEVAULT_PLAYER("gringotts.createvault.player"),
+    CREATEVAULT_FACTION("gringotts.createvault.faction"),
+    CREATEVAULT_TOWN("gringotts.createvault.town"),
+    CREATEVAULT_NATION("gringotts.createvault.nation"),
+    CREATEVAULT_WORLDGUARD("gringotts.createvault.worldguard"),
 
-    transfer("gringotts.transfer"),
-    command_withdraw("gringotts.command.withdraw"),
-    command_deposit("gringotts.command.deposit")
+    TRANSFER("gringotts.transfer"),
+    COMMAND_WITHDRAW("gringotts.command.withdraw"),
+    COMMAND_DEPOSIT("gringotts.command.deposit")
     ;
 
     public final String node;

@@ -10,8 +10,8 @@ import org.gestern.gringotts.accountholder.AccountHolder;
 import org.gestern.gringotts.accountholder.PlayerAccountHolder;
 
 import static org.gestern.gringotts.Language.LANG;
-import static org.gestern.gringotts.Permissions.createvault_admin;
-import static org.gestern.gringotts.Permissions.createvault_player;
+import static org.gestern.gringotts.Permissions.CREATEVAULT_ADMIN;
+import static org.gestern.gringotts.Permissions.CREATEVAULT_PLAYER;
 
 /**
  * This Vault listener handles vault creation events for player vaults.
@@ -33,13 +33,13 @@ public class PlayerVaultListener implements Listener {
 
         Player player = cause.getPlayer();
 
-        if (! createvault_player.allowed(player)) {
+        if (! CREATEVAULT_PLAYER.allowed(player)) {
             player.sendMessage(LANG.vault_noVaultPerm);
             return;
         }
 
         AccountHolder owner;
-        if (ownername != null && ownername.length() > 0 && createvault_admin.allowed(player)) {
+        if (ownername != null && ownername.length() > 0 && CREATEVAULT_ADMIN.allowed(player)) {
             // attempting to create account for other player
             owner = Gringotts.G.accountHolderFactory.get("player", ownername);
             if (owner==null) return;

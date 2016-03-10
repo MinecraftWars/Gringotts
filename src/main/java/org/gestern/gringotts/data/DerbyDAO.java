@@ -37,7 +37,7 @@ public class DerbyDAO implements DAO {
         storeAccount, getAccount, getChests,
         getChestsForAccount, getCents, storeCents;
 
-    private static final String dbName = "GringottsDB";
+    private static final String DB_NAME = "GringottsDB";
 
     /** Full connection string for database, without connect options. */
     private final String dbString;
@@ -45,7 +45,7 @@ public class DerbyDAO implements DAO {
     private DerbyDAO() {
 
         String dbPath = Gringotts.G.getDataFolder().getAbsolutePath();
-        dbString = "jdbc:derby:" + dbPath+"/"+dbName;
+        dbString = "jdbc:derby:" + dbPath+"/"+DB_NAME;
         String connectString = dbString + ";create=true";
 
         try {
