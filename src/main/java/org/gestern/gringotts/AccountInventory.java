@@ -64,7 +64,7 @@ public class AccountInventory {
                         returned += leftover.getAmount();
 
                     // reduce remaining amount by whatever was deposited
-                    long added = remainderStackSize-returned;
+                    long added = (long)remainderStackSize-returned;
                     denomItemCount -= added;
                     remaining -= added * denom.value;
 
@@ -110,7 +110,7 @@ public class AccountInventory {
                     returned += leftover.getAmount();
 
                 // reduce remaining amount by whatever was removed
-                long removed = remainderStackSize-returned;
+                long removed = (long)remainderStackSize-returned;
                 denomItemCount -= removed;
                 remaining -= removed * denom.value;
 

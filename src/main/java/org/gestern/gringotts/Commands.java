@@ -70,10 +70,9 @@ class Commands {
                 }
             } 
 
-            if(args.length == 3) {
-                // /money pay <amount> <player>
-                if (command.equals("pay"))
-                    return pay(player, value, args);
+            // money pay <amount> <player>
+            if(args.length == 3 && command.equals("pay")) {                
+                return pay(player, value, args);
             }
 
             return false;
