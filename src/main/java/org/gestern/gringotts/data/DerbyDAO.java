@@ -82,9 +82,11 @@ public class DerbyDAO implements DAO {
                             "type varchar(64), owner varchar(64), cents int not null, " +
                             "primary key (id), constraint unique_type_owner unique(type, owner))";
 
-            int updated = connection.createStatement().executeUpdate(createAccount);
+            Statement stmt = connection.createStatement();
+            int updated = stmt.executeUpdate(createAccount);
             if (updated > 0)
                 log.info("created table ACCOUNT");
+            stmt.close();
         }
 
         ResultSet rs2 = dbmd.getTables(null, null, "ACCOUNTCHEST", null);
@@ -95,9 +97,11 @@ public class DerbyDAO implements DAO {
                             "world varchar(64), x integer, y integer, z integer, account integer not null, " + 
                             "primary key(id), constraint unique_location unique(world,x,y,z), constraint fk_account foreign key(account) references account(id))";
 
-            int updated = connection.createStatement().executeUpdate(createAccountChest);
+            Statement stmt = connection.createStatement();
+            int updated = stmt.executeUpdate(createAccountChest);
             if (updated > 0)
                 log.info("created table ACCOUNTCHEST");
+            stmt.close();
         }
     }
 
@@ -272,10 +276,12 @@ public class DerbyDAO implements DAO {
     public List<DerbyAccount> getAccountsRaw() {
 
         List<DerbyAccount> accounts = new LinkedList<>();
-        ResultSet result = null;
+        Statement stmt = null;
+        ResultSet result = null;        
         try {
             checkConnection();
-            result = connection.createStatement().executeQuery("select * from account");
+            stmt = connection.createStatement();
+            result = stmt.executeQuery("select * from account");
 
             while (result.next()) {
                 int id = result.getInt("id");
@@ -289,6 +295,7 @@ public class DerbyDAO implements DAO {
             throw new GringottsStorageException("Failed to get set of accounts", e);
         } finally {
             try { if (result!=null) result.close(); } catch (SQLException ignored) {}
+            try { if (stmt!=null) stmt.close(); } catch (SQLException ignored) {}
         }
 
         return accounts;
@@ -300,10 +307,12 @@ public class DerbyDAO implements DAO {
      */
     public List<DerbyAccountChest> getChestsRaw() {
         List<DerbyAccountChest> chests = new LinkedList<>();
+        Statement stmt = null;
         ResultSet result = null;
         try {
             checkConnection();
-            result = connection.createStatement().executeQuery("select * from accountchest");
+            stmt = connection.createStatement();
+            result = stmt.executeQuery("select * from accountchest");
 
             while (result.next()) {
                 int id = result.getInt("id");
@@ -320,6 +329,7 @@ public class DerbyDAO implements DAO {
             throw new GringottsStorageException("Failed to get set of accounts", e);
         } finally {
             try { if (result!=null) result.close(); } catch (SQLException ignored) {}
+            try { if (stmt!=null) stmt.close(); } catch (SQLException ignored) {}
         }
 
         return chests;
