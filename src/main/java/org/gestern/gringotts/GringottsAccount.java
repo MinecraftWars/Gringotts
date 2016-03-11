@@ -73,9 +73,8 @@ public class GringottsAccount {
         }
 
         Player player = playerOwner();
-        if (player != null) {
-            if (CONF.usevaultEnderchest && USEVAULT_ENDERCHEST.allowed(player))
-                balance += new AccountInventory(player.getEnderChest()).balance();
+        if (player != null && CONF.usevaultEnderchest && USEVAULT_ENDERCHEST.allowed(player)) {
+            balance += new AccountInventory(player.getEnderChest()).balance();
         }
 
         return balance + dao.getCents(this);
@@ -89,9 +88,8 @@ public class GringottsAccount {
         long balance = 0;
 
         Player player = playerOwner();
-        if (player != null) {
-            if (USEVAULT_INVENTORY.allowed(player))
-                balance += new AccountInventory(player.getInventory()).balance();
+        if (player != null && USEVAULT_INVENTORY.allowed(player)) {
+            balance += new AccountInventory(player.getInventory()).balance();
         }
 
         return balance + dao.getCents(this);
