@@ -11,8 +11,8 @@ import java.util.logging.Logger;
 
 import static org.gestern.gringotts.Configuration.CONF;
 import static org.gestern.gringotts.Gringotts.G;
-import static org.gestern.gringotts.Permissions.usevault_enderchest;
-import static org.gestern.gringotts.Permissions.usevault_inventory;
+import static org.gestern.gringotts.Permissions.USEVAULT_ENDERCHEST;
+import static org.gestern.gringotts.Permissions.USEVAULT_INVENTORY;
 import static org.gestern.gringotts.api.TransactionResult.*;
 
 /**
@@ -50,9 +50,9 @@ public class GringottsAccount {
 
         Player player = playerOwner();
         if (player != null) {
-            if (usevault_inventory.allowed(player))
+            if (USEVAULT_INVENTORY.allowed(player))
                 balance += new AccountInventory(player.getInventory()).balance();
-            if (CONF.usevaultEnderchest && usevault_enderchest.allowed(player))
+            if (CONF.usevaultEnderchest && USEVAULT_ENDERCHEST.allowed(player))
                 balance += new AccountInventory(player.getEnderChest()).balance();
         }
 
@@ -74,7 +74,7 @@ public class GringottsAccount {
 
         Player player = playerOwner();
         if (player != null) {
-            if (CONF.usevaultEnderchest && usevault_enderchest.allowed(player))
+            if (CONF.usevaultEnderchest && USEVAULT_ENDERCHEST.allowed(player))
                 balance += new AccountInventory(player.getEnderChest()).balance();
         }
 
@@ -90,7 +90,7 @@ public class GringottsAccount {
 
         Player player = playerOwner();
         if (player != null) {
-            if (usevault_inventory.allowed(player))
+            if (USEVAULT_INVENTORY.allowed(player))
                 balance += new AccountInventory(player.getInventory()).balance();
         }
 
@@ -122,9 +122,9 @@ public class GringottsAccount {
         // add stuff to player's inventory and enderchest too, when they are online
         Player player = playerOwner();
         if (player != null) {
-            if (usevault_inventory.allowed(player))
+            if (USEVAULT_INVENTORY.allowed(player))
                 remaining -= new AccountInventory(player.getInventory()).add(remaining);
-            if (CONF.usevaultEnderchest && usevault_enderchest.allowed(player))
+            if (CONF.usevaultEnderchest && USEVAULT_ENDERCHEST.allowed(player))
                 remaining -= new AccountInventory(player.getEnderChest()).add(remaining);
         }
 
@@ -172,9 +172,9 @@ public class GringottsAccount {
 
         Player player = playerOwner();
         if (player != null) {
-            if (usevault_inventory.allowed(player))
+            if (USEVAULT_INVENTORY.allowed(player))
                 remaining -= new AccountInventory(player.getInventory()).remove(remaining);
-            if (CONF.usevaultEnderchest && usevault_enderchest.allowed(player))
+            if (CONF.usevaultEnderchest && USEVAULT_ENDERCHEST.allowed(player))
                 remaining -= new AccountInventory(player.getEnderChest()).remove(remaining);
         }
 
