@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.gestern.gringotts.accountholder.AccountHolder;
 import org.gestern.gringotts.accountholder.PlayerAccountHolder;
 import org.gestern.gringotts.api.TransactionResult;
+import org.gestern.gringotts.currency.Denomination;
 import org.gestern.gringotts.data.DAO;
 
 import java.util.List;
@@ -115,11 +116,12 @@ public class GringottsAccount {
                     remaining -= new AccountInventory(player.getEnderChest()).add(remaining);
             }
 
-            // allow largest denom value as threshold for available space
+            // allow smallest denom value as threshold for available space
             // TODO make maximum virtual amount configurable
             // this is under the assumption that there is always at least 1 denomination
-            long largestDenomValue = CONF.currency.denominations().get(0).value;
-            if (remaining < largestDenomValue) {
+            List<Denomination> denoms = CONF.currency.denominations();
+            long smallestDenomValue = denoms.get(denoms.size()-1).value;
+            if (remaining < smallestDenomValue) {
                 dao.storeCents(this, remaining);
                 remaining = 0;
             }
