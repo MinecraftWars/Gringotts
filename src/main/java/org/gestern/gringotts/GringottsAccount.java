@@ -1,5 +1,6 @@
 package org.gestern.gringotts;
 
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.gestern.gringotts.accountholder.AccountHolder;
@@ -7,6 +8,9 @@ import org.gestern.gringotts.accountholder.PlayerAccountHolder;
 import org.gestern.gringotts.api.TransactionResult;
 import org.gestern.gringotts.data.DAO;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.*;
 import java.util.logging.Logger;
 
 import static org.gestern.gringotts.Configuration.CONF;
@@ -41,23 +45,17 @@ public class GringottsAccount {
      * @return current balance of this account in cents
      */
     public long balance() {
-        long balance = 0;
 
-        if (CONF.usevaultContainer) {
-            for (AccountChest chest : dao.getChests(this))
-                balance += chest.balance();
-        }
+        CompletableFuture<Long> cents = getCents();
+        CompletableFuture<Long> playerInv = countPlayerInventory();
+        CompletableFuture<Long> chestInv = countChestInventories();
 
-        Player player = playerOwner();
-        if (player != null) {
-            if (USEVAULT_INVENTORY.allowed(player))
-                balance += new AccountInventory(player.getInventory()).balance();
-            if (CONF.usevaultEnderchest && USEVAULT_ENDERCHEST.allowed(player))
-                balance += new AccountInventory(player.getEnderChest()).balance();
-        }
+        // order of combination is important, because chestInv/playerInv might have to run on main thread
+        CompletableFuture<Long> f =
+            chestInv.thenCombine(playerInv, (c,p) -> c+p)
+                    .thenCombine(cents, (b,c) -> b+c);
 
-        // convert to total cents
-        return balance + dao.getCents(this);
+        return getTimeout(f);
     }
 
     /**
@@ -65,19 +63,7 @@ public class GringottsAccount {
      * @return current balance this account has in chest(s) in cents
      */
     public long vaultBalance() {
-        long balance = 0;
-
-        if (CONF.usevaultContainer) {
-            for (AccountChest chest : dao.getChests(this))
-                balance += chest.balance();
-        }
-
-        Player player = playerOwner();
-        if (player != null && CONF.usevaultEnderchest && USEVAULT_ENDERCHEST.allowed(player)) {
-            balance += new AccountInventory(player.getEnderChest()).balance();
-        }
-
-        return balance + dao.getCents(this);
+        return getTimeout(countChestInventories());
     }
 
     /**
@@ -85,14 +71,13 @@ public class GringottsAccount {
      * @return current balance this account has in inventory in cents
      */
     public long invBalance() {
-        long balance = 0;
+        CompletableFuture<Long> cents = getCents();
+        CompletableFuture<Long> playerInv = countPlayerInventory();
 
-        Player player = playerOwner();
-        if (player != null && USEVAULT_INVENTORY.allowed(player)) {
-            balance += new AccountInventory(player.getInventory()).balance();
-        }
+        CompletableFuture<Long> f =
+            cents.thenCombine(playerInv, (p,c) -> p+c);
 
-        return balance + dao.getCents(this);
+        return getTimeout(f);
     }
 
     /**
@@ -102,46 +87,53 @@ public class GringottsAccount {
      */
     public TransactionResult add(long amount) {
 
-        // Cannot add negative amount
-        if(amount < 0)
-            return ERROR;
+        Callable<TransactionResult> callMe = () -> {
 
-        long centsStored = dao.getCents(this);
-        long remaining = amount + centsStored;
+            // Cannot add negative amount
+            if (amount < 0)
+                return ERROR;
 
-        // add currency to account's vaults
-        if (CONF.usevaultContainer) {
-            for (AccountChest chest : dao.getChests(this)) {
-                remaining -= chest.add(remaining);
-                if (remaining <= 0) break;
+            long centsStored = dao.getCents(this);
+
+            long remaining = amount + centsStored;
+
+            // add currency to account's vaults
+            if (CONF.usevaultContainer) {
+                for (AccountChest chest : dao.getChests(this)) {
+                    remaining -= chest.add(remaining);
+                    if (remaining <= 0) break;
+                }
             }
-        }
 
-        // add stuff to player's inventory and enderchest too, when they are online
-        Player player = playerOwner();
-        if (player != null) {
-            if (USEVAULT_INVENTORY.allowed(player))
-                remaining -= new AccountInventory(player.getInventory()).add(remaining);
-            if (CONF.usevaultEnderchest && USEVAULT_ENDERCHEST.allowed(player))
-                remaining -= new AccountInventory(player.getEnderChest()).add(remaining);
-        }
+            // add stuff to player's inventory and enderchest too, when they are online
+            Optional<Player> playerOpt = playerOwner();
+            if (playerOpt.isPresent()) {
+                Player player = playerOpt.get();
+                if (USEVAULT_INVENTORY.allowed(player))
+                    remaining -= new AccountInventory(player.getInventory()).add(remaining);
+                if (CONF.usevaultEnderchest && USEVAULT_ENDERCHEST.allowed(player))
+                    remaining -= new AccountInventory(player.getEnderChest()).add(remaining);
+            }
 
-        // allow largest denom value as threshold for available space
-        // TODO make maximum virtual amount configurable
-        // this is under the assumption that there is always at least 1 denomination
-        long largestDenomValue = CONF.currency.denominations().get(0).value;
-        if (remaining < largestDenomValue) {
-            dao.storeCents(this, remaining);
-            remaining = 0;
-        }
+            // allow largest denom value as threshold for available space
+            // TODO make maximum virtual amount configurable
+            // this is under the assumption that there is always at least 1 denomination
+            long largestDenomValue = CONF.currency.denominations().get(0).value;
+            if (remaining < largestDenomValue) {
+                dao.storeCents(this, remaining);
+                remaining = 0;
+            }
 
-        if (remaining == 0) 
-            return SUCCESS;
+            if (remaining == 0)
+                return SUCCESS;
 
-        // failed, remove the stuff added so far
-        remove(amount-remaining);
+            // failed, remove the stuff added so far
+            remove(amount - remaining);
 
-        return INSUFFICIENT_SPACE;
+            return INSUFFICIENT_SPACE;
+        };
+
+        return getTimeout(callSync(callMe));
     }
 
     /**
@@ -152,67 +144,48 @@ public class GringottsAccount {
      */
     public TransactionResult remove(long amount) {
 
-        // Cannot remove negative amount
-        if(amount < 0)
-            return ERROR;
+        Callable<TransactionResult> callMe = () -> {
+            // Cannot remove negative amount
+            if (amount < 0)
+                return ERROR;
 
-        // Make sure we have enough to remove
-        if(balance() < amount)
-            return INSUFFICIENT_FUNDS;
+            // Make sure we have enough to remove
+            if (balance() < amount)
+                return INSUFFICIENT_FUNDS;
 
-        long remaining = amount;
+            long remaining = amount;
 
-        // Now remove the physical amount left
-        if (CONF.usevaultContainer) {
-            for (AccountChest chest : dao.getChests(this))
-                remaining -= chest.remove(remaining);
-        }
-
-        Player player = playerOwner();
-        if (player != null) {
-            if (USEVAULT_INVENTORY.allowed(player))
-                remaining -= new AccountInventory(player.getInventory()).remove(remaining);
-            if (CONF.usevaultEnderchest && USEVAULT_ENDERCHEST.allowed(player))
-                remaining -= new AccountInventory(player.getEnderChest()).remove(remaining);
-        }
-
-        if (remaining < 0)
-            // took too much, pay back the extra
-            return add(-remaining);
-
-        if (remaining > 0) {
-            // cannot represent the leftover in our denominations, take them from the virtual reserve
-            long cents = dao.getCents(this);
-            dao.storeCents(this, cents - remaining);
-        }
-
-        return SUCCESS;
-    }
-
-
-    /**
-     * Attempt to transfer an amount of currency to another account. 
-     * If the transfer fails because of insufficient funds, both accounts remain at previous
-     * balance, and false is returned.
-     * @param value amount to transfer
-     * @param other account to transfer funds to.
-     * @return false if this account had insufficient funds.
-     */
-    public TransactionResult transfer(long value, GringottsAccount other) {
-
-        // First try to deduct the amount from this account
-        TransactionResult removed = this.remove(value);
-        if(removed == SUCCESS) {
-            // Okay, now lets send it to the other account
-            TransactionResult added = other.add(value);
-            if(added!=SUCCESS) {
-                // Oops, failed, better refund this account
-                this.add(value);
+            // Now remove the physical amount left
+            if (CONF.usevaultContainer) {
+                for (AccountChest chest : dao.getChests(this))
+                    remaining -= chest.remove(remaining);
             }
-            return added;
-        } 
-        return removed;
+
+            Optional<Player> playerOpt = playerOwner();
+            if (playerOpt.isPresent()) {
+                Player player = playerOpt.get();
+                if (USEVAULT_INVENTORY.allowed(player))
+                    remaining -= new AccountInventory(player.getInventory()).remove(remaining);
+                if (CONF.usevaultEnderchest && USEVAULT_ENDERCHEST.allowed(player))
+                    remaining -= new AccountInventory(player.getEnderChest()).remove(remaining);
+            }
+
+            if (remaining < 0)
+                // took too much, pay back the extra
+                return add(-remaining);
+
+            if (remaining > 0) {
+                // cannot represent the leftover in our denominations, take them from the virtual reserve
+                long cents = dao.getCents(this);
+                dao.storeCents(this, cents - remaining);
+            }
+
+            return SUCCESS;
+        };
+
+        return getTimeout(callSync(callMe));
     }
+
 
     @Override
     public String toString() {
@@ -221,18 +194,86 @@ public class GringottsAccount {
 
     /**
      * Returns the player owning this account, if the owner is actually a player and online.
-     * @return the player owning this account, if the owner is actually a player and online, otherwise null
+     * @return Optional of the player owning this account, if the owner is actually a player and online, otherwise empty.
      */
-    private Player playerOwner() {
+    private Optional<Player> playerOwner() {
         if (owner instanceof PlayerAccountHolder) {
             OfflinePlayer player = ((PlayerAccountHolder) owner).accountHolder;
-            return player.getPlayer();
+            return Optional.ofNullable(player.getPlayer());
         }
 
-        return null;
+        return Optional.empty();
     }
 
 
+    /**
+     * Call a function in the main thread. The returned CompletionStage will be completed after the function is called.
+     * @param callMe function to call
+     * @return will be completed after function is called
+     */
+    private static <V> CompletableFuture<V> callSync(Callable<V> callMe) {
+        final CompletableFuture<V> f = new CompletableFuture<>();
+        Runnable runMe = () -> {
+            try {
+                f.complete(callMe.call());
+            } catch (Exception e) {
+                f.completeExceptionally(e);
+            }
+        };
 
+        if (Bukkit.isPrimaryThread()) runMe.run();
+        else Bukkit.getScheduler().scheduleSyncDelayedTask(G, runMe);
+        return f;
+    }
+
+    private CompletableFuture<Long> countChestInventories() {
+
+        Callable<Long> callMe = () -> {
+            List<AccountChest> chests = dao.getChests(this);
+            long balance = 0;
+            if (CONF.usevaultContainer) {
+                for (AccountChest chest : chests)
+                    balance += chest.balance();
+            }
+
+            Optional<Player> playerOpt = playerOwner();
+            if (playerOpt.isPresent()) {
+                Player player = playerOpt.get();
+                if (CONF.usevaultEnderchest && USEVAULT_ENDERCHEST.allowed(player))
+                    balance += new AccountInventory(player.getEnderChest()).balance();
+            }
+            return balance;
+        };
+
+        return callSync(callMe);
+    }
+
+    private CompletableFuture<Long> countPlayerInventory() {
+
+        Callable<Long> callMe = () -> {
+            long balance = 0;
+
+            Optional<Player> playerOpt = playerOwner();
+            if (playerOpt.isPresent() && USEVAULT_INVENTORY.allowed(playerOpt.get())) {
+                Player player = playerOpt.get();
+                balance += new AccountInventory(player.getInventory()).balance();
+            }
+            return balance;
+        };
+
+        return callSync(callMe);
+    }
+
+    private CompletableFuture<Long> getCents() {
+        return CompletableFuture.supplyAsync(() -> dao.getCents(this));
+    }
+
+    private <V> V getTimeout(CompletableFuture<V> f) {
+        try {
+            return f.get(1, TimeUnit.SECONDS);
+        } catch (InterruptedException|ExecutionException|TimeoutException e) {
+            throw new GringottsException(e);
+        }
+    }
 
 }
