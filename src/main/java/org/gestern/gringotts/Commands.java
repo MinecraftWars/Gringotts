@@ -197,7 +197,7 @@ class Commands {
                 String amountStr = args[1];
                 double value;
                 try { value = Double.parseDouble(amountStr); } 
-                catch(NumberFormatException x) { return false; }
+                catch(NumberFormatException ignored) { return false; }
 
                 String targetAccountHolderStr = args[2];
                 Account target = args.length==4? eco.custom(args[3], targetAccountHolderStr) : eco.account(targetAccountHolderStr);
