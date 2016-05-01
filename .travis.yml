@@ -27,6 +27,7 @@ deploy:
     file: target/Gringotts*.jar
     on:
       repo: MinecraftWars/Gringotts
+      tags: true
 
 # we don't need sudo, this allows container-based builds ...
 sudo: false
