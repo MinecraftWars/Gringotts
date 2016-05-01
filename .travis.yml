@@ -15,7 +15,7 @@ deploy:
 
   - provider: script
     skip_cleanup: true
-    script: znode-deploy.sh
+    script: ./znode-deploy.sh
     on:
       branch: master
 
