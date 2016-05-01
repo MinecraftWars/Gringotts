@@ -28,6 +28,7 @@ public class EBeanDAO implements DAO {
     private static EBeanDAO dao;
 
     @Override
+    synchronized
     public boolean storeAccountChest(AccountChest chest) {
         SqlUpdate storeChest = db.createSqlUpdate(
                 "insert into gringotts_accountchest (world,x,y,z,account) values (:world, :x, :y, :z, (select id from gringotts_account where owner=:owner and type=:type))");
@@ -43,12 +44,14 @@ public class EBeanDAO implements DAO {
     }
 
     @Override
+    synchronized
     public boolean destroyAccountChest(AccountChest chest) {
         Sign mark = chest.sign;
         return deleteAccountChest(mark.getWorld().getName(), mark.getX(), mark.getY(), mark.getZ());
     }
 
     @Override
+    synchronized
     public boolean storeAccount(GringottsAccount account) {
         if (hasAccount(account.owner))
             return false;
@@ -82,6 +85,7 @@ public class EBeanDAO implements DAO {
     }
 
     @Override
+    synchronized
     public boolean hasAccount(AccountHolder accountHolder) {
         int accCount = db.find(EBeanAccount.class)
                 .where().ieq("type", accountHolder.getType()).ieq("owner", accountHolder.getId()).findRowCount();
@@ -89,6 +93,7 @@ public class EBeanDAO implements DAO {
     }
 
     @Override
+    synchronized
     public List<AccountChest> getChests() {
         List<SqlRow> result = db.createSqlQuery("SELECT ac.world, ac.x, ac.y, ac.z, a.type, a.owner " +
                 "FROM gringotts_accountchest ac JOIN gringotts_account a ON ac.account = a.id ").findList();
@@ -146,6 +151,7 @@ public class EBeanDAO implements DAO {
     }
 
     @Override
+    synchronized
     public List<AccountChest> getChests(GringottsAccount account) {
         // TODO ensure world interaction is done in sync task
         SqlQuery getChests = db.createSqlQuery("SELECT ac.world, ac.x, ac.y, ac.z " +
@@ -180,6 +186,7 @@ public class EBeanDAO implements DAO {
     }
 
     @Override
+    synchronized
     public boolean storeCents(GringottsAccount account, long amount) {
         SqlUpdate up = db.createSqlUpdate("UPDATE gringotts_account SET cents = :cents WHERE owner = :owner and type = :type");
         up.setParameter("cents", amount);
@@ -190,6 +197,7 @@ public class EBeanDAO implements DAO {
     }
 
     @Override
+    synchronized
     public long getCents(GringottsAccount account) {
         // can this NPE? (probably doesn't)
         return db.find(EBeanAccount.class)
@@ -198,6 +206,7 @@ public class EBeanDAO implements DAO {
     }
 
     @Override
+    synchronized
     public void deleteAccount(GringottsAccount acc) {
         // TODO implement deleteAccount, mayhaps?
         throw new RuntimeException("delete account not supported yet in EBeanDAO");
@@ -209,6 +218,7 @@ public class EBeanDAO implements DAO {
     }
 
     @Override
+    synchronized
     public void shutdown() {
         // probably handled by Bukkit?
     }

@@ -1,0 +1,14 @@
+<settings>
+    <servers>
+        <server>
+            <id>znode-releases</id>
+            <username>${env.ZNODE_USER}</username>
+            <password>${env.ZNODE_PASS}</password>
+        </server>
+        <server>
+            <id>znode-snapshots</id>
+            <username>${env.ZNODE_USER}</username>
+            <password>${env.ZNODE_PASS}</password>
+        </server>
+    </servers>
+</settings>

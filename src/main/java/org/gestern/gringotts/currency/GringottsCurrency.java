@@ -110,7 +110,7 @@ public class GringottsCurrency {
      * @return List of denominations used in this currency, in order of descending value
      */
     public List<Denomination> denominations() {
-        return new ArrayList<>(sortedDenoms);
+        return Collections.unmodifiableList(sortedDenoms);
     }
 
     public String format(String formatString, double value) {
