@@ -23,3 +23,11 @@ deploy:
     file: Gringotts*.jar
     on:
       repo: MinecraftWars/Gringotts
+
+# we don't need sudo, this allows container-based builds ...
+sudo: false
+
+# ... which allows caching of .m2 and makes builds faster
+cache:
+  directories:
+  - $HOME/.m2
