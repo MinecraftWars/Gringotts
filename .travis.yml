@@ -23,6 +23,7 @@ deploy:
     skip_cleanup: true
     api_key:
       secure: GqBVV6OCdr6n6KSaq14X+2f2+I1mTwPqpQ7L6sdPUZUD/ziXA4rySZ9R3MYYxZWo/SOvAzX5ab8QpJSGnPoXZncL7dxFmO3FfE0WMHy74FCinuRWQ2ziBK4TEJBOVGfJqTvyutmCXLniw5G8uQxozkEUpjKJm3i1bjA+7X+7qlI=
+    file_glob: true
     file: target/Gringotts*.jar
     on:
       repo: MinecraftWars/Gringotts
