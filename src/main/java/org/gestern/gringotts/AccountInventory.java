@@ -5,8 +5,8 @@ import org.bukkit.inventory.ItemStack;
 import org.gestern.gringotts.currency.Denomination;
 import org.gestern.gringotts.currency.GringottsCurrency;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 
 import static org.gestern.gringotts.Configuration.CONF;
 
@@ -92,8 +92,8 @@ public class AccountInventory {
 
         // try denominations from smallest to largest
         List<Denomination> denoms = cur.denominations();
-        Collections.reverse(denoms);
-        for(Denomination denom : denoms) {
+        for(ListIterator<Denomination> it = denoms.listIterator(denoms.size()); it.hasPrevious();) {
+            Denomination denom = it.previous();
             ItemStack stack = new ItemStack(denom.key.type);
             int stacksize = stack.getMaxStackSize();
 

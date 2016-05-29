@@ -107,7 +107,7 @@ public class GringottsCurrency {
 
     /**
      * List of denominations used in this currency, in order of descending value.
-     * @return List of denominations used in this currency, in order of descending value
+     * @return Unmodifiable List of denominations used in this currency, in order of descending value
      */
     public List<Denomination> denominations() {
         return Collections.unmodifiableList(sortedDenoms);
