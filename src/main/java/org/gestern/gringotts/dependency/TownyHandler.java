@@ -168,7 +168,7 @@ class TownyListener implements Listener {
         boolean forOther = ownername!=null && ownername.length()>0 && CREATEVAULT_ADMIN.allowed(player);
 
         AccountHolder owner;
-        if (event.getType().equals("town")) {
+        if ("town".equals(event.getType())) {
             if (!CREATEVAULT_TOWN.allowed(player)) {
                 player.sendMessage(LANG.plugin_towny_noTownVaultPerm);
                 return;
@@ -189,7 +189,7 @@ class TownyListener implements Listener {
             event.setOwner(owner);
             event.setValid(true);
 
-        } else if (event.getType().equals("nation")) {
+        } else if ("nation".equals(event.getType())) {
             if (!CREATEVAULT_NATION.allowed(player)) {
                 player.sendMessage(LANG.plugin_towny_noNationVaultPerm);
                 return;

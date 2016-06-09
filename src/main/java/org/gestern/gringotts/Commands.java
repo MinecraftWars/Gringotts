@@ -61,17 +61,17 @@ class Commands {
                 try { value = Double.parseDouble(args[1]); } 
                 catch (NumberFormatException ignored) { return false; }
 
-                if (command.equals("withdraw")) {
+                if ("withdraw".equals(command)) {
                     withdraw(player, value);
                     return true;
-                } else if (command.equals("deposit")) {
+                } else if ("deposit".equals(command)) {
                     deposit(player, value);
                     return true;
                 }
             } 
 
             // money pay <amount> <player>
-            if(args.length == 3 && command.equals("pay")) {                
+            if(args.length == 3 && "pay".equals(command)) {
                 return pay(player, value, args);
             }
 
@@ -173,7 +173,7 @@ class Commands {
             } else return false;
 
             // admin command: x of player / faction
-            if (args.length >= 2 && command.equalsIgnoreCase("b"))  {
+            if (args.length >= 2 && "b".equalsIgnoreCase(command))  {
 
                 String targetAccountHolderStr = args[1];
 
@@ -208,7 +208,7 @@ class Commands {
 
                 String formatValue = eco.currency().format(value);
 
-                if (command.equalsIgnoreCase("add")) {
+                if ("add".equalsIgnoreCase(command)) {
                     TransactionResult added = target.add(value);
                     if (added == SUCCESS) {
                         String senderMessage = LANG.moneyadmin_add_sender.replace("%value", formatValue).replace("%player", target.id());
@@ -222,7 +222,7 @@ class Commands {
 
                     return true;
 
-                } else if (command.equalsIgnoreCase("rm")) {
+                } else if ("rm".equalsIgnoreCase(command)) {
                     TransactionResult removed = target.remove(value); 
                     if (removed == SUCCESS) {
                         String senderMessage = LANG.moneyadmin_rm_sender.replace("%value", formatValue).replace("%player", target.id());
