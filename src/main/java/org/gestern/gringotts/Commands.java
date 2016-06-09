@@ -34,6 +34,7 @@ class Commands {
      * Player commands.
      */
     public class Money implements CommandExecutor{
+        @Override
         public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 
             Player player;
@@ -165,6 +166,7 @@ class Commands {
      */
     public class Moneyadmin implements CommandExecutor {
 
+        @Override
         public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 
             String command;

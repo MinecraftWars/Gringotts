@@ -88,6 +88,7 @@ class ValidFactionsHandler extends FactionsHandler {
      * @param player player to get the faction for
      * @return FactionAccountHolder for the faction of which player is a member, if any. null otherwise.
      */
+    @Override
     public FactionAccountHolder getFactionAccountHolder(Player player) {
 
         MPlayer fplayer = MPlayer.get(player);
@@ -100,6 +101,7 @@ class ValidFactionsHandler extends FactionsHandler {
      * @param id id to get the faction for
      * @return faction account holder for given id
      */
+    @Override
     public FactionAccountHolder getAccountHolderById(String id) {
         Faction faction = FactionColl.get().get(id);
         return faction != null? new FactionAccountHolder(faction) : null;

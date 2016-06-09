@@ -25,7 +25,9 @@ public interface AccountHolder {
      * */
     void sendMessage(String message);
 
+    @Override
     int hashCode();
+    @Override
     boolean equals(Object other);
 
     /**
