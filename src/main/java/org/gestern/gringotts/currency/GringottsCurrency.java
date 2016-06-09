@@ -65,7 +65,7 @@ public class GringottsCurrency {
      */
     public void addDenomination(ItemStack type, double value, String unitName, String unitNamePlural) {
         DenominationKey k = new DenominationKey(type);
-        Denomination d = new Denomination(k, Math.round(centValue(value)), unitName, unitNamePlural);
+        Denomination d = new Denomination(k, centValue(value), unitName, unitNamePlural);
         denoms.put(k, d);
         // infrequent insertion, so I don't mind sorting on every insert
         sortedDenoms.add(d);
