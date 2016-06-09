@@ -18,9 +18,9 @@ import static org.gestern.gringotts.Permissions.*;
 import static org.gestern.gringotts.dependency.Dependency.DEP;
 
 public abstract class TownyHandler implements DependencyHandler {
-    abstract public TownyAccountHolder getTownAccountHolder(Player player);
-    abstract public TownyAccountHolder getNationAccountHolder(Player player);
-    abstract public TownyAccountHolder getAccountHolderByAccountName(String name);
+    public abstract TownyAccountHolder getTownAccountHolder(Player player);
+    public abstract TownyAccountHolder getNationAccountHolder(Player player);
+    public abstract TownyAccountHolder getAccountHolderByAccountName(String name);
 
     /**
      * Get a valid towny handler if the plugin instance is valid. Otherwise get a fake one.
