@@ -183,6 +183,7 @@ class FactionsListener implements Listener {
 
 class FactionAccountHolder implements AccountHolder {
 
+    private static final String TAG_FACTION = "faction";
     private final Faction owner;
 
     /**
@@ -237,7 +238,7 @@ class FactionAccountHolder implements AccountHolder {
 
     @Override
     public String getType() {
-        return "faction";
+        return TAG_FACTION;
     }
 
     @Override

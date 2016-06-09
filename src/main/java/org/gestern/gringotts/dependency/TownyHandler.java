@@ -66,13 +66,15 @@ class InvalidTownyHandler extends TownyHandler {
 
 class ValidTownyHandler extends TownyHandler implements AccountHolderProvider {
 
+    private static final String TAG_TOWN = "town";
+    private static final String TAG_NATION = "nation";
     private final Towny plugin;
 
     public ValidTownyHandler(Towny plugin) {
         this.plugin = plugin;
         Bukkit.getPluginManager().registerEvents(new TownyListener(), Gringotts.G);
-        Gringotts.G.registerAccountHolderProvider("town", this);
-        Gringotts.G.registerAccountHolderProvider("nation", this);
+        Gringotts.G.registerAccountHolderProvider(TAG_TOWN, this);
+        Gringotts.G.registerAccountHolderProvider(TAG_NATION, this);
     }
 
     /**
@@ -84,7 +86,7 @@ class ValidTownyHandler extends TownyHandler implements AccountHolderProvider {
         try {
             Resident resident = TownyUniverse.getDataSource().getResident(player.getName());
             Town town = resident.getTown();
-            return new TownyAccountHolder(town, "town");
+            return new TownyAccountHolder(town, TAG_TOWN);
 
         } catch (NotRegisteredException ignored) { }
 
@@ -101,7 +103,7 @@ class ValidTownyHandler extends TownyHandler implements AccountHolderProvider {
             Resident resident = TownyUniverse.getDataSource().getResident(player.getName());
             Town town = resident.getTown();
             Nation nation = town.getNation();
-            return new TownyAccountHolder(nation, "nation");
+            return new TownyAccountHolder(nation, TAG_NATION);
 
         } catch (NotRegisteredException ignored) { }
 
@@ -120,7 +122,7 @@ class ValidTownyHandler extends TownyHandler implements AccountHolderProvider {
         if (name.startsWith("town-")) {
             try { 
                 TownyEconomyObject teo = TownyUniverse.getDataSource().getTown(name.substring(5)); 
-                return new TownyAccountHolder(teo, "town");
+                return new TownyAccountHolder(teo, TAG_TOWN);
             } 
             catch (NotRegisteredException ignored) { }
         }
@@ -128,7 +130,7 @@ class ValidTownyHandler extends TownyHandler implements AccountHolderProvider {
         if (name.startsWith("nation-")) {
             try { 
                 TownyEconomyObject teo = TownyUniverse.getDataSource().getNation(name.substring(7));
-                return new TownyAccountHolder(teo, "nation");
+                return new TownyAccountHolder(teo, TAG_NATION);
             } catch (NotRegisteredException ignored) { }
         }
 

@@ -22,6 +22,7 @@ import static org.gestern.gringotts.api.TransactionResult.SUCCESS;
 
 public class GringottsEco implements Eco {
 
+    private static final String TAG_PLAYER = "player";
     private final AccountHolderFactory accountOwners = Gringotts.G.accountHolderFactory;
     private final DAO dao = Gringotts.G.dao;
 
@@ -37,20 +38,20 @@ public class GringottsEco implements Eco {
 
     @Override
     public PlayerAccount player(String name) {
-        AccountHolder owner = accountOwners.get("player", name);
+        AccountHolder owner = accountOwners.get(TAG_PLAYER, name);
         if (owner instanceof PlayerAccountHolder)
             return new ValidPlayerAccount(Gringotts.G.accounting.getAccount(owner));
 
-        return new InvalidAccount("player", name);
+        return new InvalidAccount(TAG_PLAYER, name);
     }
 
     @Override
     public PlayerAccount player(UUID id) {
-        AccountHolder owner = accountOwners.get("player", id.toString());
+        AccountHolder owner = accountOwners.get(TAG_PLAYER, id.toString());
         if (owner instanceof PlayerAccountHolder)
             return new ValidPlayerAccount(Gringotts.G.accounting.getAccount(owner));
 
-        return new InvalidAccount("player", id.toString());
+        return new InvalidAccount(TAG_PLAYER, id.toString());
     }
 
     @Override
