@@ -23,7 +23,7 @@ import static org.gestern.gringotts.Configuration.CONF;
 public class EBeanDAO implements DAO {
 
     private final EbeanServer db = Gringotts.G.getDatabase();
-    private final Logger log = Gringotts.G.getLogger();
+    private static final Logger LOG = Gringotts.G.getLogger();
 
     private static EBeanDAO dao;
 
@@ -117,7 +117,7 @@ public class EBeanDAO implements DAO {
             if (Util.isSignBlock(signBlock)) {
                 AccountHolder owner = Gringotts.G.accountHolderFactory.get(type, ownerId);
                 if (owner == null) {
-                    log.info("AccountHolder "+type+":"+ownerId+" is not valid. Deleting associated account chest at " + signBlock.getLocation());
+                    LOG.info("AccountHolder "+type+":"+ownerId+" is not valid. Deleting associated account chest at " + signBlock.getLocation());
                     deleteAccountChest(signBlock.getWorld().getName(), signBlock.getX(), signBlock.getY(), signBlock.getZ());
                 } else {
                     GringottsAccount ownerAccount = new GringottsAccount(owner);
