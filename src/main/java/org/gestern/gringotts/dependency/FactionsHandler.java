@@ -20,8 +20,8 @@ import static org.gestern.gringotts.Permissions.CREATEVAULT_FACTION;
 import static org.gestern.gringotts.dependency.Dependency.DEP;
 
 public abstract class FactionsHandler implements DependencyHandler, AccountHolderProvider {
-    abstract public FactionAccountHolder getFactionAccountHolder(Player player);
-    abstract public FactionAccountHolder getAccountHolderById(String id);
+    public abstract FactionAccountHolder getFactionAccountHolder(Player player);
+    public abstract FactionAccountHolder getAccountHolderById(String id);
 
     /**
      * Get a valid Factions handler if the plugin instance is valid. Otherwise get a fake one.
