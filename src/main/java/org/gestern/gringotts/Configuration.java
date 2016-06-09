@@ -41,17 +41,17 @@ public enum Configuration {
     public GringottsCurrency currency;
 
     /** Flat tax on every player-to-player transaction. This is a value in currency units. */
-    public double transactionTaxFlat = 0;
+    public double transactionTaxFlat;
 
     /** Rate tax on every player-to-player transaction. This is a fraction, e.g. 0.1 means 10% tax. */ 
-    public double transactionTaxRate = 0;
+    public double transactionTaxRate;
 
     /** Amount of non-physical money to give to new players */
     // An alternative to flooding new players' inventories with currency items
-    public long startBalancePlayer = 0;
-    public long startBalanceFaction = 0;
-    public long startBalanceTown = 0;
-    public long startBalanceNation = 0;
+    public long startBalancePlayer;
+    public long startBalanceFaction;
+    public long startBalanceTown;
+    public long startBalanceNation;
 
     /** Use container vaults (chest, dispenser, furnace). */
     public boolean usevaultContainer = true;

@@ -21,7 +21,7 @@ public class VaultCreationEvent extends Event {
     protected static final HandlerList handlers = new HandlerList();
 
     private final String type;
-    private boolean isValid = false;
+    private boolean isValid;
     private AccountHolder owner;
 
     /**
