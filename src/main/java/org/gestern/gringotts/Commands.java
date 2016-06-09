@@ -114,21 +114,21 @@ class Commands {
         
         switch (result) {
         case SUCCESS:
-            String succ_taxMessage = LANG.pay_success_tax.replace(TAG_VALUE, formattedTax);
-            String succ_sentMessage = LANG.pay_success_sender.replace(TAG_VALUE, formattedValue).replace(TAG_PLAYER, recipientName);
-            from.message(succ_sentMessage + (tax>0? succ_taxMessage : ""));
-            String succ_receivedMessage = LANG.pay_success_target.replace(TAG_VALUE, formattedValue).replace(TAG_PLAYER, player.getName());
-            to.message(succ_receivedMessage);
+            String succTaxMessage = LANG.pay_success_tax.replace(TAG_VALUE, formattedTax);
+            String succSentMessage = LANG.pay_success_sender.replace(TAG_VALUE, formattedValue).replace(TAG_PLAYER, recipientName);
+            from.message(succSentMessage + (tax>0? succTaxMessage : ""));
+            String succReceivedMessage = LANG.pay_success_target.replace(TAG_VALUE, formattedValue).replace(TAG_PLAYER, player.getName());
+            to.message(succReceivedMessage);
             return true;
         case INSUFFICIENT_FUNDS:
-            String insF_Message = LANG.pay_insufficientFunds.replace(TAG_BALANCE, formattedBalance).replace(TAG_VALUE, formattedValuePlusTax);
-            from.message(insF_Message);
+            String insFMessage = LANG.pay_insufficientFunds.replace(TAG_BALANCE, formattedBalance).replace(TAG_VALUE, formattedValuePlusTax);
+            from.message(insFMessage);
             return true;
         case INSUFFICIENT_SPACE:
-            String insS_sentMessage = LANG.pay_insS_sender.replace(TAG_PLAYER, recipientName).replace(TAG_VALUE, formattedValue);
-            from.message(insS_sentMessage);
-            String insS_receiveMessage = LANG.pay_insS_target.replace(TAG_PLAYER, from.id()).replace(TAG_VALUE, formattedValue);
-            to.message(insS_receiveMessage);
+            String insSSentMessage = LANG.pay_insS_sender.replace(TAG_PLAYER, recipientName).replace(TAG_VALUE, formattedValue);
+            from.message(insSSentMessage);
+            String insSReceiveMessage = LANG.pay_insS_target.replace(TAG_PLAYER, from.id()).replace(TAG_VALUE, formattedValue);
+            to.message(insSReceiveMessage);
             return true;
         default:
             String error = LANG.pay_error.replace(TAG_VALUE, formattedValue).replace(TAG_PLAYER, recipientName);
