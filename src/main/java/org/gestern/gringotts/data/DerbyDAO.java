@@ -532,7 +532,7 @@ public class DerbyDAO implements DAO {
      * @see org.gestern.gringotts.data.DAO#finalize()
      */
     @Override
-    public void finalize() throws Throwable {
+    protected void finalize() throws Throwable {
         super.finalize();
         shutdown();
     }
