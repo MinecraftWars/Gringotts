@@ -21,6 +21,12 @@ import static org.gestern.gringotts.api.TransactionResult.SUCCESS;
  */
 class Commands {
 
+    private static final String TAG_BALANCE = "%balance";
+
+    private static final String TAG_PLAYER = "%player";
+
+    private static final String TAG_VALUE = "%value";
+
     private final Gringotts plugin;
 
     private final Eco eco = new GringottsEco();
@@ -108,24 +114,24 @@ class Commands {
         
         switch (result) {
         case SUCCESS:
-            String succ_taxMessage = LANG.pay_success_tax.replace("%value", formattedTax);
-            String succ_sentMessage = LANG.pay_success_sender.replace("%value", formattedValue).replace("%player", recipientName);
+            String succ_taxMessage = LANG.pay_success_tax.replace(TAG_VALUE, formattedTax);
+            String succ_sentMessage = LANG.pay_success_sender.replace(TAG_VALUE, formattedValue).replace(TAG_PLAYER, recipientName);
             from.message(succ_sentMessage + (tax>0? succ_taxMessage : ""));
-            String succ_receivedMessage = LANG.pay_success_target.replace("%value", formattedValue).replace("%player", player.getName());
+            String succ_receivedMessage = LANG.pay_success_target.replace(TAG_VALUE, formattedValue).replace(TAG_PLAYER, player.getName());
             to.message(succ_receivedMessage);
             return true;
         case INSUFFICIENT_FUNDS:
-            String insF_Message = LANG.pay_insufficientFunds.replace("%balance", formattedBalance).replace("%value", formattedValuePlusTax);
+            String insF_Message = LANG.pay_insufficientFunds.replace(TAG_BALANCE, formattedBalance).replace(TAG_VALUE, formattedValuePlusTax);
             from.message(insF_Message);
             return true;
         case INSUFFICIENT_SPACE:
-            String insS_sentMessage = LANG.pay_insS_sender.replace("%player", recipientName).replace("%value", formattedValue);
+            String insS_sentMessage = LANG.pay_insS_sender.replace(TAG_PLAYER, recipientName).replace(TAG_VALUE, formattedValue);
             from.message(insS_sentMessage);
-            String insS_receiveMessage = LANG.pay_insS_target.replace("%player", from.id()).replace("%value", formattedValue);
+            String insS_receiveMessage = LANG.pay_insS_target.replace(TAG_PLAYER, from.id()).replace(TAG_VALUE, formattedValue);
             to.message(insS_receiveMessage);
             return true;
         default:
-            String error = LANG.pay_error.replace("%value", formattedValue).replace("%player", recipientName);
+            String error = LANG.pay_error.replace(TAG_VALUE, formattedValue).replace(TAG_PLAYER, recipientName);
             from.message(error);
             return true;
         }
@@ -137,10 +143,10 @@ class Commands {
             TransactionResult result = eco.player(player.getUniqueId()).deposit(value);
             String formattedValue = eco.currency().format(value);
             if (result == SUCCESS) {
-                String success = LANG.deposit_success.replace("%value", formattedValue);
+                String success = LANG.deposit_success.replace(TAG_VALUE, formattedValue);
                 player.sendMessage(success);
             } else {
-                String error = LANG.deposit_error.replace("%value", formattedValue);
+                String error = LANG.deposit_error.replace(TAG_VALUE, formattedValue);
                 player.sendMessage(error);
             }
         }
@@ -151,11 +157,11 @@ class Commands {
             TransactionResult result = eco.player(player.getUniqueId()).withdraw(value);
             String formattedValue = eco.currency().format(value);
             if (result == SUCCESS){
-                String success = LANG.withdraw_success.replace("%value", formattedValue);
+                String success = LANG.withdraw_success.replace(TAG_VALUE, formattedValue);
                 player.sendMessage(success);
             }
             else{
-                String error = LANG.withdraw_error.replace("%value", formattedValue);
+                String error = LANG.withdraw_error.replace(TAG_VALUE, formattedValue);
                 player.sendMessage(error);
             }
         }
@@ -188,7 +194,7 @@ class Commands {
                 }
 
                 String formattedBalance = eco.currency().format(target.balance());
-                String senderMessage = LANG.moneyadmin_b.replace("%balance", formattedBalance).replace("%player", targetAccountHolderStr);
+                String senderMessage = LANG.moneyadmin_b.replace(TAG_BALANCE, formattedBalance).replace(TAG_PLAYER, targetAccountHolderStr);
                 sender.sendMessage(senderMessage);
                 return true;
 
@@ -213,12 +219,12 @@ class Commands {
                 if ("add".equalsIgnoreCase(command)) {
                     TransactionResult added = target.add(value);
                     if (added == SUCCESS) {
-                        String senderMessage = LANG.moneyadmin_add_sender.replace("%value", formatValue).replace("%player", target.id());
+                        String senderMessage = LANG.moneyadmin_add_sender.replace(TAG_VALUE, formatValue).replace(TAG_PLAYER, target.id());
                         sender.sendMessage(senderMessage);
-                        String targetMessage = LANG.moneyadmin_add_target.replace("%value", formatValue);
+                        String targetMessage = LANG.moneyadmin_add_target.replace(TAG_VALUE, formatValue);
                         target.message(targetMessage);
                     } else {
-                        String errorMessage = LANG.moneyadmin_add_error.replace("%value", formatValue).replace("%player", target.id());
+                        String errorMessage = LANG.moneyadmin_add_error.replace(TAG_VALUE, formatValue).replace(TAG_PLAYER, target.id());
                         sender.sendMessage(errorMessage);
                     }
 
@@ -227,12 +233,12 @@ class Commands {
                 } else if ("rm".equalsIgnoreCase(command)) {
                     TransactionResult removed = target.remove(value); 
                     if (removed == SUCCESS) {
-                        String senderMessage = LANG.moneyadmin_rm_sender.replace("%value", formatValue).replace("%player", target.id());
+                        String senderMessage = LANG.moneyadmin_rm_sender.replace(TAG_VALUE, formatValue).replace(TAG_PLAYER, target.id());
                         sender.sendMessage(senderMessage);
-                        String targetMessage = LANG.moneyadmin_rm_target.replace("%value", formatValue);
+                        String targetMessage = LANG.moneyadmin_rm_target.replace(TAG_VALUE, formatValue);
                         target.message(targetMessage);
                     } else {
-                        String errorMessage = LANG.moneyadmin_rm_error.replace("%value", formatValue).replace("%player", target.id());
+                        String errorMessage = LANG.moneyadmin_rm_error.replace(TAG_VALUE, formatValue).replace(TAG_PLAYER, target.id());
                         sender.sendMessage(errorMessage);
                     }
 
@@ -266,17 +272,17 @@ class Commands {
 
     private void balanceMessage(Account account) {
 
-        account.message(LANG.balance.replace("%balance", eco.currency().format(account.balance())));
+        account.message(LANG.balance.replace(TAG_BALANCE, eco.currency().format(account.balance())));
 
         if (Configuration.CONF.balanceShowVault)
-            account.message(LANG.vault_balance.replace("%balance", eco.currency().format(account.vaultBalance())));
+            account.message(LANG.vault_balance.replace(TAG_BALANCE, eco.currency().format(account.vaultBalance())));
 
         if (Configuration.CONF.balanceShowInventory)
-            account.message(LANG.inv_balance.replace("%balance", eco.currency().format(account.invBalance())));
+            account.message(LANG.inv_balance.replace(TAG_BALANCE, eco.currency().format(account.invBalance())));
     }
 
     private static void invalidAccount(CommandSender sender, String accountName) {
-        sender.sendMessage(LANG.invalid_account.replace("%player", accountName));
+        sender.sendMessage(LANG.invalid_account.replace(TAG_PLAYER, accountName));
     }
 
 }
