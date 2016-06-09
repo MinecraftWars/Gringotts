@@ -12,6 +12,16 @@ import javax.persistence.UniqueConstraint;
 @UniqueConstraint(columnNames={"world","x","y","z"})
 public class EBeanAccountChest {
 
+    @Id int id;
+
+    @NotNull String world;
+
+    @NotNull int x;
+    @NotNull int y;
+    @NotNull int z;
+
+    @NotNull int account;
+    
     public int getId() {
         return id;
     }
@@ -60,16 +70,6 @@ public class EBeanAccountChest {
         this.account = account;
     }
 
-    @Id int id;
-
-    @NotNull String world;
-
-    @NotNull int x;
-    @NotNull int y;
-    @NotNull int z;
-
-    @NotNull int account;
-    
     @Override
     public String toString() {
         return "EBeanAccountChest("+account+","+world+": "+x+","+y+","+z+")"; 

@@ -12,6 +12,16 @@ public class GringottsTaxedTransaction extends GringottsTransaction implements T
      * Taxes to apply to transaction.
      */
     private final double taxes;
+    
+    /**
+     * Create taxed transaction, adding given amount of taxes to the given base transaction
+     * @param base transaction on which the tax is based
+     * @param taxes taxes to apply to transaction
+     */
+    protected GringottsTaxedTransaction(GringottsTransaction base, double taxes) {
+        super(base);
+        this.taxes = taxes;
+    }
 
     @Override
     public TransactionResult to(Account recipient) {
@@ -22,16 +32,6 @@ public class GringottsTaxedTransaction extends GringottsTransaction implements T
         // undo taxing if transaction failed
         if (result != SUCCESS) from.add(taxes);
         return result; 
-    }
-
-    /**
-     * Create taxed transaction, adding given amount of taxes to the given base transaction
-     * @param base transaction on which the tax is based
-     * @param taxes taxes to apply to transaction
-     */
-    protected GringottsTaxedTransaction(GringottsTransaction base, double taxes) {
-        super(base);
-        this.taxes = taxes;
     }
 
     @Override

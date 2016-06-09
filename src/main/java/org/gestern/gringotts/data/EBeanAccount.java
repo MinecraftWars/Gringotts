@@ -11,6 +11,18 @@ import javax.persistence.UniqueConstraint;
 @Table(name="gringotts_account")
 @UniqueConstraint(columnNames={"type","owner"})
 public class EBeanAccount {
+    
+    @Id int id;
+
+    /** Type string. */
+    @NotNull String type;
+
+    /** Owner id. */
+    @NotNull String owner;
+
+    /** Virtual balance. */
+    @NotNull long cents;
+    
     public int getId() {
         return id;
     }
@@ -42,17 +54,6 @@ public class EBeanAccount {
     public void setCents(long cents) {
         this.cents = cents;
     }
-
-    @Id int id;
-
-    /** Type string. */
-    @NotNull String type;
-
-    /** Owner id. */
-    @NotNull String owner;
-
-    /** Virtual balance. */
-    @NotNull long cents;
     
     @Override
     public String toString() {
