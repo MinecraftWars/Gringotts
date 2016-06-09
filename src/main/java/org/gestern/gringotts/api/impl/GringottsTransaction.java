@@ -36,6 +36,7 @@ public class GringottsTransaction implements Transaction {
         this.value = value;
     }
 
+    @Override
     public TransactionResult to(Account to) {
         if (value < 0) return ERROR;
 
@@ -53,6 +54,7 @@ public class GringottsTransaction implements Transaction {
         return removed;
     }
 
+    @Override
     public TaxedTransaction withTaxes() {
 
         double tax = CONF.transactionTaxFlat + value * CONF.transactionTaxRate;

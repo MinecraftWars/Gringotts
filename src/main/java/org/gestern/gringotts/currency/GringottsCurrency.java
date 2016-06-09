@@ -154,6 +154,7 @@ public class GringottsCurrency {
         return denoms.get(d);
     }
 
+    @Override
     public String toString() {
         return StringUtils.join(sortedDenoms, '\n');
     }

@@ -80,6 +80,7 @@ class ValidTownyHandler extends TownyHandler implements AccountHolderProvider {
      * @param player player to get town for
      * @return TownyAccountHolder for the town of which player is a resident, if any. null otherwise.
      */
+    @Override
     public TownyAccountHolder getTownAccountHolder(Player player) {
         try {
             Resident resident = TownyUniverse.getDataSource().getResident(player.getName());
@@ -96,6 +97,7 @@ class ValidTownyHandler extends TownyHandler implements AccountHolderProvider {
      * @param player player to get nation for
      * @return TownyAccountHolder for the nation of which player is a resident, if any. null otherwise.
      */	
+    @Override
     public TownyAccountHolder getNationAccountHolder(Player player) {
         try {
             Resident resident = TownyUniverse.getDataSource().getResident(player.getName());
@@ -115,6 +117,7 @@ class ValidTownyHandler extends TownyHandler implements AccountHolderProvider {
      * @param name Name of the account.
      * @return a TownyAccountHolder based on the name of the account
      */
+    @Override
     public TownyAccountHolder getAccountHolderByAccountName(String name) {
 
         if (name.startsWith("town-")) {
