@@ -26,7 +26,7 @@ public class PlayerVaultListener implements Listener {
         if (event.isValid()) return;
 
         // only interested in player vaults
-        if (! event.getType().equals("player")) return;
+        if (!"player".equals(event.getType())) return;
 
         SignChangeEvent cause = event.getCause();
         String ownername = cause.getLine(2);

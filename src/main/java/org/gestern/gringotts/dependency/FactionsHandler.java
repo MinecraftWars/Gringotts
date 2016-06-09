@@ -154,7 +154,7 @@ class FactionsListener implements Listener {
         // some listener already claimed this event
         if (event.isValid()) return;
 
-        if (event.getType().equals("faction")) {
+        if ("faction".equals(event.getType())) {
             Player player = event.getCause().getPlayer();
             if (!CREATEVAULT_FACTION.allowed(player)) {
                 player.sendMessage(LANG.plugin_faction_noVaultPerm);
