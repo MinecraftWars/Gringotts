@@ -8,6 +8,8 @@ import org.bukkit.block.Sign;
 import org.gestern.gringotts.currency.GringottsCurrency;
 
 public class Util {
+    
+    private Util() {}
 
     /**
      * Check whether a block is a sign or wall sign type.
