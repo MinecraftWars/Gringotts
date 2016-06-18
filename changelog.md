@@ -5,7 +5,8 @@ v2.9
 ----
 * DEPENDS ON JAVA 8. If your server is not on Java 8 yet, you should upgrade, or ask your service provider to upgrade. Java 7 isn't supported anymore by Oracle.
 * Should now work both in regular as well as async context. This means there should be no more "Asynchronous entity world add" errors anymore, and Gringotts is now compatible with Towny in async mode, as well as other plugins that call economy methods asynchronously.
-* The maximum virtual money allowed for an accoun is now equal to the *lowest* denomination, instead of the highest. I changed this because that behavior was causing lots of confusion.
+* The maximum virtual money allowed for an account is now equal to the *lowest* denomination, instead of the highest. I changed this because that behavior was causing lots of confusion.
+* fixed other minor bugs
 
 v2.8
 ----
