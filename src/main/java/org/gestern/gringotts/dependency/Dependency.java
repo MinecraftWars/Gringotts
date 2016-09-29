@@ -21,7 +21,7 @@ public enum Dependency {
     /** Singleton dependency manager instance. */
     DEP;
 
-    private final Logger log = Gringotts.G.getLogger();
+    private static final Logger LOG = Gringotts.G.getLogger();
 
     public final FactionsHandler factions;
     public final TownyHandler towny;
@@ -52,16 +52,16 @@ public enum Dependency {
         Plugin plugin;
         if (packagesExists(classpath)) {
             plugin = Bukkit.getServer().getPluginManager().getPlugin(name);
-            log.info("Plugin "+name+" hooked.");
+            LOG.info("Plugin "+name+" hooked.");
 
             PluginDescriptionFile desc = plugin.getDescription();
             String version = desc.getVersion();
             if (!versionAtLeast(version, minVersion)) {
-                log.warning("Plugin dependency "+ name +" is version " + version + 
+                LOG.warning("Plugin dependency "+ name +" is version " + version + 
                         ". Expected at least "+ minVersion +" -- Errors may occur.");
             }
         } else {
-            log.info("Unable to hook plugin " + name);
+            LOG.info("Unable to hook plugin " + name);
             plugin = null;
         }
 

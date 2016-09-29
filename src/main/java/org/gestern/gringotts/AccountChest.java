@@ -21,7 +21,7 @@ import static org.gestern.gringotts.Configuration.CONF;
  */
 public class AccountChest {
 
-    private final Logger log = Gringotts.G.getLogger();
+    private static final Logger LOG = Gringotts.G.getLogger();
 
     private final DAO dao = Gringotts.G.dao;
 
@@ -89,7 +89,7 @@ public class AccountChest {
      */
     private boolean updateValid() {
         if (notValid()) {
-            log.info("Destroying orphaned vault: " + this);
+            LOG.info("Destroying orphaned vault: " + this);
             destroy();
             return false;
         }

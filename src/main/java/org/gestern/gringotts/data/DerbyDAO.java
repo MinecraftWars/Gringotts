@@ -27,7 +27,7 @@ public class DerbyDAO implements DAO {
     /** Singleton DAO instance. */
     private static DerbyDAO dao;
 
-    private final Logger log = Gringotts.G.getLogger();
+    private static final Logger LOG = Gringotts.G.getLogger();
 
     private final Driver driver;
     private Connection connection;
@@ -56,7 +56,7 @@ public class DerbyDAO implements DAO {
             setupDB(connection);
             prepareStatements();
 
-            log.fine("DAO setup successfully.");
+            LOG.fine("DAO setup successfully.");
 
         } catch (SQLException e) {
             throw new GringottsStorageException("Failed to initialize database connection.", e);
@@ -85,7 +85,7 @@ public class DerbyDAO implements DAO {
             Statement stmt = connection.createStatement();
             int updated = stmt.executeUpdate(createAccount);
             if (updated > 0)
-                log.info("created table ACCOUNT");
+                LOG.info("created table ACCOUNT");
             stmt.close();
         }
 
@@ -100,7 +100,7 @@ public class DerbyDAO implements DAO {
             Statement stmt = connection.createStatement();
             int updated = stmt.executeUpdate(createAccountChest);
             if (updated > 0)
-                log.info("created table ACCOUNTCHEST");
+                LOG.info("created table ACCOUNTCHEST");
             stmt.close();
         }
     }
@@ -137,7 +137,7 @@ public class DerbyDAO implements DAO {
         if (connection == null || connection.isClosed()) {
             connection = driver.connect(dbString, null);
             prepareStatements();
-            log.warning("Database connection lost. Reinitialized DB.");
+            LOG.warning("Database connection lost. Reinitialized DB.");
         }
     }
 
@@ -150,7 +150,7 @@ public class DerbyDAO implements DAO {
         GringottsAccount account = chest.getAccount();
         Location loc = chest.sign.getLocation();
 
-        log.info("storing account chest: " + chest + " for account: " + account);
+        LOG.info("storing account chest: " + chest + " for account: " + account);
         try {
             checkConnection();
 
@@ -166,7 +166,7 @@ public class DerbyDAO implements DAO {
         } catch (SQLException e) {
             // unique constraint failed: chest already exists
             if (e.getErrorCode() == 23505) {
-                log.warning("Unable to store account chest: " + e.getMessage());
+                LOG.warning("Unable to store account chest: " + e.getMessage());
                 return false;
             }
 
@@ -371,7 +371,7 @@ public class DerbyDAO implements DAO {
                     AccountHolder owner = Gringotts.G.accountHolderFactory.get(type, ownerId);
                     if (owner == null) {
                         // FIXME this logic really doesn't belong in DAO, I think?
-                        log.info("AccountHolder "+type+":"+ownerId+" is not valid. Deleting associated account chest at " + signBlock.getLocation());
+                        LOG.info("AccountHolder "+type+":"+ownerId+" is not valid. Deleting associated account chest at " + signBlock.getLocation());
                         deleteAccountChest(signBlock.getWorld().getName(), signBlock.getX(), signBlock.getY(), signBlock.getZ());
                     } else {
                         GringottsAccount ownerAccount = new GringottsAccount(owner);
@@ -516,14 +516,14 @@ public class DerbyDAO implements DAO {
     @Override
     public synchronized void shutdown() {
         try {
-            log.info("shutting down database connection");
+            LOG.info("shutting down database connection");
             // disconnect from derby completely
             String disconnectString = "jdbc:derby:;shutdown=true";
             DriverManager.getConnection(disconnectString);
 
         } catch (SQLException e) {
             // yes, derby actually throws an exception as a shutdown message ...
-            log.info("Derby shutdown: " + e.getSQLState() + ": " + e.getMessage());
+            LOG.info("Derby shutdown: " + e.getSQLState() + ": " + e.getMessage());
             System.gc();
         } 
     }

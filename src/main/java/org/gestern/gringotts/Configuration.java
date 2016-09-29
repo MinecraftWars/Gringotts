@@ -31,7 +31,7 @@ public enum Configuration {
     /** Central configuration instance. */
     CONF;
 
-    private final Logger log = Gringotts.G.getLogger();
+    private static final Logger LOG = Gringotts.G.getLogger();
 
     /** Language to be used for messages. Should be an ISO 639-1 (alpha-2) code. 
      * If a language is not supported by Gringotts, use user-configured or default (English) messages. */
@@ -80,12 +80,12 @@ public enum Configuration {
         String version = Bukkit.getBukkitVersion();
 
         if (Util.versionAtLeast(version, "1.3.1")) {
-            log.info("Found Bukkit version: "+version+". All features enabled.");
+            LOG.info("Found Bukkit version: "+version+". All features enabled.");
 
             CONF.usevaultEnderchest = savedConfig.getBoolean("usevault.enderchest", true);
 
         } else {
-            log.info("Found Bukkit version: "+version+". Disabling 1.3+ features.");
+            LOG.info("Found Bukkit version: "+version+". Disabling 1.3+ features.");
 
             CONF.usevaultEnderchest = false;
         }

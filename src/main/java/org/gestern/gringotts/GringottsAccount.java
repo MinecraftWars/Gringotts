@@ -29,7 +29,7 @@ import static org.gestern.gringotts.api.TransactionResult.*;
 public class GringottsAccount {
 
     @SuppressWarnings("unused")
-    private final Logger log = G.getLogger();
+    private static final Logger LOG = G.getLogger();
     private final DAO dao = G.dao;
 
     public final AccountHolder owner;

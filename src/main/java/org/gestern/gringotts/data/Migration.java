@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 public class Migration {
 
     private final EbeanServer db = Gringotts.G.getDatabase();
-    private final Logger log = Gringotts.G.getLogger();
+    private static final Logger LOG = Gringotts.G.getLogger();
 
     private final File gringottsFolder = Gringotts.G.getDataFolder();
     private final File derbyMigratedFlag = new File(gringottsFolder, ".derby-migrated");
@@ -52,9 +52,9 @@ public class Migration {
             try {
                 Files.copy(dbFile.toPath(), dbBackup.toPath(), StandardCopyOption.COPY_ATTRIBUTES);
             } catch (IOException err) {
-                log.log(Level.WARNING, "unable to create backup of Gringotts.db. Aborting UUID migration.", err);
+                LOG.log(Level.WARNING, "unable to create backup of Gringotts.db. Aborting UUID migration.", err);
             }
-            log.info("Created backup of Gringotts database as Gringotts.db.bak");
+            LOG.info("Created backup of Gringotts database as Gringotts.db.bak");
         }
 
         // only players need to be updated
@@ -74,7 +74,7 @@ public class Migration {
         try {
             nameUUIDs = new UUIDFetcher(names, true).call();
         } catch(Exception err) {
-            log.log(Level.WARNING, "Could not migrate player accounts to UUIDS.", err);
+            LOG.log(Level.WARNING, "Could not migrate player accounts to UUIDS.", err);
             return;
         }
 
@@ -88,13 +88,13 @@ public class Migration {
                     account.setOwner(nameUUIDs.get(name).toString());
                     db.update(account);
                 } else {
-                    log.info("No UUID found for player " + name);
+                    LOG.info("No UUID found for player " + name);
                 }
             }
             db.commitTransaction();
             db.endTransaction();
         } catch (Exception err) {
-            log.log(Level.WARNING,
+            LOG.log(Level.WARNING,
                     "Unable to update names to UUIDs. Please shutdown server and replace Gringotts.db with Gringotts.db.bak",
                     err);
             return;
@@ -102,9 +102,9 @@ public class Migration {
 
         try {
             uuidsMigratedFlag.createNewFile();
-            log.info("Players to UUIDs database migration complete.");
+            LOG.info("Players to UUIDs database migration complete.");
         } catch (IOException err) {
-            log.log(Level.SEVERE,
+            LOG.log(Level.SEVERE,
                     "Failed to set uuid migration complete flag (but it probably completed anyway)",
                     err);
         }
@@ -112,7 +112,7 @@ public class Migration {
 
     /** Migrate an existing Derby DB to Bukkit-internal EBean. */
     public void doDerbyMigration(DerbyDAO derbyDAO, EBeanDAO eBeanDAO) {
-        log.info("Reading account data from Derby database ...");
+        LOG.info("Reading account data from Derby database ...");
         List<DerbyDAO.DerbyAccount> accounts = derbyDAO.getAccountsRaw();
         List<DerbyDAO.DerbyAccountChest> chests = derbyDAO.getChestsRaw();
 
@@ -142,9 +142,9 @@ public class Migration {
 
         try {
             derbyMigratedFlag.createNewFile();
-            log.info("Wrote account data to EBean-supported database. Migration complete.");
+            LOG.info("Wrote account data to EBean-supported database. Migration complete.");
         } catch (IOException err) {
-            log.log(Level.SEVERE,
+            LOG.log(Level.SEVERE,
                     "Failed to set derby migration complete flag (but it probably completed anyway)",
                     err);
         }

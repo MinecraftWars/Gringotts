@@ -15,7 +15,7 @@ import static org.gestern.gringotts.Gringotts.G;
  */
 public class Accounting {
 
-    private final Logger log = G.getLogger();
+    private static final Logger LOG = G.getLogger();
 
     /**
      * Get the account associated with an account holder.
@@ -62,7 +62,7 @@ public class Accounting {
 
         // if there is an invalid stored chest on location of new chest, remove it from storage.
         if (allChests.contains(chest)) {
-            log.info("removing orphaned vault: " + chest);
+            LOG.info("removing orphaned vault: " + chest);
             G.dao.destroyAccountChest(chest);
             allChests.remove(chest);
         }
