@@ -1,7 +1,15 @@
 package org.gestern.gringotts;
 
 import com.avaje.ebean.EbeanServer;
+import com.avaje.ebean.EbeanServerFactory;
+import com.avaje.ebean.config.DataSourceConfig;
+import com.avaje.ebean.config.ServerConfig;
+import com.avaje.ebean.config.dbplatform.SQLitePlatform;
+import com.avaje.ebeaninternal.api.SpiEbeanServer;
+import com.avaje.ebeaninternal.server.ddl.DdlGenerator;
+import com.avaje.ebeaninternal.server.lib.sql.TransactionIsolation;
 import net.milkbowl.vault.economy.Economy;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -37,22 +45,43 @@ public class Gringotts extends JavaPlugin {
 
     private static final String MESSAGES_YML = "messages.yml";
 
-    /** The Gringotts plugin instance. */
+    /**
+     * The Gringotts plugin instance.
+     */
     public static Gringotts G;
-
-    public DAO dao;
-
-    private Logger log;
-
-    private Commands gcommand;
-
-    /** Manages accounts. */
-    public Accounting accounting;
-
-    /** 
+    /**
      * The account holder factory is the place to go if you need an AccountHolder instance for an id.
      */
     public final AccountHolderFactory accountHolderFactory = new AccountHolderFactory();
+    public  DAO        dao;
+    /**
+     * Manages accounts.
+     */
+    public  Accounting accounting;
+    private Logger     log;
+    private Commands   gcommand;
+    private EbeanServer ebean = null;
+
+    public Gringotts() {
+        ServerConfig db = new ServerConfig();
+
+        db.setDefaultServer(false);
+        db.setRegister(false);
+        db.setClasses(getDatabaseClasses());
+        db.setName(getDescription().getName());
+        configureDbConfig(db);
+
+        DataSourceConfig ds = db.getDataSourceConfig();
+
+        ds.setUrl(replaceDatabaseString(ds.getUrl()));
+        getDataFolder().mkdirs();
+
+        ClassLoader previous = Thread.currentThread().getContextClassLoader();
+
+        Thread.currentThread().setContextClassLoader(getClassLoader());
+        ebean = EbeanServerFactory.create(db);
+        Thread.currentThread().setContextClassLoader(previous);
+    }
 
     @Override
     public void onEnable() {
@@ -84,8 +113,8 @@ public class Gringotts extends JavaPlugin {
                 log.log(Level.INFO, "Failed to submit PluginMetrics stats", err);
             }
 
-        } catch(GringottsStorageException | GringottsConfigurationException e) {
-            log.severe(e.getMessage()); 
+        } catch (GringottsStorageException | GringottsConfigurationException e) {
+            log.severe(e.getMessage());
             this.disable();
         } catch (RuntimeException e) {
             this.disable();
@@ -105,19 +134,19 @@ public class Gringotts extends JavaPlugin {
     public void onDisable() {
 
         // shut down db connection
-        try{
-            if (dao !=null) dao.shutdown();
+        try {
+            if (dao != null) dao.shutdown();
         } catch (GringottsStorageException e) {
-            log.severe(e.toString()); 
+            log.severe(e.toString());
         }
 
         log.info("disabled");
     }
 
     private void registerCommands() {
-        CommandExecutor playerCommands = gcommand.new Money();
+        CommandExecutor playerCommands     = gcommand.new Money();
         CommandExecutor moneyAdminCommands = gcommand.new Moneyadmin();
-        CommandExecutor adminCommands = gcommand.new GringottsCmd();
+        CommandExecutor adminCommands      = gcommand.new GringottsCmd();
 
         getCommand("balance").setExecutor(playerCommands);
         getCommand("money").setExecutor(playerCommands);
@@ -150,9 +179,12 @@ public class Gringotts extends JavaPlugin {
     }
 
     /**
-     * Register an accountholder provider with Gringotts. This is necessary for Gringotts to find and create account holders
-     * of any non-player type. Registering a provider for the same type twice will overwrite the previously registered provider.
-     * @param type type id for an account type
+     * Register an accountholder provider with Gringotts. This is necessary for Gringotts to find and create account
+     * holders
+     * of any non-player type. Registering a provider for the same type twice will overwrite the previously
+     * registered provider.
+     *
+     * @param type     type id for an account type
      * @param provider provider for the account type
      */
     public void registerAccountHolderProvider(String type, AccountHolderProvider provider) {
@@ -161,6 +193,7 @@ public class Gringotts extends JavaPlugin {
 
     /**
      * Get the configured player interaction messages.
+     *
      * @return the configured player interaction messages
      */
     public FileConfiguration getMessages() {
@@ -168,7 +201,7 @@ public class Gringotts extends JavaPlugin {
         String langPath = "i18n/messages_" + CONF.language + ".yml";
 
         // try configured language first
-        InputStream langStream = getResource(langPath);
+        InputStream             langStream = getResource(langPath);
         final FileConfiguration conf;
         if (langStream != null) {
             Reader langReader = new InputStreamReader(getResource(langPath), Charset.forName("UTF-8"));
@@ -194,7 +227,7 @@ public class Gringotts extends JavaPlugin {
     public void saveDefaultConfig() {
         super.saveDefaultConfig();
         File defaultMessages = new File(getDataFolder(), MESSAGES_YML);
-        if (! defaultMessages.exists()) saveResource(MESSAGES_YML, false);
+        if (!defaultMessages.exists()) saveResource(MESSAGES_YML, false);
     }
 
     private DAO getDAO() {
@@ -221,7 +254,6 @@ public class Gringotts extends JavaPlugin {
         return EBeanDAO.getDao();
     }
 
-    @Override
     public List<Class<?>> getDatabaseClasses() {
         return EBeanDAO.getDatabaseClasses();
     }
@@ -239,6 +271,64 @@ public class Gringotts extends JavaPlugin {
             log.info("Initializing database tables.");
             installDDL();
         }
+    }
+
+    /**
+     * Gets the {@link EbeanServer} tied to this plugin.
+     * <p>
+     * <i>For more information on the use of <a href="http://www.avaje.org/">
+     * Avaje Ebeans ORM</a>, see <a
+     * href="http://www.avaje.org/ebean/documentation.html">Avaje Ebeans
+     * Documentation</a></i>
+     * <p>
+     * <i>For an example using Ebeans ORM, see <a
+     * href="https://github.com/Bukkit/HomeBukkit">Bukkit's Homebukkit Plugin
+     * </a></i>
+     *
+     * @return ebean server instance or null if not enabled
+     * all EBean related methods has been removed with Minecraft 1.12
+     * - see https://www.spigotmc.org/threads/194144/
+     */
+    public EbeanServer getDatabase() {
+        return ebean;
+    }
+
+    protected void installDDL() {
+        SpiEbeanServer serv = (SpiEbeanServer) getDatabase();
+        DdlGenerator   gen  = serv.getDdlGenerator();
+
+        gen.runScript(false, gen.generateCreateDdl());
+    }
+
+    protected void removeDDL() {
+        SpiEbeanServer serv = (SpiEbeanServer) getDatabase();
+        DdlGenerator   gen  = serv.getDdlGenerator();
+
+        gen.runScript(true, gen.generateDropDdl());
+    }
+
+    private String replaceDatabaseString(String input) {
+        input = input.replaceAll("\\{DIR\\}", getDataFolder().getPath().replaceAll("\\\\", "/") + "/");
+        input = input.replaceAll("\\{NAME\\}", getDescription().getName().replaceAll("[^\\w_-]", ""));
+        return input;
+    }
+
+    public void configureDbConfig(ServerConfig config) {
+        Validate.notNull(config, "Config cannot be null");
+
+        DataSourceConfig ds = new DataSourceConfig();
+        ds.setDriver("org.sqlite.JDBC");
+        ds.setUrl("jdbc:sqlite:{DIR}{NAME}.db");
+        ds.setUsername("bukkit");
+        ds.setPassword("walrus");
+        ds.setIsolationLevel(TransactionIsolation.getLevel("SERIALIZABLE"));
+
+        if (ds.getDriver().contains("sqlite")) {
+            config.setDatabasePlatform(new SQLitePlatform());
+            config.getDatabasePlatform().getDbDdlSyntax().setIdentity("");
+        }
+
+        config.setDataSourceConfig(ds);
     }
 
 }
