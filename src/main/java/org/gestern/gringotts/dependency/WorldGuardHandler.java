@@ -2,7 +2,6 @@ package org.gestern.gringotts.dependency;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.domains.DefaultDomain;
-import com.sk89q.worldguard.protection.GlobalRegionManager;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Bukkit;
@@ -14,6 +13,8 @@ import org.gestern.gringotts.Gringotts;
 import org.gestern.gringotts.accountholder.AccountHolder;
 import org.gestern.gringotts.accountholder.AccountHolderProvider;
 import org.gestern.gringotts.event.PlayerVaultCreationEvent;
+
+import java.util.UUID;
 
 import static org.gestern.gringotts.Language.LANG;
 import static org.gestern.gringotts.Permissions.CREATEVAULT_ADMIN;
@@ -54,9 +55,8 @@ public class WorldGuardHandler implements DependencyHandler, AccountHolderProvid
         }
 
         // try bare id in all worlds
-        GlobalRegionManager manager = plugin.getGlobalRegionManager();
-        for (World world: Bukkit.getWorlds()) {
-            RegionManager worldManager = manager.get(world);
+        for (World world : Bukkit.getWorlds()) {
+            RegionManager worldManager = plugin.getRegionManager(world);
             if (worldManager.hasRegion(id)) {
                 ProtectedRegion region = worldManager.getRegion(id);
                 return new WorldGuardAccountHolder(world.getName(), region);
@@ -68,8 +68,9 @@ public class WorldGuardHandler implements DependencyHandler, AccountHolderProvid
 
     /**
      * Get account holder for known world and region id.
+     *
      * @param world name of world
-     * @param id worldguard region id
+     * @param id    worldguard region id
      * @return account holder for the region
      */
     public WorldGuardAccountHolder getAccountHolder(String world, String id) {
@@ -100,8 +101,8 @@ public class WorldGuardHandler implements DependencyHandler, AccountHolderProvid
                     return;
                 }
 
-                String regionId = event.getCause().getLine(2);
-                String[] regionComponents = regionId.split("-",1);
+                String   regionId         = event.getCause().getLine(2);
+                String[] regionComponents = regionId.split("-", 1);
 
                 WorldGuardAccountHolder owner;
                 if (regionComponents.length == 1) {
@@ -109,7 +110,7 @@ public class WorldGuardHandler implements DependencyHandler, AccountHolderProvid
                     owner = getAccountHolder(regionComponents[0]);
                 } else {
                     String world = regionComponents[0];
-                    String id = regionComponents[1];
+                    String id    = regionComponents[1];
                     owner = getAccountHolder(world, id);
                 }
 
@@ -127,7 +128,7 @@ public class WorldGuardHandler implements DependencyHandler, AccountHolderProvid
 
 class WorldGuardAccountHolder implements AccountHolder {
 
-    final String world;
+    final String          world;
     final ProtectedRegion region;
 
     public WorldGuardAccountHolder(String world, ProtectedRegion region) {
@@ -142,7 +143,23 @@ class WorldGuardAccountHolder implements AccountHolder {
 
     @Override
     public void sendMessage(String message) {
-        // TODO send message to all members?
+        //Send the message to owners.
+        for (UUID uuid : region.getOwners().getUniqueIds()) {
+            Player player = Bukkit.getPlayer(uuid);
+
+            if (player != null) {
+                player.sendMessage(message);
+            }
+        }
+
+        //Send the message to members.
+        for (UUID uuid : region.getMembers().getUniqueIds()) {
+            Player player = Bukkit.getPlayer(uuid);
+
+            if (player != null) {
+                player.sendMessage(message);
+            }
+        }
     }
 
     @Override
@@ -152,7 +169,7 @@ class WorldGuardAccountHolder implements AccountHolder {
 
     @Override
     public String getId() {
-        return world+"-"+region.getId();
+        return world + "-" + region.getId();
     }
 
 }
