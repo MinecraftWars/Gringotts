@@ -14,6 +14,7 @@ public class PlayerVaultCreationEvent extends VaultCreationEvent {
 
     public PlayerVaultCreationEvent(String type, SignChangeEvent cause) {
         super(type);
+
         this.cause = cause;
     }
 

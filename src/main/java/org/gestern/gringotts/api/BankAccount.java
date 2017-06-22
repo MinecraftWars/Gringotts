@@ -4,6 +4,7 @@ public interface BankAccount extends Account {
 
     /**
      * Add an owner to this bank account.
+     *
      * @param player Player to add as owner to this bank account.
      * @return This bank account with the owner added.
      */
@@ -11,6 +12,7 @@ public interface BankAccount extends Account {
 
     /**
      * Add a member to this bank account.
+     *
      * @param player Player to add as owner to this bank account.
      * @return This bank account with the member added.
      */
@@ -18,6 +20,7 @@ public interface BankAccount extends Account {
 
     /**
      * Return whether a player is an owner of this bank account.
+     *
      * @param player player to check for ownership
      * @return whether a player is an owner of this bank account.
      */
@@ -25,6 +28,7 @@ public interface BankAccount extends Account {
 
     /**
      * Return whether a player is a member of this bank account.
+     *
      * @param player player to check for membership
      * @return whether a player is an member of this bank account.
      */

@@ -20,17 +20,25 @@ public class GringottsTaxedTransaction extends GringottsTransaction implements T
      */
     protected GringottsTaxedTransaction(GringottsTransaction base, double taxes) {
         super(base);
+
         this.taxes = taxes;
     }
 
     @Override
     public TransactionResult to(Account recipient) {
         TransactionResult taxResult = from.remove(taxes);
-        if (taxResult != SUCCESS) return taxResult;
+
+        if (taxResult != SUCCESS) {
+            return taxResult;
+        }
 
         TransactionResult result = super.to(recipient);
+
         // undo taxing if transaction failed
-        if (result != SUCCESS) from.add(taxes);
+        if (result != SUCCESS) {
+            from.add(taxes);
+        }
+
         return result; 
     }
 
@@ -43,5 +51,4 @@ public class GringottsTaxedTransaction extends GringottsTransaction implements T
     public double tax() {
         return taxes;
     }
-
 }
