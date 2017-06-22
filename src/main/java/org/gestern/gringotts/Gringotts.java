@@ -135,7 +135,9 @@ public class Gringotts extends JavaPlugin {
 
         // shut down db connection
         try {
-            if (dao != null) dao.shutdown();
+            if (dao != null) {
+                dao.shutdown();
+            }
         } catch (GringottsStorageException e) {
             log.severe(e.toString());
         }
@@ -227,7 +229,10 @@ public class Gringotts extends JavaPlugin {
     public void saveDefaultConfig() {
         super.saveDefaultConfig();
         File defaultMessages = new File(getDataFolder(), MESSAGES_YML);
-        if (!defaultMessages.exists()) saveResource(MESSAGES_YML, false);
+
+        if (!defaultMessages.exists()) {
+            saveResource(MESSAGES_YML, false);
+        }
     }
 
     private DAO getDAO() {
@@ -239,8 +244,7 @@ public class Gringotts extends JavaPlugin {
         Migration migration = new Migration();
 
         DerbyDAO derbyDAO;
-        if (!migration.isDerbyMigrated() &&
-                (derbyDAO = DerbyDAO.getDao()) != null) {
+        if (!migration.isDerbyMigrated() && (derbyDAO = DerbyDAO.getDao()) != null) {
             log.info("Derby database detected. Migrating to Bukkit-supported database ...");
             EBeanDAO eBeanDAO = EBeanDAO.getDao();
             migration.doDerbyMigration(derbyDAO, eBeanDAO);
@@ -265,8 +269,10 @@ public class Gringotts extends JavaPlugin {
     private void setupEBean() {
         try {
             EbeanServer db = getDatabase();
-            for (Class<?> c : getDatabaseClasses())
+
+            for (Class<?> c : getDatabaseClasses()) {
                 db.find(c).findRowCount();
+            }
         } catch (Exception ignored) {
             log.info("Initializing database tables.");
             installDDL();
@@ -308,8 +314,13 @@ public class Gringotts extends JavaPlugin {
     }
 
     private String replaceDatabaseString(String input) {
-        input = input.replaceAll("\\{DIR\\}", getDataFolder().getPath().replaceAll("\\\\", "/") + "/");
-        input = input.replaceAll("\\{NAME\\}", getDescription().getName().replaceAll("[^\\w_-]", ""));
+        input = input.replaceAll(
+                "\\{DIR\\}",
+                getDataFolder().getPath().replaceAll("\\\\", "/") + "/");
+        input = input.replaceAll(
+                "\\{NAME\\}",
+                getDescription().getName().replaceAll("[^\\w_-]", ""));
+
         return input;
     }
 

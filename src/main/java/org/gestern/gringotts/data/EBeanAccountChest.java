@@ -8,20 +8,22 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name="gringotts_accountchest")
-@UniqueConstraint(columnNames={"world","x","y","z"})
+@Table(name = "gringotts_accountchest")
+@UniqueConstraint(columnNames = {"world", "x", "y", "z"})
 public class EBeanAccountChest {
+    @Id
+    int    id;
+    @NotNull
+    String world;
+    @NotNull
+    int    x;
+    @NotNull
+    int    y;
+    @NotNull
+    int    z;
+    @NotNull
+    int    account;
 
-    @Id int id;
-
-    @NotNull String world;
-
-    @NotNull int x;
-    @NotNull int y;
-    @NotNull int z;
-
-    @NotNull int account;
-    
     public int getId() {
         return id;
     }
@@ -72,7 +74,7 @@ public class EBeanAccountChest {
 
     @Override
     public String toString() {
-        return "EBeanAccountChest("+account+","+world+": "+x+","+y+","+z+")"; 
+        return "EBeanAccountChest(" + account + "," + world + ": " + x + "," + y + "," + z + ")";
     }
 
 }

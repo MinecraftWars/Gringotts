@@ -7,12 +7,15 @@ import org.bukkit.inventory.ItemStack;
  */
 public class DenominationKey {
 
-    /** Item type of this denomination. */
+    /**
+     * Item type of this denomination.
+     */
     public final ItemStack type;
 
 
     /**
      * Create a denomination key based on an item stack.
+     *
      * @param type item type of denomination
      */
     public DenominationKey(ItemStack type) {

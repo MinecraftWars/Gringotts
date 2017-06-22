@@ -30,9 +30,12 @@ public class AccountInventory {
      */
     public long balance() {
         GringottsCurrency cur = CONF.currency;
-        long count = 0;	
+        long count = 0;
+
         for (ItemStack stack : inventory)
+        {
             count += cur.value(stack);
+        }
 
         return count;
     }
@@ -61,7 +64,9 @@ public class AccountInventory {
 
                     int returned = 0;
                     for (ItemStack leftover : inventory.addItem(stack).values())
+                    {
                         returned += leftover.getAmount();
+                    }
 
                     // reduce remaining amount by whatever was deposited
                     long added = (long)remainderStackSize-returned;
@@ -69,7 +74,9 @@ public class AccountInventory {
                     remaining -= added * denom.value;
 
                     // no more space for this denomination
-                    if (returned > 0) break;
+                    if (returned > 0) {
+                        break;
+                    }
                 }
             }
         }
@@ -85,7 +92,9 @@ public class AccountInventory {
     public long remove(long value) {
 
         // avoid dealing with negatives
-        if (value <= 0) return 0;
+        if (value <= 0){
+            return 0;
+        }
 
         GringottsCurrency cur = CONF.currency;
         long remaining = value;
@@ -106,8 +115,11 @@ public class AccountInventory {
                 stack.setAmount(remainderStackSize);
 
                 int returned = 0;
+
                 for (ItemStack leftover : inventory.removeItem(stack).values())
+                {
                     returned += leftover.getAmount();
+                }
 
                 // reduce remaining amount by whatever was removed
                 long removed = (long)remainderStackSize-returned;
@@ -115,7 +127,9 @@ public class AccountInventory {
                 remaining -= removed * denom.value;
 
                 // stuff was returned, no more items of this type to take
-                if (returned > 0) break;
+                if (returned > 0) {
+                    break;
+                }
             }
 
         }

@@ -26,7 +26,9 @@ public class Accounting {
     public GringottsAccount getAccount(AccountHolder owner) {
         GringottsAccount account = new GringottsAccount(owner);
         if (!G.dao.hasAccount(owner))  // TODO can we do this via idempotent store action instead?          
+        {
             G.dao.storeAccount(account);
+        }
 
         return account;
     }
@@ -43,7 +45,9 @@ public class Accounting {
     private boolean chestConnected(AccountChest chest, List<AccountChest> allChests) {
         for (AccountChest ac : allChests) {
             if (ac.connected(chest))
+            {
                 return true;
+            }
         }
         return false;
     }
@@ -68,10 +72,15 @@ public class Accounting {
         }
 
         if (chestConnected(chest, allChests) )
+        {
             return false;
+        }
 
         if ( ! G.dao.storeAccountChest(chest) )
+        {
             throw new GringottsStorageException("Could not save account chest: " + chest);
+        }
+
         return true;
     }
 

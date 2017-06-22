@@ -19,6 +19,7 @@ public enum Permissions {
     ;
 
     public final String node;
+
     Permissions(String node) {
         this.node = node;
     }

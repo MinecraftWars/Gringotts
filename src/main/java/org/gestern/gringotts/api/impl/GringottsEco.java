@@ -22,16 +22,20 @@ import static org.gestern.gringotts.api.TransactionResult.SUCCESS;
 
 public class GringottsEco implements Eco {
 
-    private static final String TAG_PLAYER = "player";
-    private final AccountHolderFactory accountOwners = Gringotts.G.accountHolderFactory;
-    private final DAO dao = Gringotts.G.dao;
+    private static final String               TAG_PLAYER    = "player";
+    private final        AccountHolderFactory accountOwners = Gringotts.G.accountHolderFactory;
+    private final        DAO                  dao           = Gringotts.G.dao;
 
     @Override
     public Account account(String id) {
         AccountHolder owner = accountOwners.get(id);
-        if (owner == null) return new InvalidAccount("virtual", id);
+
+        if (owner == null) {
+            return new InvalidAccount("virtual", id);
+        }
 
         GringottsAccount gAccount = Gringotts.G.accounting.getAccount(owner);
+
         return new ValidAccount(gAccount);
 
     }
@@ -39,8 +43,10 @@ public class GringottsEco implements Eco {
     @Override
     public PlayerAccount player(String name) {
         AccountHolder owner = accountOwners.get(TAG_PLAYER, name);
-        if (owner instanceof PlayerAccountHolder)
+
+        if (owner instanceof PlayerAccountHolder) {
             return new ValidPlayerAccount(Gringotts.G.accounting.getAccount(owner));
+        }
 
         return new InvalidAccount(TAG_PLAYER, name);
     }
@@ -48,8 +54,10 @@ public class GringottsEco implements Eco {
     @Override
     public PlayerAccount player(UUID id) {
         AccountHolder owner = accountOwners.get(TAG_PLAYER, id.toString());
-        if (owner instanceof PlayerAccountHolder)
+
+        if (owner instanceof PlayerAccountHolder) {
             return new ValidPlayerAccount(Gringotts.G.accounting.getAccount(owner));
+        }
 
         return new InvalidAccount(TAG_PLAYER, id.toString());
     }
@@ -62,25 +70,30 @@ public class GringottsEco implements Eco {
     @Override
     public Account custom(String type, String id) {
         AccountHolder owner = accountOwners.get(type, id);
-        if (owner == null) return new InvalidAccount(type, id);
+
+        if (owner == null) {
+            return new InvalidAccount(type, id);
+        }
+
         GringottsAccount acc = new GringottsAccount(owner);
+
         return new ValidAccount(acc);
     }
 
     @Override
     public Account faction(String id) {
-        return custom ("faction", id);
+        return custom("faction", id);
     }
 
     @Override
     public Account town(String id) {
-        return custom ("town", id);
+        return custom("town", id);
 
     }
 
     @Override
     public Account nation(String id) {
-        return custom ("nation", id);
+        return custom("nation", id);
     }
 
     @Override
@@ -91,6 +104,12 @@ public class GringottsEco implements Eco {
     @Override
     public boolean supportsBanks() {
         return true;
+    }
+
+    @Override
+    public Set<String> getBanks() {
+        // TODO implement banks
+        return Collections.emptySet();
     }
 
     private class InvalidAccount implements Account, BankAccount, PlayerAccount {
@@ -254,13 +273,19 @@ public class GringottsEco implements Eco {
 
         @Override
         public TransactionResult add(double value) {
-            if (value < 0) return remove(-value);
+            if (value < 0) {
+                return remove(-value);
+            }
+
             return acc.add(CONF.currency.centValue(value));
         }
 
         @Override
         public TransactionResult remove(double value) {
-            if (value < 0) return add(-value);
+            if (value < 0) {
+                return add(-value);
+            }
+
             return acc.remove(CONF.currency.centValue(value));
         }
 
@@ -283,7 +308,6 @@ public class GringottsEco implements Eco {
         public void message(String message) {
             acc.owner.sendMessage(message);
         }
-
     }
 
     private class ValidPlayerAccount extends ValidAccount implements PlayerAccount {
@@ -294,34 +318,38 @@ public class GringottsEco implements Eco {
 
         @Override
         public TransactionResult deposit(double value) {
-            PlayerAccountHolder owner = (PlayerAccountHolder) acc.owner;
-            Player player = Bukkit.getPlayer(owner.getUUID());
-            AccountInventory playerInventory = new AccountInventory(player.getInventory());
-            long centValue = CONF.currency.centValue(value);
+            PlayerAccountHolder owner           = (PlayerAccountHolder) acc.owner;
+            Player              player          = Bukkit.getPlayer(owner.getUUID());
+            AccountInventory    playerInventory = new AccountInventory(player.getInventory());
+            long                centValue       = CONF.currency.centValue(value);
+            long                toDeposit       = playerInventory.remove(centValue);
 
-            long toDeposit = playerInventory.remove(centValue);
-            if (toDeposit > centValue) 
+            if (toDeposit > centValue) {
                 toDeposit -= playerInventory.add(toDeposit - centValue);
+            }
 
             TransactionResult result = player(player.getUniqueId()).add(CONF.currency.displayValue(toDeposit));
-            if (result != SUCCESS)
+
+            if (result != SUCCESS) {
                 playerInventory.add(toDeposit);
+            }
 
             return result;
         }
 
         @Override
         public TransactionResult withdraw(double value) {
-            PlayerAccountHolder owner = (PlayerAccountHolder) acc.owner;
-            Player player = Bukkit.getPlayer(owner.getUUID());
-            AccountInventory playerInventory = new AccountInventory(player.getInventory());
-            long centValue = CONF.currency.centValue(value);
+            PlayerAccountHolder owner           = (PlayerAccountHolder) acc.owner;
+            Player              player          = Bukkit.getPlayer(owner.getUUID());
+            AccountInventory    playerInventory = new AccountInventory(player.getInventory());
+            long                centValue       = CONF.currency.centValue(value);
+            TransactionResult   remove          = acc.remove(centValue);
 
-            TransactionResult remove = acc.remove(centValue);
             if (remove == SUCCESS) {
                 long withdrawn = playerInventory.add(centValue);
-                return acc.add(centValue-withdrawn); // add possible leftovers back to account
+                return acc.add(centValue - withdrawn); // add possible leftovers back to account
             }
+
             return remove;
         }
 
@@ -330,11 +358,11 @@ public class GringottsEco implements Eco {
     private class Curr implements Currency {
 
         final GringottsCurrency gcurr;
-        final String formatString; // TODO this should be configurable
+        final String            formatString; // TODO this should be configurable
 
         Curr(GringottsCurrency curr) {
             this.gcurr = curr;
-            formatString = "%."+curr.digits+"f %s";
+            formatString = "%." + curr.digits + "f %s";
         }
 
         @Override
@@ -349,7 +377,7 @@ public class GringottsEco implements Eco {
 
         @Override
         public String format(double value) {
-            return CONF.currency.format(formatString,value);
+            return CONF.currency.format(formatString, value);
         }
 
         @Override
@@ -358,11 +386,4 @@ public class GringottsEco implements Eco {
         }
 
     }
-
-    @Override
-    public Set<String> getBanks() {
-        // TODO implement banks
-        return Collections.emptySet();
-    }
-
 }

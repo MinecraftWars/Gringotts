@@ -51,14 +51,19 @@ public class WorldGuardHandler implements DependencyHandler, AccountHolderProvid
         String[] parts = id.split("-", 2);
         if (parts.length == 2) {
             WorldGuardAccountHolder wgah = getAccountHolder(parts[0], parts[1]);
-            if (wgah != null) return wgah;
+
+            if (wgah != null) {
+                return wgah;
+            }
         }
 
         // try bare id in all worlds
         for (World world : Bukkit.getWorlds()) {
             RegionManager worldManager = plugin.getRegionManager(world);
+
             if (worldManager.hasRegion(id)) {
                 ProtectedRegion region = worldManager.getRegion(id);
+
                 return new WorldGuardAccountHolder(world.getName(), region);
             }
         }
@@ -75,12 +80,20 @@ public class WorldGuardHandler implements DependencyHandler, AccountHolderProvid
      */
     public WorldGuardAccountHolder getAccountHolder(String world, String id) {
         World w = Bukkit.getWorld(world);
-        if (w == null) return null;
+
+        if (w == null) {
+            return null;
+        }
+
         RegionManager manager = plugin.getRegionManager(w);
-        if (manager == null) return null;
+
+        if (manager == null) {
+            return null;
+        }
 
         if (manager.hasRegion(id)) {
             ProtectedRegion region = manager.getRegion(id);
+
             return new WorldGuardAccountHolder(world, region);
         }
 
@@ -97,7 +110,8 @@ public class WorldGuardHandler implements DependencyHandler, AccountHolderProvid
             if ("region".equals(event.getType())) {
                 Player player = event.getCause().getPlayer();
                 if (!CREATEVAULT_WORLDGUARD.allowed(player)) {
-                    player.sendMessage(LANG.plugin_faction_noVaultPerm);
+                    player.sendMessage(LANG.plugin_worldguard_noVaultPerm);
+
                     return;
                 }
 
@@ -171,5 +185,4 @@ class WorldGuardAccountHolder implements AccountHolder {
     public String getId() {
         return world + "-" + region.getId();
     }
-
 }
