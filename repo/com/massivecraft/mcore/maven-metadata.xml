@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.massivecraft</groupId>
+  <artifactId>mcore</artifactId>
+  <version>2.12.0</version>
+  <versioning>
+    <latest>2.12.0</latest>
+    <release>2.12.0</release>
+    <versions>
+      <version>2.12.0</version>
+    </versions>
+    <lastUpdated>20171306235600</lastUpdated>
+  </versioning>
+</metadata>

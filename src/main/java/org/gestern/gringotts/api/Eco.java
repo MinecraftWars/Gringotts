@@ -7,8 +7,10 @@ public interface Eco {
 
     /**
      * Access a generic account for the given id. The type of the account is defined by the economy plugin.
-     * The recommended behavior is to return a player account if a player of the name exists, and return any other type of account
+     * The recommended behavior is to return a player account if a player of the name exists, and return any other
+     * type of account
      * if no player of that name is known to the economy.
+     *
      * @param id id of the account
      * @return The account representation.
      */
@@ -29,9 +31,11 @@ public interface Eco {
 
     /**
      * Access a player account for the player with given uuid. If a player can have multiple accounts,
-     * the account returned is defined by the economy plugin. For example, if the economy supports one account per world,
+     * the account returned is defined by the economy plugin. For example, if the economy supports one account per
+     * world,
      * return the account associated with the world the player is currently in.
      * The representation of the money of a player account may be in-game items or virtual.
+     *
      * @param id The unique id of the player owning the account.
      * @return The player account representation
      */
@@ -41,21 +45,25 @@ public interface Eco {
      * Access a bank account with given name.
      * The representation of the money in a bank account may be in-game items or virtual.
      * Support for this method is optional.
+     *
      * @param name The name or id of the bank.
      * @return The bank account representation.
      */
     BankAccount bank(String name);
 
     /**
-     * Access custom account type. Implementors must support this method, but may choose to implement via another account type internally.
+     * Access custom account type. Implementors must support this method, but may choose to implement via another
+     * account type internally.
+     *
      * @param type type of account
-     * @param id account id
+     * @param id   account id
      * @return an account of the given type and id
      */
     Account custom(String type, String id);
 
     /**
      * Access a Factions faction account with the given id.
+     *
      * @param id faction id
      * @return the faction's account
      */
@@ -63,6 +71,7 @@ public interface Eco {
 
     /**
      * Access a Towny town account with the given id.
+     *
      * @param id/name of a Towny town
      * @return account for a Towny town
      */
@@ -70,6 +79,7 @@ public interface Eco {
 
     /**
      * Access a Towny nation account with the given id.
+     *
      * @param id id/name of a Towny nation
      * @return account for a Towny nation with the given id.
      */
@@ -77,18 +87,21 @@ public interface Eco {
 
     /**
      * The currency for this Economy.
+     *
      * @return The currency for this Economy.
      */
     Currency currency();
 
     /**
      * Return whether this economy supports banks.
+     *
      * @return true if this economy has bank support, false otherwise.
      */
     boolean supportsBanks();
 
     /**
      * Get a set of all banks currently registered by the economy.
+     *
      * @return a set of the names of all banks currently registered by the economy.
      */
     Set<String> getBanks();

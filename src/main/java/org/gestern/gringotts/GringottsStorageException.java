@@ -19,5 +19,4 @@ public class GringottsStorageException extends RuntimeException {
     public GringottsStorageException(Throwable cause) {
         super(cause);
     }
-
 }

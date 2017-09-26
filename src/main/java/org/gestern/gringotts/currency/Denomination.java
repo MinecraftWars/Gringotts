@@ -4,17 +4,20 @@ import org.bukkit.ChatColor;
 
 /**
  * Representation of a denomination within a currency.
- * 
+ * <p>
  * Note: this class has a natural ordering that is inconsistent with equals.
  * Specifically, the ordering is based purely on the value of the denomination, but not the type.
- *
  */
 public class Denomination implements Comparable<Denomination> {
 
-    /** Identification information for this denomination. */
+    /**
+     * Identification information for this denomination.
+     */
     public final DenominationKey key;
 
-    /** Value of one unit of this denomination in cents. */
+    /**
+     * Value of one unit of this denomination in cents.
+     */
     public final long value;
 
     /**
@@ -46,6 +49,6 @@ public class Denomination implements Comparable<Denomination> {
 
     @Override
     public String toString() {
-        return String.format("{Denomination} %s : %d", key.type, value);    }
-
+        return String.format("{Denomination} %s : %d", key.type, value);
+    }
 }

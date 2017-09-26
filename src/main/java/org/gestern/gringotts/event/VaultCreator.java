@@ -16,31 +16,38 @@ import static org.gestern.gringotts.Language.LANG;
 
 public class VaultCreator implements Listener {
 
-    private final Accounting accounting = Gringotts.G.accounting; 
+    private final Accounting accounting = Gringotts.G.accounting;
 
     /**
      * If the vault creation event was properly handled and an AccountHolder supplied, it will be created here.
+     *
      * @param event event to handle
      */
     @EventHandler(priority = EventPriority.MONITOR)
     public void registerVault(PlayerVaultCreationEvent event) {
         // event has been marked invalid, ignore
-        if (! event.isValid()) return;
+        if (!event.isValid()) {
+            return;
+        }
 
         AccountHolder owner = event.getOwner();
-        if (owner == null) return;
+        if (owner == null) {
+            return;
+        }
 
         GringottsAccount account = accounting.getAccount(owner);
 
         SignChangeEvent cause = event.getCause();
         // create account chest
-        AccountChest accountChest = new AccountChest((Sign)cause.getBlock().getState(), account);
+        AccountChest accountChest = new AccountChest((Sign) cause.getBlock().getState(), account);
 
         // check for existence / add to tracking
         if (accounting.addChest(accountChest)) {
             // only embolden if the bold marker doesn't increase line length beyond 15
-            if (cause.getLine(0).length() <= 13)
+            if (cause.getLine(0).length() <= 13) {
                 cause.setLine(0, ChatColor.BOLD + cause.getLine(0));
+            }
+
             cause.setLine(2, owner.getName());
             cause.getPlayer().sendMessage(LANG.vault_created);
 
@@ -49,5 +56,4 @@ public class VaultCreator implements Listener {
             cause.getPlayer().sendMessage(LANG.vault_error);
         }
     }
-
 }

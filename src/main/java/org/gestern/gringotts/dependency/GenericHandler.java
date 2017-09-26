@@ -12,12 +12,11 @@ public class GenericHandler implements DependencyHandler {
 
     @Override
     public boolean enabled() {
-        return plugin !=null && plugin.isEnabled();
+        return plugin != null && plugin.isEnabled();
     }
 
     @Override
     public boolean exists() {
-        return plugin!=null;
+        return plugin != null;
     }
-
 }

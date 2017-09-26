@@ -2,22 +2,22 @@ package org.gestern.gringotts.api;
 
 /**
  * The result of a transaction.
- * @author jast
  *
+ * @author jast
  */
 public enum TransactionResult {
     /**
      * Transaction was successful.
      */
-    SUCCESS, 
+    SUCCESS,
     /**
      * Transaction failed due to insufficient funds of an account that money was to be taken from.
      */
-    INSUFFICIENT_FUNDS, 
+    INSUFFICIENT_FUNDS,
     /**
      * Transaction failed due to insufficient space in an account that money was to be deposited to.
      */
-    INSUFFICIENT_SPACE, 
+    INSUFFICIENT_SPACE,
     /**
      * Transaction operation not supported.
      */

@@ -8,21 +8,27 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name="gringotts_account")
-@UniqueConstraint(columnNames={"type","owner"})
+@Table(name = "gringotts_account")
+@UniqueConstraint(columnNames = {"type", "owner"})
 public class EBeanAccount {
-    
-    @Id int id;
+    @Id
+    int    id;
+    /**
+     * Type string.
+     */
+    @NotNull
+    String type;
+    /**
+     * Owner id.
+     */
+    @NotNull
+    String owner;
+    /**
+     * Virtual balance.
+     */
+    @NotNull
+    long   cents;
 
-    /** Type string. */
-    @NotNull String type;
-
-    /** Owner id. */
-    @NotNull String owner;
-
-    /** Virtual balance. */
-    @NotNull long cents;
-    
     public int getId() {
         return id;
     }
@@ -54,10 +60,10 @@ public class EBeanAccount {
     public void setCents(long cents) {
         this.cents = cents;
     }
-    
+
     @Override
     public String toString() {
-        return "EBeanAccount("+owner+","+type+": "+cents+")"; 
+        return "EBeanAccount(" + owner + "," + type + ": " + cents + ")";
     }
 
 }

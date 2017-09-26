@@ -7,10 +7,12 @@ import java.util.UUID;
 
 public class PlayerAccountHolder implements AccountHolder {
 
-    /** Actual player owning the account. */
+    /**
+     * Actual player owning the account.
+     */
     public final OfflinePlayer accountHolder;
 
-    public PlayerAccountHolder(OfflinePlayer player) {		
+    public PlayerAccountHolder(OfflinePlayer player) {
         if (player != null)
             this.accountHolder = player;
         else throw new IllegalArgumentException("Attempted to create account holder with null player.");
@@ -26,9 +28,7 @@ public class PlayerAccountHolder implements AccountHolder {
         if (accountHolder.isOnline()) {
             accountHolder.getPlayer().sendMessage(message);
         }
-
     }
-
 
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
@@ -43,14 +43,20 @@ public class PlayerAccountHolder implements AccountHolder {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+
+        if (getClass() != obj.getClass()) {
             return false;
+        }
 
         PlayerAccountHolder other = (PlayerAccountHolder) obj;
+
         return getUUID().equals(other.getUUID());
     }
 
@@ -61,7 +67,7 @@ public class PlayerAccountHolder implements AccountHolder {
 
     @Override
     public String toString() {
-        return "PlayerAccountHolder("+getName()+")";
+        return "PlayerAccountHolder(" + getName() + ")";
     }
 
     @Override

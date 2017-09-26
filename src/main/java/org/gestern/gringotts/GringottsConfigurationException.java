@@ -19,5 +19,4 @@ class GringottsConfigurationException extends RuntimeException {
     public GringottsConfigurationException(Throwable cause) {
         super(cause);
     }
-
 }

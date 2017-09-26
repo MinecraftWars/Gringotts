@@ -9,9 +9,8 @@ import java.util.UUID;
 
 /**
  * Manages creating various types of AccountHolder centrally.
- * 
- * @author jast
  *
+ * @author jast
  */
 public class AccountHolderFactory {
 
@@ -27,14 +26,17 @@ public class AccountHolderFactory {
 
     /**
      * Get an account holder with automatically determined type, based on the owner's id.
+     *
      * @param owner name of the account holder
      * @return account holder for the given owner name, or null if none could be determined
      */
     public AccountHolder get(String owner) {
-
         for (AccountHolderProvider provider : accountHolderProviders.values()) {
             AccountHolder accountHolder = provider.getAccountHolder(owner);
-            if (accountHolder != null) return accountHolder;
+
+            if (accountHolder != null) {
+                return accountHolder;
+            }
         }
 
         return null;
@@ -42,17 +44,19 @@ public class AccountHolderFactory {
 
     /**
      * Get an account holder of known type.
-     * @param type type of the account
+     *
+     * @param type  type of the account
      * @param owner name of the account holder
-     * @return account holder of given type with given owner name, or null if none could be determined or type is not supported.
+     * @return account holder of given type with given owner name, or null if none could be determined or type is not
+     * supported.
      */
     public AccountHolder get(String type, String owner) {
+        AccountHolderProvider provider      = accountHolderProviders.get(type);
+        AccountHolder         accountHolder = null;
 
-        AccountHolderProvider provider = accountHolderProviders.get(type);
-
-        AccountHolder accountHolder = null;
-        if (provider != null)
+        if (provider != null) {
             accountHolder = provider.getAccountHolder(owner);
+        }
 
         return accountHolder;
     }
@@ -65,8 +69,12 @@ public class AccountHolderFactory {
 
         @Override
         public AccountHolder getAccountHolder(String uuidOrName) {
-            if (uuidOrName == null) return null;
+            if (uuidOrName == null) {
+                return null;
+            }
+
             OfflinePlayer player;
+
             try {
                 UUID playerId = UUID.fromString(uuidOrName);
                 player = Bukkit.getOfflinePlayer(playerId);
@@ -76,14 +84,16 @@ public class AccountHolderFactory {
                 for (OfflinePlayer p : Bukkit.getOfflinePlayers()) {
                     if (uuidOrName.equals(p.getName())) return new PlayerAccountHolder(p);
                 }
+
                 return null;
             }
 
             // if this player has ever played on the server, they are a legit account holder
-            if (player.isOnline() || player.hasPlayedBefore())
+            if (player.isOnline() || player.hasPlayedBefore()) {
                 return new PlayerAccountHolder(player);
-            else 
+            } else {
                 return null;
+            }
         }
 
     }
