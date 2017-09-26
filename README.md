@@ -8,6 +8,23 @@ Gringotts is an item-based economy plugin for the Bukkit Minecraft server platfo
 
 [Get Gringotts from BukkitDev](http://dev.bukkit.org/server-mods/gringotts/)
 
+Looking for maintainers!
+------------------------
+
+I initially created Gringotts a long time ago for a server that no longer exists, and I don't play Minecraft much anymore,
+and have many other interesting things to do. Thus, I can't devote much time to the project. I would like to hand the 
+project off to somebody interested in its continued existence.
+
+### How to become a maintainer? ###
+
+1. Open a pull request with some kind of update for Gringotts: 
+      * update for a new version of Bukkit
+      * add a feature
+      * fix a bug
+      * update documentation
+2. Say that you would like to be a maintainer.
+3. If the PR is reasonable, I will give you commit access to the GitHub repository and the bukkitdev project. 
+
 Features
 --------
 * Item-backed economy (configurable, default emeralds)
