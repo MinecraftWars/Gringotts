@@ -9,9 +9,8 @@ import static org.gestern.gringotts.Gringotts.G;
 
 /**
  * Manages accounts.
- * 
- * @author jast
  *
+ * @author jast
  */
 public class Accounting {
 
@@ -20,6 +19,7 @@ public class Accounting {
     /**
      * Get the account associated with an account holder.
      * If it was not yet stored in the data storage, it will be persisted.
+     *
      * @param owner account holder
      * @return account associated with an account holder
      */
@@ -35,17 +35,17 @@ public class Accounting {
 
     /**
      * Determine if a given AccountChest would be connected to an AccountChest already in storage.
-     * Alas! need to call this every time we try to add an account chest, since chests can be added 
-     * without us noticing ... 
-     * @param chest chest to check for connectedness
+     * Alas! need to call this every time we try to add an account chest, since chests can be added
+     * without us noticing ...
+     *
+     * @param chest     chest to check for connectedness
      * @param allChests set of all chests that might be a candidate for connectedness
      * @return whether given chest is connected to any existing chest
      */
     // TODO perhaps this could be more elegantly done with block metadata
     private boolean chestConnected(AccountChest chest, List<AccountChest> allChests) {
         for (AccountChest ac : allChests) {
-            if (ac.connected(chest))
-            {
+            if (ac.connected(chest)) {
                 return true;
             }
         }
@@ -54,10 +54,11 @@ public class Accounting {
 
     /**
      * Save an AccountChest to Account association.
+     *
      * @param chest chest to add to the account
-     * @return false if the specified AccountChest is already registered or would be connected to 
-     * a registered chest. true if the association was successful. 
-     * @throws GringottsStorageException when saving of account chest failed 
+     * @return false if the specified AccountChest is already registered or would be connected to
+     * a registered chest. true if the association was successful.
+     * @throws GringottsStorageException when saving of account chest failed
      */
     public boolean addChest(AccountChest chest) {
 
@@ -71,13 +72,11 @@ public class Accounting {
             allChests.remove(chest);
         }
 
-        if (chestConnected(chest, allChests) )
-        {
+        if (chestConnected(chest, allChests)) {
             return false;
         }
 
-        if ( ! G.dao.storeAccountChest(chest) )
-        {
+        if (!G.dao.storeAccountChest(chest)) {
             throw new GringottsStorageException("Could not save account chest: " + chest);
         }
 

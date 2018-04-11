@@ -12,10 +12,11 @@ public class GringottsTaxedTransaction extends GringottsTransaction implements T
      * Taxes to apply to transaction.
      */
     private final double taxes;
-    
+
     /**
      * Create taxed transaction, adding given amount of taxes to the given base transaction
-     * @param base transaction on which the tax is based
+     *
+     * @param base  transaction on which the tax is based
      * @param taxes taxes to apply to transaction
      */
     protected GringottsTaxedTransaction(GringottsTransaction base, double taxes) {
@@ -39,7 +40,7 @@ public class GringottsTaxedTransaction extends GringottsTransaction implements T
             from.add(taxes);
         }
 
-        return result; 
+        return result;
     }
 
     @Override

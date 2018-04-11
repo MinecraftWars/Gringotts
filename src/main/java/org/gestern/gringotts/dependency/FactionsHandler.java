@@ -261,15 +261,7 @@ class FactionAccountHolder implements AccountHolder {
 
         FactionAccountHolder other = (FactionAccountHolder) obj;
 
-        if (owner == null) {
-            if (other.owner != null) {
-                return false;
-            }
-        } else if (!owner.getId().equals(other.owner.getId())) {
-            return false;
-        }
-
-        return true;
+        return owner == null ? other.owner == null : owner.getId().equals(other.owner.getId());
     }
 
     @Override
