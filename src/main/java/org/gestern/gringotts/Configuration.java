@@ -109,13 +109,23 @@ public enum Configuration {
      * Derived name for this denomination.
      */
     private static String unitName(ItemStack type) {
-        String   name = Items.itemByStack(type).getName(); // default
-        ItemMeta meta = type.getItemMeta();
-        if (type.hasItemMeta() && meta.hasDisplayName()) {
-            name = meta.getDisplayName();
+        if (type.hasItemMeta()) {
+            ItemMeta meta = type.getItemMeta();
+
+            if (meta.hasDisplayName()) {
+                return meta.getDisplayName();
+            } else if (meta.hasLocalizedName()) {
+                return meta.getLocalizedName();
+            }
+        } else {
+            ItemInfo info = Items.itemByStack(type);
+
+            if (info != null) {
+                return info.getName();
+            }
         }
 
-        return name;
+        return Util.reformMaterialName(type.getType());
     }
 
     /**
@@ -255,8 +265,10 @@ public enum Configuration {
                             "your Gringotts configuration. Error was: " + e.getMessage(), e);
                 }
             }
-        } else {
+        } else if (denomSection != null) {
             parseLegacyCurrency(denomSection);
+        } else {
+            throw new GringottsConfigurationException("Denom section is null.");
         }
     }
 
@@ -308,7 +320,12 @@ public enum Configuration {
                 String unitName       = unitName(denomType);
                 String unitNamePlural = unitName + "s";
 
-                currency.addDenomination(denomType, value, translateColors(unitName), translateColors(unitNamePlural));
+                currency.addDenomination(
+                        denomType,
+                        value,
+                        translateColors(unitName),
+                        translateColors(unitNamePlural)
+                );
 
             } catch (Exception e) {
                 throw new GringottsConfigurationException(

@@ -5,8 +5,8 @@ import org.bukkit.event.block.SignChangeEvent;
 
 /**
  * Vault creation event triggered by a player.
- * @author jast
  *
+ * @author jast
  */
 public class PlayerVaultCreationEvent extends VaultCreationEvent {
 
@@ -20,6 +20,7 @@ public class PlayerVaultCreationEvent extends VaultCreationEvent {
 
     /**
      * Get the player involved in creating the vault.
+     *
      * @return the player involved in creating the vault
      */
     public SignChangeEvent getCause() {

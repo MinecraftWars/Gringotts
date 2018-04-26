@@ -195,8 +195,8 @@ public class EBeanDAO implements DAO {
                 continue; // skip chest if it is in non-existent world
             }
 
-            Location loc = new Location(world, x, y, z);
-            Block signBlock = loc.getBlock();
+            Location loc       = new Location(world, x, y, z);
+            Block    signBlock = loc.getBlock();
 
             if (Util.isSignBlock(signBlock)) {
                 Sign sign = (Sign) loc.getBlock().getState();

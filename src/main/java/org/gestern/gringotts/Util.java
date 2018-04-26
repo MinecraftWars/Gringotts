@@ -144,4 +144,15 @@ public class Util {
     public static String translateColors(String s) {
         return ChatColor.translateAlternateColorCodes('&', s);
     }
+
+    public static String reformMaterialName(Material material) {
+        String   name  = material.name();
+        String[] words = name.split("_");
+
+        for (int i = 0; i < words.length; i++) {
+            words[i] = words[i].substring(0, 1).toUpperCase() + words[i].substring(1).toLowerCase();
+        }
+
+        return String.join(" ", words);
+    }
 }

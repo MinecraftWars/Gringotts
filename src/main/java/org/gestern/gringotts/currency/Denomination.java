@@ -44,7 +44,7 @@ public class Denomination implements Comparable<Denomination> {
     @Override
     public int compareTo(Denomination other) {
         // sort in descending value order
-        return Long.valueOf(other.value).compareTo(this.value);
+        return Long.compare(other.value, this.value); // Faster method.
     }
 
     @Override

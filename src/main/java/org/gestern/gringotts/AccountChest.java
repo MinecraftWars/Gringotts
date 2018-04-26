@@ -23,13 +23,13 @@ public class AccountChest {
     /**
      * Sign marking the chest as an account chest.
      */
-    public final Sign sign;
+    public final Sign             sign;
     /**
      * Account this chest belongs to.
      */
     public final GringottsAccount account;
     private final Logger log = Gringotts.G.getLogger();
-    private final DAO dao = Gringotts.G.dao;
+    private final DAO    dao = Gringotts.G.dao;
 
     /**
      * Create Account chest based on a sign marking its position and belonging to an account.

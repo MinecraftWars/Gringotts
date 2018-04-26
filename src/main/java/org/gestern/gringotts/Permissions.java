@@ -15,8 +15,7 @@ public enum Permissions {
 
     TRANSFER("gringotts.transfer"),
     COMMAND_WITHDRAW("gringotts.command.withdraw"),
-    COMMAND_DEPOSIT("gringotts.command.deposit")
-    ;
+    COMMAND_DEPOSIT("gringotts.command.deposit");
 
     public final String node;
 
@@ -26,6 +25,7 @@ public enum Permissions {
 
     /**
      * Check if a player has this permission.
+     *
      * @param player player to check
      * @return whether given player has this permission
      */

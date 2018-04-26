@@ -128,13 +128,11 @@ class Commands {
 
         account.message(LANG.balance.replace(TAG_BALANCE, eco.currency().format(account.balance())));
 
-        if (Configuration.CONF.balanceShowVault)
-        {
+        if (Configuration.CONF.balanceShowVault) {
             account.message(LANG.vault_balance.replace(TAG_BALANCE, eco.currency().format(account.vaultBalance())));
         }
 
-        if (Configuration.CONF.balanceShowInventory)
-        {
+        if (Configuration.CONF.balanceShowInventory) {
             account.message(LANG.inv_balance.replace(TAG_BALANCE, eco.currency().format(account.invBalance())));
         }
     }
@@ -162,10 +160,12 @@ class Commands {
                 return true;
             }
 
-            String command = "";
-            if (args.length >= 1) {
-                command = args[0];
-            }
+            String command; // You don't need to init the variable.
+            // You already check if that's true on line 157.
+            // if (args.length >= 1) {
+            //     command = args[0];
+            // }
+            command = args[0];
 
             double value = 0;
             if (args.length >= 2) {
@@ -203,7 +203,7 @@ class Commands {
             }
 
             // admin command: x of player / faction
-            if (args.length >= 2 && "b".equalsIgnoreCase(command)) {
+            if ("b".equalsIgnoreCase(command)) { // You already check if that's true on line 199
 
                 String targetAccountHolderStr = args[1];
 
@@ -219,7 +219,7 @@ class Commands {
                 }
 
                 String formattedBalance = eco.currency().format(target.balance());
-                String senderMessage    = LANG.moneyadmin_b
+                String senderMessage = LANG.moneyadmin_b
                         .replace(TAG_BALANCE, formattedBalance)
                         .replace(TAG_PLAYER, targetAccountHolderStr);
 
@@ -240,8 +240,8 @@ class Commands {
                     return false;
                 }
 
-                String  targetAccountHolderStr = args[2];
-                Account target                 = args.length == 4 ?
+                String targetAccountHolderStr = args[2];
+                Account target = args.length == 4 ?
                         eco.custom(args[3], targetAccountHolderStr) :
                         eco.account(targetAccountHolderStr);
 
@@ -262,7 +262,8 @@ class Commands {
                         String targetMessage = LANG.moneyadmin_add_target.replace(TAG_VALUE, formatValue);
                         target.message(targetMessage);
                     } else {
-                        String errorMessage = LANG.moneyadmin_add_error.replace(TAG_VALUE, formatValue).replace(TAG_PLAYER, target.id());
+                        String errorMessage = LANG.moneyadmin_add_error.replace(TAG_VALUE, formatValue).replace
+                                (TAG_PLAYER, target.id());
                         sender.sendMessage(errorMessage);
                     }
 
@@ -309,13 +310,11 @@ class Commands {
             if (args.length >= 1 && "reload".equalsIgnoreCase(args[0])) {
                 plugin.reloadConfig();
                 sender.sendMessage(LANG.reload);
-                
+
                 return true;
             }
 
             return false;
         }
-
     }
-
 }
