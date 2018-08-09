@@ -160,19 +160,9 @@ public enum Configuration {
         currencyNamePlural = translateColors(savedConfig.getString("currency.name.plural", currencyNameSingular + "s"));
         currency = new GringottsCurrency(currencyNameSingular, currencyNamePlural, digits, namedDenominations);
 
-        // legacy currency config, overrides defaults if available
-        int currencyType = savedConfig.getInt("currency.type", -1);
-        if (currencyType > 0) {
-            byte      currencyDataValue = (byte) savedConfig.getInt("currency.datavalue", 0);
-            ItemStack legacyCurrency    = new ItemStack(currencyType, 0, (short) 0);
-
-            legacyCurrency.setData(new MaterialData(currencyType, currencyDataValue));
-            currency.addDenomination(legacyCurrency, 1, currencyNameSingular, currencyNamePlural);
-        } else {
-            // regular currency configuration (multi-denomination)
-            ConfigurationSection denomSection = savedConfig.getConfigurationSection("currency.denominations");
-            parseCurrency(denomSection, savedConfig);
-        }
+        // regular currency configuration (multi-denomination)
+        ConfigurationSection denomSection = savedConfig.getConfigurationSection("currency.denominations");
+        parseCurrency(denomSection, savedConfig);
 
         CONF.transactionTaxFlat = savedConfig.getDouble("transactiontax.flat", 0);
         CONF.transactionTaxRate = savedConfig.getDouble("transactiontax.rate", 0);
