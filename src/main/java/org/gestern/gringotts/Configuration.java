@@ -1,7 +1,5 @@
 package org.gestern.gringotts;
 
-import net.milkbowl.vault.item.ItemInfo;
-import net.milkbowl.vault.item.Items;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -9,7 +7,6 @@ import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.material.MaterialData;
 import org.gestern.gringotts.currency.GringottsCurrency;
 
 import java.util.*;
@@ -94,12 +91,6 @@ public enum Configuration {
         // TODO check for Vault dependency
         if (material != null) {
             return new ItemStack(material, 0);
-        } else if (DEP.vault.exists()) {
-            ItemInfo info = Items.itemByName(name);
-
-            if (info != null) {
-                return info.toStack();
-            }
         }
 
         throw new GringottsConfigurationException("Unable to identify denomination item by name or id: " + name);
@@ -116,12 +107,6 @@ public enum Configuration {
                 return meta.getDisplayName();
             } else if (meta.hasLocalizedName()) {
                 return meta.getLocalizedName();
-            }
-        } else {
-            ItemInfo info = Items.itemByStack(type);
-
-            if (info != null) {
-                return info.getName();
             }
         }
 
