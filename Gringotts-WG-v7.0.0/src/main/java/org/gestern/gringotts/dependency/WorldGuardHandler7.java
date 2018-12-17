@@ -1,7 +1,9 @@
 package org.gestern.gringotts.dependency;
 
+import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.domains.DefaultDomain;
+import com.sk89q.worldguard.internal.platform.WorldGuardPlatform;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Bukkit;
@@ -20,11 +22,11 @@ import static org.gestern.gringotts.Language.LANG;
 import static org.gestern.gringotts.Permissions.CREATEVAULT_ADMIN;
 import static org.gestern.gringotts.Permissions.CREATEVAULT_WORLDGUARD;
 
-public class WorldGuardHandler implements DependencyHandler, AccountHolderProvider {
+public class WorldGuardHandler7 implements DependencyHandler, AccountHolderProvider {
 
     private final WorldGuardPlugin plugin;
 
-    public WorldGuardHandler(WorldGuardPlugin plugin) {
+    public WorldGuardHandler7(WorldGuardPlugin plugin) {
         this.plugin = plugin;
 
         if (plugin != null) {
@@ -58,10 +60,11 @@ public class WorldGuardHandler implements DependencyHandler, AccountHolderProvid
         }
 
         // try bare id in all worlds
+        WorldGuardPlatform worldguardPlatform = WorldGuard.getInstance().getPlatform();
         for (World world : Bukkit.getWorlds()) {
-            RegionManager worldManager = plugin.getRegionManager(world);
+            RegionManager worldManager = worldguardPlatform.getRegionContainer().get(worldguardPlatform.getWorldByName(world.getName()));
 
-            if (worldManager.hasRegion(id)) {
+            if (worldManager != null && worldManager.hasRegion(id)) {
                 ProtectedRegion region = worldManager.getRegion(id);
 
                 return new WorldGuardAccountHolder(world.getName(), region);
@@ -85,14 +88,15 @@ public class WorldGuardHandler implements DependencyHandler, AccountHolderProvid
             return null;
         }
 
-        RegionManager manager = plugin.getRegionManager(w);
+        WorldGuardPlatform worldguardPlatform = WorldGuard.getInstance().getPlatform();
+        RegionManager worldManager = worldguardPlatform.getRegionContainer().get(worldguardPlatform.getWorldByName(w.getName()));
 
-        if (manager == null) {
+        if (worldManager == null) {
             return null;
         }
 
-        if (manager.hasRegion(id)) {
-            ProtectedRegion region = manager.getRegion(id);
+        if (worldManager.hasRegion(id)) {
+            ProtectedRegion region = worldManager.getRegion(id);
 
             return new WorldGuardAccountHolder(world, region);
         }

@@ -13,7 +13,6 @@ import java.util.*;
 import java.util.logging.Logger;
 
 import static org.gestern.gringotts.Util.translateColors;
-import static org.gestern.gringotts.dependency.Dependency.DEP;
 
 /**
  * Singleton for global configuration information.
