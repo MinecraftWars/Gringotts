@@ -35,7 +35,7 @@ public enum Dependency {
     private Dependency() {
         factions = FactionsHandler.getFactionsHandler(hookPlugin(
                 "Factions",
-                "com.massivecraft.factions.Factions",
+                "com.massivecraft.factions.TerritoryAccess",
                 "2.12.0"));
         towny = TownyHandler.getTownyHandler(hookPlugin(
                 "Towny",
