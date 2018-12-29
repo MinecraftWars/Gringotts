@@ -21,7 +21,7 @@ import static org.gestern.gringotts.Language.LANG;
  */
 public class VaultConnector implements Economy {
 
-    private final Eco eco = new GringottsEco();
+    private final Eco eco = Gringotts.getInstance().getEco();
 
     public VaultConnector() {}
 

@@ -21,7 +21,12 @@ import org.bukkit.plugin.ServicesManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.gestern.gringotts.accountholder.AccountHolderFactory;
 import org.gestern.gringotts.accountholder.AccountHolderProvider;
+import org.gestern.gringotts.api.Eco;
+import org.gestern.gringotts.api.impl.GringottsEco;
 import org.gestern.gringotts.api.impl.VaultConnector;
+import org.gestern.gringotts.commands.GringottsExecutor;
+import org.gestern.gringotts.commands.MoneyExecutor;
+import org.gestern.gringotts.commands.MoneyadminExecutor;
 import org.gestern.gringotts.data.DAO;
 import org.gestern.gringotts.data.DerbyDAO;
 import org.gestern.gringotts.data.EBeanDAO;
@@ -50,9 +55,10 @@ public class Gringotts extends JavaPlugin {
     private final AccountHolderFactory accountHolderFactory = new AccountHolderFactory();
     private Accounting accounting;
     private DAO dao;
-    private Commands gcommand;
     private EbeanServer ebean;
     private Metrics metrics;
+    private Eco eco;
+
 
     public Gringotts() {
         ServerConfig dbConfig = new ServerConfig();
@@ -96,10 +102,9 @@ public class Gringotts extends JavaPlugin {
             saveDefaultConfig(); // saves default configuration if no config.yml exists yet
             reloadConfig();
 
-            gcommand = new Commands(this);
-
             accounting = new Accounting();
 
+            eco = new GringottsEco();
             registerCommands();
             registerEvents();
             registerEconomy();
@@ -139,9 +144,9 @@ public class Gringotts extends JavaPlugin {
     }
 
     private void registerCommands() {
-        CommandExecutor playerCommands = gcommand.new Money();
-        CommandExecutor moneyAdminCommands = gcommand.new Moneyadmin();
-        CommandExecutor adminCommands = gcommand.new GringottsCmd();
+        CommandExecutor playerCommands = new MoneyExecutor();
+        CommandExecutor moneyAdminCommands = new MoneyadminExecutor();
+        CommandExecutor adminCommands = new GringottsExecutor();
 
         getCommand("balance").setExecutor(playerCommands);
         getCommand("money").setExecutor(playerCommands);
@@ -351,5 +356,9 @@ public class Gringotts extends JavaPlugin {
      */
     public Accounting getAccounting() {
         return accounting;
+    }
+
+    public Eco getEco() {
+        return eco;
     }
 }
