@@ -229,7 +229,6 @@ public class DerbyDAO implements DAO {
         }
     }
 
-    @SuppressWarnings("SuspiciousNameCombination")
     private boolean deleteAccountChest(String world, int x, int y, int z) throws SQLException {
         destroyAccountChest.setString(1, world);
         destroyAccountChest.setInt(2, x);

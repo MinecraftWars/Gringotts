@@ -32,7 +32,7 @@ public enum Dependency {
      * Initialize plugin dependencies. The plugins themselves do not need to be loaded before this is called,
      * but the classes must be visible to the classloader.
      */
-    private Dependency() {
+    Dependency() {
         factions = FactionsHandler.getFactionsHandler(hookPlugin(
                 "Factions",
                 "com.massivecraft.factions.TerritoryAccess",

@@ -60,7 +60,7 @@ public class Gringotts extends JavaPlugin {
     public  Accounting accounting;
     private Logger     log;
     private Commands   gcommand;
-    private EbeanServer ebean = null;
+    private EbeanServer ebean;
 
     public Gringotts() {
         ServerConfig db = new ServerConfig();
@@ -315,10 +315,10 @@ public class Gringotts extends JavaPlugin {
 
     private String replaceDatabaseString(String input) {
         input = input.replaceAll(
-                "\\{DIR\\}",
+                "\\{DIR}",
                 getDataFolder().getPath().replaceAll("\\\\", "/") + "/");
         input = input.replaceAll(
-                "\\{NAME\\}",
+                "\\{NAME}",
                 getDescription().getName().replaceAll("[^\\w_-]", ""));
 
         return input;

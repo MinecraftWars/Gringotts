@@ -43,12 +43,7 @@ public class Util {
         }
 
         // the at least version has more digits
-        if (atLeastParts.length > versionParts.length) {
-            return false;
-        }
-
-        // supposedly the versions are equal
-        return true;
+        return atLeastParts.length <= versionParts.length; // supposedly the versions are equal
     }
 
     /**

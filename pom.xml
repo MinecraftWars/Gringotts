@@ -46,6 +46,7 @@
             <manifest>
               <addClasspath>true</addClasspath>
               <classpathLayoutType>custom</classpathLayoutType>
+              <!--suppress UnresolvedMavenProperty, UnresolvedMavenProperty, UnresolvedMavenProperty, UnresolvedMavenProperty -->
               <customClasspathLayout>
                 ../lib/$${artifact.artifactId}-$${artifact.version}$${dashClassifier?}.$${artifact.extension}
               </customClasspathLayout>

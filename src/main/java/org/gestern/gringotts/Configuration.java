@@ -6,6 +6,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.gestern.gringotts.currency.GringottsCurrency;
 
@@ -13,7 +14,6 @@ import java.util.*;
 import java.util.logging.Logger;
 
 import static org.gestern.gringotts.Util.translateColors;
-import static org.gestern.gringotts.dependency.Dependency.DEP;
 
 /**
  * Singleton for global configuration information.
@@ -191,8 +191,11 @@ public enum Configuration {
 
                     if (denomConf.contains("damage")) {
                         short damage = (short) denomConf.getInt("damage"); // returns 0 when path is unset
-
-                        denomType.setDurability(damage);
+                        ItemMeta meta = denomType.getItemMeta();
+                        if (meta != null) {
+                            ((Damageable) meta).setDamage(damage);
+                            denomType.setItemMeta(meta);
+                        }
                     }
 
                     ItemMeta meta = denomType.getItemMeta();
@@ -275,8 +278,11 @@ public enum Configuration {
 
                 if (keyParts.length >= 2) {
                     short dmg = Short.parseShort(keyParts[1]);
-
-                    denomType.setDurability(dmg);
+                    ItemMeta meta = denomType.getItemMeta();
+                    if (meta != null) {
+                        ((Damageable) meta).setDamage(dmg);
+                        denomType.setItemMeta(meta);
+                    }
                 }
 
                 if (valueParts.length >= 2) {
