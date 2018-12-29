@@ -45,20 +45,11 @@ import static org.gestern.gringotts.dependency.Dependency.DEP;
 public class Gringotts extends JavaPlugin {
 
     private static final String MESSAGES_YML = "messages.yml";
+    private static Gringotts instance;
 
-    /**
-     * The Gringotts plugin instance.
-     */
-    public static Gringotts G;
-    /**
-     * The account holder factory is the place to go if you need an AccountHolder instance for an id.
-     */
-    public final AccountHolderFactory accountHolderFactory = new AccountHolderFactory();
-    public DAO dao;
-    /**
-     * Manages accounts.
-     */
-    public Accounting accounting;
+    private final AccountHolderFactory accountHolderFactory = new AccountHolderFactory();
+    private Accounting accounting;
+    private DAO dao;
     private Commands gcommand;
     private EbeanServer ebean;
     private Metrics metrics;
@@ -84,11 +75,18 @@ public class Gringotts extends JavaPlugin {
         Thread.currentThread().setContextClassLoader(previous);
     }
 
+    /**
+     * The Gringotts plugin instance.
+     */
+    public static Gringotts getInstance() {
+        return instance;
+    }
+
     @Override
     public void onEnable() {
 
 
-        G = this;
+        instance = this;
 
         try {
             // just call DAO once to ensure it's loaded before startup is complete
@@ -337,4 +335,21 @@ public class Gringotts extends JavaPlugin {
         config.setDataSourceConfig(ds);
     }
 
+    public DAO getDao() {
+        return dao;
+    }
+
+    /**
+     * The account holder factory is the place to go if you need an AccountHolder instance for an id.
+     */
+    public AccountHolderFactory getAccountHolderFactory() {
+        return accountHolderFactory;
+    }
+
+    /**
+     * Manages accounts.
+     */
+    public Accounting getAccounting() {
+        return accounting;
+    }
 }

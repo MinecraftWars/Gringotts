@@ -28,8 +28,8 @@ public class AccountChest {
      * Account this chest belongs to.
      */
     public final GringottsAccount account;
-    private final Logger log = Gringotts.G.getLogger();
-    private final DAO    dao = Gringotts.G.dao;
+    private final Logger log = Gringotts.getInstance().getLogger();
+    private final DAO    dao = Gringotts.getInstance().getDao();
 
     /**
      * Create Account chest based on a sign marking its position and belonging to an account.

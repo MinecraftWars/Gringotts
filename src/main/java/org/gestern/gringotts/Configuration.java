@@ -34,7 +34,7 @@ public enum Configuration {
      */
     // TODO make this actually configurable(?)
     public final  String vaultPattern = "[^\\[]*\\[(\\w*) ?vault\\]";
-    private final Logger log          = Gringotts.G.getLogger();
+    private final Logger log          = Gringotts.getInstance().getLogger();
     /**
      * Language to be used for messages. Should be an ISO 639-1 (alpha-2) code.
      * If a language is not supported by Gringotts, use user-configured or default (English) messages.

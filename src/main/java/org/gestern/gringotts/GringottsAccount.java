@@ -15,7 +15,6 @@ import java.util.concurrent.*;
 import java.util.logging.Logger;
 
 import static org.gestern.gringotts.Configuration.CONF;
-import static org.gestern.gringotts.Gringotts.G;
 import static org.gestern.gringotts.Permissions.USEVAULT_ENDERCHEST;
 import static org.gestern.gringotts.Permissions.USEVAULT_INVENTORY;
 import static org.gestern.gringotts.api.TransactionResult.*;
@@ -30,8 +29,8 @@ public class GringottsAccount {
 
     public final AccountHolder owner;
     @SuppressWarnings("unused")
-    private final Logger log = G.getLogger();
-    private final DAO    dao = G.dao;
+    private final Logger log = Gringotts.getInstance().getLogger();
+    private final DAO    dao = Gringotts.getInstance().getDao();
 
     public GringottsAccount(AccountHolder owner) {
         if (owner == null) {
@@ -60,7 +59,7 @@ public class GringottsAccount {
         if (Bukkit.isPrimaryThread()) {
             runMe.run();
         } else {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(G, runMe);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(Gringotts.getInstance(), runMe);
         }
 
         return f;

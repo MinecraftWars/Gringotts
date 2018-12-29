@@ -29,7 +29,7 @@ public abstract class TownyHandler implements DependencyHandler {
         if (towny instanceof Towny) {
             return new ValidTownyHandler((Towny) towny);
         } else {
-            Gringotts.G.getLogger().warning("Unable to load Towny handler. Towny support will not work");
+            Gringotts.getInstance().getLogger().warning("Unable to load Towny handler. Towny support will not work");
             return new InvalidTownyHandler();
         }
     }
@@ -79,9 +79,9 @@ class ValidTownyHandler extends TownyHandler implements AccountHolderProvider {
 
     public ValidTownyHandler(Towny plugin) {
         this.plugin = plugin;
-        Bukkit.getPluginManager().registerEvents(new TownyListener(), Gringotts.G);
-        Gringotts.G.registerAccountHolderProvider(TAG_TOWN, this);
-        Gringotts.G.registerAccountHolderProvider(TAG_NATION, this);
+        Bukkit.getPluginManager().registerEvents(new TownyListener(), Gringotts.getInstance());
+        Gringotts.getInstance().registerAccountHolderProvider(TAG_TOWN, this);
+        Gringotts.getInstance().registerAccountHolderProvider(TAG_NATION, this);
     }
 
     /**

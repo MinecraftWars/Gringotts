@@ -16,7 +16,7 @@ import static org.gestern.gringotts.Language.LANG;
 
 public class VaultCreator implements Listener {
 
-    private final Accounting accounting = Gringotts.G.accounting;
+    private final Accounting accounting = Gringotts.getInstance().getAccounting();
 
     /**
      * If the vault creation event was properly handled and an AccountHolder supplied, it will be created here.

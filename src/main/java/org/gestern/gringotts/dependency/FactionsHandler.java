@@ -32,7 +32,7 @@ public abstract class FactionsHandler implements DependencyHandler, AccountHolde
         if (factions instanceof Factions) {
             return new ValidFactionsHandler((Factions) factions);
         } else {
-            Gringotts.G.getLogger().warning(
+            Gringotts.getInstance().getLogger().warning(
                     "Unable to load Factions handler because your version of Factions " +
                             "is not compatible with Gringotts. Factions support will not work");
 
@@ -81,8 +81,8 @@ class ValidFactionsHandler extends FactionsHandler {
         this.plugin = plugin;
 
         if (plugin != null) {
-            Bukkit.getPluginManager().registerEvents(new FactionsListener(), Gringotts.G);
-            Gringotts.G.registerAccountHolderProvider("faction", this);
+            Bukkit.getPluginManager().registerEvents(new FactionsListener(), Gringotts.getInstance());
+            Gringotts.getInstance().registerAccountHolderProvider("faction", this);
         }
     }
 
@@ -182,7 +182,7 @@ class FactionsListener implements Listener {
 
             if (ownername != null && ownername.length() > 0 && CREATEVAULT_ADMIN.allowed(player)) {
                 // attempting to create account for named faction
-                owner = Gringotts.G.accountHolderFactory.get("faction", ownername);
+                owner = Gringotts.getInstance().getAccountHolderFactory().get("faction", ownername);
 
                 if (owner == null) {
                     return;

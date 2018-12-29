@@ -26,7 +26,7 @@ public enum Dependency {
     public final TownyHandler      towny;
     public final DependencyHandler vault;
     public final WorldGuardHandler worldguard;
-    private final Logger log = Gringotts.G.getLogger();
+    private final Logger log = Gringotts.getInstance().getLogger();
 
     /**
      * Initialize plugin dependencies. The plugins themselves do not need to be loaded before this is called,

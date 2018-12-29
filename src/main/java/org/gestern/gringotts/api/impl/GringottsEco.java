@@ -23,8 +23,8 @@ import static org.gestern.gringotts.api.TransactionResult.SUCCESS;
 public class GringottsEco implements Eco {
 
     private static final String               TAG_PLAYER    = "player";
-    private final        AccountHolderFactory accountOwners = Gringotts.G.accountHolderFactory;
-    private final        DAO                  dao           = Gringotts.G.dao;
+    private final        AccountHolderFactory accountOwners = Gringotts.getInstance().getAccountHolderFactory();
+    private final        DAO                  dao           = Gringotts.getInstance().getDao();
 
     @Override
     public Account account(String id) {
@@ -34,7 +34,7 @@ public class GringottsEco implements Eco {
             return new InvalidAccount("virtual", id);
         }
 
-        GringottsAccount gAccount = Gringotts.G.accounting.getAccount(owner);
+        GringottsAccount gAccount = Gringotts.getInstance().getAccounting().getAccount(owner);
 
         return new ValidAccount(gAccount);
 
@@ -45,7 +45,7 @@ public class GringottsEco implements Eco {
         AccountHolder owner = accountOwners.get(TAG_PLAYER, name);
 
         if (owner instanceof PlayerAccountHolder) {
-            return new ValidPlayerAccount(Gringotts.G.accounting.getAccount(owner));
+            return new ValidPlayerAccount(Gringotts.getInstance().getAccounting().getAccount(owner));
         }
 
         return new InvalidAccount(TAG_PLAYER, name);
@@ -56,7 +56,7 @@ public class GringottsEco implements Eco {
         AccountHolder owner = accountOwners.get(TAG_PLAYER, id.toString());
 
         if (owner instanceof PlayerAccountHolder) {
-            return new ValidPlayerAccount(Gringotts.G.accounting.getAccount(owner));
+            return new ValidPlayerAccount(Gringotts.getInstance().getAccounting().getAccount(owner));
         }
 
         return new InvalidAccount(TAG_PLAYER, id.toString());
