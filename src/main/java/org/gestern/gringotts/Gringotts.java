@@ -34,7 +34,6 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static org.gestern.gringotts.Configuration.CONF;
 import static org.gestern.gringotts.Language.LANG;
@@ -58,28 +57,27 @@ public class Gringotts extends JavaPlugin {
      * Manages accounts.
      */
     public  Accounting accounting;
-    private Logger     log;
     private Commands   gcommand;
     private EbeanServer ebean;
 
     public Gringotts() {
-        ServerConfig db = new ServerConfig();
+        ServerConfig dbConfig = new ServerConfig();
 
-        db.setDefaultServer(false);
-        db.setRegister(false);
-        db.setClasses(getDatabaseClasses());
-        db.setName(getDescription().getName());
-        configureDbConfig(db);
+        dbConfig.setDefaultServer(false);
+        dbConfig.setRegister(false);
+        dbConfig.setClasses(getDatabaseClasses());
+        dbConfig.setName(getDescription().getName());
+        configureDbConfig(dbConfig);
 
-        DataSourceConfig ds = db.getDataSourceConfig();
+        DataSourceConfig dsConfig = dbConfig.getDataSourceConfig();
 
-        ds.setUrl(replaceDatabaseString(ds.getUrl()));
+        dsConfig.setUrl(replaceDatabaseString(dsConfig.getUrl()));
         getDataFolder().mkdirs();
 
         ClassLoader previous = Thread.currentThread().getContextClassLoader();
 
         Thread.currentThread().setContextClassLoader(getClassLoader());
-        ebean = EbeanServerFactory.create(db);
+        ebean = EbeanServerFactory.create(dbConfig);
         Thread.currentThread().setContextClassLoader(previous);
     }
 
@@ -89,8 +87,6 @@ public class Gringotts extends JavaPlugin {
         G = this;
 
         try {
-            log = getLogger();
-
             // just call DAO once to ensure it's loaded before startup is complete
             dao = getDAO();
 
@@ -110,11 +106,11 @@ public class Gringotts extends JavaPlugin {
                 MetricsLite metrics = new MetricsLite(this);
                 metrics.start();
             } catch (IOException err) {
-                log.log(Level.INFO, "Failed to submit PluginMetrics stats", err);
+                getLogger().log(Level.INFO, "Failed to submit PluginMetrics stats", err);
             }
 
         } catch (GringottsStorageException | GringottsConfigurationException e) {
-            log.severe(e.getMessage());
+            getLogger().severe(e.getMessage());
             this.disable();
         } catch (RuntimeException e) {
             this.disable();
@@ -122,12 +118,12 @@ public class Gringotts extends JavaPlugin {
         }
 
 
-        log.fine("enabled");
+        getLogger().fine("enabled");
     }
 
     private void disable() {
         Bukkit.getPluginManager().disablePlugin(this);
-        log.warning("Gringotts disabled due to startup errors.");
+        getLogger().warning("Gringotts disabled due to startup errors.");
     }
 
     @Override
@@ -139,10 +135,10 @@ public class Gringotts extends JavaPlugin {
                 dao.shutdown();
             }
         } catch (GringottsStorageException e) {
-            log.severe(e.toString());
+            getLogger().severe(e.toString());
         }
 
-        log.info("disabled");
+        getLogger().info("disabled");
     }
 
     private void registerCommands() {
@@ -174,9 +170,9 @@ public class Gringotts extends JavaPlugin {
         if (DEP.vault.exists()) {
             final ServicesManager sm = getServer().getServicesManager();
             sm.register(Economy.class, new VaultConnector(), this, ServicePriority.Highest);
-            log.info("Registered Vault interface.");
+            getLogger().info("Registered Vault interface.");
         } else {
-            log.info("Vault not found. Other plugins may not be able to access Gringotts accounts.");
+            getLogger().info("Vault not found. Other plugins may not be able to access Gringotts accounts.");
         }
     }
 
@@ -245,13 +241,13 @@ public class Gringotts extends JavaPlugin {
 
         DerbyDAO derbyDAO;
         if (!migration.isDerbyMigrated() && (derbyDAO = DerbyDAO.getDao()) != null) {
-            log.info("Derby database detected. Migrating to Bukkit-supported database ...");
+            getLogger().info("Derby database detected. Migrating to Bukkit-supported database ...");
             EBeanDAO eBeanDAO = EBeanDAO.getDao();
             migration.doDerbyMigration(derbyDAO, eBeanDAO);
         }
 
         if (!migration.isUUIDMigrated()) {
-            log.info("Player database not migrated to UUIDs yet. Attempting migration");
+            getLogger().info("Player database not migrated to UUIDs yet. Attempting migration");
             migration.doUUIDMigration();
         }
 
@@ -274,7 +270,7 @@ public class Gringotts extends JavaPlugin {
                 db.find(c).findRowCount();
             }
         } catch (Exception ignored) {
-            log.info("Initializing database tables.");
+            getLogger().info("Initializing database tables.");
             installDDL();
         }
     }
