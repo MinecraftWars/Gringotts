@@ -1,5 +1,6 @@
 package org.gestern.gringotts.dependency;
 
+import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.domains.DefaultDomain;
@@ -62,7 +63,7 @@ public class WorldGuardHandler implements DependencyHandler, AccountHolderProvid
         // try bare id in all worlds
         WorldGuardPlatform worldguardPlatform = WorldGuard.getInstance().getPlatform();
         for (World world : Bukkit.getWorlds()) {
-            RegionManager worldManager = worldguardPlatform.getRegionContainer().get(worldguardPlatform.getWorldByName(world.getName()));
+            RegionManager worldManager = worldguardPlatform.getRegionContainer().get(new BukkitWorld(world));
 
             if (worldManager != null && worldManager.hasRegion(id)) {
                 ProtectedRegion region = worldManager.getRegion(id);
@@ -89,7 +90,7 @@ public class WorldGuardHandler implements DependencyHandler, AccountHolderProvid
         }
 
         WorldGuardPlatform worldguardPlatform = WorldGuard.getInstance().getPlatform();
-        RegionManager worldManager = worldguardPlatform.getRegionContainer().get(worldguardPlatform.getWorldByName(w.getName()));
+        RegionManager worldManager = worldguardPlatform.getRegionContainer().get(new BukkitWorld(w));
 
         if (worldManager == null) {
             return null;
