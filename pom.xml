@@ -57,7 +57,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>2.4.3</version>
+        <version>3.1.0</version>
         <configuration>
           <artifactSet>
             <excludes>
@@ -66,8 +66,8 @@
           </artifactSet>
           <relocations>
             <relocation>
-              <pattern>org.mcstats</pattern>
-              <shadedPattern>org.gestern.mcstats</shadedPattern>
+              <pattern>org.bstats</pattern>
+              <shadedPattern>org.gestern.gringotts</shadedPattern>
             </relocation>
           </relocations>
         </configuration>
@@ -105,9 +105,10 @@
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>org.mcstats.bukkit</groupId>
-      <artifactId>metrics-lite</artifactId>
-      <version>R8-SNAPSHOT</version>
+      <groupId>org.bstats</groupId>
+      <artifactId>bstats-bukkit</artifactId>
+      <version>1.4</version>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>net.milkbowl.vault</groupId>
@@ -178,6 +179,10 @@
     <url>https://github.com/MinecraftWars/Gringotts/issues</url>
   </issueManagement>
   <repositories>
+    <repository>
+      <id>CodeMC</id>
+      <url>https://repo.codemc.org/repository/maven-public</url>
+    </repository>
     <repository>
       <id>spigot-repo</id>
       <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>

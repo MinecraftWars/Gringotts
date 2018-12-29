@@ -10,6 +10,7 @@ import com.avaje.ebeaninternal.server.ddl.DdlGenerator;
 import com.avaje.ebeaninternal.server.lib.sql.TransactionIsolation;
 import net.milkbowl.vault.economy.Economy;
 import org.apache.commons.lang.Validate;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -28,12 +29,13 @@ import org.gestern.gringotts.data.Migration;
 import org.gestern.gringotts.event.AccountListener;
 import org.gestern.gringotts.event.PlayerVaultListener;
 import org.gestern.gringotts.event.VaultCreator;
-import org.mcstats.MetricsLite;
 
-import java.io.*;
+import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.List;
-import java.util.logging.Level;
 
 import static org.gestern.gringotts.Configuration.CONF;
 import static org.gestern.gringotts.Language.LANG;
@@ -52,13 +54,14 @@ public class Gringotts extends JavaPlugin {
      * The account holder factory is the place to go if you need an AccountHolder instance for an id.
      */
     public final AccountHolderFactory accountHolderFactory = new AccountHolderFactory();
-    public  DAO        dao;
+    public DAO dao;
     /**
      * Manages accounts.
      */
-    public  Accounting accounting;
-    private Commands   gcommand;
+    public Accounting accounting;
+    private Commands gcommand;
     private EbeanServer ebean;
+    private Metrics metrics;
 
     public Gringotts() {
         ServerConfig dbConfig = new ServerConfig();
@@ -84,6 +87,7 @@ public class Gringotts extends JavaPlugin {
     @Override
     public void onEnable() {
 
+
         G = this;
 
         try {
@@ -102,12 +106,7 @@ public class Gringotts extends JavaPlugin {
             registerEvents();
             registerEconomy();
 
-            try {
-                MetricsLite metrics = new MetricsLite(this);
-                metrics.start();
-            } catch (IOException err) {
-                getLogger().log(Level.INFO, "Failed to submit PluginMetrics stats", err);
-            }
+            metrics = new Metrics(this);
 
         } catch (GringottsStorageException | GringottsConfigurationException e) {
             getLogger().severe(e.getMessage());
@@ -142,9 +141,9 @@ public class Gringotts extends JavaPlugin {
     }
 
     private void registerCommands() {
-        CommandExecutor playerCommands     = gcommand.new Money();
+        CommandExecutor playerCommands = gcommand.new Money();
         CommandExecutor moneyAdminCommands = gcommand.new Moneyadmin();
-        CommandExecutor adminCommands      = gcommand.new GringottsCmd();
+        CommandExecutor adminCommands = gcommand.new GringottsCmd();
 
         getCommand("balance").setExecutor(playerCommands);
         getCommand("money").setExecutor(playerCommands);
@@ -199,7 +198,7 @@ public class Gringotts extends JavaPlugin {
         String langPath = "i18n/messages_" + CONF.language + ".yml";
 
         // try configured language first
-        InputStream             langStream = getResource(langPath);
+        InputStream langStream = getResource(langPath);
         final FileConfiguration conf;
         if (langStream != null) {
             Reader langReader = new InputStreamReader(getResource(langPath), Charset.forName("UTF-8"));
@@ -297,14 +296,14 @@ public class Gringotts extends JavaPlugin {
 
     protected void installDDL() {
         SpiEbeanServer serv = (SpiEbeanServer) getDatabase();
-        DdlGenerator   gen  = serv.getDdlGenerator();
+        DdlGenerator gen = serv.getDdlGenerator();
 
         gen.runScript(false, gen.generateCreateDdl());
     }
 
     protected void removeDDL() {
         SpiEbeanServer serv = (SpiEbeanServer) getDatabase();
-        DdlGenerator   gen  = serv.getDdlGenerator();
+        DdlGenerator gen = serv.getDdlGenerator();
 
         gen.runScript(true, gen.generateDropDdl());
     }
