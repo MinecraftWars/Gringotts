@@ -2,7 +2,6 @@ package org.gestern.gringotts.commands;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.gestern.gringotts.Gringotts;
 import org.gestern.gringotts.api.Account;
 import org.gestern.gringotts.api.TransactionResult;
 
@@ -16,13 +15,10 @@ public class MoneyadminExecutor extends GringottsAbstractExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-
-        String command;
-        if (args.length >= 2) {
-            command = args[0];
-        } else {
+        if (args.length < 2) {
             return false;
         }
+        String command = args[0];
 
         // admin command: x of player / faction
         if ("b".equalsIgnoreCase(command)) { // You already check if that's true on line 199
@@ -30,13 +26,15 @@ public class MoneyadminExecutor extends GringottsAbstractExecutor {
             String targetAccountHolderStr = args[1];
 
             // explicit or automatic account type
-            Account target = args.length == 3 ?
-                    eco.custom(args[2], targetAccountHolderStr) :
-                    eco.account(targetAccountHolderStr);
+            Account target;
+            if (args.length == 3) {
+                target = eco.custom(args[2], targetAccountHolderStr);
+            } else {
+                target = eco.account(targetAccountHolderStr);
+            }
 
             if (!target.exists()) {
-                invalidAccount(sender, targetAccountHolderStr);
-
+                sendInvalidAccountMessage(sender, targetAccountHolderStr);
                 return false;
             }
 
@@ -46,9 +44,7 @@ public class MoneyadminExecutor extends GringottsAbstractExecutor {
                     .replace(TAG_PLAYER, targetAccountHolderStr);
 
             sender.sendMessage(senderMessage);
-
             return true;
-
         }
 
         // moneyadmin add/remove
@@ -63,13 +59,15 @@ public class MoneyadminExecutor extends GringottsAbstractExecutor {
             }
 
             String targetAccountHolderStr = args[2];
-            Account target = args.length == 4 ?
-                    eco.custom(args[3], targetAccountHolderStr) :
-                    eco.account(targetAccountHolderStr);
+            Account target;
+            if (args.length == 4) {
+                target = eco.custom(args[3], targetAccountHolderStr);
+            } else {
+                target = eco.account(targetAccountHolderStr);
+            }
 
             if (!target.exists()) {
-                invalidAccount(sender, targetAccountHolderStr);
-
+                sendInvalidAccountMessage(sender, targetAccountHolderStr);
                 return false;
             }
 
@@ -80,20 +78,22 @@ public class MoneyadminExecutor extends GringottsAbstractExecutor {
                 if (added == SUCCESS) {
                     String senderMessage = LANG.moneyadmin_add_sender.replace(TAG_VALUE, formatValue).replace
                             (TAG_PLAYER, target.id());
+
                     sender.sendMessage(senderMessage);
-                    String targetMessage = LANG.moneyadmin_add_target.replace(TAG_VALUE, formatValue);
+
+                    String targetMessage = LANG.moneyadmin_add_target
+                            .replace(TAG_VALUE, formatValue);
+
                     target.message(targetMessage);
                 } else {
                     String errorMessage = LANG.moneyadmin_add_error.replace(TAG_VALUE, formatValue).replace
                             (TAG_PLAYER, target.id());
                     sender.sendMessage(errorMessage);
                 }
-
                 return true;
 
             } else if ("rm".equalsIgnoreCase(command)) {
                 TransactionResult removed = target.remove(value);
-
                 if (removed == SUCCESS) {
                     String senderMessage = LANG.moneyadmin_rm_sender
                             .replace(TAG_VALUE, formatValue)
@@ -112,11 +112,9 @@ public class MoneyadminExecutor extends GringottsAbstractExecutor {
 
                     sender.sendMessage(errorMessage);
                 }
-
                 return true;
             }
         }
-
         return false;
     }
 }

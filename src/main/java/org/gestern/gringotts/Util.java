@@ -78,9 +78,9 @@ public class Util {
      * @return formatted currency value
      */
     public static String format(double value) {
-        GringottsCurrency cur          = Configuration.CONF.currency;
-        String            formatString = "%." + cur.digits + "f %s";
-        return String.format(formatString, value, value == 1.0 ? cur.name : cur.namePlural);
+        GringottsCurrency cur          = Configuration.CONF.getCurrency();
+        String            formatString = "%." + cur.getDigits() + "f %s";
+        return String.format(formatString, value, value == 1.0 ? cur.getName() : cur.getNamePlural());
     }
 
     /**

@@ -98,7 +98,7 @@ public class GringottsEco implements Eco {
 
     @Override
     public Currency currency() {
-        return new Curr(CONF.currency);
+        return new Curr(CONF.getCurrency());
     }
 
     @Override
@@ -248,22 +248,22 @@ public class GringottsEco implements Eco {
 
         @Override
         public double balance() {
-            return CONF.currency.displayValue(acc.balance());
+            return CONF.getCurrency().displayValue(acc.getBalance());
         }
 
         @Override
         public double vaultBalance() {
-            return CONF.currency.displayValue(acc.vaultBalance());
+            return CONF.getCurrency().displayValue(acc.getVaultBalance());
         }
 
         @Override
         public double invBalance() {
-            return CONF.currency.displayValue(acc.invBalance());
+            return CONF.getCurrency().displayValue(acc.getInvBalance());
         }
 
         @Override
         public boolean has(double value) {
-            return acc.balance() >= CONF.currency.centValue(value);
+            return acc.getBalance() >= CONF.getCurrency().centValue(value);
         }
 
         @Override
@@ -277,7 +277,7 @@ public class GringottsEco implements Eco {
                 return remove(-value);
             }
 
-            return acc.add(CONF.currency.centValue(value));
+            return acc.add(CONF.getCurrency().centValue(value));
         }
 
         @Override
@@ -286,7 +286,7 @@ public class GringottsEco implements Eco {
                 return add(-value);
             }
 
-            return acc.remove(CONF.currency.centValue(value));
+            return acc.remove(CONF.getCurrency().centValue(value));
         }
 
         @Override
@@ -321,14 +321,14 @@ public class GringottsEco implements Eco {
             PlayerAccountHolder owner           = (PlayerAccountHolder) acc.owner;
             Player              player          = Bukkit.getPlayer(owner.getUUID());
             AccountInventory    playerInventory = new AccountInventory(player.getInventory());
-            long                centValue       = CONF.currency.centValue(value);
+            long                centValue       = CONF.getCurrency().centValue(value);
             long                toDeposit       = playerInventory.remove(centValue);
 
             if (toDeposit > centValue) {
                 toDeposit -= playerInventory.add(toDeposit - centValue);
             }
 
-            TransactionResult result = player(player.getUniqueId()).add(CONF.currency.displayValue(toDeposit));
+            TransactionResult result = player(player.getUniqueId()).add(CONF.getCurrency().displayValue(toDeposit));
 
             if (result != SUCCESS) {
                 playerInventory.add(toDeposit);
@@ -342,7 +342,7 @@ public class GringottsEco implements Eco {
             PlayerAccountHolder owner           = (PlayerAccountHolder) acc.owner;
             Player              player          = Bukkit.getPlayer(owner.getUUID());
             AccountInventory    playerInventory = new AccountInventory(player.getInventory());
-            long                centValue       = CONF.currency.centValue(value);
+            long                centValue       = CONF.getCurrency().centValue(value);
             TransactionResult   remove          = acc.remove(centValue);
 
             if (remove == SUCCESS) {
@@ -362,27 +362,27 @@ public class GringottsEco implements Eco {
 
         Curr(GringottsCurrency curr) {
             this.gcurr = curr;
-            formatString = "%." + curr.digits + "f %s";
+            formatString = "%." + curr.getDigits() + "f %s";
         }
 
         @Override
         public String name() {
-            return gcurr.name;
+            return gcurr.getName();
         }
 
         @Override
         public String namePlural() {
-            return gcurr.namePlural;
+            return gcurr.getNamePlural();
         }
 
         @Override
         public String format(double value) {
-            return CONF.currency.format(formatString, value);
+            return CONF.getCurrency().format(formatString, value);
         }
 
         @Override
         public int fractionalDigits() {
-            return gcurr.digits;
+            return gcurr.getDigits();
         }
 
     }

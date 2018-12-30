@@ -14,14 +14,11 @@ public class GringottsExecutor extends GringottsAbstractExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-
         if (args.length >= 1 && "reload".equalsIgnoreCase(args[0])) {
             plugin.reloadConfig();
             sender.sendMessage(LANG.reload);
-
             return true;
         }
-
         return false;
     }
 }

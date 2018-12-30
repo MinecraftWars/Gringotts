@@ -30,11 +30,11 @@ public class GringottsAccount {
     public final AccountHolder owner;
     @SuppressWarnings("unused")
     private final Logger log = Gringotts.getInstance().getLogger();
-    private final DAO    dao = Gringotts.getInstance().getDao();
+    private final DAO dao = Gringotts.getInstance().getDao();
 
     public GringottsAccount(AccountHolder owner) {
         if (owner == null) {
-            throw new IllegalArgumentException("owner parameter to Account constructor may not be null");
+            throw new IllegalArgumentException("Account owner cannot be null");
         }
         this.owner = owner;
     }
@@ -70,11 +70,11 @@ public class GringottsAccount {
      *
      * @return current balance of this account in cents
      */
-    public long balance() {
+    public long getBalance() {
 
-        CompletableFuture<Long> cents     = getCents();
+        CompletableFuture<Long> cents = getCents();
         CompletableFuture<Long> playerInv = countPlayerInventory();
-        CompletableFuture<Long> chestInv  = countChestInventories();
+        CompletableFuture<Long> chestInv = countChestInventories();
 
         // order of combination is important, because chestInv/playerInv might have to run on main thread
         CompletableFuture<Long> f = chestInv
@@ -89,7 +89,7 @@ public class GringottsAccount {
      *
      * @return current balance this account has in chest(s) in cents
      */
-    public long vaultBalance() {
+    public long getVaultBalance() {
         return getTimeout(countChestInventories());
     }
 
@@ -98,10 +98,10 @@ public class GringottsAccount {
      *
      * @return current balance this account has in inventory in cents
      */
-    public long invBalance() {
-        CompletableFuture<Long> cents     = getCents();
+    public long getInvBalance() {
+        CompletableFuture<Long> cents = getCents();
         CompletableFuture<Long> playerInv = countPlayerInventory();
-        CompletableFuture<Long> f         = cents.thenCombine(playerInv, (p, c) -> p + c);
+        CompletableFuture<Long> f = cents.thenCombine(playerInv, (p, c) -> p + c);
 
         return getTimeout(f);
     }
@@ -148,8 +148,8 @@ public class GringottsAccount {
             // allow smallest denom value as threshold for available space
             // TODO make maximum virtual amount configurable
             // this is under the assumption that there is always at least 1 denomination
-            List<Denomination> denoms             = CONF.currency.denominations();
-            long               smallestDenomValue = denoms.get(denoms.size() - 1).value;
+            List<Denomination> denoms = CONF.getCurrency().getDenominations();
+            long smallestDenomValue = denoms.get(denoms.size() - 1).getValue();
             if (remaining < smallestDenomValue) {
                 dao.storeCents(this, remaining);
                 remaining = 0;
@@ -157,12 +157,11 @@ public class GringottsAccount {
 
             if (remaining == 0) {
                 return SUCCESS;
+            } else {
+                // failed, remove the stuff added so far
+                remove(amount - remaining);
+                return INSUFFICIENT_SPACE;
             }
-
-            // failed, remove the stuff added so far
-            remove(amount - remaining);
-
-            return INSUFFICIENT_SPACE;
         };
 
         return getTimeout(callSync(callMe));
@@ -184,7 +183,7 @@ public class GringottsAccount {
             }
 
             // Make sure we have enough to remove
-            if (balance() < amount) {
+            if (getBalance() < amount) {
                 return INSUFFICIENT_FUNDS;
             }
 
@@ -232,7 +231,7 @@ public class GringottsAccount {
     /**
      * Returns the player owning this account, if the owner is actually a player and online.
      *
-     * @return Optional of the player owning this account, if the owner is actually a player and online, otherwise
+     * @return {@link Optional} of the player owning this account, if the owner is actually a player and online, otherwise
      * empty.
      */
     private Optional<Player> playerOwner() {
@@ -247,8 +246,8 @@ public class GringottsAccount {
     private CompletableFuture<Long> countChestInventories() {
 
         Callable<Long> callMe = () -> {
-            List<AccountChest> chests  = dao.getChests(this);
-            long               balance = 0;
+            List<AccountChest> chests = dao.getChests(this);
+            long balance = 0;
             if (CONF.usevaultContainer) {
                 for (AccountChest chest : chests) {
                     balance += chest.balance();

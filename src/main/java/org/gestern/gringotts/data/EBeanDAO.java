@@ -100,7 +100,7 @@ public class EBeanDAO implements DAO {
                 break;
         }
 
-        acc.setCents(CONF.currency.centValue(startValue));
+        acc.setCents(CONF.getCurrency().centValue(startValue));
         db.save(acc);
 
         return true;

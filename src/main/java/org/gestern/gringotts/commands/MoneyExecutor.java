@@ -13,32 +13,22 @@ public class MoneyExecutor extends GringottsAbstractExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-
-        Player player;
-        if (sender instanceof Player) {
-            player = (Player) sender;
-        } else {
+        if (!(sender instanceof Player)) {
             sender.sendMessage(LANG.playerOnly);
-
             return false;
-            // TODO actually, refactor the whole thing already!
         }
+        Player player = (Player) sender;
 
         if (args.length == 0) {
             // same as balance
-            balanceMessage(eco.player(player.getUniqueId()));
+            sendBalanceMessage(eco.player(player.getUniqueId()));
             return true;
         }
 
-        String command; // You don't need to init the variable.
-        // You already check if that's true on line 157.
-        // if (args.length >= 1) {
-        //     command = args[0];
-        // }
-        command = args[0];
+        String command = args[0];
 
         double value = 0;
-        if (args.length >= 2) {
+        if (args.length == 2) {
             try {
                 value = Double.parseDouble(args[1]);
             } catch (NumberFormatException ignored) {
@@ -54,9 +44,10 @@ public class MoneyExecutor extends GringottsAbstractExecutor {
 
                 return true;
             }
+        } else if ( args.length == 3 && "pay".equals(command)) {
+            // money pay <amount> <player>
+            return pay(player, value, args);
         }
-
-        // money pay <amount> <player>
-        return args.length == 3 && "pay".equals(command) && pay(player, value, args);
+        return false;
     }
 }

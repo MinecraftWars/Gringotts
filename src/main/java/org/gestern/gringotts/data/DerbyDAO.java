@@ -278,7 +278,7 @@ public class DerbyDAO implements DAO {
                     break;
             }
 
-            storeAccount.setLong(3, CONF.currency.centValue(value));
+            storeAccount.setLong(3, CONF.getCurrency().centValue(value));
 
             int updated = storeAccount.executeUpdate();
 

@@ -170,8 +170,7 @@ public class Gringotts extends JavaPlugin {
      */
     private void registerEconomy() {
         if (DEP.vault.exists()) {
-            final ServicesManager sm = getServer().getServicesManager();
-            sm.register(Economy.class, new VaultConnector(), this, ServicePriority.Highest);
+            getServer().getServicesManager().register(Economy.class, new VaultConnector(), this, ServicePriority.Highest);
             getLogger().info("Registered Vault interface.");
         } else {
             getLogger().info("Vault not found. Other plugins may not be able to access Gringotts accounts.");

@@ -43,7 +43,7 @@ public enum Configuration {
     /**
      * Currency configuration.
      */
-    public GringottsCurrency currency;
+    private GringottsCurrency currency;
     /**
      * Flat tax on every player-to-player transaction. This is a value in currency units.
      */
@@ -316,4 +316,9 @@ public enum Configuration {
         }
     }
 
-}
+    /**
+     * Currency configuration.
+     */
+    public GringottsCurrency getCurrency() {
+        return currency;
+    }}

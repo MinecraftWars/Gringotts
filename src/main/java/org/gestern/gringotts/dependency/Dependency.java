@@ -99,7 +99,7 @@ public enum Dependency {
 
             }
         } else {
-            log.info("Unable to hook plugin " + name);
+            log.warning("Unable to hook plugin " + name);
             plugin = null;
         }
 

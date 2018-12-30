@@ -10,27 +10,24 @@ import org.bukkit.ChatColor;
  */
 public class Denomination implements Comparable<Denomination> {
 
-    /**
-     * Identification information for this denomination.
-     */
-    public final DenominationKey key;
+    private final DenominationKey key;
 
     /**
      * Value of one unit of this denomination in cents.
      */
-    public final long value;
+    private final long value;
 
     /**
      * The name of a single unit of this denomination. The unit name is determined by explicit configuration,
      * configured displayName, or default item name (in this order).
      */
-    public final String unitName;
+    private final String unitName;
 
     /**
      * The name for units of this denomination (plural). The unit name is determined by explicit configuration,
      * configured displayName, or default item name (in this order).
      */
-    public final String unitNamePlural;
+    private final String unitNamePlural;
 
 
     public Denomination(DenominationKey key, long value, String unitName, String unitNamePlural) {
@@ -50,5 +47,35 @@ public class Denomination implements Comparable<Denomination> {
     @Override
     public String toString() {
         return String.format("{Denomination} %s : %d", key.type, value);
+    }
+
+    /**
+     * Identification information for this denomination.
+     */
+    public DenominationKey getKey() {
+        return key;
+    }
+
+    /**
+     * Value of one unit of this denomination in cents.
+     */
+    public long getValue() {
+        return value;
+    }
+
+    /**
+     * The name of a single unit of this denomination. The unit name is determined by explicit configuration,
+     * configured displayName, or default item name (in this order).
+     */
+    public String getUnitName() {
+        return unitName;
+    }
+
+    /**
+     * The name for units of this denomination (plural). The unit name is determined by explicit configuration,
+     * configured displayName, or default item name (in this order).
+     */
+    public String getUnitNamePlural() {
+        return unitNamePlural;
     }
 }

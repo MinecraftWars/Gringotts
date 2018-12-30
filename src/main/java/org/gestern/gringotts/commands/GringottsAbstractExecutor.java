@@ -23,7 +23,7 @@ public abstract class GringottsAbstractExecutor implements CommandExecutor {
     final Gringotts plugin = Gringotts.getInstance();
     final Eco eco = plugin.getEco();
 
-    static void invalidAccount(CommandSender sender, String accountName) {
+    static void sendInvalidAccountMessage(CommandSender sender, String accountName) {
         sender.sendMessage(LANG.invalid_account.replace(TAG_PLAYER, accountName));
     }
 
@@ -112,7 +112,7 @@ public abstract class GringottsAbstractExecutor implements CommandExecutor {
         }
     }
 
-    void balanceMessage(Account account) {
+    void sendBalanceMessage(Account account) {
 
         account.message(LANG.balance.replace(TAG_BALANCE, eco.currency().format(account.balance())));
 
