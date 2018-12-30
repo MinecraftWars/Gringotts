@@ -12,10 +12,12 @@ import org.gestern.gringotts.Gringotts;
 import org.gestern.gringotts.accountholder.AccountHolder;
 import org.gestern.gringotts.accountholder.AccountHolderProvider;
 import org.gestern.gringotts.event.PlayerVaultCreationEvent;
+import org.gestern.gringotts.event.VaultCreationEvent;
 
 import static org.gestern.gringotts.Language.LANG;
 import static org.gestern.gringotts.Permissions.*;
 import static org.gestern.gringotts.dependency.Dependency.DEP;
+import static org.gestern.gringotts.event.VaultCreationEvent.*;
 
 public abstract class TownyHandler implements DependencyHandler {
     /**
@@ -182,7 +184,7 @@ class TownyListener implements Listener {
         boolean forOther  = ownername != null && ownername.length() > 0 && CREATEVAULT_ADMIN.allowed(player);
 
         AccountHolder owner;
-        if ("town".equals(event.getType())) {
+        if (event.getType() == Type.TOWN) {
             if (!CREATEVAULT_TOWN.allowed(player)) {
                 player.sendMessage(LANG.plugin_towny_noTownVaultPerm);
 
@@ -208,7 +210,7 @@ class TownyListener implements Listener {
             event.setOwner(owner);
             event.setValid(true);
 
-        } else if ("nation".equals(event.getType())) {
+        } else if (event.getType() == Type.NATION) {
             if (!CREATEVAULT_NATION.allowed(player)) {
                 player.sendMessage(LANG.plugin_towny_noNationVaultPerm);
 

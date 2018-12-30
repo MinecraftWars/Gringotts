@@ -16,6 +16,8 @@ import org.gestern.gringotts.Gringotts;
 import org.gestern.gringotts.accountholder.AccountHolder;
 import org.gestern.gringotts.accountholder.AccountHolderProvider;
 import org.gestern.gringotts.event.PlayerVaultCreationEvent;
+import org.gestern.gringotts.event.VaultCreationEvent;
+import org.gestern.gringotts.event.VaultCreationEvent.Type;
 
 import java.util.UUID;
 
@@ -112,7 +114,7 @@ public class WorldGuardHandler implements DependencyHandler, AccountHolderProvid
             // some listener already claimed this event
             if (event.isValid()) return;
 
-            if ("region".equals(event.getType())) {
+            if (event.getType() == Type.REGION) {
                 Player player = event.getCause().getPlayer();
                 if (!CREATEVAULT_WORLDGUARD.allowed(player)) {
                     player.sendMessage(LANG.plugin_worldguard_noVaultPerm);

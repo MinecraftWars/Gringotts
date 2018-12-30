@@ -12,7 +12,7 @@ public class PlayerVaultCreationEvent extends VaultCreationEvent {
 
     private final SignChangeEvent cause;
 
-    public PlayerVaultCreationEvent(String type, SignChangeEvent cause) {
+    public PlayerVaultCreationEvent(Type type, SignChangeEvent cause) {
         super(type);
 
         this.cause = cause;

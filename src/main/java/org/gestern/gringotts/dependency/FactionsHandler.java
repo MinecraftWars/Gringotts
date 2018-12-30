@@ -13,6 +13,7 @@ import org.gestern.gringotts.Gringotts;
 import org.gestern.gringotts.accountholder.AccountHolder;
 import org.gestern.gringotts.accountholder.AccountHolderProvider;
 import org.gestern.gringotts.event.PlayerVaultCreationEvent;
+import org.gestern.gringotts.event.VaultCreationEvent.Type;
 
 import static org.gestern.gringotts.Language.LANG;
 import static org.gestern.gringotts.Permissions.CREATEVAULT_ADMIN;
@@ -167,7 +168,7 @@ class FactionsListener implements Listener {
 
         if (!DEP.factions.enabled()) return;
 
-        if ("faction".equals(event.getType())) {
+        if (event.getType() == Type.FACTION) {
             Player player = event.getCause().getPlayer();
 
             if (!CREATEVAULT_FACTION.allowed(player)) {
