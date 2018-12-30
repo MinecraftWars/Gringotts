@@ -12,12 +12,11 @@ import org.gestern.gringotts.Gringotts;
 import org.gestern.gringotts.accountholder.AccountHolder;
 import org.gestern.gringotts.accountholder.AccountHolderProvider;
 import org.gestern.gringotts.event.PlayerVaultCreationEvent;
-import org.gestern.gringotts.event.VaultCreationEvent;
 
 import static org.gestern.gringotts.Language.LANG;
 import static org.gestern.gringotts.Permissions.*;
 import static org.gestern.gringotts.dependency.Dependency.DEP;
-import static org.gestern.gringotts.event.VaultCreationEvent.*;
+import static org.gestern.gringotts.event.VaultCreationEvent.Type;
 
 public abstract class TownyHandler implements DependencyHandler {
     /**
@@ -51,10 +50,14 @@ public abstract class TownyHandler implements DependencyHandler {
 class InvalidTownyHandler extends TownyHandler {
 
     @Override
-    public boolean enabled() { return false; }
+    public boolean enabled() {
+        return false;
+    }
 
     @Override
-    public boolean exists() { return false; }
+    public boolean exists() {
+        return false;
+    }
 
     @Override
     public TownyAccountHolder getTownAccountHolder(Player player) {
@@ -75,7 +78,7 @@ class InvalidTownyHandler extends TownyHandler {
 
 class ValidTownyHandler extends TownyHandler implements AccountHolderProvider {
 
-    private static final String TAG_TOWN   = "town";
+    private static final String TAG_TOWN = "town";
     private static final String TAG_NATION = "nation";
     private final Towny plugin;
 
@@ -96,10 +99,11 @@ class ValidTownyHandler extends TownyHandler implements AccountHolderProvider {
     public TownyAccountHolder getTownAccountHolder(Player player) {
         try {
             Resident resident = TownyUniverse.getDataSource().getResident(player.getName());
-            Town     town     = resident.getTown();
+            Town town = resident.getTown();
 
             return new TownyAccountHolder(town, TAG_TOWN);
-        } catch (NotRegisteredException ignored) {}
+        } catch (NotRegisteredException ignored) {
+        }
 
         return null;
     }
@@ -114,11 +118,12 @@ class ValidTownyHandler extends TownyHandler implements AccountHolderProvider {
     public TownyAccountHolder getNationAccountHolder(Player player) {
         try {
             Resident resident = TownyUniverse.getDataSource().getResident(player.getName());
-            Town     town     = resident.getTown();
-            Nation   nation   = town.getNation();
+            Town town = resident.getTown();
+            Nation nation = town.getNation();
 
             return new TownyAccountHolder(nation, TAG_NATION);
-        } catch (NotRegisteredException ignored) { }
+        } catch (NotRegisteredException ignored) {
+        }
 
         return null;
     }
@@ -136,18 +141,20 @@ class ValidTownyHandler extends TownyHandler implements AccountHolderProvider {
 
         if (name.startsWith("town-")) {
             try {
-                TownyEconomyObject teo = TownyUniverse.getDataSource().getTown(name.substring(5));
+                Town teo = TownyUniverse.getDataSource().getTown(name.substring(5));
 
                 return new TownyAccountHolder(teo, TAG_TOWN);
-            } catch (NotRegisteredException ignored) { }
+            } catch (NotRegisteredException ignored) {
+            }
         }
 
         if (name.startsWith("nation-")) {
             try {
-                TownyEconomyObject teo = TownyUniverse.getDataSource().getNation(name.substring(7));
+                Nation teo = TownyUniverse.getDataSource().getNation(name.substring(7));
 
                 return new TownyAccountHolder(teo, TAG_NATION);
-            } catch (NotRegisteredException ignored) { }
+            } catch (NotRegisteredException ignored) {
+            }
         }
 
         return null;
@@ -179,9 +186,9 @@ class TownyListener implements Listener {
 
         if (!DEP.towny.enabled()) return;
 
-        String  ownername = event.getCause().getLine(2);
-        Player  player    = event.getCause().getPlayer();
-        boolean forOther  = ownername != null && ownername.length() > 0 && CREATEVAULT_ADMIN.allowed(player);
+        String ownername = event.getCause().getLine(2);
+        Player player = event.getCause().getPlayer();
+        boolean forOther = ownername != null && ownername.length() > 0 && CREATEVAULT_ADMIN.allowed(player);
 
         AccountHolder owner;
         if (event.getType() == Type.TOWN) {
@@ -242,7 +249,7 @@ class TownyListener implements Listener {
 class TownyAccountHolder implements AccountHolder {
 
     public final TownyEconomyObject owner;
-    public final String             type;
+    public final String type;
 
     public TownyAccountHolder(TownyEconomyObject owner, String type) {
         this.owner = owner;
@@ -254,10 +261,17 @@ class TownyAccountHolder implements AccountHolder {
         return owner.getName();
     }
 
+    /**
+     * Send a message to all online players of the specified {@link Town} or {@link Nation}
+     *
+     * @param message to send
+     */
     @Override
     public void sendMessage(String message) {
-        // TODO is it possible to send a message to a town?
-        // TODO maybe just manually send to online residents
+        if (owner instanceof ResidentList) {
+            TownyUniverse.getOnlinePlayers((ResidentList) owner)
+                    .forEach(player -> player.sendMessage(message));
+        }
     }
 
     @Override

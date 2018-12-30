@@ -252,17 +252,17 @@ class FactionAccountHolder implements AccountHolder {
             return true;
         }
 
-        if (obj == null) {
-            return false;
-        }
-
-        if (getClass() != obj.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
 
         FactionAccountHolder other = (FactionAccountHolder) obj;
 
-        return owner == null ? other.owner == null : owner.getId().equals(other.owner.getId());
+        if (this.owner == null) {
+            return other.owner == null;
+        } else {
+            return this.owner.getId().equals(other.owner.getId());
+        }
     }
 
     @Override
