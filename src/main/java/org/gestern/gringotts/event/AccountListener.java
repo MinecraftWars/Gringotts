@@ -32,31 +32,32 @@ public class AccountListener implements Listener {
      */
     @EventHandler
     public void onSignChange(SignChangeEvent event) {
-        String line0 = event.getLine(0);
-        Matcher match = vaultPattern.matcher(line0);
+        final String line0 = event.getLine(0);
+        final Matcher match = vaultPattern.matcher(line0);
 
         // consider only signs with proper formatting
         if (!match.matches()) {
             return;
         }
-        String typeStr = match.group(1).toLowerCase();
+        final String typeStr = match.group(1).toUpperCase();
 
+        Type type;
         // default vault is player
         if (typeStr.isEmpty()) {
-            typeStr = "player";
-        }
-        Type type;
-        try {
-            type = Type.valueOf(typeStr.toUpperCase());
-        } catch (IllegalArgumentException notFound) {
-            return;
+            type = Type.PLAYER;
+        } else {
+            try {
+                type = Type.valueOf(typeStr);
+            } catch (IllegalArgumentException notFound) {
+                return;
+            }
         }
 
         // is sign attached to a valid vault container?
         BlockState signBlock = event.getBlock().getState();
         if (signBlock instanceof Sign && Util.chestBlock((Sign) signBlock) != null) {
             // we made it this far, throw the event to manage vault creation
-            VaultCreationEvent creation = new PlayerVaultCreationEvent(type, event);
+            final VaultCreationEvent creation = new PlayerVaultCreationEvent(type, event);
 
             Bukkit.getServer().getPluginManager().callEvent(creation);
         }
