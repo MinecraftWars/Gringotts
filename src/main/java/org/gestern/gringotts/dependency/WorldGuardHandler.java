@@ -12,11 +12,11 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 import org.gestern.gringotts.Gringotts;
 import org.gestern.gringotts.accountholder.AccountHolder;
 import org.gestern.gringotts.accountholder.AccountHolderProvider;
 import org.gestern.gringotts.event.PlayerVaultCreationEvent;
-import org.gestern.gringotts.event.VaultCreationEvent;
 import org.gestern.gringotts.event.VaultCreationEvent.Type;
 
 import java.util.UUID;
@@ -25,22 +25,55 @@ import static org.gestern.gringotts.Language.LANG;
 import static org.gestern.gringotts.Permissions.CREATEVAULT_ADMIN;
 import static org.gestern.gringotts.Permissions.CREATEVAULT_WORLDGUARD;
 
-public class WorldGuardHandler implements DependencyHandler, AccountHolderProvider {
+public abstract class WorldGuardHandler implements DependencyHandler, AccountHolderProvider {
+    public static WorldGuardHandler getWorldGuardHandler(Plugin plugin) {
+        if (plugin instanceof WorldGuardPlugin) {
+            return new ValidWorldGuardHandler((WorldGuardPlugin) plugin);
+        } else {
+            Gringotts.getInstance().getLogger().warning(
+                    "Unable to load Factions handler because your version of Factions " +
+                            "is not compatible with Gringotts. Factions support will not work");
 
-    private final WorldGuardPlugin plugin;
-
-    public WorldGuardHandler(WorldGuardPlugin plugin) {
-        this.plugin = plugin;
-
-        if (plugin != null) {
-            Bukkit.getPluginManager().registerEvents(new WorldGuardListener(), Gringotts.getInstance());
-            Gringotts.getInstance().registerAccountHolderProvider("worldguard", this);
+            return new InvalidWorldGuardHandler();
         }
+    }
+}
+
+class InvalidWorldGuardHandler extends WorldGuardHandler {
+    @Override
+    public AccountHolder getAccountHolder(String id) {
+        return null;
     }
 
     @Override
     public boolean enabled() {
-        return plugin.isEnabled();
+        return false;
+    }
+
+    @Override
+    public boolean exists() {
+        return false;
+    }
+}
+
+class ValidWorldGuardHandler extends WorldGuardHandler {
+
+    private WorldGuardPlugin plugin;
+
+    public ValidWorldGuardHandler(WorldGuardPlugin plugin) {
+        this.plugin = plugin;
+
+        Bukkit.getPluginManager().registerEvents(new WorldGuardListener(), Gringotts.getInstance());
+        Gringotts.getInstance().registerAccountHolderProvider("worldguard", this);
+
+    }
+
+
+    @Override
+    public boolean enabled() {
+        if (plugin != null) {
+            return plugin.isEnabled();
+        } else return false;
     }
 
     @Override
@@ -122,7 +155,7 @@ public class WorldGuardHandler implements DependencyHandler, AccountHolderProvid
                     return;
                 }
 
-                String   regionId         = event.getCause().getLine(2);
+                String regionId = event.getCause().getLine(2);
                 String[] regionComponents = regionId.split("-", 1);
 
                 WorldGuardAccountHolder owner;
@@ -131,7 +164,7 @@ public class WorldGuardHandler implements DependencyHandler, AccountHolderProvid
                     owner = getAccountHolder(regionComponents[0]);
                 } else {
                     String world = regionComponents[0];
-                    String id    = regionComponents[1];
+                    String id = regionComponents[1];
                     owner = getAccountHolder(world, id);
                 }
 
@@ -149,7 +182,7 @@ public class WorldGuardHandler implements DependencyHandler, AccountHolderProvid
 
 class WorldGuardAccountHolder implements AccountHolder {
 
-    final String          world;
+    final String world;
     final ProtectedRegion region;
 
     public WorldGuardAccountHolder(String world, ProtectedRegion region) {

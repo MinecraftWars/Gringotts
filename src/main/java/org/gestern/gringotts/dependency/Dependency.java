@@ -1,6 +1,5 @@
 package org.gestern.gringotts.dependency;
 
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -45,7 +44,7 @@ public enum Dependency {
                 "Vault",
                 "net.milkbowl.vault.Vault",
                 "1.5.0"));
-        worldguard = new WorldGuardHandler((WorldGuardPlugin) hookPlugin(
+        worldguard = WorldGuardHandler.getWorldGuardHandler(hookPlugin(
                 "WorldGuard",
                 "com.sk89q.worldguard.bukkit.WorldGuardPlugin",
                 "6.2"));
