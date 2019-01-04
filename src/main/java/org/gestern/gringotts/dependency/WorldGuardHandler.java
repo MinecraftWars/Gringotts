@@ -30,10 +30,6 @@ public abstract class WorldGuardHandler implements DependencyHandler, AccountHol
         if (plugin instanceof WorldGuardPlugin) {
             return new ValidWorldGuardHandler((WorldGuardPlugin) plugin);
         } else {
-            Gringotts.getInstance().getLogger().warning(
-                    "Unable to load Factions handler because your version of Factions " +
-                            "is not compatible with Gringotts. Factions support will not work");
-
             return new InvalidWorldGuardHandler();
         }
     }
