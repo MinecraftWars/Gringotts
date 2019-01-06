@@ -5,7 +5,7 @@ import org.gestern.gringotts.accountholder.AccountHolder;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static org.gestern.gringotts.Gringotts.G;
+import static org.gestern.gringotts.Gringotts.getInstance;
 
 /**
  * Manages accounts.
@@ -14,7 +14,7 @@ import static org.gestern.gringotts.Gringotts.G;
  */
 public class Accounting {
 
-    private final Logger log = G.getLogger();
+    private final Logger log = getInstance().getLogger();
 
     /**
      * Get the account associated with an account holder.
@@ -25,9 +25,9 @@ public class Accounting {
      */
     public GringottsAccount getAccount(AccountHolder owner) {
         GringottsAccount account = new GringottsAccount(owner);
-        if (!G.dao.hasAccount(owner))  // TODO can we do this via idempotent store action instead?          
+        if (!getInstance().getDao().hasAccount(owner))  // TODO can we do this via idempotent store action instead?
         {
-            G.dao.storeAccount(account);
+            getInstance().getDao().storeAccount(account);
         }
 
         return account;
@@ -63,12 +63,12 @@ public class Accounting {
     public boolean addChest(AccountChest chest) {
 
         // TODO refactor to do a more intelligent/quick query
-        List<AccountChest> allChests = G.dao.getChests();
+        List<AccountChest> allChests = getInstance().getDao().getChests();
 
         // if there is an invalid stored chest on location of new chest, remove it from storage.
         if (allChests.contains(chest)) {
-            log.info("removing orphaned vault: " + chest);
-            G.dao.destroyAccountChest(chest);
+            getInstance().getLogger().info("removing orphaned vault: " + chest);
+            getInstance().getDao().destroyAccountChest(chest);
             allChests.remove(chest);
         }
 
@@ -76,7 +76,7 @@ public class Accounting {
             return false;
         }
 
-        if (!G.dao.storeAccountChest(chest)) {
+        if (!getInstance().getDao().storeAccountChest(chest)) {
             throw new GringottsStorageException("Could not save account chest: " + chest);
         }
 

@@ -21,14 +21,14 @@ import static org.gestern.gringotts.Language.LANG;
  */
 public class VaultConnector implements Economy {
 
-    private final Eco eco = new GringottsEco();
+    private final Eco eco = Gringotts.getInstance().getEco();
 
     public VaultConnector() {}
 
 
     @Override
     public boolean isEnabled() {
-        return Gringotts.G != null && Gringotts.G.isEnabled();
+        return Gringotts.getInstance() != null && Gringotts.getInstance().isEnabled();
     }
 
     @Override

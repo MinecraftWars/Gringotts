@@ -19,7 +19,7 @@ public class VaultCreationEvent extends Event {
 
     protected static final HandlerList handlers = new HandlerList();
 
-    private final String type;
+    private final Type type;
     private boolean isValid = false;
     private AccountHolder owner;
 
@@ -28,8 +28,17 @@ public class VaultCreationEvent extends Event {
      *
      * @param type Type of vault being created
      */
-    public VaultCreationEvent(String type) {
+    public VaultCreationEvent(Type type) {
         this.type = type;
+    }
+
+    public enum Type {
+        PLAYER,
+        FACTION,
+        TOWN,
+        NATION,
+        REGION
+
     }
 
     @SuppressWarnings("unused")
@@ -37,7 +46,7 @@ public class VaultCreationEvent extends Event {
         return handlers;
     }
 
-    public String getType() {
+    public Type getType() {
         return type;
     }
 

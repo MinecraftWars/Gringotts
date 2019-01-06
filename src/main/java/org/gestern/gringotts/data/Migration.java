@@ -23,12 +23,12 @@ import java.util.logging.Logger;
  */
 public class Migration {
 
-    private final EbeanServer db  = Gringotts.G.getDatabase();
-    private final Logger      log = Gringotts.G.getLogger();
+    private final EbeanServer db  = Gringotts.getInstance().getDatabase();
+    private final Logger      log = Gringotts.getInstance().getLogger();
 
-    private final File gringottsFolder   = Gringotts.G.getDataFolder();
+    private final File gringottsFolder   = Gringotts.getInstance().getDataFolder();
     private final File derbyMigratedFlag = new File(gringottsFolder, ".derby-migrated");
-    private final File uuidsMigratedFlag = new File(Gringotts.G.getDataFolder(), ".uuids-migrated");
+    private final File uuidsMigratedFlag = new File(Gringotts.getInstance().getDataFolder(), ".uuids-migrated");
 
     /**
      * Return whether the legacy derby db has been migrated to bukkit built-in sqlite / ebean.

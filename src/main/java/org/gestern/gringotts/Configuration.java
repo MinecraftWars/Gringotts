@@ -6,6 +6,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.gestern.gringotts.currency.GringottsCurrency;
 
@@ -13,7 +14,6 @@ import java.util.*;
 import java.util.logging.Logger;
 
 import static org.gestern.gringotts.Util.translateColors;
-import static org.gestern.gringotts.dependency.Dependency.DEP;
 
 /**
  * Singleton for global configuration information.
@@ -34,7 +34,7 @@ public enum Configuration {
      */
     // TODO make this actually configurable(?)
     public final  String vaultPattern = "[^\\[]*\\[(\\w*) ?vault\\]";
-    private final Logger log          = Gringotts.G.getLogger();
+    private final Logger log          = Gringotts.getInstance().getLogger();
     /**
      * Language to be used for messages. Should be an ISO 639-1 (alpha-2) code.
      * If a language is not supported by Gringotts, use user-configured or default (English) messages.
@@ -43,7 +43,7 @@ public enum Configuration {
     /**
      * Currency configuration.
      */
-    public GringottsCurrency currency;
+    private GringottsCurrency currency;
     /**
      * Flat tax on every player-to-player transaction. This is a value in currency units.
      */
@@ -191,8 +191,11 @@ public enum Configuration {
 
                     if (denomConf.contains("damage")) {
                         short damage = (short) denomConf.getInt("damage"); // returns 0 when path is unset
-
-                        denomType.setDurability(damage);
+                        ItemMeta meta = denomType.getItemMeta();
+                        if (meta != null) {
+                            ((Damageable) meta).setDamage(damage);
+                            denomType.setItemMeta(meta);
+                        }
                     }
 
                     ItemMeta meta = denomType.getItemMeta();
@@ -275,8 +278,11 @@ public enum Configuration {
 
                 if (keyParts.length >= 2) {
                     short dmg = Short.parseShort(keyParts[1]);
-
-                    denomType.setDurability(dmg);
+                    ItemMeta meta = denomType.getItemMeta();
+                    if (meta != null) {
+                        ((Damageable) meta).setDamage(dmg);
+                        denomType.setItemMeta(meta);
+                    }
                 }
 
                 if (valueParts.length >= 2) {
@@ -310,4 +316,9 @@ public enum Configuration {
         }
     }
 
-}
+    /**
+     * Currency configuration.
+     */
+    public GringottsCurrency getCurrency() {
+        return currency;
+    }}

@@ -1,6 +1,5 @@
 package org.gestern.gringotts.dependency;
 
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -26,13 +25,13 @@ public enum Dependency {
     public final TownyHandler      towny;
     public final DependencyHandler vault;
     public final WorldGuardHandler worldguard;
-    private final Logger log = Gringotts.G.getLogger();
+    private final Logger log = Gringotts.getInstance().getLogger();
 
     /**
      * Initialize plugin dependencies. The plugins themselves do not need to be loaded before this is called,
      * but the classes must be visible to the classloader.
      */
-    private Dependency() {
+    Dependency() {
         factions = FactionsHandler.getFactionsHandler(hookPlugin(
                 "Factions",
                 "com.massivecraft.factions.TerritoryAccess",
@@ -45,7 +44,7 @@ public enum Dependency {
                 "Vault",
                 "net.milkbowl.vault.Vault",
                 "1.5.0"));
-        worldguard = new WorldGuardHandler((WorldGuardPlugin) hookPlugin(
+        worldguard = WorldGuardHandler.getWorldGuardHandler(hookPlugin(
                 "WorldGuard",
                 "com.sk89q.worldguard.bukkit.WorldGuardPlugin",
                 "6.2"));
@@ -99,7 +98,7 @@ public enum Dependency {
 
             }
         } else {
-            log.info("Unable to hook plugin " + name);
+            log.warning("Unable to hook plugin " + name);
             plugin = null;
         }
 

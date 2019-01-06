@@ -29,7 +29,7 @@ public class AccountInventory {
      * @return current balance of this inventory in cents
      */
     public long balance() {
-        GringottsCurrency cur   = CONF.currency;
+        GringottsCurrency cur   = CONF.getCurrency();
         long              count = 0;
 
         for (ItemStack stack : inventory) {
@@ -51,11 +51,11 @@ public class AccountInventory {
         long remaining = value;
 
         // try denominations from largest to smallest
-        for (Denomination denom : CONF.currency.denominations()) {
-            if (denom.value <= remaining) {
-                ItemStack stack          = new ItemStack(denom.key.type);
+        for (Denomination denom : CONF.getCurrency().getDenominations()) {
+            if (denom.getValue() <= remaining) {
+                ItemStack stack          = new ItemStack(denom.getKey().type);
                 int       stacksize      = stack.getMaxStackSize();
-                long      denomItemCount = denom.value > 0 ? remaining / denom.value : 0;
+                long      denomItemCount = denom.getValue() > 0 ? remaining / denom.getValue() : 0;
 
                 // add stacks in this denomination until stuff is returned
                 while (denomItemCount > 0) {
@@ -70,7 +70,7 @@ public class AccountInventory {
                     // reduce remaining amount by whatever was deposited
                     long added = (long) remainderStackSize - returned;
                     denomItemCount -= added;
-                    remaining -= added * denom.value;
+                    remaining -= added * denom.getValue();
 
                     // no more space for this denomination
                     if (returned > 0) {
@@ -96,18 +96,18 @@ public class AccountInventory {
             return 0;
         }
 
-        GringottsCurrency cur       = CONF.currency;
+        GringottsCurrency cur       = CONF.getCurrency();
         long              remaining = value;
 
         // try denominations from smallest to largest
-        List<Denomination> denoms = cur.denominations();
+        List<Denomination> denoms = cur.getDenominations();
         for (ListIterator<Denomination> it = denoms.listIterator(denoms.size()); it.hasPrevious(); ) {
             Denomination denom     = it.previous();
-            ItemStack    stack     = new ItemStack(denom.key.type);
+            ItemStack    stack     = new ItemStack(denom.getKey().type);
             int          stacksize = stack.getMaxStackSize();
 
             // take 1 more than necessary if it doesn't round. add the extra later
-            long denomItemCount = (long) Math.ceil((double) remaining / denom.value);
+            long denomItemCount = (long) Math.ceil((double) remaining / denom.getValue());
 
             // add stacks in this denomination until stuff is returned or we are done
             while (denomItemCount > 0) {
@@ -123,7 +123,7 @@ public class AccountInventory {
                 // reduce remaining amount by whatever was removed
                 long removed = (long) remainderStackSize - returned;
                 denomItemCount -= removed;
-                remaining -= removed * denom.value;
+                remaining -= removed * denom.getValue();
 
                 // stuff was returned, no more items of this type to take
                 if (returned > 0) {

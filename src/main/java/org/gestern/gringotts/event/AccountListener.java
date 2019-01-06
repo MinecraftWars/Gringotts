@@ -12,6 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.gestern.gringotts.Configuration.CONF;
+import static org.gestern.gringotts.event.VaultCreationEvent.*;
 
 /**
  * Listens for chest creation and destruction events.
@@ -30,27 +31,35 @@ public class AccountListener implements Listener {
      * @param event Event data.
      */
     @EventHandler
-    public void createVault(SignChangeEvent event) {
-        String  line0 = event.getLine(0);
-        Matcher match = vaultPattern.matcher(line0);
+    public void onSignChange(SignChangeEvent event) {
+        final String line0 = event.getLine(0);
+        final Matcher match = vaultPattern.matcher(line0);
 
         // consider only signs with proper formatting
-        if (match.matches()) {
-            String type = match.group(1).toLowerCase();
+        if (!match.matches()) {
+            return;
+        }
+        final String typeStr = match.group(1).toUpperCase();
 
-            // default vault is player
-            if (type.isEmpty()) {
-                type = "player";
+        Type type;
+        // default vault is player
+        if (typeStr.isEmpty()) {
+            type = Type.PLAYER;
+        } else {
+            try {
+                type = Type.valueOf(typeStr);
+            } catch (IllegalArgumentException notFound) {
+                return;
             }
+        }
 
-            // is sign attached to a valid vault container?
-            BlockState signBlock = event.getBlock().getState();
-            if (signBlock instanceof Sign && Util.chestBlock((Sign) signBlock) != null) {
-                // we made it this far, throw the event to manage vault creation
-                VaultCreationEvent creation = new PlayerVaultCreationEvent(type, event);
+        // is sign attached to a valid vault container?
+        BlockState signBlock = event.getBlock().getState();
+        if (signBlock instanceof Sign && Util.chestBlock((Sign) signBlock) != null) {
+            // we made it this far, throw the event to manage vault creation
+            final VaultCreationEvent creation = new PlayerVaultCreationEvent(type, event);
 
-                Bukkit.getServer().getPluginManager().callEvent(creation);
-            }
+            Bukkit.getServer().getPluginManager().callEvent(creation);
         }
     }
 }

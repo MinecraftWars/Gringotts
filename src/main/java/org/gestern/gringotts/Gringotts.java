@@ -10,6 +10,7 @@ import com.avaje.ebeaninternal.server.ddl.DdlGenerator;
 import com.avaje.ebeaninternal.server.lib.sql.TransactionIsolation;
 import net.milkbowl.vault.economy.Economy;
 import org.apache.commons.lang.Validate;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -20,7 +21,12 @@ import org.bukkit.plugin.ServicesManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.gestern.gringotts.accountholder.AccountHolderFactory;
 import org.gestern.gringotts.accountholder.AccountHolderProvider;
+import org.gestern.gringotts.api.Eco;
+import org.gestern.gringotts.api.impl.GringottsEco;
 import org.gestern.gringotts.api.impl.VaultConnector;
+import org.gestern.gringotts.commands.GringottsExecutor;
+import org.gestern.gringotts.commands.MoneyExecutor;
+import org.gestern.gringotts.commands.MoneyadminExecutor;
 import org.gestern.gringotts.data.DAO;
 import org.gestern.gringotts.data.DerbyDAO;
 import org.gestern.gringotts.data.EBeanDAO;
@@ -28,13 +34,13 @@ import org.gestern.gringotts.data.Migration;
 import org.gestern.gringotts.event.AccountListener;
 import org.gestern.gringotts.event.PlayerVaultListener;
 import org.gestern.gringotts.event.VaultCreator;
-import org.mcstats.MetricsLite;
 
-import java.io.*;
+import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static org.gestern.gringotts.Configuration.CONF;
 import static org.gestern.gringotts.Language.LANG;
@@ -44,53 +50,51 @@ import static org.gestern.gringotts.dependency.Dependency.DEP;
 public class Gringotts extends JavaPlugin {
 
     private static final String MESSAGES_YML = "messages.yml";
+    private static Gringotts instance;
 
-    /**
-     * The Gringotts plugin instance.
-     */
-    public static Gringotts G;
-    /**
-     * The account holder factory is the place to go if you need an AccountHolder instance for an id.
-     */
-    public final AccountHolderFactory accountHolderFactory = new AccountHolderFactory();
-    public  DAO        dao;
-    /**
-     * Manages accounts.
-     */
-    public  Accounting accounting;
-    private Logger     log;
-    private Commands   gcommand;
-    private EbeanServer ebean = null;
+    private final AccountHolderFactory accountHolderFactory = new AccountHolderFactory();
+    private Accounting accounting;
+    private DAO dao;
+    private EbeanServer ebean;
+    private Metrics metrics;
+    private Eco eco;
+
 
     public Gringotts() {
-        ServerConfig db = new ServerConfig();
+        ServerConfig dbConfig = new ServerConfig();
 
-        db.setDefaultServer(false);
-        db.setRegister(false);
-        db.setClasses(getDatabaseClasses());
-        db.setName(getDescription().getName());
-        configureDbConfig(db);
+        dbConfig.setDefaultServer(false);
+        dbConfig.setRegister(false);
+        dbConfig.setClasses(getDatabaseClasses());
+        dbConfig.setName(getDescription().getName());
+        configureDbConfig(dbConfig);
 
-        DataSourceConfig ds = db.getDataSourceConfig();
+        DataSourceConfig dsConfig = dbConfig.getDataSourceConfig();
 
-        ds.setUrl(replaceDatabaseString(ds.getUrl()));
+        dsConfig.setUrl(replaceDatabaseString(dsConfig.getUrl()));
         getDataFolder().mkdirs();
 
         ClassLoader previous = Thread.currentThread().getContextClassLoader();
 
         Thread.currentThread().setContextClassLoader(getClassLoader());
-        ebean = EbeanServerFactory.create(db);
+        ebean = EbeanServerFactory.create(dbConfig);
         Thread.currentThread().setContextClassLoader(previous);
+    }
+
+    /**
+     * The Gringotts plugin instance.
+     */
+    public static Gringotts getInstance() {
+        return instance;
     }
 
     @Override
     public void onEnable() {
 
-        G = this;
+
+        instance = this;
 
         try {
-            log = getLogger();
-
             // just call DAO once to ensure it's loaded before startup is complete
             dao = getDAO();
 
@@ -98,23 +102,17 @@ public class Gringotts extends JavaPlugin {
             saveDefaultConfig(); // saves default configuration if no config.yml exists yet
             reloadConfig();
 
-            gcommand = new Commands(this);
-
             accounting = new Accounting();
 
+            eco = new GringottsEco();
             registerCommands();
             registerEvents();
             registerEconomy();
 
-            try {
-                MetricsLite metrics = new MetricsLite(this);
-                metrics.start();
-            } catch (IOException err) {
-                log.log(Level.INFO, "Failed to submit PluginMetrics stats", err);
-            }
+            metrics = new Metrics(this);
 
         } catch (GringottsStorageException | GringottsConfigurationException e) {
-            log.severe(e.getMessage());
+            getLogger().severe(e.getMessage());
             this.disable();
         } catch (RuntimeException e) {
             this.disable();
@@ -122,12 +120,12 @@ public class Gringotts extends JavaPlugin {
         }
 
 
-        log.fine("enabled");
+        getLogger().fine("enabled");
     }
 
     private void disable() {
         Bukkit.getPluginManager().disablePlugin(this);
-        log.warning("Gringotts disabled due to startup errors.");
+        getLogger().warning("Gringotts disabled due to startup errors.");
     }
 
     @Override
@@ -139,16 +137,16 @@ public class Gringotts extends JavaPlugin {
                 dao.shutdown();
             }
         } catch (GringottsStorageException e) {
-            log.severe(e.toString());
+            getLogger().severe(e.toString());
         }
 
-        log.info("disabled");
+        getLogger().info("disabled");
     }
 
     private void registerCommands() {
-        CommandExecutor playerCommands     = gcommand.new Money();
-        CommandExecutor moneyAdminCommands = gcommand.new Moneyadmin();
-        CommandExecutor adminCommands      = gcommand.new GringottsCmd();
+        CommandExecutor playerCommands = new MoneyExecutor();
+        CommandExecutor moneyAdminCommands = new MoneyadminExecutor();
+        CommandExecutor adminCommands = new GringottsExecutor();
 
         getCommand("balance").setExecutor(playerCommands);
         getCommand("money").setExecutor(playerCommands);
@@ -172,11 +170,10 @@ public class Gringotts extends JavaPlugin {
      */
     private void registerEconomy() {
         if (DEP.vault.exists()) {
-            final ServicesManager sm = getServer().getServicesManager();
-            sm.register(Economy.class, new VaultConnector(), this, ServicePriority.Highest);
-            log.info("Registered Vault interface.");
+            getServer().getServicesManager().register(Economy.class, new VaultConnector(), this, ServicePriority.Highest);
+            getLogger().info("Registered Vault interface.");
         } else {
-            log.info("Vault not found. Other plugins may not be able to access Gringotts accounts.");
+            getLogger().info("Vault not found. Other plugins may not be able to access Gringotts accounts.");
         }
     }
 
@@ -203,7 +200,7 @@ public class Gringotts extends JavaPlugin {
         String langPath = "i18n/messages_" + CONF.language + ".yml";
 
         // try configured language first
-        InputStream             langStream = getResource(langPath);
+        InputStream langStream = getResource(langPath);
         final FileConfiguration conf;
         if (langStream != null) {
             Reader langReader = new InputStreamReader(getResource(langPath), Charset.forName("UTF-8"));
@@ -245,13 +242,13 @@ public class Gringotts extends JavaPlugin {
 
         DerbyDAO derbyDAO;
         if (!migration.isDerbyMigrated() && (derbyDAO = DerbyDAO.getDao()) != null) {
-            log.info("Derby database detected. Migrating to Bukkit-supported database ...");
+            getLogger().info("Derby database detected. Migrating to Bukkit-supported database ...");
             EBeanDAO eBeanDAO = EBeanDAO.getDao();
             migration.doDerbyMigration(derbyDAO, eBeanDAO);
         }
 
         if (!migration.isUUIDMigrated()) {
-            log.info("Player database not migrated to UUIDs yet. Attempting migration");
+            getLogger().info("Player database not migrated to UUIDs yet. Attempting migration");
             migration.doUUIDMigration();
         }
 
@@ -274,7 +271,7 @@ public class Gringotts extends JavaPlugin {
                 db.find(c).findRowCount();
             }
         } catch (Exception ignored) {
-            log.info("Initializing database tables.");
+            getLogger().info("Initializing database tables.");
             installDDL();
         }
     }
@@ -301,24 +298,24 @@ public class Gringotts extends JavaPlugin {
 
     protected void installDDL() {
         SpiEbeanServer serv = (SpiEbeanServer) getDatabase();
-        DdlGenerator   gen  = serv.getDdlGenerator();
+        DdlGenerator gen = serv.getDdlGenerator();
 
         gen.runScript(false, gen.generateCreateDdl());
     }
 
     protected void removeDDL() {
         SpiEbeanServer serv = (SpiEbeanServer) getDatabase();
-        DdlGenerator   gen  = serv.getDdlGenerator();
+        DdlGenerator gen = serv.getDdlGenerator();
 
         gen.runScript(true, gen.generateDropDdl());
     }
 
     private String replaceDatabaseString(String input) {
         input = input.replaceAll(
-                "\\{DIR\\}",
+                "\\{DIR}",
                 getDataFolder().getPath().replaceAll("\\\\", "/") + "/");
         input = input.replaceAll(
-                "\\{NAME\\}",
+                "\\{NAME}",
                 getDescription().getName().replaceAll("[^\\w_-]", ""));
 
         return input;
@@ -342,4 +339,25 @@ public class Gringotts extends JavaPlugin {
         config.setDataSourceConfig(ds);
     }
 
+    public DAO getDao() {
+        return dao;
+    }
+
+    /**
+     * The account holder factory is the place to go if you need an AccountHolder instance for an id.
+     */
+    public AccountHolderFactory getAccountHolderFactory() {
+        return accountHolderFactory;
+    }
+
+    /**
+     * Manages accounts.
+     */
+    public Accounting getAccounting() {
+        return accounting;
+    }
+
+    public Eco getEco() {
+        return eco;
+    }
 }

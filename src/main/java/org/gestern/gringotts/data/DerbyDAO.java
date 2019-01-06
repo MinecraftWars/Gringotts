@@ -28,7 +28,7 @@ public class DerbyDAO implements DAO {
      * Singleton DAO instance.
      */
     private static DerbyDAO dao;
-    private final Logger log = Gringotts.G.getLogger();
+    private final Logger log = Gringotts.getInstance().getLogger();
     private final Driver            driver;
     /**
      * Full connection string for database, without connect options.
@@ -46,7 +46,7 @@ public class DerbyDAO implements DAO {
 
     private DerbyDAO() {
 
-        String dbPath = Gringotts.G.getDataFolder().getAbsolutePath();
+        String dbPath = Gringotts.getInstance().getDataFolder().getAbsolutePath();
         dbString = "jdbc:derby:" + dbPath + "/" + DB_NAME;
         String connectString = dbString + ";create=true";
 
@@ -229,7 +229,6 @@ public class DerbyDAO implements DAO {
         }
     }
 
-    @SuppressWarnings("SuspiciousNameCombination")
     private boolean deleteAccountChest(String world, int x, int y, int z) throws SQLException {
         destroyAccountChest.setString(1, world);
         destroyAccountChest.setInt(2, x);
@@ -279,7 +278,7 @@ public class DerbyDAO implements DAO {
                     break;
             }
 
-            storeAccount.setLong(3, CONF.currency.centValue(value));
+            storeAccount.setLong(3, CONF.getCurrency().centValue(value));
 
             int updated = storeAccount.executeUpdate();
 
@@ -426,7 +425,7 @@ public class DerbyDAO implements DAO {
                 Location loc   = new Location(world, x, y, z);
 
                 if (world == null) {
-                    Gringotts.G.getLogger().warning(
+                    Gringotts.getInstance().getLogger().warning(
                             "Vault " + type + ":" + ownerId + " located on a non-existent world. Skipping.");
 
                     continue;
@@ -435,7 +434,7 @@ public class DerbyDAO implements DAO {
                 Block signBlock = loc.getBlock();
 
                 if (Util.isSignBlock(signBlock)) {
-                    AccountHolder owner = Gringotts.G.accountHolderFactory.get(type, ownerId);
+                    AccountHolder owner = Gringotts.getInstance().getAccountHolderFactory().get(type, ownerId);
 
                     if (owner == null) {
                         // FIXME this logic really doesn't belong in DAO, I think?
@@ -501,7 +500,7 @@ public class DerbyDAO implements DAO {
 
                 if (world == null) {
                     deleteAccountChest(worldName, x, y, x); // FIXME: Isn't actually removing the non-existent vaults..
-                    Gringotts.G.getLogger().severe(
+                    Gringotts.getInstance().getLogger().severe(
                             "Vault of " + account.owner.getName() + " located on a non-existent world. " +
                                     "Deleting Vault on world " + worldName);
 

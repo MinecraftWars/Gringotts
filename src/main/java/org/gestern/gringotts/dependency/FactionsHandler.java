@@ -13,6 +13,7 @@ import org.gestern.gringotts.Gringotts;
 import org.gestern.gringotts.accountholder.AccountHolder;
 import org.gestern.gringotts.accountholder.AccountHolderProvider;
 import org.gestern.gringotts.event.PlayerVaultCreationEvent;
+import org.gestern.gringotts.event.VaultCreationEvent.Type;
 
 import static org.gestern.gringotts.Language.LANG;
 import static org.gestern.gringotts.Permissions.CREATEVAULT_ADMIN;
@@ -32,7 +33,7 @@ public abstract class FactionsHandler implements DependencyHandler, AccountHolde
         if (factions instanceof Factions) {
             return new ValidFactionsHandler((Factions) factions);
         } else {
-            Gringotts.G.getLogger().warning(
+            Gringotts.getInstance().getLogger().warning(
                     "Unable to load Factions handler because your version of Factions " +
                             "is not compatible with Gringotts. Factions support will not work");
 
@@ -81,8 +82,8 @@ class ValidFactionsHandler extends FactionsHandler {
         this.plugin = plugin;
 
         if (plugin != null) {
-            Bukkit.getPluginManager().registerEvents(new FactionsListener(), Gringotts.G);
-            Gringotts.G.registerAccountHolderProvider("faction", this);
+            Bukkit.getPluginManager().registerEvents(new FactionsListener(), Gringotts.getInstance());
+            Gringotts.getInstance().registerAccountHolderProvider("faction", this);
         }
     }
 
@@ -167,7 +168,7 @@ class FactionsListener implements Listener {
 
         if (!DEP.factions.enabled()) return;
 
-        if ("faction".equals(event.getType())) {
+        if (event.getType() == Type.FACTION) {
             Player player = event.getCause().getPlayer();
 
             if (!CREATEVAULT_FACTION.allowed(player)) {
@@ -182,7 +183,7 @@ class FactionsListener implements Listener {
 
             if (ownername != null && ownername.length() > 0 && CREATEVAULT_ADMIN.allowed(player)) {
                 // attempting to create account for named faction
-                owner = Gringotts.G.accountHolderFactory.get("faction", ownername);
+                owner = Gringotts.getInstance().getAccountHolderFactory().get("faction", ownername);
 
                 if (owner == null) {
                     return;
@@ -251,17 +252,17 @@ class FactionAccountHolder implements AccountHolder {
             return true;
         }
 
-        if (obj == null) {
-            return false;
-        }
-
-        if (getClass() != obj.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
 
         FactionAccountHolder other = (FactionAccountHolder) obj;
 
-        return owner == null ? other.owner == null : owner.getId().equals(other.owner.getId());
+        if (this.owner == null) {
+            return other.owner == null;
+        } else {
+            return this.owner.getId().equals(other.owner.getId());
+        }
     }
 
     @Override
