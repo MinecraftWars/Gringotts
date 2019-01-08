@@ -6,7 +6,7 @@ Gringotts
 
 Gringotts is an item-based economy plugin for the Bukkit Minecraft server platform. Unlike earlier economy plugins, all currency value and money transactions are based on actual items in Minecraft, per default emeralds. The goals are to add a greater level of immersion, a generally more Minecraft-like feeling, and in the case of a PvP environment, making the currency itself vulnerable to raiding.
 
-[Get Gringotts from BukkitDev](http://dev.bukkit.org/server-mods/gringotts/)
+[Get Gringotts from Spigot](https://www.spigotmc.org/resources/gringotts.42071/)
 
 Looking for maintainers!
 ------------------------
@@ -28,11 +28,11 @@ project off to somebody interested in its continued existence.
 Features
 --------
 * Item-backed economy (configurable, default emeralds)
-* multiple denominations with automatic conversion (for example, use emeralds and emerald blocks)
+* Multiple denominations with automatic conversion (for example, use emeralds and emerald blocks)
 * Storage of currency in chests and other containers, player inventory and ender chests (configurable)
-* direct account-to-account transfers commands
-* optional transaction taxes
-* fractional currency values (fixed decimal digits)
+* Direct account-to-account transfers commands
+* Optional transaction taxes
+* Fractional currency values (fixed decimal digits)
 * Account support for [Factions](http://dev.bukkit.org/server-mods/factions/), [Towny](http://dev.bukkit.org/server-mods/towny-advanced/) and [WorldGuard](http://dev.bukkit.org/server-mods/worldguard/)
 * [Vault](http://dev.bukkit.org/server-mods/vault/) integration
 
@@ -56,34 +56,9 @@ Place a sign above a container block, with `[faction vault]` written on the firs
 * To make a vault for your nation: place a sign above a container block, with `[nation vault]` written on the first line. 
 If it was created correctly, the sign will display your town's or nation's tag on the third line and you will receive a message that the vault has been created.
 
-
-### User commands ###
-
-    /money
-Display your account's current balance. Alias `/m`
-
-    /money pay <amount> <player>
-Pay an amount to a player. The transaction will only succeed if your account has at least the given amount plus any taxes that apply, and the receiving account has enough capacity for the amount.
-
-    /money withdraw <amount>
-Withdraw an amount from chest storage into inventory.
-
-    /money deposit <amount>
-Deposit an amount from inventory into chest storage. 
-
-### Admin commands ###
-    /moneyadmin b <account>
-Get the balance of a player's account.
-
-    /moneyadmin add <amount> <account>
-Add an amount of money to a player's account.
-
-    /moneyadmin rm <amount>
-Remove an amount of money from a player's account.
-
-    /gringotts reload
-Reload Gringotts config.yml and messages.yml and apply any changed settings.
-
+Commands
+--------
+See usage file. [link](https://github.com/MinecraftWars/Gringotts/blob/master/doc/usage.md#commands)
 
 Installation and Configuration
 ------------------------------
