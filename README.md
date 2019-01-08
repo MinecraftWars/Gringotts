@@ -6,7 +6,9 @@ Gringotts
 
 Gringotts is an item-based economy plugin for the Bukkit Minecraft server platform. Unlike earlier economy plugins, all currency value and money transactions are based on actual items in Minecraft, per default emeralds. The goals are to add a greater level of immersion, a generally more Minecraft-like feeling, and in the case of a PvP environment, making the currency itself vulnerable to raiding.
 
-[Get Gringotts from Spigot](https://www.spigotmc.org/resources/gringotts.42071/)
+
+[Get Gringotts from BukkitDev](https://dev.bukkit.org/projects/gringotts) or
+[get Gringotts from Spigot](https://www.spigotmc.org/resources/gringotts.42071/)!
 
 Looking for maintainers!
 ------------------------
