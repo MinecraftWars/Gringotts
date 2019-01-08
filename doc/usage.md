@@ -39,31 +39,22 @@ The permission `createvault.forothers` allows you to create vaults for other pla
 Commands
 --------
 
+Arguments between `<>` (ex `<amount>`) are mandatory while ones between `[]` (ex. `[type]`) are optionals.
+
 ### User commands ###
 
-    /money
-Display your account's current balance. Alias `/m`
-
-    /money pay <amount> <player>
-Pay an amount to a player. The transaction will only succeed if your account has at least the given amount plus any taxes that apply, and the receiving account has enough capacity for the amount.
-
-    /money withdraw <amount>
-Withdraw an amount from chest storage into inventory.
-
-    /money deposit <amount>
-Deposit an amount from inventory into chest storage. 
-
+| Command           | Arguments           | Description                             | Aliases         |
+| ----------------- | ------------------- | --------------------------------------- | --------------- |
+| `/money`          | none                | Display your account's current balance. | `/m`, `/balance`|
+| `/money pay`      | `<amount> <player>` | Pay an amount to a player. The transaction will only succeed if your account has at least the given amount plus any taxes that apply, and the receiving account has enough capacity for the amount. | none |
+| `/money withdraw` | `<amount>`          | Withdraw an amount from chest storage into inventory.| none |
+| `/money deposit`  | `<amount>`          | Deposit an amount from inventory into chest storage. | none |
 
 ### Admin commands ###
 
-    /moneyadmin b <account> [type]
-Get the balance of a player's account. Optional `type` parameter specifies a specific account type for disambiguation. Valid `type` arguments are `faction`, `town`, `nation`, `worldguard`
-
-    /moneyadmin add <amount> <account>
-Add an amount of money to a player's account.
-
-    /moneyadmin rm <amount>
-Remove an amount of money from a player's account.
-
-    /gringotts reload
-Reload Gringotts config.yml and messages.yml and apply any changed settings.
+| Command             | Arguments                   | Description                                                                  | Aliases |
+| ------------------- | --------------------------- | ---------------------------------------------------------------------------- | ------- |
+| `/moneyadmin b`     | `<account>`                 | Get the balance of a player's account.                                       | none    |
+| `/moneyadmin add`   | `<amount> <account> [type]` | Add an amount of money to a player's account.                                | none    |
+| `/moneyadmin rm`    | `<amount> <account> [type]` | Remove an amount of money from a player's account.                           | none    |
+| `/gringotts reload` | none                        | Reload Gringotts config.yml and messages.yml and apply any changed settings. | none    |
