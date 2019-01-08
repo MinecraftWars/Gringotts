@@ -60,7 +60,7 @@ If it was created correctly, the sign will display your town's or nation's tag o
 
 Commands
 --------
-See usage file. [link](https://github.com/MinecraftWars/Gringotts/blob/master/doc/usage.md#commands)
+See [Usage](https://github.com/MinecraftWars/Gringotts/blob/master/doc/usage.md#commands).
 
 Installation and Configuration
 ------------------------------
