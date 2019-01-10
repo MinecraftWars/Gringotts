@@ -4,7 +4,7 @@ website: https://github.com/MinecraftWars/Gringotts
 
 version: ${version}
 main: org.gestern.gringotts.Gringotts
-load: STARTUP
+load: startup
 database: true
 
 api-version: 1.13

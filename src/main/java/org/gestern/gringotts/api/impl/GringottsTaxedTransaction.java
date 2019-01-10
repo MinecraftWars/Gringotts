@@ -14,6 +14,11 @@ public class GringottsTaxedTransaction extends GringottsTransaction implements T
     private final double taxes;
 
     /**
+     * Taxes will be added to this account vault if any
+     */
+    private Account collector;
+
+    /**
      * Create taxed transaction, adding given amount of taxes to the given base transaction
      *
      * @param base  transaction on which the tax is based
@@ -38,6 +43,9 @@ public class GringottsTaxedTransaction extends GringottsTransaction implements T
         // undo taxing if transaction failed
         if (result != SUCCESS) {
             from.add(taxes);
+        } else {
+            if (collector != null)
+                collector.add(taxes);
         }
 
         return result;
@@ -45,7 +53,11 @@ public class GringottsTaxedTransaction extends GringottsTransaction implements T
 
     @Override
     public TaxedTransaction collectedBy(Account taxCollector) {
-        throw new RuntimeException("tax collector account not yet implemented");
+        if (this.collector != null) {
+            throw new RuntimeException("Collector is already set");
+        }
+        this.collector = taxCollector;
+        return this;
     }
 
     @Override

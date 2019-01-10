@@ -32,8 +32,7 @@ public enum Configuration {
      * Regular expression defining what patterns on a sign will create a valid vault. Subpattern 1 denotes the type
      * of the vault.
      */
-    // TODO make this actually configurable(?)
-    public final  String vaultPattern = "[^\\[]*\\[(\\w*) ?vault\\]";
+    public  String vaultPattern = "[^\\[]*\\[(\\w*) ?vault\\]";
     private final Logger log          = Gringotts.getInstance().getLogger();
     /**
      * Language to be used for messages. Should be an ISO 639-1 (alpha-2) code.
@@ -163,6 +162,8 @@ public enum Configuration {
         CONF.balanceShowVault = savedConfig.getBoolean("balance.show-vault", true);
 
         CONF.language = savedConfig.getString("language", "custom");
+
+        CONF.vaultPattern = savedConfig.getString("vaultex", "[^\\[]*\\[(\\w*) ?vault\\]");
     }
 
     /**

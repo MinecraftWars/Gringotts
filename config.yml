@@ -40,6 +40,9 @@ usevault:
   container: true
   enderchest: true
 
+# regex that create a vault if matches with a sign
+vaultex: '[^\[]*\[(\w*) ?vault\]'
+
 # whether money/balance commands show vault and inventory balance separately
 balance:
   show-vault: true
