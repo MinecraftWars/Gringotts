@@ -94,6 +94,7 @@ class ValidWorldGuardHandler extends WorldGuardHandler {
         // try bare id in all worlds
         WorldGuardPlatform worldguardPlatform = WorldGuard.getInstance().getPlatform();
         for (World world : Bukkit.getWorlds()) {
+
             RegionManager worldManager = worldguardPlatform.getRegionContainer().get(new BukkitWorld(world));
 
             if (worldManager != null && worldManager.hasRegion(id)) {
