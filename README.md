@@ -3,6 +3,7 @@ Gringotts
 
 [![Join the chat at https://gitter.im/MinecraftWars/Gringotts](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/MinecraftWars/Gringotts?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/MinecraftWars/Gringotts.svg?branch=master)](https://travis-ci.org/MinecraftWars/Gringotts)
+[![](https://jitpack.io/v/MinecraftWars/Gringotts.svg)](https://jitpack.io/#MinecraftWars/Gringotts)
 
 Gringotts is an item-based economy plugin for the Bukkit Minecraft server platform. Unlike earlier economy plugins, all currency value and money transactions are based on actual items in Minecraft, per default emeralds. The goals are to add a greater level of immersion, a generally more Minecraft-like feeling, and in the case of a PvP environment, making the currency itself vulnerable to raiding.
 
@@ -88,6 +89,52 @@ Gringotts uses the [Maven 3](http://maven.apache.org/) build system. Build a wor
     
 This shades in some dependencies (such as plugin metrics). For this reason, creating a jar package manually or from an IDE may not work correctly.
 
+
+Maven/Gradle repo
+-----------
+
+#### Step 1
+Add the JitPack repository to your build file
+
+##### Maven
+```xml
+	<repositories>
+		<repository>
+		    <id>jitpack.io</id>
+		    <url>https://jitpack.io</url>
+		</repository>
+	</repositories>
+```
+
+##### Gradle
+```groovy
+	allprojects {
+		repositories {
+			maven { url 'https://jitpack.io' }
+		}
+	}
+```
+
+#### Step 2
+Add the dependency
+
+##### Maven
+```xml
+	<dependency>
+	    <groupId>com.github.MinecraftWars</groupId>
+	    <artifactId>Gringotts</artifactId>
+	    <version>-SNAPSHOT</version>
+	</dependency>
+```
+
+##### Gradle
+```groovy
+	dependencies {
+	        implementation 'com.github.MinecraftWars:Gringotts:-SNAPSHOT'
+	}
+```
+
+That's it!
 
 License
 -------
