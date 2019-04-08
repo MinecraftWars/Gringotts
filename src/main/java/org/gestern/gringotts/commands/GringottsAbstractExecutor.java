@@ -27,22 +27,20 @@ public abstract class GringottsAbstractExecutor implements CommandExecutor {
         sender.sendMessage(LANG.invalid_account.replace(TAG_PLAYER, accountName));
     }
 
-    boolean pay(Player player, double value, String[] args) {
-        if (!Permissions.TRANSFER.allowed(player)) {
-            player.sendMessage(LANG.noperm);
+    boolean pay(Player origin, double value, String[] args) {
+        if (!Permissions.TRANSFER.allowed(origin)) {
+            origin.sendMessage(LANG.noperm);
 
             return true;
         }
 
         String recipientName = args[2];
 
-        Account from = eco.player(player.getUniqueId());
+        PlayerAccount from = eco.player(origin.getUniqueId());
         Account to = eco.account(recipientName);
 
-        PlayerAccount playerAccount = eco.player(player.getUniqueId());
-
-        TaxedTransaction transaction = playerAccount.send(value).withTaxes();
-        TransactionResult result = playerAccount.send(value).withTaxes().to(eco.player(recipientName));
+        TaxedTransaction transaction = from.send(value).withTaxes();
+        TransactionResult result = from.send(value).withTaxes().to(eco.player(recipientName));
 
         double tax = transaction.tax();
         double valueAdded = value + tax;
@@ -57,27 +55,27 @@ public abstract class GringottsAbstractExecutor implements CommandExecutor {
                 String succTaxMessage = LANG.pay_success_tax.replace(TAG_VALUE, formattedTax);
                 String succSentMessage = LANG.pay_success_sender.replace(TAG_VALUE, formattedValue).replace
                         (TAG_PLAYER, recipientName);
-                from.message(succSentMessage + (tax > 0 ? succTaxMessage : ""));
+                origin.sendMessage(succSentMessage + (tax > 0 ? succTaxMessage : ""));
                 String succReceivedMessage = LANG.pay_success_target.replace(TAG_VALUE, formattedValue).replace
-                        (TAG_PLAYER, player.getName());
+                        (TAG_PLAYER, origin.getName());
                 to.message(succReceivedMessage);
                 return true;
             case INSUFFICIENT_FUNDS:
                 String insFMessage = LANG.pay_insufficientFunds.replace(TAG_BALANCE, formattedBalance).replace
                         (TAG_VALUE, formattedValuePlusTax);
-                from.message(insFMessage);
+                origin.sendMessage(insFMessage);
                 return true;
             case INSUFFICIENT_SPACE:
                 String insSSentMessage = LANG.pay_insS_sender.replace(TAG_PLAYER, recipientName).replace(TAG_VALUE,
                         formattedValue);
-                from.message(insSSentMessage);
+                origin.sendMessage(insSSentMessage);
                 String insSReceiveMessage = LANG.pay_insS_target.replace(TAG_PLAYER, from.id()).replace(TAG_VALUE,
                         formattedValue);
                 to.message(insSReceiveMessage);
                 return true;
             default:
                 String error = LANG.pay_error.replace(TAG_VALUE, formattedValue).replace(TAG_PLAYER, recipientName);
-                from.message(error);
+                origin.sendMessage(error);
                 return true;
         }
     }
