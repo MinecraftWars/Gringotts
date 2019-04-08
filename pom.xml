@@ -85,6 +85,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.zrips</groupId>
+            <artifactId>cmi-api</artifactId>
+            <version>6.2.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
             <version>1.13-R0.1-SNAPSHOT</version>
@@ -225,6 +230,10 @@
                 <checksumPolicy>ignore</checksumPolicy>
             </releases>
             <url>file://${project.basedir}/repo</url>
+        </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
 
