@@ -52,7 +52,7 @@ public class GringottsTaxedTransaction extends GringottsTransaction implements T
     }
 
     @Override
-    public TaxedTransaction collectedBy(Account taxCollector) {
+    public TaxedTransaction setCollectedBy(Account taxCollector) {
         if (this.collector != null) {
             throw new RuntimeException("Collector is already set");
         }
@@ -61,7 +61,7 @@ public class GringottsTaxedTransaction extends GringottsTransaction implements T
     }
 
     @Override
-    public double tax() {
+    public double getTax() {
         return taxes;
     }
 }

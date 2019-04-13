@@ -33,7 +33,7 @@ public class AccountInventory {
         long              count = 0;
 
         for (ItemStack stack : inventory) {
-            count += cur.value(stack);
+            count += cur.getValue(stack);
         }
 
         return count;

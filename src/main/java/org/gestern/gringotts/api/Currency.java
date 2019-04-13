@@ -7,14 +7,14 @@ public interface Currency {
      *
      * @return singular name of this currency
      */
-    String name();
+    String getName();
 
     /**
      * Plural name of this currency.
      *
      * @return plural name of this currency
      */
-    String namePlural();
+    String getNamePlural();
 
     /**
      * Get a formatted currency value.
@@ -30,5 +30,5 @@ public interface Currency {
      *
      * @return the amount of fractional digits supported by this currency
      */
-    int fractionalDigits();
+    int getFractionalDigits();
 }

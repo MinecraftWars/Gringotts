@@ -155,6 +155,11 @@ public class GringottsEco implements Eco {
         }
 
         @Override
+        public boolean canAdd(double value) {
+            throw new UnsupportedOperationException("Not implemented");
+        }
+
+        @Override
         public TransactionResult setBalance(double newBalance) {
             return ERROR;
         }
@@ -248,22 +253,27 @@ public class GringottsEco implements Eco {
 
         @Override
         public double balance() {
-            return CONF.getCurrency().displayValue(acc.getBalance());
+            return CONF.getCurrency().getDisplayValue(acc.getBalance());
         }
 
         @Override
         public double vaultBalance() {
-            return CONF.getCurrency().displayValue(acc.getVaultBalance());
+            return CONF.getCurrency().getDisplayValue(acc.getVaultBalance());
         }
 
         @Override
         public double invBalance() {
-            return CONF.getCurrency().displayValue(acc.getInvBalance());
+            return CONF.getCurrency().getDisplayValue(acc.getInvBalance());
         }
 
         @Override
         public boolean has(double value) {
-            return acc.getBalance() >= CONF.getCurrency().centValue(value);
+            return acc.getBalance() >= CONF.getCurrency().getCentValue(value);
+        }
+
+        @Override
+        public boolean canAdd(double value) {
+            throw new UnsupportedOperationException("Not implemented");
         }
 
         @Override
@@ -277,7 +287,7 @@ public class GringottsEco implements Eco {
                 return remove(-value);
             }
 
-            return acc.add(CONF.getCurrency().centValue(value));
+            return acc.add(CONF.getCurrency().getCentValue(value));
         }
 
         @Override
@@ -286,7 +296,7 @@ public class GringottsEco implements Eco {
                 return add(-value);
             }
 
-            return acc.remove(CONF.getCurrency().centValue(value));
+            return acc.remove(CONF.getCurrency().getCentValue(value));
         }
 
         @Override
@@ -321,14 +331,14 @@ public class GringottsEco implements Eco {
             PlayerAccountHolder owner           = (PlayerAccountHolder) acc.owner;
             Player              player          = Bukkit.getPlayer(owner.getUUID());
             AccountInventory    playerInventory = new AccountInventory(player.getInventory());
-            long                centValue       = CONF.getCurrency().centValue(value);
+            long centValue = CONF.getCurrency().getCentValue(value);
             long                toDeposit       = playerInventory.remove(centValue);
 
             if (toDeposit > centValue) {
                 toDeposit -= playerInventory.add(toDeposit - centValue);
             }
 
-            TransactionResult result = player(player.getUniqueId()).add(CONF.getCurrency().displayValue(toDeposit));
+            TransactionResult result = player(player.getUniqueId()).add(CONF.getCurrency().getDisplayValue(toDeposit));
 
             if (result != SUCCESS) {
                 playerInventory.add(toDeposit);
@@ -342,7 +352,7 @@ public class GringottsEco implements Eco {
             PlayerAccountHolder owner           = (PlayerAccountHolder) acc.owner;
             Player              player          = Bukkit.getPlayer(owner.getUUID());
             AccountInventory    playerInventory = new AccountInventory(player.getInventory());
-            long                centValue       = CONF.getCurrency().centValue(value);
+            long centValue = CONF.getCurrency().getCentValue(value);
             TransactionResult   remove          = acc.remove(centValue);
 
             if (remove == SUCCESS) {
@@ -366,12 +376,12 @@ public class GringottsEco implements Eco {
         }
 
         @Override
-        public String name() {
+        public String getName() {
             return gcurr.getName();
         }
 
         @Override
-        public String namePlural() {
+        public String getNamePlural() {
             return gcurr.getNamePlural();
         }
 
@@ -381,7 +391,7 @@ public class GringottsEco implements Eco {
         }
 
         @Override
-        public int fractionalDigits() {
+        public int getFractionalDigits() {
             return gcurr.getDigits();
         }
 

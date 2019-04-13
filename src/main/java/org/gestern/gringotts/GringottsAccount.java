@@ -15,8 +15,8 @@ import java.util.concurrent.*;
 import java.util.logging.Logger;
 
 import static org.gestern.gringotts.Configuration.CONF;
-import static org.gestern.gringotts.Permissions.USEVAULT_ENDERCHEST;
-import static org.gestern.gringotts.Permissions.USEVAULT_INVENTORY;
+import static org.gestern.gringotts.Permissions.USE_VAULT_ENDERCHEST;
+import static org.gestern.gringotts.Permissions.USE_VAULT_INVENTORY;
 import static org.gestern.gringotts.api.TransactionResult.*;
 
 /**
@@ -121,26 +121,26 @@ public class GringottsAccount {
                 return ERROR;
             }
 
-            long centsStored = dao.getCents(this);
+            long centsStored = dao.retrieveCents(this);
 
             long remaining = amount + centsStored;
 
             // add currency to account's vaults
             if (CONF.usevaultContainer) {
-                for (AccountChest chest : dao.getChests(this)) {
+                for (AccountChest chest : dao.retrieveChests(this)) {
                     remaining -= chest.add(remaining);
                     if (remaining <= 0) break;
                 }
             }
 
             // add stuff to player's inventory and enderchest too, when they are online
-            Optional<Player> playerOpt = playerOwner();
+            Optional<Player> playerOpt = getPlayerOwner();
             if (playerOpt.isPresent()) {
                 Player player = playerOpt.get();
-                if (USEVAULT_INVENTORY.allowed(player)) {
+                if (USE_VAULT_INVENTORY.isAllowed(player)) {
                     remaining -= new AccountInventory(player.getInventory()).add(remaining);
                 }
-                if (CONF.usevaultEnderchest && USEVAULT_ENDERCHEST.allowed(player)) {
+                if (CONF.usevaultEnderchest && USE_VAULT_ENDERCHEST.isAllowed(player)) {
                     remaining -= new AccountInventory(player.getEnderChest()).add(remaining);
                 }
             }
@@ -191,18 +191,18 @@ public class GringottsAccount {
 
             // Now remove the physical amount left
             if (CONF.usevaultContainer) {
-                for (AccountChest chest : dao.getChests(this)) {
+                for (AccountChest chest : dao.retrieveChests(this)) {
                     remaining -= chest.remove(remaining);
                 }
             }
 
-            Optional<Player> playerOpt = playerOwner();
+            Optional<Player> playerOpt = getPlayerOwner();
             if (playerOpt.isPresent()) {
                 Player player = playerOpt.get();
-                if (USEVAULT_INVENTORY.allowed(player)) {
+                if (USE_VAULT_INVENTORY.isAllowed(player)) {
                     remaining -= new AccountInventory(player.getInventory()).remove(remaining);
                 }
-                if (CONF.usevaultEnderchest && USEVAULT_ENDERCHEST.allowed(player)) {
+                if (CONF.usevaultEnderchest && USE_VAULT_ENDERCHEST.isAllowed(player)) {
                     remaining -= new AccountInventory(player.getEnderChest()).remove(remaining);
                 }
             }
@@ -213,7 +213,7 @@ public class GringottsAccount {
 
             if (remaining > 0) {
                 // cannot represent the leftover in our denominations, take them from the virtual reserve
-                long cents = dao.getCents(this);
+                long cents = dao.retrieveCents(this);
                 dao.storeCents(this, cents - remaining);
             }
 
@@ -231,10 +231,10 @@ public class GringottsAccount {
     /**
      * Returns the player owning this account, if the owner is actually a player and online.
      *
-     * @return {@link Optional} of the player owning this account, if the owner is actually a player and online, otherwise
-     * empty.
+     * @return {@link Optional} of the {@link Player} owning this account,
+     * if the owner is actually a player and online, otherwise empty.
      */
-    private Optional<Player> playerOwner() {
+    private Optional<Player> getPlayerOwner() {
         if (owner instanceof PlayerAccountHolder) {
             OfflinePlayer player = ((PlayerAccountHolder) owner).accountHolder;
             return Optional.ofNullable(player.getPlayer());
@@ -246,7 +246,7 @@ public class GringottsAccount {
     private CompletableFuture<Long> countChestInventories() {
 
         Callable<Long> callMe = () -> {
-            List<AccountChest> chests = dao.getChests(this);
+            List<AccountChest> chests = dao.retrieveChests(this);
             long balance = 0;
             if (CONF.usevaultContainer) {
                 for (AccountChest chest : chests) {
@@ -254,10 +254,10 @@ public class GringottsAccount {
                 }
             }
 
-            Optional<Player> playerOpt = playerOwner();
+            Optional<Player> playerOpt = getPlayerOwner();
             if (playerOpt.isPresent()) {
                 Player player = playerOpt.get();
-                if (CONF.usevaultEnderchest && USEVAULT_ENDERCHEST.allowed(player)) {
+                if (CONF.usevaultEnderchest && USE_VAULT_ENDERCHEST.isAllowed(player)) {
                     balance += new AccountInventory(player.getEnderChest()).balance();
                 }
             }
@@ -272,8 +272,8 @@ public class GringottsAccount {
         Callable<Long> callMe = () -> {
             long balance = 0;
 
-            Optional<Player> playerOpt = playerOwner();
-            if (playerOpt.isPresent() && USEVAULT_INVENTORY.allowed(playerOpt.get())) {
+            Optional<Player> playerOpt = getPlayerOwner();
+            if (playerOpt.isPresent() && USE_VAULT_INVENTORY.isAllowed(playerOpt.get())) {
                 Player player = playerOpt.get();
                 balance += new AccountInventory(player.getInventory()).balance();
             }
@@ -284,7 +284,7 @@ public class GringottsAccount {
     }
 
     private CompletableFuture<Long> getCents() {
-        return CompletableFuture.supplyAsync(() -> dao.getCents(this));
+        return CompletableFuture.supplyAsync(() -> dao.retrieveCents(this));
     }
 
     private <V> V getTimeout(CompletableFuture<V> f) {

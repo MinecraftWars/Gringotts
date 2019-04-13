@@ -43,7 +43,7 @@ public class VaultConnector implements Economy {
 
     @Override
     public int fractionalDigits() {
-        return eco.currency().fractionalDigits();
+        return eco.currency().getFractionalDigits();
     }
 
     @Override
@@ -53,12 +53,12 @@ public class VaultConnector implements Economy {
 
     @Override
     public String currencyNamePlural() {
-        return eco.currency().namePlural();
+        return eco.currency().getNamePlural();
     }
 
     @Override
     public String currencyNameSingular() {
-        return eco.currency().name();
+        return eco.currency().getName();
     }
 
     @Override

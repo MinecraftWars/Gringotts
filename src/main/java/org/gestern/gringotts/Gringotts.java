@@ -17,7 +17,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.ServicePriority;
-import org.bukkit.plugin.ServicesManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.gestern.gringotts.accountholder.AccountHolderFactory;
 import org.gestern.gringotts.accountholder.AccountHolderProvider;
@@ -107,7 +106,7 @@ public class Gringotts extends JavaPlugin {
             eco = new GringottsEco();
             registerCommands();
             registerEvents();
-            registerEconomy();
+            registerVaultEconomy();
 
             metrics = new Metrics(this);
 
@@ -168,7 +167,7 @@ public class Gringotts extends JavaPlugin {
     /**
      * Register Gringotts as economy provider for vault.
      */
-    private void registerEconomy() {
+    private void registerVaultEconomy() {
         if (DEP.vault.exists()) {
             getServer().getServicesManager().register(Economy.class, new VaultConnector(), this, ServicePriority.Highest);
             getLogger().info("Registered Vault interface.");

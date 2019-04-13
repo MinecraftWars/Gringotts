@@ -64,7 +64,7 @@ public class EBeanDAO implements DAO {
     }
 
     @Override
-    public synchronized boolean destroyAccountChest(AccountChest chest) {
+    public synchronized boolean deleteAccountChest(AccountChest chest) {
         Sign mark = chest.sign;
 
         return deleteAccountChest(mark.getWorld().getName(), mark.getX(), mark.getY(), mark.getZ());
@@ -100,7 +100,7 @@ public class EBeanDAO implements DAO {
                 break;
         }
 
-        acc.setCents(CONF.getCurrency().centValue(startValue));
+        acc.setCents(CONF.getCurrency().getCentValue(startValue));
         db.save(acc);
 
         return true;
@@ -118,7 +118,7 @@ public class EBeanDAO implements DAO {
     }
 
     @Override
-    public synchronized List<AccountChest> getChests() {
+    public synchronized List<AccountChest> retrieveChests() {
         List<SqlRow> result = db.createSqlQuery("SELECT ac.world, ac.x, ac.y, ac.z, a.type, a.owner " +
                 "FROM gringotts_accountchest ac JOIN gringotts_account a ON ac.account = a.id ")
                 .findList();
@@ -173,7 +173,7 @@ public class EBeanDAO implements DAO {
     }
 
     @Override
-    public synchronized List<AccountChest> getChests(GringottsAccount account) {
+    public synchronized List<AccountChest> retrieveChests(GringottsAccount account) {
         // TODO ensure world interaction is done in sync task
         SqlQuery getChests = db.createSqlQuery("SELECT ac.world, ac.x, ac.y, ac.z " +
                 "FROM gringotts_accountchest ac JOIN gringotts_account a ON ac.account = a.id " +
@@ -224,7 +224,7 @@ public class EBeanDAO implements DAO {
     }
 
     @Override
-    public synchronized long getCents(GringottsAccount account) {
+    public synchronized long retrieveCents(GringottsAccount account) {
         // can this NPE? (probably doesn't)
         return db.find(EBeanAccount.class)
                 .where()

@@ -9,12 +9,12 @@ public interface TaxedTransaction extends Transaction {
      * @param taxCollector account to receive the taxes.
      * @return taxed transaction with tax collector
      */
-    TaxedTransaction collectedBy(Account taxCollector);
+    TaxedTransaction setCollectedBy(Account taxCollector);
 
     /**
      * Return the amount of taxes to be paid in this transaction.
      *
      * @return the amount of taxes to be paid in this transaction.
      */
-    double tax();
+    double getTax();
 }

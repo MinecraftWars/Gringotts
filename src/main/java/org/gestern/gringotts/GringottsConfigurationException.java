@@ -1,6 +1,6 @@
 package org.gestern.gringotts;
 
-class GringottsConfigurationException extends RuntimeException {
+class GringottsConfigurationException extends GringottsException {
 
     private static final long serialVersionUID = -2916461691910235253L;
 

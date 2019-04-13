@@ -207,7 +207,7 @@ public class AccountChest {
      * Triggered on destruction of physical chest or sign.
      */
     void destroy() {
-        dao.destroyAccountChest(this);
+        dao.deleteAccountChest(this);
         sign.getBlock().breakNaturally();
     }
 

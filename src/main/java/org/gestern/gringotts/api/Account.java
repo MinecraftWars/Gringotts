@@ -58,6 +58,14 @@ public interface Account {
     boolean has(double value);
 
     /**
+     * Check if more money can be added to this account's balance.
+     *
+     * @param value The amount of money to check the space for.
+     * @return whether the specified amount of money can fit in this account.
+     */
+    boolean canAdd(double value);
+
+    /**
      * Set the balance of this account.
      * Note: it is preferred to use the add and remove methods for any transactions that actually have
      * the goal of adding or removing a certain amount.
@@ -70,8 +78,8 @@ public interface Account {
     /**
      * Add an amount to this account's balance.
      *
-     * @param value amount to be added.
-     * @return result of adding (success or failure type)
+     * @param value The amount to be added.
+     * @return The result of adding (success or failure type).
      */
     TransactionResult add(double value);
 
@@ -85,9 +93,9 @@ public interface Account {
 
     /**
      * Send an amount to another account. If the transfer fails, both sender and recipient will
-     * have unchanged account balance. To complete the transaction, use the to(Account) method on the result of this
-     * call.
-     * Before sending, it is possible to apply taxes with the withTaxes() method.
+     * have unchanged account balance. To complete the transaction,
+     * use the {@link Transaction#to(Account)} method on the result of this call.
+     * Before sending, it is possible to apply taxes with the {@link Transaction#withTaxes()} method.
      *
      * @param value amount to be transferred
      * @return A transaction object, which may be used to complete the transaction or add additional properties.
@@ -113,8 +121,10 @@ public interface Account {
 
     /**
      * Send a message to the owner or owners of this account.
-     * Depending on the type of account, no player is the owner of an account. In this case, send the message to the
-     * console.
+     * <p>
+     * Depending on the type of account, no player could be the owner of an account.
+     * In this case, send the message to the console.
+     * </p>
      *
      * @param message Message to send.
      */

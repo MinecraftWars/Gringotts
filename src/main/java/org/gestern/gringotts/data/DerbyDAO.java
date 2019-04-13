@@ -29,19 +29,19 @@ public class DerbyDAO implements DAO {
      */
     private static DerbyDAO dao;
     private final Logger log = Gringotts.getInstance().getLogger();
-    private final Driver            driver;
+    private final Driver driver;
     /**
      * Full connection string for database, without connect options.
      */
-    private final String            dbString;
-    private       Connection        connection;
-    private       PreparedStatement storeAccountChest,
-            destroyAccountChest,
+    private final String dbString;
+    private Connection connection;
+    private PreparedStatement storeAccountChest,
+            deleteAccountChest,
             storeAccount,
-            getAccount,
-            getChests,
-            getChestsForAccount,
-            getCents,
+            retrieveAccount,
+            retrieveChests,
+            retrieveChestsForAccount,
+            retrieveCents,
             storeCents;
 
     private DerbyDAO() {
@@ -109,8 +109,8 @@ public class DerbyDAO implements DAO {
                             "type varchar(64), owner varchar(64), cents int not null, " +
                             "primary key (id), constraint unique_type_owner unique(type, owner))";
 
-            Statement stmt    = connection.createStatement();
-            int       updated = stmt.executeUpdate(createAccount);
+            Statement stmt = connection.createStatement();
+            int updated = stmt.executeUpdate(createAccount);
 
             if (updated > 0) {
                 log.info("created table ACCOUNT");
@@ -128,8 +128,8 @@ public class DerbyDAO implements DAO {
                             "primary key(id), constraint unique_location unique(world,x,y,z), constraint fk_account " +
                             "foreign key(account) references account(id))";
 
-            Statement stmt    = connection.createStatement();
-            int       updated = stmt.executeUpdate(createAccountChest);
+            Statement stmt = connection.createStatement();
+            int updated = stmt.executeUpdate(createAccountChest);
 
             if (updated > 0) {
                 log.info("created table ACCOUNTCHEST");
@@ -149,20 +149,20 @@ public class DerbyDAO implements DAO {
         storeAccountChest = connection.prepareStatement(
                 "insert into accountchest (world,x,y,z,account) values (?, ?, ?, ?, (select id from account where " +
                         "owner=? and type=?))");
-        destroyAccountChest = connection.prepareStatement(
+        deleteAccountChest = connection.prepareStatement(
                 "delete from accountchest where world = ? and x = ? and y = ? and z = ?");
         storeAccount = connection.prepareStatement(
                 "insert into account (type, owner, cents) values (?,?,?)");
-        getAccount = connection.prepareStatement(
+        retrieveAccount = connection.prepareStatement(
                 "select * from account where owner = ? and type = ?");
-        getChests = connection.prepareStatement(
+        retrieveChests = connection.prepareStatement(
                 "SELECT ac.world, ac.x, ac.y, ac.z, a.type, a.owner " +
                         "FROM accountchest ac JOIN account a ON ac.account = a.id ");
-        getChestsForAccount = connection.prepareStatement(
+        retrieveChestsForAccount = connection.prepareStatement(
                 "SELECT ac.world, ac.x, ac.y, ac.z " +
                         "FROM accountchest ac JOIN account a ON ac.account = a.id " +
                         "WHERE a.owner = ? and a.type = ?");
-        getCents = connection.prepareStatement(
+        retrieveCents = connection.prepareStatement(
                 "SELECT cents FROM account WHERE owner = ? and type = ?");
         storeCents = connection.prepareStatement(
                 "UPDATE account SET cents = ? WHERE owner = ? and type = ?");
@@ -178,13 +178,10 @@ public class DerbyDAO implements DAO {
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.gestern.gringotts.data.DAO#storeAccountChest(org.gestern.gringotts.AccountChest)
-     */
     @Override
     public synchronized boolean storeAccountChest(AccountChest chest) {
         GringottsAccount account = chest.getAccount();
-        Location         loc     = chest.sign.getLocation();
+        Location loc = chest.sign.getLocation();
 
         log.info("storing account chest: " + chest + " for account: " + account);
 
@@ -213,11 +210,8 @@ public class DerbyDAO implements DAO {
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.gestern.gringotts.data.DAO#destroyAccountChest(org.gestern.gringotts.AccountChest)
-     */
     @Override
-    public synchronized boolean destroyAccountChest(AccountChest chest) {
+    public synchronized boolean deleteAccountChest(AccountChest chest) {
         Location loc = chest.sign.getLocation();
 
         try {
@@ -230,12 +224,12 @@ public class DerbyDAO implements DAO {
     }
 
     private boolean deleteAccountChest(String world, int x, int y, int z) throws SQLException {
-        destroyAccountChest.setString(1, world);
-        destroyAccountChest.setInt(2, x);
-        destroyAccountChest.setInt(3, y);
-        destroyAccountChest.setInt(4, z);
+        deleteAccountChest.setString(1, world);
+        deleteAccountChest.setInt(2, x);
+        deleteAccountChest.setInt(3, y);
+        deleteAccountChest.setInt(4, z);
 
-        int updated = destroyAccountChest.executeUpdate();
+        int updated = deleteAccountChest.executeUpdate();
 
         return updated > 0;
     }
@@ -261,7 +255,7 @@ public class DerbyDAO implements DAO {
             // TODO this is business logic and should probably be outside of the DAO implementation.
             // also find a more elegant way of handling different account types
             double value = 0;
-            String type  = account.owner.getType();
+            String type = account.owner.getType();
 
             switch (type) {
                 case "player":
@@ -278,7 +272,7 @@ public class DerbyDAO implements DAO {
                     break;
             }
 
-            storeAccount.setLong(3, CONF.getCurrency().centValue(value));
+            storeAccount.setLong(3, CONF.getCurrency().getCentValue(value));
 
             int updated = storeAccount.executeUpdate();
 
@@ -288,9 +282,6 @@ public class DerbyDAO implements DAO {
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.gestern.gringotts.data.DAO#getAccount(org.gestern.gringotts.accountholder.AccountHolder)
-     */
     @Override
     public synchronized boolean hasAccount(AccountHolder accountHolder) {
         ResultSet result = null;
@@ -298,10 +289,10 @@ public class DerbyDAO implements DAO {
         try {
             checkConnection();
 
-            getAccount.setString(1, accountHolder.getId());
-            getAccount.setString(2, accountHolder.getType());
+            retrieveAccount.setString(1, accountHolder.getId());
+            retrieveAccount.setString(2, accountHolder.getType());
 
-            result = getAccount.executeQuery();
+            result = retrieveAccount.executeQuery();
 
             return result.next();
         } catch (SQLException e) {
@@ -311,7 +302,8 @@ public class DerbyDAO implements DAO {
                 if (result != null) {
                     result.close();
                 }
-            } catch (SQLException ignored) {}
+            } catch (SQLException ignored) {
+            }
         }
     }
 
@@ -323,18 +315,18 @@ public class DerbyDAO implements DAO {
     public synchronized List<DerbyAccount> getAccountsRaw() {
 
         List<DerbyAccount> accounts = new LinkedList<>();
-        Statement          stmt     = null;
-        ResultSet          result   = null;
+        Statement stmt = null;
+        ResultSet result = null;
         try {
             checkConnection();
             stmt = connection.createStatement();
             result = stmt.executeQuery("select * from account");
 
             while (result.next()) {
-                int    id    = result.getInt("id");
-                String type  = result.getString("type");
+                int id = result.getInt("id");
+                String type = result.getString("type");
                 String owner = result.getString("owner");
-                long   cents = result.getLong("cents");
+                long cents = result.getLong("cents");
                 accounts.add(new DerbyAccount(id, type, owner, cents));
             }
 
@@ -345,12 +337,14 @@ public class DerbyDAO implements DAO {
                 if (result != null) {
                     result.close();
                 }
-            } catch (SQLException ignored) {}
+            } catch (SQLException ignored) {
+            }
             try {
                 if (stmt != null) {
                     stmt.close();
                 }
-            } catch (SQLException ignored) {}
+            } catch (SQLException ignored) {
+            }
         }
 
         return accounts;
@@ -363,20 +357,20 @@ public class DerbyDAO implements DAO {
      */
     public synchronized List<DerbyAccountChest> getChestsRaw() {
         List<DerbyAccountChest> chests = new LinkedList<>();
-        Statement               stmt   = null;
-        ResultSet               result = null;
+        Statement stmt = null;
+        ResultSet result = null;
         try {
             checkConnection();
             stmt = connection.createStatement();
             result = stmt.executeQuery("select * from accountchest");
 
             while (result.next()) {
-                int    id      = result.getInt("id");
-                String world   = result.getString("world");
-                int    x       = result.getInt("x");
-                int    y       = result.getInt("y");
-                int    z       = result.getInt("z");
-                int    account = result.getInt("account");
+                int id = result.getInt("id");
+                String world = result.getString("world");
+                int x = result.getInt("x");
+                int y = result.getInt("y");
+                int z = result.getInt("z");
+                int account = result.getInt("account");
 
                 chests.add(new DerbyAccountChest(id, world, x, y, z, account));
             }
@@ -388,41 +382,40 @@ public class DerbyDAO implements DAO {
                 if (result != null) {
                     result.close();
                 }
-            } catch (SQLException ignored) {}
+            } catch (SQLException ignored) {
+            }
             try {
                 if (stmt != null) {
                     stmt.close();
                 }
-            } catch (SQLException ignored) {}
+            } catch (SQLException ignored) {
+            }
         }
 
         return chests;
 
     }
 
-    /* (non-Javadoc)
-     * @see org.gestern.gringotts.data.DAO#getChests()
-     */
     @Override
-    public synchronized List<AccountChest> getChests() {
+    public synchronized List<AccountChest> retrieveChests() {
         List<AccountChest> chests = new LinkedList<>();
-        ResultSet          result = null;
+        ResultSet result = null;
         try {
             checkConnection();
 
-            result = getChests.executeQuery();
+            result = retrieveChests.executeQuery();
 
             while (result.next()) {
                 String worldName = result.getString("world");
-                int    x         = result.getInt("x");
-                int    y         = result.getInt("y");
-                int    z         = result.getInt("z");
+                int x = result.getInt("x");
+                int y = result.getInt("y");
+                int z = result.getInt("z");
 
-                String type    = result.getString("type");
+                String type = result.getString("type");
                 String ownerId = result.getString("owner");
 
-                World    world = Bukkit.getWorld(worldName);
-                Location loc   = new Location(world, x, y, z);
+                World world = Bukkit.getWorld(worldName);
+                Location loc = new Location(world, x, y, z);
 
                 if (world == null) {
                     Gringotts.getInstance().getLogger().warning(
@@ -448,7 +441,7 @@ public class DerbyDAO implements DAO {
                                 signBlock.getZ());
                     } else {
                         GringottsAccount ownerAccount = new GringottsAccount(owner);
-                        Sign             sign         = (Sign) signBlock.getState();
+                        Sign sign = (Sign) signBlock.getState();
                         chests.add(new AccountChest(sign, ownerAccount));
                     }
                 } else {
@@ -467,36 +460,34 @@ public class DerbyDAO implements DAO {
                 if (result != null) {
                     result.close();
                 }
-            } catch (SQLException ignored) {}
+            } catch (SQLException ignored) {
+            }
         }
 
         return chests;
     }
 
-    /* (non-Javadoc)
-     * @see org.gestern.gringotts.data.DAO#getChests(org.gestern.gringotts.GringottsAccount)
-     */
     @Override
-    public synchronized List<AccountChest> getChests(GringottsAccount account) {
-        AccountHolder      owner  = account.owner;
+    public synchronized List<AccountChest> retrieveChests(GringottsAccount account) {
+        AccountHolder owner = account.owner;
         List<AccountChest> chests = new LinkedList<>();
-        ResultSet          result = null;
+        ResultSet result = null;
 
         try {
             checkConnection();
 
-            getChestsForAccount.setString(1, owner.getId());
-            getChestsForAccount.setString(2, owner.getType());
-            result = getChestsForAccount.executeQuery();
+            retrieveChestsForAccount.setString(1, owner.getId());
+            retrieveChestsForAccount.setString(2, owner.getType());
+            result = retrieveChestsForAccount.executeQuery();
 
             while (result.next()) {
                 String worldName = result.getString("world");
-                int    x         = result.getInt("x");
-                int    y         = result.getInt("y");
-                int    z         = result.getInt("z");
+                int x = result.getInt("x");
+                int y = result.getInt("y");
+                int z = result.getInt("z");
 
-                World    world = Bukkit.getWorld(worldName);
-                Location loc   = new Location(world, x, y, z);
+                World world = Bukkit.getWorld(worldName);
+                Location loc = new Location(world, x, y, z);
 
                 if (world == null) {
                     deleteAccountChest(worldName, x, y, x); // FIXME: Isn't actually removing the non-existent vaults..
@@ -528,7 +519,8 @@ public class DerbyDAO implements DAO {
                 if (result != null) {
                     result.close();
                 }
-            } catch (SQLException ignored) {}
+            } catch (SQLException ignored) {
+            }
         }
 
         return chests;
@@ -554,20 +546,17 @@ public class DerbyDAO implements DAO {
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.gestern.gringotts.data.DAO#getCents(org.gestern.gringotts.GringottsAccount)
-     */
     @Override
-    public synchronized long getCents(GringottsAccount account) {
+    public synchronized long retrieveCents(GringottsAccount account) {
         ResultSet result = null;
 
         try {
             checkConnection();
 
-            getCents.setString(1, account.owner.getId());
-            getCents.setString(2, account.owner.getType());
+            retrieveCents.setString(1, account.owner.getId());
+            retrieveCents.setString(2, account.owner.getType());
 
-            result = getCents.executeQuery();
+            result = retrieveCents.executeQuery();
 
             if (result.next()) {
                 return result.getLong("cents");
@@ -582,7 +571,8 @@ public class DerbyDAO implements DAO {
                 if (result != null) {
                     result.close();
                 }
-            } catch (SQLException ignored) {}
+            } catch (SQLException ignored) {
+            }
         }
     }
 
@@ -626,10 +616,10 @@ public class DerbyDAO implements DAO {
      * Utility class to support migration of Derby database.
      */
     public static class DerbyAccount {
-        public final int    id;
+        public final int id;
         public final String type;
         public final String owner;
-        public final long   cents;
+        public final long cents;
 
         public DerbyAccount(int id, String type, String owner, long cents) {
             this.id = id;
@@ -640,9 +630,9 @@ public class DerbyDAO implements DAO {
     }
 
     public static class DerbyAccountChest {
-        public final int    id;
+        public final int id;
         public final String world;
-        public final int    x, y, z;
+        public final int x, y, z;
         public final int account;
 
         public DerbyAccountChest(int id, String world, int x, int y, int z, int account) {

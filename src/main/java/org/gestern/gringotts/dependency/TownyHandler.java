@@ -188,11 +188,11 @@ class TownyListener implements Listener {
 
         String ownername = event.getCause().getLine(2);
         Player player = event.getCause().getPlayer();
-        boolean forOther = ownername != null && ownername.length() > 0 && CREATEVAULT_ADMIN.allowed(player);
+        boolean forOther = ownername != null && ownername.length() > 0 && CREATE_VAULT_ADMIN.isAllowed(player);
 
         AccountHolder owner;
         if (event.getType() == Type.TOWN) {
-            if (!CREATEVAULT_TOWN.allowed(player)) {
+            if (!CREATE_VAULT_TOWN.isAllowed(player)) {
                 player.sendMessage(LANG.plugin_towny_noTownVaultPerm);
 
                 return;
@@ -218,7 +218,7 @@ class TownyListener implements Listener {
             event.setValid(true);
 
         } else if (event.getType() == Type.NATION) {
-            if (!CREATEVAULT_NATION.allowed(player)) {
+            if (!CREATE_VAULT_NATION.isAllowed(player)) {
                 player.sendMessage(LANG.plugin_towny_noNationVaultPerm);
 
                 return;

@@ -3,15 +3,15 @@ package org.gestern.gringotts;
 import org.bukkit.entity.Player;
 
 public enum Permissions {
-    USEVAULT_INVENTORY("gringotts.usevault.inventory"),
-    USEVAULT_ENDERCHEST("gringotts.usevault.enderchest"),
+    USE_VAULT_INVENTORY("gringotts.usevault.inventory"),
+    USE_VAULT_ENDERCHEST("gringotts.usevault.enderchest"),
 
-    CREATEVAULT_ADMIN("gringotts.createvault.admin"),
-    CREATEVAULT_PLAYER("gringotts.createvault.player"),
-    CREATEVAULT_FACTION("gringotts.createvault.faction"),
-    CREATEVAULT_TOWN("gringotts.createvault.town"),
-    CREATEVAULT_NATION("gringotts.createvault.nation"),
-    CREATEVAULT_WORLDGUARD("gringotts.createvault.worldguard"),
+    CREATE_VAULT_ADMIN("gringotts.createvault.admin"),
+    CREATE_VAULT_PLAYER("gringotts.createvault.player"),
+    CREATE_VAULT_FACTION("gringotts.createvault.faction"),
+    CREATE_VAULT_TOWN("gringotts.createvault.town"),
+    CREATE_VAULT_NATION("gringotts.createvault.nation"),
+    CREATE_VAULT_WORLDGUARD("gringotts.createvault.worldguard"),
 
     TRANSFER("gringotts.transfer"),
     COMMAND_WITHDRAW("gringotts.command.withdraw"),
@@ -29,7 +29,7 @@ public enum Permissions {
      * @param player player to check
      * @return whether given player has this permission
      */
-    public boolean allowed(Player player) {
+    public boolean isAllowed(Player player) {
         return player.hasPermission(this.node);
     }
 }

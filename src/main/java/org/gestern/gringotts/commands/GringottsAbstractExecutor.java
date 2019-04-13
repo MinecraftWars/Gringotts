@@ -28,7 +28,7 @@ public abstract class GringottsAbstractExecutor implements CommandExecutor {
     }
 
     boolean pay(Player origin, double value, String[] args) {
-        if (!Permissions.TRANSFER.allowed(origin)) {
+        if (!Permissions.TRANSFER.isAllowed(origin)) {
             origin.sendMessage(LANG.noperm);
 
             return true;
@@ -42,7 +42,7 @@ public abstract class GringottsAbstractExecutor implements CommandExecutor {
         TaxedTransaction transaction = from.send(value).withTaxes();
         TransactionResult result = from.send(value).withTaxes().to(eco.player(recipientName));
 
-        double tax = transaction.tax();
+        double tax = transaction.getTax();
         double valueAdded = value + tax;
 
         String formattedBalance = eco.currency().format(from.balance());
@@ -82,7 +82,7 @@ public abstract class GringottsAbstractExecutor implements CommandExecutor {
 
     void deposit(Player player, double value) {
 
-        if (COMMAND_DEPOSIT.allowed(player)) {
+        if (COMMAND_DEPOSIT.isAllowed(player)) {
             TransactionResult result = eco.player(player.getUniqueId()).deposit(value);
             String formattedValue = eco.currency().format(value);
 
@@ -97,7 +97,7 @@ public abstract class GringottsAbstractExecutor implements CommandExecutor {
     }
 
     void withdraw(Player player, double value) {
-        if (COMMAND_WITHDRAW.allowed(player)) {
+        if (COMMAND_WITHDRAW.isAllowed(player)) {
             TransactionResult result = eco.player(player.getUniqueId()).withdraw(value);
             String formattedValue = eco.currency().format(value);
             if (result == SUCCESS) {

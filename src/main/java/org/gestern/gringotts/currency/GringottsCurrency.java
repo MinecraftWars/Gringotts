@@ -69,7 +69,7 @@ public class GringottsCurrency {
      */
     public void addDenomination(ItemStack type, double value, String unitName, String unitNamePlural) {
         DenominationKey k = new DenominationKey(type);
-        Denomination    d = new Denomination(k, centValue(value), unitName, unitNamePlural);
+        Denomination d = new Denomination(k, getCentValue(value), unitName, unitNamePlural);
         denoms.put(k, d);
         // infrequent insertion, so I don't mind sorting on every insert
         sortedDenoms.add(d);
@@ -85,12 +85,12 @@ public class GringottsCurrency {
      * @param stack a stack of items
      * @return the value of given stack of items
      */
-    public long value(ItemStack stack) {
+    public long getValue(ItemStack stack) {
         if (stack == null || stack.getType() == Material.AIR) {
             return 0;
         }
 
-        Denomination d = denominationOf(stack);
+        Denomination d = getDenominationOf(stack);
 
         return d != null ? d.getValue() * stack.getAmount() : 0;
     }
@@ -101,7 +101,7 @@ public class GringottsCurrency {
      * @param value value to calculate display value for
      * @return user representation of value
      */
-    public double displayValue(long value) {
+    public double getDisplayValue(long value) {
         return (double) value / unit;
     }
 
@@ -111,7 +111,7 @@ public class GringottsCurrency {
      * @param value display value
      * @return Gringotts-internal value of given amount
      */
-    public long centValue(double value) {
+    public long getCentValue(double value) {
         return Math.round(value * unit);
     }
 
@@ -131,7 +131,7 @@ public class GringottsCurrency {
 
             StringBuilder b = new StringBuilder();
 
-            long cv = centValue(value);
+            long cv = getCentValue(value);
 
             for (Denomination denom : sortedDenoms) {
                 long dv = cv / denom.getValue();
@@ -149,7 +149,7 @@ public class GringottsCurrency {
 
             // might need this check for fractional values
             if (cv > 0 || b.length() == 0) {
-                double displayVal = displayValue(cv);
+                double displayVal = getDisplayValue(cv);
 
                 b.append(String.format(formatString, displayVal, displayVal == 1.0 ? name : namePlural));
             }
@@ -166,7 +166,7 @@ public class GringottsCurrency {
      * @param stack the stack to get the denomination for
      * @return denomination for the item stack, or null if there is no such denomination
      */
-    private Denomination denominationOf(ItemStack stack) {
+    private Denomination getDenominationOf(ItemStack stack) {
         DenominationKey d = new DenominationKey(stack);
 
         return denoms.get(d);
