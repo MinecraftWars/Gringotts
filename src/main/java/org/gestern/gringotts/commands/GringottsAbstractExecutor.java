@@ -30,7 +30,6 @@ public abstract class GringottsAbstractExecutor implements CommandExecutor {
     boolean pay(Player origin, double value, String[] args) {
         if (!Permissions.TRANSFER.isAllowed(origin)) {
             origin.sendMessage(LANG.noperm);
-
             return true;
         }
 
@@ -40,7 +39,7 @@ public abstract class GringottsAbstractExecutor implements CommandExecutor {
         Account to = eco.account(recipientName);
 
         TaxedTransaction transaction = from.send(value).withTaxes();
-        TransactionResult result = from.send(value).withTaxes().to(eco.player(recipientName));
+        TransactionResult result = transaction.to(eco.player(recipientName));
 
         double tax = transaction.getTax();
         double valueAdded = value + tax;
