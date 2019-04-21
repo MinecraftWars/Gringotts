@@ -11,7 +11,7 @@ import static org.gestern.gringotts.api.TransactionResult.SUCCESS;
 /**
  * Admin commands for managing ingame aspects.
  */
-public class MoneyadminExecutor extends GringottsAbstractExecutor {
+public class MoneyAdminExecutor extends GringottsExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {

@@ -9,7 +9,7 @@ import static org.gestern.gringotts.Language.LANG;
 /**
  * Player commands.
  */
-public class MoneyExecutor extends GringottsAbstractExecutor {
+public class MoneyExecutor extends GringottsExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {

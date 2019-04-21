@@ -23,9 +23,9 @@ import org.gestern.gringotts.accountholder.AccountHolderProvider;
 import org.gestern.gringotts.api.Eco;
 import org.gestern.gringotts.api.impl.GringottsEco;
 import org.gestern.gringotts.api.impl.VaultConnector;
-import org.gestern.gringotts.commands.GringottsExecutor;
+import org.gestern.gringotts.commands.AdminExecutor;
+import org.gestern.gringotts.commands.MoneyAdminExecutor;
 import org.gestern.gringotts.commands.MoneyExecutor;
-import org.gestern.gringotts.commands.MoneyadminExecutor;
 import org.gestern.gringotts.data.DAO;
 import org.gestern.gringotts.data.DerbyDAO;
 import org.gestern.gringotts.data.EBeanDAO;
@@ -144,8 +144,8 @@ public class Gringotts extends JavaPlugin {
 
     private void registerCommands() {
         CommandExecutor playerCommands = new MoneyExecutor();
-        CommandExecutor moneyAdminCommands = new MoneyadminExecutor();
-        CommandExecutor adminCommands = new GringottsExecutor();
+        CommandExecutor moneyAdminCommands = new MoneyAdminExecutor();
+        CommandExecutor adminCommands = new AdminExecutor();
 
         getCommand("balance").setExecutor(playerCommands);
         getCommand("money").setExecutor(playerCommands);
