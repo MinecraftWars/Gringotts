@@ -288,10 +288,10 @@ public class AccountChest {
     /**
      * Determine whether the chest of another AccountChest would be connected to this chest.
      *
-     * @param chest another AccountChest
+     * @param other another AccountChest
      * @return whether the chest of another AccountChest would be connected to this chest
      */
-    public boolean connected(AccountChest chest) {
+    public boolean connected(AccountChest other) {
 
         // no valid account chest anymore -> no connection
         if (!updateValid()) {
@@ -304,7 +304,7 @@ public class AccountChest {
             return false;
         }
 
-        if (myLoc.equals(chest.chestLocation())) {
+        if (myLoc.equals(other.chestLocation())) {
             return true;
         }
 
@@ -314,7 +314,7 @@ public class AccountChest {
         }
 
 
-        for (Chest c : chest.connectedChests()) {
+        for (Chest c : other.connectedChests()) {
             if (c.getLocation().equals(myLoc)) {
                 return true;
             }

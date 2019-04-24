@@ -17,23 +17,31 @@ public interface Eco {
     Account account(String id);
 
     /**
-     * Access a player account for the player with given name. If possible, it is recommended to use the player(UUID)
+     * Access a player account for the player with given name.
+     * <p>
+     * If possible, it is recommended to use the player(UUID)
      * method instead of this one.
+     * <p>
      * If a player can have multiple accounts, the account returned is defined by the economy plugin.
      * For example, if the economy supports one account per world,
      * return the account associated with the world the player is currently in.
+     * <p>
      * The representation of the money of a player account may be in-game items or virtual.
      *
      * @param name The name of the player owning the account.
      * @return The player account representation
+     * @deprecated use {@link #player(UUID)}
      */
+    @Deprecated
     PlayerAccount player(String name);
 
     /**
-     * Access a player account for the player with given uuid. If a player can have multiple accounts,
+     * Access a player account for the player with given uuid.
+     * <p>
+     * If a player can have multiple accounts,
      * the account returned is defined by the economy plugin. For example, if the economy supports one account per
-     * world,
-     * return the account associated with the world the player is currently in.
+     * world, return the account associated with the world the player is currently in.
+     * <p>
      * The representation of the money of a player account may be in-game items or virtual.
      *
      * @param id The unique id of the player owning the account.
@@ -43,7 +51,9 @@ public interface Eco {
 
     /**
      * Access a bank account with given name.
+     * <p>
      * The representation of the money in a bank account may be in-game items or virtual.
+     * <p>
      * Support for this method is optional.
      *
      * @param name The name or id of the bank.
