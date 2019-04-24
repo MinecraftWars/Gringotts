@@ -2,6 +2,8 @@ package org.gestern.gringotts;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.util.function.BiFunction;
+
 import static org.gestern.gringotts.Util.translateColors;
 
 /**
@@ -67,159 +69,145 @@ public enum Language {
     public String plugin_vault_notImplemented;
 
     public void readLanguage(FileConfiguration savedLanguage) {
-        ClosuresWouldBeCoolNow translator = new ClosuresWouldBeCoolNow(savedLanguage);
+        BiFunction<String, String, String> translator =
+                (path, def) -> translateColors(savedLanguage.getString(path, def));
 
         //global
-        LANG.noperm = translator.read(
+        LANG.noperm = translator.apply(
                 "noperm",
                 "You do not have permission to transfer money.");
-        LANG.playerOnly = translator.read(
+        LANG.playerOnly = translator.apply(
                 "playeronly",
                 "This command can only be run by a player.");
-        LANG.balance = translator.read(
+        LANG.balance = translator.apply(
                 "balance",
                 "Your current total balance: %balance");
-        LANG.vault_balance = translator.read(
+        LANG.vault_balance = translator.apply(
                 "vault_balance",
                 "Vault balance: %balance");
-        LANG.inv_balance = translator.read(
+        LANG.inv_balance = translator.apply(
                 "inv_balance",
                 "Inventory balance: %balance");
-        LANG.invalid_account = translator.read(
+        LANG.invalid_account = translator.apply(
                 "invalidaccount",
                 "Invalid account: %player");
-        LANG.reload = translator.read(
+        LANG.reload = translator.apply(
                 "reload",
                 "Gringotts: Reloaded configuration!");
 
         //pay command
-        LANG.pay_success_sender = translator.read(
+        LANG.pay_success_sender = translator.apply(
                 "pay.success.sender",
                 "Sent %value to %player. ");
-        LANG.pay_success_tax = translator.read(
+        LANG.pay_success_tax = translator.apply(
                 "pay.success.tax",
                 "Received %value from %player.");
-        LANG.pay_success_target = translator.read(
+        LANG.pay_success_target = translator.apply(
                 "pay.success.target",
                 "Transaction tax deducted from your account: %value");
-        LANG.pay_error = translator.read(
+        LANG.pay_error = translator.apply(
                 "pay.error",
                 "Your attempt to send %value to %player failed for unknown reasons.");
-        LANG.pay_insufficientFunds = translator.read(
+        LANG.pay_insufficientFunds = translator.apply(
                 "pay.insufficientFunds",
                 "Your account has insufficient balance. Current balance: %balance. Required: %value");
-        LANG.pay_insS_sender = translator.read(
+        LANG.pay_insS_sender = translator.apply(
                 "pay.insufficientSpace.sender",
                 "%player has insufficient storage space for %value");
-        LANG.pay_insS_target = translator.read(
+        LANG.pay_insS_target = translator.apply(
                 "pay.insufficientSpace.target",
                 "%player tried to send %value, but you don't have enough space for that amount.");
 
         //deposit command
-        LANG.deposit_success = translator.read(
+        LANG.deposit_success = translator.apply(
                 "deposit.success",
                 "Deposited %value to your storage.");
-        LANG.deposit_error = translator.read(
+        LANG.deposit_error = translator.apply(
                 "deposit.error",
                 "Unable to deposit %value to your storage.");
 
         //withdraw command
-        LANG.withdraw_success = translator.read(
+        LANG.withdraw_success = translator.apply(
                 "withdraw.success",
                 "Withdrew %value from your storage.");
-        LANG.withdraw_error = translator.read(
+        LANG.withdraw_error = translator.apply(
                 "withdraw.error",
                 "Unable to withdraw %value from your storage.");
 
         //moneyadmin command
-        LANG.moneyadmin_b = translator.read(
+        LANG.moneyadmin_b = translator.apply(
                 "moneyadmin.b",
                 "Balance of account %player: %balance");
-        LANG.moneyadmin_add_sender = translator.read(
+        LANG.moneyadmin_add_sender = translator.apply(
                 "moneyadmin.add.sender",
                 "Added %value to account %player");
-        LANG.moneyadmin_add_target = translator.read(
+        LANG.moneyadmin_add_target = translator.apply(
                 "moneyadmin.add.target",
                 "Added to your account: %value");
-        LANG.moneyadmin_add_error = translator.read(
+        LANG.moneyadmin_add_error = translator.apply(
                 "moneyadmin.add.error",
                 "Could not add %value to account %player");
-        LANG.moneyadmin_rm_sender = translator.read(
+        LANG.moneyadmin_rm_sender = translator.apply(
                 "moneyadmin.rm.sender",
                 "Removed %value from account %player");
-        LANG.moneyadmin_rm_target = translator.read(
+        LANG.moneyadmin_rm_target = translator.apply(
                 "moneyadmin.rm.target",
                 "Removed from your account: %value");
-        LANG.moneyadmin_rm_error = translator.read(
+        LANG.moneyadmin_rm_error = translator.apply(
                 "moneyadmin.rm.error",
                 "Could not remove %value from account %player");
 
         //gringotts vaults
-        LANG.vault_created = translator.read(
+        LANG.vault_created = translator.apply(
                 "vault.created",
                 "Created vault successfully.");
-        LANG.vault_noVaultPerm = translator.read(
+        LANG.vault_noVaultPerm = translator.apply(
                 "vault.noVaultPerm",
                 "You do not have permission to create vaults here.");
-        LANG.vault_error = translator.read(
+        LANG.vault_error = translator.apply(
                 "vault.error",
                 "Failed to create vault.");
 
         //towny plugin
-        LANG.plugin_towny_noTownVaultPerm = translator.read(
+        LANG.plugin_towny_noTownVaultPerm = translator.apply(
                 "plugins.towny.noTownPerm",
                 "You do not have permission to create town vaults here.");
-        LANG.plugin_towny_noTownResident = translator.read(
+        LANG.plugin_towny_noTownResident = translator.apply(
                 "plugins.towny.noTownResident",
                 "Cannot create town vault: You are not resident of a town.");
-        LANG.plugin_towny_noNationVaultPerm = translator.read(
+        LANG.plugin_towny_noNationVaultPerm = translator.apply(
                 "plugins.towny.NoNationVaultPerm",
                 "You do not have permission to create nation vaults here.");
-        LANG.plugin_towny_notInNation = translator.read(
+        LANG.plugin_towny_notInNation = translator.apply(
                 "plugins.towny.notInNation",
                 "Cannot create nation vault: You do not belong to a nation.");
 
         //faction plugin
-        LANG.plugin_faction_noVaultPerm = translator.read(
+        LANG.plugin_faction_noVaultPerm = translator.apply(
                 "plugins.faction.noFactionVaultPerm",
                 "You do not have permission to create a faction vault here.");
-        LANG.plugin_faction_notInFaction = translator.read(
+        LANG.plugin_faction_notInFaction = translator.apply(
                 "plugins.faction.notInFaction",
                 "Cannot create faction vault: You are not in a faction.");
 
         //worldguard plugin
-        LANG.plugin_worldguard_noVaultPerm = translator.read(
+        LANG.plugin_worldguard_noVaultPerm = translator.apply(
                 "plugins.worldguard.noFactionVaultPerm",
                 "You do not have permission to create a region vault here.");
 
         //vault plugin
-        LANG.plugin_vault_insufficientFunds = translator.read(
+        LANG.plugin_vault_insufficientFunds = translator.apply(
                 "plugins.vault.insufficientFunds",
                 "Insufficient funds.");
-        LANG.plugin_vault_insufficientSpace = translator.read(
+        LANG.plugin_vault_insufficientSpace = translator.apply(
                 "plugins.vault.insufficientSpace",
                 "Insufficient space.");
-        LANG.plugin_vault_error = translator.read(
+        LANG.plugin_vault_error = translator.apply(
                 "plugins.vault.unknownError",
                 "Unknown failure.");
-        LANG.plugin_vault_notImplemented = translator.read(
+        LANG.plugin_vault_notImplemented = translator.apply(
                 "plugins.vault.notImplemented",
                 "Gringotts does not support banks");
     }
 
-    /**
-     * Ah yes, an object just to wrap the config so I don't have to repeat it as a parameter.
-     * <3 Java verbosity.
-     */
-    private static class ClosuresWouldBeCoolNow {
-        private final FileConfiguration savedLanguage;
-
-        private ClosuresWouldBeCoolNow(FileConfiguration savedLanguage) {
-            this.savedLanguage = savedLanguage;
-        }
-
-        private String read(String path, String def) {
-            return translateColors(savedLanguage.getString(path, def));
-        }
-    }
 }
