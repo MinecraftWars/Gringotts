@@ -17,10 +17,9 @@
                 </includes>
             </resource>
             <resource>
-                <directory>src/main/resources/i18n</directory>
-                <targetPath>i18n</targetPath>
+                <directory>src/main/resources</directory>
                 <includes>
-                    <include>*.yml</include>
+                    <include>**/*.yml</include>
                 </includes>
             </resource>
         </resources>
