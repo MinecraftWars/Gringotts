@@ -1,0 +1,57 @@
+playeronly: "Questo comando può essere eseguito solamente da un player."
+noperm: "Non hai il permesso di trasferire denaro."
+balance: "Bilancio attuale: %balance"
+vault_balance: "Bilancio in cassaforte: %balance"
+inv_balance: "Bilancio in inventario: %balance"
+invalidaccount: "Account invalido: %player"
+reload: "Gringotts: Configurazione ricaricata!"
+
+pay:
+  success:
+    tax: "Tassa sulla transazione detratta dal tuo conto: %value"
+    sender: "Inviato/i %value a %player. "
+    target: "Ricevuto/i %value da %player."
+  insufficientFunds: "Il tuo conto ha un bilancio insufficiente. Bilancio attuale: %balance. Richiesto: %value."
+  insufficientSpace:
+    sender: "%player non ha spazio sufficiente per %value."
+    target: "%player ha provato a inviare %value, ma non hai abbastanza spazio per quell'importo."
+  error: "Il tuo tentativo di inviare %value a %player è fallito per ragioni sconosciute."
+
+deposit:
+  success: "Depositato/i %value sul tuo conto."
+  error: "Impossibile depositare %value sul tuo conto."
+
+withdraw:
+  success: "Withdrew %value from your storage."
+  error: "Unable to withdraw %value from your storage."
+
+moneyadmin:
+  b: "Bilancio del conto %player: %balance"
+  add:
+    sender: "Aggiunto/i %value al conto %player"
+    target: "Aggiunto/i al tuo account: %value"
+    error: "Impossibile aggiungere %value all'account %player"
+  rm:
+    sender: "Rimosso/i %value dal conto %player"
+    target: "Rimosso/i dal tuo account: %value"
+    error: "Impossibile rimuovere %value dal conto %player"
+
+vault:
+  created: "Cassaforte creata con successo."
+  error: "Errore nella creazione della cassaforte."
+  noVaultPerm: "Non hai il permesso di creare casseforti quì."
+
+plugins:
+  towny:
+    noTownVaultPerm: "Non hai il permesso di creare casseforti della città  quì."
+    noTownResident: "Impossibile create cassaforte della città: Non fai parte di alcuna città."
+    noNationVaultPerm: "Non hail il permesso di creare casseforti della nazione quì."
+    notInNation: "Impossibile creare cassaforte della nazione: Non fai parte di alcuna nazione."
+  faction:
+    noFactionVaultPerm: "Non hai il permesso di creare una cassaforte della fazione quì."
+    notInFaction: "Impossibile creare cassaforte della fazione: Non sei membro di alcuna fazione."
+  vault:
+    insufficientFunds: "Fondi insufficienti."
+    insufficientSpace: "Spazio insufficiente."
+    unknownError: "Errore sconosciuto."
+    notImplemented: "Gringotts non supporta le banche per ora."

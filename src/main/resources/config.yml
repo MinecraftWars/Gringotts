@@ -1,6 +1,6 @@
 # for details on configuration, see https://github.com/MinecraftWars/Gringotts/blob/master/doc/configuration.md
 
-# supported languages: "custom" (default, english) and "de" (german)
+# supported languages: "custom" (default, english), "de" (german), "it" (italian)
 language: custom
 
 # currency name and value config
