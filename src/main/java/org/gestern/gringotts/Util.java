@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
+import org.bukkit.block.data.type.WallSign;
 import org.gestern.gringotts.currency.GringottsCurrency;
 
 public class Util {
@@ -92,20 +93,20 @@ public class Util {
     public static Block chestBlock(Sign sign) {
         // is sign attached to a valid vault container?
         Block                    signBlock = sign.getBlock();
-        org.bukkit.material.Sign signData  = (org.bukkit.material.Sign) signBlock.getState().getData();
-        BlockFace                attached  = signData.getAttachedFace();
-
+        WallSign signData  = (WallSign) signBlock.getState().getBlockData();
+        BlockFace                attached  = signData.getFacing().getOppositeFace(); 
+        
         // allow either the block sign is attached to or the block below the sign as chest block. Prefer attached block.
         Block blockAttached = signBlock.getRelative(attached);
-        Block blockBelow    = signBlock.getRelative(BlockFace.DOWN);
+//        Block blockBelow    = signBlock.getRelative(BlockFace.DOWN);
 
         if (validContainer(blockAttached.getType())) {
             return blockAttached;
         }
 
-        if (validContainer(blockBelow.getType())) {
-            return blockBelow;
-        }
+//        if (validContainer(blockBelow.getType())) {
+//            return blockBelow;
+//        }
 
         return null; // no valid container
     }
@@ -124,6 +125,7 @@ public class Util {
             case FURNACE:
             case HOPPER:
             case DROPPER:
+            case BARREL:
                 return true;
             default:
                 return false;
