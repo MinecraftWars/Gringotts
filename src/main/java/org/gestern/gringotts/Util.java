@@ -126,6 +126,7 @@ public class Util {
             case FURNACE:
             case HOPPER:
             case DROPPER:
+            case BARREL:
                 return true;
             default:
                 return false;
