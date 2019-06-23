@@ -5,11 +5,14 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.type.WallSign;
 import org.gestern.gringotts.currency.GringottsCurrency;
 
 public class Util {
 
-    private Util() {}
+    private Util() {
+    }
 
     /**
      * Check whether a block is a sign or wall sign type.
@@ -29,7 +32,6 @@ public class Util {
      * @return true if version is greater than greaterThanVersion, false otherwise
      */
     public static boolean versionAtLeast(String version, String atLeast) {
-
         int[] versionParts = versionParts(version);
         int[] atLeastParts = versionParts(atLeast);
 
@@ -54,16 +56,17 @@ public class Util {
      */
     public static int[] versionParts(String version) {
         String[] strparts = version.split("\\.");
-        int[]    parts    = new int[strparts.length];
+        int[] parts = new int[strparts.length];
 
         for (int i = 0; i < strparts.length; i++) {
             // just cut off any non-number part
             String number = strparts[i].replaceAll("(\\d+).*", "$1");
-            int    part   = 0;
+            int part = 0;
 
             try {
                 part = Integer.parseInt(number);
-            } catch (NumberFormatException ignored) {}
+            } catch (NumberFormatException ignored) {
+            }
 
             parts[i] = part;
         }
@@ -78,8 +81,9 @@ public class Util {
      * @return formatted currency value
      */
     public static String format(double value) {
-        GringottsCurrency cur          = Configuration.CONF.getCurrency();
-        String            formatString = "%." + cur.getDigits() + "f %s";
+        GringottsCurrency cur = Configuration.CONF.getCurrency();
+        String formatString = "%." + cur.getDigits() + "f %s";
+
         return String.format(formatString, value, value == 1.0 ? cur.getName() : cur.getNamePlural());
     }
 
@@ -91,23 +95,21 @@ public class Util {
      */
     public static Block chestBlock(Sign sign) {
         // is sign attached to a valid vault container?
-        Block                    signBlock = sign.getBlock();
-        org.bukkit.material.Sign signData  = (org.bukkit.material.Sign) signBlock.getState().getData();
-        BlockFace                attached  = signData.getAttachedFace();
+        Block signBlock = sign.getBlock();
+        BlockData blockData = signBlock.getBlockData();
+
+        if (!(blockData instanceof WallSign)) {
+            return null;
+        }
+
+        WallSign signData = (WallSign) blockData;
+        BlockFace attached = signData.getFacing().getOppositeFace();
 
         // allow either the block sign is attached to or the block below the sign as chest block. Prefer attached block.
         Block blockAttached = signBlock.getRelative(attached);
-        Block blockBelow    = signBlock.getRelative(BlockFace.DOWN);
+        Block blockBelow = signBlock.getRelative(BlockFace.DOWN);
 
-        if (validContainer(blockAttached.getType())) {
-            return blockAttached;
-        }
-
-        if (validContainer(blockBelow.getType())) {
-            return blockBelow;
-        }
-
-        return null; // no valid container
+        return validContainer(blockAttached.getType()) ? blockAttached : validContainer(blockBelow.getType()) ? blockBelow : null;
     }
 
     /**
@@ -141,7 +143,7 @@ public class Util {
     }
 
     public static String reformMaterialName(Material material) {
-        String   name  = material.name();
+        String name = material.name();
         String[] words = name.split("_");
 
         for (int i = 0; i < words.length; i++) {
