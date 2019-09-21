@@ -45,6 +45,12 @@ public class MoneyExecutor extends GringottsAbstractExecutor {
                 return true;
             }
         } else if ( args.length == 3 && "pay".equals(command)) {
+            try {
+                value = Double.parseDouble(args[1]);
+            } catch (NumberFormatException ignored) {
+                return false;
+            }
+
             // money pay <amount> <player>
             return pay(player, value, args);
         }
