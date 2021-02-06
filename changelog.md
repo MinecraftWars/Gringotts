@@ -7,26 +7,26 @@ Pending Changes
 > The following changes are not yet generally available, or only in SNAPSHOT form, and are pending a tagged release.
 
 #### Dependency Updates
-* Update bStats (1.8), Towny (0.96.7.0), WorldEdit (7.2.2), and WorldGuard (7.0.4) \[PR [x][x]\]
-* Upgrade from JUnit4 to JUnit5 (JUnit Jupiter; 5.7.1) \[PR [x][x]\]
-* Remove zno.de repository and deployment scheme - Would run into HTTP 502 errors. \[PR [x][x]\]
+* Update bStats (1.8), Towny (0.96.7.0), WorldEdit (7.2.2), and WorldGuard (7.0.4) \[PR [225][225]\]
+* Upgrade from JUnit4 to JUnit5 (JUnit Jupiter; 5.7.1) \[PR [225][225]\]
+* Remove zno.de repository and deployment scheme - Would run into HTTP 502 errors. \[PR [225][225]\]
 
 #### Fixes
-* Changed over to use Towny's new economy APIs. Breaks backwards compatibility of Towny versions. \[PR [x][x]\]
-  * In addition to updating Towny from 0.90.0.0 (which is _old_), most issues related to Towny should be resolved. \[PR [x][x]\]
+* Changed over to use Towny's new economy APIs. Breaks backwards compatibility of Towny versions. \[PR [225][225]\]
+  * In addition to updating Towny from 0.90.0.0 (which is _old_), most issues related to Towny should be resolved. \[PR [225][225]\]
 
-#### Deprecations & Removals
-* Removed Migration class: Has no ill effect on a modern codebase, or servers since prior to [v2.10.1](changelog.md#v2.10.1) \[PR [x][x]\]
-* Removed Apache Derby references, as well as DerbyDAO \[PR [x][x]\]
-* Remove `Funding` file: Not enabled on this repository, repo has no active maintainers. \[PR [x][x]\]
+#### Deprecation & Removals
+* Removed Migration class: Has no ill effect on a modern codebase, or servers since prior to [v2.10.1](changelog.md#v2.10.1) \[PR [225][225]\]
+* Removed Apache Derby references, as well as DerbyDAO \[PR [225][225]\]
+* Remove `Funding` file: Not enabled on this repository, repo has no active maintainers. \[PR [225][225]\]
 
 #### Documentation
-* Add Changelog entries for versions 2.10, 2.10.1, 2.11.0, and 2.11.1; Add `Pending Changes` entry. \[PR [x][x]\]
-* Rewrite the `Maven/Gradle repo` section as `Depending on Gringotts` in the README \[PR [x][x]\]
-* Delimit LICENSE.txt to 80 characters in length. \[PR [x][x]\]
+* Add Changelog entries for versions 2.10, 2.10.1, 2.11.0, and 2.11.1; Add `Pending Changes` entry. \[PR [225][225]\]
+* Rewrite the `Maven/Gradle repo` section as `Depending on Gringotts` in the README \[PR [225][225]\]
+* Delimit LICENSE.txt to 80 characters in length. \[PR [225][225]\]
 
 <!--- References --->
-[x]: ttps://github.com/MinecraftWars/Gringotts/pull/# "Pending PR"
+[225]: ttps://github.com/MinecraftWars/Gringotts/pull/# "Pending PR"
 
 
 v2.11.1
