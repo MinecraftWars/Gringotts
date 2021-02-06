@@ -109,7 +109,7 @@ public class Gringotts extends JavaPlugin {
             registerEvents();
             registerEconomy();
 
-            metrics = new Metrics(this);
+            metrics = new Metrics(this, 4998);
 
         } catch (GringottsStorageException | GringottsConfigurationException e) {
             getLogger().severe(e.getMessage());
