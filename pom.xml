@@ -213,10 +213,6 @@
             </snapshots>
         </repository>
         <repository>
-            <id>znode</id>
-            <url>http://repo.zno.de/artifactory/repo/</url>
-        </repository>
-        <repository>
             <id>project.local</id>
             <name>project.local</name>
             <releases>
@@ -226,17 +222,4 @@
             <url>file://${project.basedir}/repo</url>
         </repository>
     </repositories>
-
-    <distributionManagement>
-        <repository>
-            <id>znode-releases</id>
-            <name>znode-releases</name>
-            <url>http://repo.zno.de/artifactory/libs-release-local</url>
-        </repository>
-        <snapshotRepository>
-            <id>znode-snapshots</id>
-            <name>znode-snapshots</name>
-            <url>http://repo.zno.de/artifactory/libs-snapshot-local</url>
-        </snapshotRepository>
-    </distributionManagement>
 </project>
