@@ -142,19 +142,19 @@
         <dependency>
             <groupId>com.sk89q.worldguard</groupId>
             <artifactId>worldguard-legacy</artifactId>
-            <version>7.0.0-SNAPSHOT</version>
+            <version>6.2</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.sk89q.worldguard</groupId>
             <artifactId>worldguard-core</artifactId>
-            <version>7.0.0-SNAPSHOT</version>
+            <version>7.0.4</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.sk89q.worldedit</groupId>
             <artifactId>worldedit-bukkit</artifactId>
-            <version>7.0.0-SNAPSHOT</version>
+            <version>7.2.2</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -198,14 +198,8 @@
             </snapshots>
         </repository>
         <repository>
-            <id>sk89q-repo</id>
-            <url>http://maven.sk89q.com/repo/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
+            <id>enginehub</id>
+            <url>http://maven.enginehub.org/repo/</url>
         </repository>
         <repository>
             <id>vault-repo</id>
