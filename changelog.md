@@ -1,6 +1,130 @@
 Gringotts Changelog
 ===================
 
+Pending Changes
+-------
+
+> The following changes are not yet generally available, or only in SNAPSHOT form, and are pending a tagged release.
+
+#### Dependency Updates
+* Update bStats (1.8), Towny (0.96.7.0), WorldEdit (7.2.2), and WorldGuard (7.0.4) \[PR [x][x]\]
+* Upgrade from JUnit4 to JUnit5 (JUnit Jupiter; 5.7.1) \[PR [x][x]\]
+* Remove zno.de repository and deployment scheme - Would run into HTTP 502 errors. \[PR [x][x]\]
+
+#### Fixes
+* Changed over to use Towny's new economy APIs. Breaks backwards compatibility of Towny versions. \[PR [x][x]\]
+  * In addition to updating Towny from 0.90.0.0 (which is _old_), most issues related to Towny should be resolved. \[PR [x][x]\]
+
+#### Deprecations & Removals
+* Removed Migration class: Has no ill effect on a modern codebase, or servers since prior to [v2.10.1](changelog.md#v2.10.1) \[PR [x][x]\]
+* Removed Apache Derby references, as well as DerbyDAO \[PR [x][x]\]
+* Remove `Funding` file: Not enabled on this repository, repo has no active maintainers. \[PR [x][x]\]
+
+#### Documentation
+* Add Changelog entries for versions 2.10, 2.10.1, 2.11.0, and 2.11.1; Add `Pending Changes` entry. \[PR [x][x]\]
+* Rewrite the `Maven/Gradle repo` section as `Depending on Gringotts` in the README \[PR [x][x]\]
+* Delimit LICENSE.txt to 80 characters in length. \[PR [x][x]\]
+
+<!--- References --->
+[x]: ttps://github.com/MinecraftWars/Gringotts/pull/# "Pending PR"
+
+
+v2.11.1
+-------
+
+#### Dependency Updates
+* Bump JUnit4 (4.13.1)
+
+#### Fixes
+* Fix Issues [#193][193] and [#197][197] with [Pull Request 206][206], where pay would always send `0`.
+
+#### Continuous Deployment
+* Update TravisCI configuration to use OpenJDK 8 instead of OracleJDK 8 \[PR [207][207]\]
+
+<!--- References --->
+[193]: https://github.com/MinecraftWars/Gringotts/issues/193 "2.11 snapshot not sending or receiving money"
+[197]: https://github.com/MinecraftWars/Gringotts/issues/197 "Issue with /money pay 100 <playername>"
+[206]: https://github.com/MinecraftWars/Gringotts/pull/206 "Fix pay command always sending 0."
+[207]: https://github.com/MinecraftWars/Gringotts/pull/207 "Update Travis to use openjdk8"
+
+v2.11.0
+-------
+
+#### Dependency Updates
+  * Update Maven Plugins \[PR [192][192]\]
+  * Switch from Bukkit to the SpigotAPI (1.14.1) \[PR [202][202]\]
+
+#### Fixes
+  * Added barrels to validated storage blocks, fix Sign validation. \[PR [202][202]\]
+
+#### Documentation
+  * Add JitPack badge as well as quickstart instructions for the Gradle and Maven build tools. \[PR [194][194]\]
+  * Created `.github/FUNDING.yml` - Added nikosgram's information. \[PR [202][202]\]
+  * Set Jekyll Theme to `jekyll-theme-slate` \[PR [202][202]\]
+
+<!--- References --->
+[192]: https://github.com/MinecraftWars/Gringotts/pull/192 "Update version and maven plugins"
+[194]: https://github.com/MinecraftWars/Gringotts/pull/194 "Update README.md"
+[202]: https://github.com/MinecraftWars/Gringotts/pull/202 "Minecraft 1.14"
+
+v2.10.1
+-------
+#### Dependency Updates
+  * Update Bukkit (1.13) and set api-version to 1.13 \[PR [179][179]\]
+  * Update VaultAPI (1.7) \[PR [182][182]\]
+  * Update WorldGuard (7.0.0) \[PRs [189][189], [190][190]\]
+
+#### Fixes
+  * Fix unitName method issues that couldn't identify material names \[PR [172][172]\]
+  * Fixed some mistaken schematics \[PR [172][172]\]
+  * Fix Issues with Vault 1.7.x \[PR [182][182]\]
+  * Fix crashing edge case with Factions forks (SavageFactions, in particular), by testing against
+    TerritoryAccess for dependency recognition. \[PR [188][188]\]
+  * General Code Cleanup, Refactoring, and Restructuring \[PR [190][190]\]
+    * Fix hook failure message to log as a warning (was standard / informational)
+    * Removed duplicated error messages.
+
+#### Additions
+  * Replaced MCStats with bStats \[PR [190][190]\]
+  * API: [Changes to API from PR 190][190]
+    * Added `org.gestern.gringotts.commands` package to house refactored command framework.
+    * Added various accessor methods for privatized fields.
+    * Added Type enumeration for `VaultCreationEvent`, replacing String comparisons.
+    * Implement `TownyHandler.sendMessage(String)`
+    * Overhaul `WorldGuardHandler`
+
+#### Documentation (See PR [191])
+  * Update `docs/usage.md`
+    * Display `User commands` in table format.
+  * Update `README.md`
+    * Point to the SpigotMC Resource page, in addition to Bukkit Dev listing.
+    * Direct command usage to the usage documentation.
+    * Capitalize list entries.
+
+#### Attributions
+  * Add "nikosgram13" to list of authors in `plugin.yml` \[PR [172][172]\]
+
+<!--- References --->
+[172]: https://github.com/MinecraftWars/Gringotts/pull/172 "Update to v2.10.1-SNAPSHOT"
+[179]: https://github.com/MinecraftWars/Gringotts/pull/179 "Update to 1.13"
+[182]: https://github.com/MinecraftWars/Gringotts/pull/182 "Fix Vault 1.7 issues"
+[188]: https://github.com/MinecraftWars/Gringots/pull/188 "Provide better support for detecting Factions"
+[189]: https://github.com/MinecraftWars/Gringotts/pull/189 "Implement support for WorldGuard 7.0.0 only dropping support for pre 1.13"
+[190]: https://github.com/MinecraftWars/Gringotts/pull/190 "Code cleanup and refactor"
+[191]: https://github.com/MinecraftWars/Gringotts/pull/191 "Changed command display style to table in .md files"
+
+
+v2.10
+-----
+
+#### Dependency Updates
+  * Update Bukkit (1.12), Vault (1.6) and WorldGuard (6.2) \[PR [162][162]\]
+  * Update Factions (2.12.0) and code restyling \[PR [163][163]\]
+
+<!--- References --->
+[162]: https://github.com/MinecraftWars/Gringotts/pull/162 "Update for Bukkit's version 1.12-R0.1-SNAPSHOT"
+[163]: https://github.com/MinecraftWars/Gringotts/pull/163 "Support the latest version of Factions"
+
 v2.9
 ----
 * DEPENDS ON JAVA 8. If your server is not on Java 8 yet, you should upgrade, or ask your service provider to upgrade. Java 7 isn't supported anymore by Oracle.
