@@ -59,11 +59,6 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.2.1</version>
                 <configuration>
-                    <artifactSet>
-                        <excludes>
-                            <exclude>org.apache.derby:derby</exclude>
-                        </excludes>
-                    </artifactSet>
                     <relocations>
                         <relocation>
                             <pattern>org.bstats</pattern>
@@ -91,22 +86,16 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.derby</groupId>
-            <artifactId>derby</artifactId>
-            <version>10.9.1.0</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>towny</groupId>
-            <artifactId>towny</artifactId>
-            <version>0.90.0.0</version>
+            <groupId>com.github.TownyAdvanced</groupId>
+            <artifactId>Towny</artifactId>
+            <version>0.96.7.0</version>
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bukkit</artifactId>
-            <version>1.4</version>
+            <version>1.8</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -128,9 +117,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.1</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.jupiter.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -142,30 +131,26 @@
         <dependency>
             <groupId>com.sk89q.worldguard</groupId>
             <artifactId>worldguard-legacy</artifactId>
-            <version>7.0.0-SNAPSHOT</version>
+            <version>6.2</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.sk89q.worldguard</groupId>
             <artifactId>worldguard-core</artifactId>
-            <version>7.0.0-SNAPSHOT</version>
+            <version>7.0.4</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.sk89q.worldedit</groupId>
             <artifactId>worldedit-bukkit</artifactId>
-            <version>7.0.0-SNAPSHOT</version>
+            <version>7.2.2</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.gestern</groupId>
-            <artifactId>bukkit-migration-tools</artifactId>
-            <version>0.1</version>
         </dependency>
     </dependencies>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <junit.jupiter.version>5.7.1</junit.jupiter.version>
     </properties>
 
     <scm>
@@ -178,6 +163,10 @@
         <url>https://github.com/MinecraftWars/Gringotts/issues</url>
     </issueManagement>
     <repositories>
+        <repository>
+            <id>jitpack</id>
+            <url>https://jitpack.io</url>
+        </repository>
         <repository>
             <id>CodeMC</id>
             <url>https://repo.codemc.org/repository/maven-public</url>
@@ -193,14 +182,8 @@
             </snapshots>
         </repository>
         <repository>
-            <id>sk89q-repo</id>
-            <url>http://maven.sk89q.com/repo/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
+            <id>enginehub</id>
+            <url>http://maven.enginehub.org/repo/</url>
         </repository>
         <repository>
             <id>vault-repo</id>
@@ -213,10 +196,6 @@
             </snapshots>
         </repository>
         <repository>
-            <id>znode</id>
-            <url>http://repo.zno.de/artifactory/repo/</url>
-        </repository>
-        <repository>
             <id>project.local</id>
             <name>project.local</name>
             <releases>
@@ -226,17 +205,4 @@
             <url>file://${project.basedir}/repo</url>
         </repository>
     </repositories>
-
-    <distributionManagement>
-        <repository>
-            <id>znode-releases</id>
-            <name>znode-releases</name>
-            <url>http://repo.zno.de/artifactory/libs-release-local</url>
-        </repository>
-        <snapshotRepository>
-            <id>znode-snapshots</id>
-            <name>znode-snapshots</name>
-            <url>http://repo.zno.de/artifactory/libs-snapshot-local</url>
-        </snapshotRepository>
-    </distributionManagement>
 </project>

@@ -83,59 +83,45 @@ Pull requests are very welcome, but please make sure your changes fulfill the Gr
 * required dependencies are all added to the build by Maven, not included in the repo
 * the project builds with Maven out-of-the-box
 
-Gringotts uses the [Maven 3](http://maven.apache.org/) build system. Build a working plugin jar with the command
+Gringotts uses the [Apache Maven](http://maven.apache.org/) build system. Build a working plugin jar with the command:
 
-    mvn compile package
-    
+```bash
+mvn compile package
+```
+
 This shades in some dependencies (such as plugin metrics). For this reason, creating a jar package manually or from an IDE may not work correctly.
 
 
-Maven/Gradle repo
+Depending on Gringotts
 -----------
+Gringotts makes use of JitPack to provide itself as a just-in-time compiled Maven dependency.
 
 #### Step 1
-Add the JitPack repository to your build file
+Add the JitPack repository to your project's build system.
+> See [JitPack.io](https://jitpack.io) for boilerplate examples.
 
-##### Maven
-```xml
-	<repositories>
-		<repository>
-		    <id>jitpack.io</id>
-		    <url>https://jitpack.io</url>
-		</repository>
-	</repositories>
-```
-
-##### Gradle
-```groovy
-	allprojects {
-		repositories {
-			maven { url 'https://jitpack.io' }
-		}
-	}
-```
+Supported build systems:
+- **Apache Maven** &mdash; [Maven POM Reference: Repositories](https://maven.apache.org/pom.html#Repositories)
+- **Gradle** &mdash; [Gradle User Guide: Declaring Repositories](https://docs.gradle.org/current/userguide/declaring_repositories.html)
 
 #### Step 2
-Add the dependency
+Add the dependency.
+See your documentation, or the boilerplate on JitPack.io, for dependency declaration instructions.
+An example is given below for Apache Maven.
 
-##### Maven
+Replace the `RELEASE_TAG` with a valid [tagged commit](https://github.com/MinecraftWars/Gringotts/tags), or use
+`master-SNAPSHOT` to track the master branch.
+Note that Snapshots may require extra configuration of your repository.
+
 ```xml
-	<dependency>
-	    <groupId>com.github.MinecraftWars</groupId>
-	    <artifactId>Gringotts</artifactId>
-	    <version>-SNAPSHOT</version>
-	</dependency>
+<dependency>
+   <groupId>com.github.MinecraftWars</groupId>
+   <artifactId>Gringotts</artifactId>
+   <version>RELEASE_TAG</version>
+   <scope>provided</scope>
+</dependency>
 ```
-
-##### Gradle
-```groovy
-	dependencies {
-	        implementation 'com.github.MinecraftWars:Gringotts:-SNAPSHOT'
-	}
-```
-
-That's it!
 
 License
 -------
-All code within Gringotts is licensed under the BSD 2-clause license. See `license.txt` for details.
+All code within Gringotts is licensed under the BSD 2-clause license. See [the LICENSE.txt file](./LICENSE.txt) for details.

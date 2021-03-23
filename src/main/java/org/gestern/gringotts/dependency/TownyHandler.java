@@ -1,8 +1,14 @@
 package org.gestern.gringotts.dependency;
 
 import com.palmergames.bukkit.towny.Towny;
+import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
-import com.palmergames.bukkit.towny.object.*;
+import com.palmergames.bukkit.towny.object.Nation;
+import com.palmergames.bukkit.towny.object.Resident;
+import com.palmergames.bukkit.towny.object.ResidentList;
+import com.palmergames.bukkit.towny.object.Town;
+import com.palmergames.bukkit.towny.object.economy.BankAccount;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,7 +20,9 @@ import org.gestern.gringotts.accountholder.AccountHolderProvider;
 import org.gestern.gringotts.event.PlayerVaultCreationEvent;
 
 import static org.gestern.gringotts.Language.LANG;
-import static org.gestern.gringotts.Permissions.*;
+import static org.gestern.gringotts.Permissions.CREATEVAULT_ADMIN;
+import static org.gestern.gringotts.Permissions.CREATEVAULT_NATION;
+import static org.gestern.gringotts.Permissions.CREATEVAULT_TOWN;
 import static org.gestern.gringotts.dependency.Dependency.DEP;
 import static org.gestern.gringotts.event.VaultCreationEvent.Type;
 
@@ -98,10 +106,10 @@ class ValidTownyHandler extends TownyHandler implements AccountHolderProvider {
     @Override
     public TownyAccountHolder getTownAccountHolder(Player player) {
         try {
-            Resident resident = TownyUniverse.getDataSource().getResident(player.getName());
+            Resident resident = TownyUniverse.getInstance().getResident(player.getUniqueId());
             Town town = resident.getTown();
 
-            return new TownyAccountHolder(town, TAG_TOWN);
+            return new TownyAccountHolder(town.getAccount(), TAG_TOWN);
         } catch (NotRegisteredException ignored) {
         }
 
@@ -117,11 +125,11 @@ class ValidTownyHandler extends TownyHandler implements AccountHolderProvider {
     @Override
     public TownyAccountHolder getNationAccountHolder(Player player) {
         try {
-            Resident resident = TownyUniverse.getDataSource().getResident(player.getName());
+            Resident resident = TownyUniverse.getInstance().getResident(player.getUniqueId());
             Town town = resident.getTown();
             Nation nation = town.getNation();
 
-            return new TownyAccountHolder(nation, TAG_NATION);
+            return new TownyAccountHolder(nation.getAccount(), TAG_NATION);
         } catch (NotRegisteredException ignored) {
         }
 
@@ -141,18 +149,18 @@ class ValidTownyHandler extends TownyHandler implements AccountHolderProvider {
 
         if (name.startsWith("town-")) {
             try {
-                Town teo = TownyUniverse.getDataSource().getTown(name.substring(5));
+                Town teo = TownyAPI.getInstance().getDataSource().getTown(name.substring(5));
 
-                return new TownyAccountHolder(teo, TAG_TOWN);
+                return new TownyAccountHolder(teo.getAccount(), TAG_TOWN);
             } catch (NotRegisteredException ignored) {
             }
         }
 
         if (name.startsWith("nation-")) {
             try {
-                Nation teo = TownyUniverse.getDataSource().getNation(name.substring(7));
+                Nation teo = TownyAPI.getInstance().getDataSource().getNation(name.substring(7));
 
-                return new TownyAccountHolder(teo, TAG_NATION);
+                return new TownyAccountHolder(teo.getAccount(), TAG_NATION);
             } catch (NotRegisteredException ignored) {
             }
         }
@@ -248,10 +256,10 @@ class TownyListener implements Listener {
 
 class TownyAccountHolder implements AccountHolder {
 
-    public final TownyEconomyObject owner;
+    public final BankAccount owner;
     public final String type;
 
-    public TownyAccountHolder(TownyEconomyObject owner, String type) {
+    public TownyAccountHolder(BankAccount owner, String type) {
         this.owner = owner;
         this.type = type;
     }
@@ -269,7 +277,7 @@ class TownyAccountHolder implements AccountHolder {
     @Override
     public void sendMessage(String message) {
         if (owner instanceof ResidentList) {
-            TownyUniverse.getOnlinePlayers((ResidentList) owner)
+            TownyAPI.getInstance().getOnlinePlayers((ResidentList) owner)
                     .forEach(player -> player.sendMessage(message));
         }
     }
@@ -281,7 +289,7 @@ class TownyAccountHolder implements AccountHolder {
 
     @Override
     public String getId() {
-        return owner.getEconomyName();
+        return owner.getName();
     }
 
     @Override
